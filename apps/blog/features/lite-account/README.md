@@ -94,7 +94,8 @@ sign-in dialog) and Forget this lite account. It reads `lite-identity` with `use
 name dialog shows at once (same-tab storage event). Forget (`lite-forget-dialog.tsx`) says the key is
 only in this browser and runs `forgetLiteAccount` (`lite-storage.ts`): it removes every `lite-*` key
 (identity, reply and root-post drafts, the root queue, the sign-in mark) except the device's
-`lite-client-id`. Signing in shows the normal user menu; the identity stays stored.
+`lite-client-id`; an identity whose keys are in Safe Storage is first taken out of the wallet (see
+"Safe Storage" below). Signing in shows the normal user menu; the identity stays stored.
 `liteIdentity.spec.ts` covers it.
 
 ## Guest posting preflight
@@ -258,6 +259,8 @@ profile has no communities list.
 
 ## Passkeys: securing, signing in, devices, signing out
 
+The passkey signer is one way to secure an account; Safe Storage, below, is the other.
+
 Everything here shows only where a passkey signer is configured (below) and the gateway relays
 `lite_account.update_authority`: its `/info.limits.l2.apps[<apps.account>]` lists it
 (`relaysUpdateAuthority`, `lite-authority-state.ts`; `useLitePasskeyAccess`, `use-lite-passkey.ts`). Elsewhere the header menu, the profile and Forget are as
@@ -331,6 +334,7 @@ with their flow runner (`use-passkey-flow.ts`) and the signer client.
 **Stored identity** (`lite-identity-record.ts`): `secured`, `signer`, `deviceExpires`, and `ownerWif`
 only while unsecured; `ownerPublicKey` is the root's once secured. A record stored before this reads as
 unsecured with its owner key (`readStoredLiteIdentity`); nothing is rewritten until the identity changes.
+`keyStore` says where the private keys are (Safe Storage below); absent reads as `local`.
 
 `liteIdentityPasskey.spec.ts` (LITE-ID-01, 02, 04–08, 11, on the `liteSocial` recording) and
 `liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, LITE-ID-09 for the first-post card and LITE-ID-10, 13, 15 for
@@ -338,6 +342,67 @@ the Login dialog's link, on `litePost`; its node-without-lite case in `liteLogin
 speaking the signer protocol (`support/litePasskeyContext.ts`, reporting a YubiKey unless a spec
 says otherwise): fixture runs have no network, so the real
 signer and its passkey (PRF) are its own e2e's business.
+
+## Safe Storage: the keys behind a password
+
+A new identity keeps its WIFs in `lite-identity`, in the clear: no password, nothing to lose yet. The
+guest can move them into Safe Storage, hb-auth's Beekeeper wallet in IndexedDB, encrypted with a
+password; nothing else about the lite flows changes.
+
+**The key store.** Every lite signature goes through one seam (`lite-key-store.ts`): per identity, the
+public keys this browser holds and `sign(role, fields)`, one signature per key over
+`l2Digest(fields, chainId)`. `local` signs with the record's WIFs (`signDigest`); `safe-storage` asks
+hb-auth (`client.sign(username, digest, keyType)`, key type `owner` or `posting`). `openLiteKeyStore`
+(`open-lite-key-store.ts`) loads the signing package on the first signature, and hb-auth's worker only
+for a Safe Storage identity. Social ops, mark-read, the passkey flows' `enrollRoot` / `addDevice`
+(owner) and `signOutDevice` (posting) and the graduation's `link` sign through it; reply, root post,
+edit and delete build their requests with the package's builders and sign each transaction again
+through it (`lite-signed-requests.ts`). The passkey signer still signs its root edits in its popup.
+
+**The entry.** hb-auth's username for the identity is its DID tagged with the posting key,
+`did:lite:<name>:<8 characters of the posting key>` (`liteWalletUsername`, `lite-wallet.ts`). No Hive
+account name contains `:`, so it never shares a wallet with a Hive account of the same name, and
+smart-signer's Hive Safe Storage sign-in leaves `did:lite:` entries out of its list
+(`hiveSafeStorageUsers`, `@hive/common-hiveio-packages/lite-wallet-users`). Beekeeper takes such a
+wallet name, but hb-auth's `register` and `authenticate` build a Hive transaction for the username,
+which wax refuses for a DID; the offline client never checks that transaction against the chain, so
+`LiteWalletClient` (`packages/common-hiveio-packages/src/hb-auth/lite-wallet-client.ts`, through
+`hbauthService.getLiteWalletClient()`) is hb-auth's `OfflineClient` registering and authenticating
+through its worker without it. The tag: Beekeeper deletes no single wallet (hb-auth's worker
+`unregister` deletes them all), so a forgotten entry's wallet stays under its old password, and the
+same account signed in again here has a new posting key and a wallet of its own.
+
+**Securing.** Where a registered identity's keys are still in the record (both keys, or a passkey-
+secured identity's posting key), the identity menu offers "Secure in Safe Storage", and so do the
+profile notice and the first-post card where no passkey signer can secure it. Where one can, "Secure
+this account" opens the passkey dialog with "Or keep the keys in this browser's Safe Storage" under it
+(`lite-secure-dialog.tsx`). The form (`lite-safe-storage-form.tsx`) takes a password twice (smart-
+signer's `passwordSchema`), registers the owner key and then the posting key under the entry
+(`moveKeysToSafeStorage`; a key left by an unfinished attempt is replaced), and stores the record
+without WIFs, `keyStore: "safe-storage"`. Then, where `shouldOfferPasskey` holds (the browser supports
+it, no passkey yet, not dismissed), it shows smart-signer's `PasskeyPrompt`, the same offer as after a
+Hive Safe Storage sign-in, with its "Not now" and "Never ask again". A Safe Storage identity can still
+be secured with a passkey: the owner edits are signed with the owner key in the wallet, which is then
+taken out of it (`dropWalletKey`).
+
+**Locked.** hb-auth locks the entry after the idle time, or on the menu's Lock (`logout` of the entry
+only; hb-auth's `lock` would lock every account of the worker). A signature asked of a locked entry
+first runs the unlock step (`lite-wallet-browser.ts`): `biometricUnlock` where a passkey is registered,
+else (or when it fails) smart-signer's password dialog and `authenticate`; the action then continues.
+A cancelled step sends nothing and says nothing; a refused one sends nothing and toasts hb-auth's
+message through `auth-error.ts` (`LiteWalletUnlockError`, `useLiteWalletFailureToast`). The menu shows
+whether the entry is locked (`lite-wallet-menu-items.tsx`, mounted with the open menu).
+
+**Forget** (and Sign out, which forgets) takes the entry out of the wallet first: its session, each
+key (`invalidateExistingKey`) and its passkey (`removeWalletEntry`); a failure there is logged and the
+account forgotten all the same. Its dialog says the account is lost, as for an unsecured one: a Safe
+Storage identity has no passkey root.
+
+`liteIdentitySafeStorage.spec.ts` (LITE-ID-16–20, on the `liteSocial` recording) runs hb-auth's
+Beekeeper in the browser: securing from the menu and the profile notice, signing a follow (its
+signature recovered to the posting key), Lock and the unlock step with a wrong and a right password,
+Forget, both options under a passkey signer and the passkey flow's owner edits signed from the wallet,
+and the biometric offer (not the ceremony: no PRF in fixture runs).
 
 ## Notifications and mentions
 

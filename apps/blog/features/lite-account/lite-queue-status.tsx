@@ -83,9 +83,9 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
 
   useEffect(() => {
     const controller = new AbortController();
-    const resign = (gateAccount: string) => {
+    const resign = async (gateAccount: string) => {
       const { identity: who, build: sign, comment } = latest.current;
-      const request = who ? sign(who, comment, gateAccount) : null;
+      const request = who ? await sign(who, comment, gateAccount) : null;
       if (!request) throw new Error('no lite identity or gateway info to re-sign the queued post with');
       return request;
     };

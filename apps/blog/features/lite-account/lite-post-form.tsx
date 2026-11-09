@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import type { CommentContent, LiteIdentity, LiteRelayOk } from '@hiveio/lite-account';
+import type { CommentContent, LiteRelayOk } from '@hiveio/lite-account';
 import { getLiteApiInfo } from '@transaction/lib/lite-api';
 import { getPostCategory } from '@transaction/lib/post-category';
 import { Button } from '@ui/components/button';
@@ -22,6 +22,7 @@ import { LiteQueueStatus } from './lite-queue-status';
 import { isLiteNameTaken } from './lite-name-availability';
 import { LITE_POST_DRAFT_KEY, type LiteRootDraft } from './lite-sign-in-handoff';
 import { isPersistedLiteQueue, liteRootPostPath, persistedQueueTtlMs, type PersistedLiteQueue } from './lite-root-post';
+import type { StoredLiteIdentity } from './lite-identity-record';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 import { useLiteRootPostMutation } from './use-lite-root-post-mutation';
@@ -47,7 +48,7 @@ function toComment(draft: LiteRootDraft): CommentContent {
 }
 
 type Props = {
-  identity: LiteIdentity;
+  identity: StoredLiteIdentity;
   categoryParam?: string;
   /** The gateway refused to register the identity's name as taken. */
   onNameTaken: (name: string) => void;

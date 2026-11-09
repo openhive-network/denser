@@ -34,7 +34,7 @@ export function LiteSignOutDialog({ open, onOpenChange }: Props) {
     void run(null, async () => {
       const { signOutDevice } = await import('./lite-authority-flows');
       await signOutDevice(identity, relay);
-      forgetLiteAccount();
+      await forgetLiteAccount();
       toast({ title: t('lite_account.passkey.signed_out_title', { name: identity.name }) });
       onOpenChange(false);
     });

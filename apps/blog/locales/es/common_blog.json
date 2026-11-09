@@ -1201,7 +1201,8 @@
       "forget_confirm": "Olvidar",
       "my_feed": "Mi feed",
       "forget_description_unsecured": "Esta cuenta solo existe en este navegador: una vez olvidada, nadie podrá volver a publicar, editar ni borrar como esta cuenta lite. Para conservarla, protégela antes con una passkey. También se eliminan sus borradores lite y publicaciones en cola; sus publicaciones publicadas se quedan.",
-      "forget_description_secured": "Este navegador olvida la cuenta, sus borradores y sus publicaciones en cola. La cuenta sigue siendo tuya: vuelve a iniciar sesión con tu passkey. La clave de este dispositivo sigue en la cuenta hasta que caduque; Cerrar sesión la elimina ahora."
+      "forget_description_secured": "Este navegador olvida la cuenta, sus borradores y sus publicaciones en cola. La cuenta sigue siendo tuya: vuelve a iniciar sesión con tu passkey. La clave de este dispositivo sigue en la cuenta hasta que caduque; Cerrar sesión la elimina ahora.",
+      "forget_description_safe_storage": "Sus claves solo están en el almacenamiento seguro de este navegador: al olvidarla se eliminan y nadie podrá volver a publicar, editar ni borrar como esta cuenta lite. También se eliminan sus borradores y publicaciones en cola; sus publicaciones ya publicadas se mantienen."
     },
     "social": {
       "failed_title": "La cuenta lite no pudo hacerlo",
@@ -1334,6 +1335,26 @@
         "signer_keys": "El firmante no devolvió todas las claves de la nueva cuenta.",
         "unavailable": "No se pudo completar el cambio: la pasarela no responde. Inténtalo de nuevo."
       }
+    },
+    "safe_storage": {
+      "title": "Proteger en el almacenamiento seguro",
+      "secure_action": "Proteger en el almacenamiento seguro",
+      "description": "Este navegador guarda las claves de esta cuenta lite sin cifrar. El almacenamiento seguro las cifra con una contraseña; al firmar se te pedirá (o tu huella, Face ID o PIN) cuando se haya bloqueado. Las claves siguen solo en este navegador.",
+      "use_instead": "O guarda las claves en el almacenamiento seguro de este navegador, protegidas con una contraseña",
+      "password_label": "Contraseña del almacenamiento seguro",
+      "password_repeat_label": "Repite la contraseña",
+      "password_mismatch": "Las contraseñas no coinciden",
+      "confirm": "Proteger",
+      "working": "Guardando las claves…",
+      "secured_title": "Claves en el almacenamiento seguro",
+      "secured_description": "Este navegador guarda ahora las claves de esta cuenta lite en el almacenamiento seguro, protegidas con tu contraseña.",
+      "passkey_failed_title": "No se activó el desbloqueo biométrico",
+      "warning_unsecured": "Esta cuenta solo existe en este navegador y sus claves no están protegidas. Protégelas en el almacenamiento seguro.",
+      "unlock_failed_title": "El almacenamiento seguro no se desbloqueó",
+      "unlock_failed": "El almacenamiento seguro no se desbloqueó, así que no se envió nada. Inténtalo de nuevo.",
+      "locked": "Claves en el almacenamiento seguro: bloqueadas",
+      "unlocked": "Claves en el almacenamiento seguro: desbloqueadas",
+      "lock": "Bloquear"
     }
   },
   "api_sets": {

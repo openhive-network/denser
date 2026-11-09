@@ -1196,7 +1196,8 @@
       "forget_confirm": "Forget",
       "my_feed": "My feed",
       "forget_description_unsecured": "This account lives only in this browser: once it is forgotten, nobody can post, edit or delete as this lite account again. To keep it, secure it with a passkey first. Its lite drafts and queued posts are removed too; its published posts stay.",
-      "forget_description_secured": "This browser forgets the account, its drafts and its queued posts. The account stays yours: sign in again with your passkey. This device's key stays on the account until it expires; Sign out removes it now."
+      "forget_description_secured": "This browser forgets the account, its drafts and its queued posts. The account stays yours: sign in again with your passkey. This device's key stays on the account until it expires; Sign out removes it now.",
+      "forget_description_safe_storage": "Its keys are kept only in this browser's Safe Storage: once it is forgotten they are removed, and nobody can post, edit or delete as this lite account again. Its lite drafts and queued posts are removed too; its published posts stay."
     },
     "social": {
       "failed_title": "The lite account could not do that",
@@ -1329,6 +1330,26 @@
         "signer_keys": "The signer did not return all of the new account's keys.",
         "unavailable": "The upgrade could not be completed: the gateway is unreachable. Try again."
       }
+    },
+    "safe_storage": {
+      "title": "Secure in Safe Storage",
+      "secure_action": "Secure in Safe Storage",
+      "description": "This browser keeps this lite account's keys in plain storage. Safe Storage encrypts them with a password; signing asks for it (or your fingerprint, Face ID or PIN) once Safe Storage has locked. The keys stay in this browser only.",
+      "use_instead": "Or keep the keys in this browser's Safe Storage, behind a password",
+      "password_label": "Safe Storage password",
+      "password_repeat_label": "Repeat the password",
+      "password_mismatch": "The passwords do not match",
+      "confirm": "Secure",
+      "working": "Saving the keys…",
+      "secured_title": "Keys in Safe Storage",
+      "secured_description": "This browser now keeps the keys of this lite account in Safe Storage, behind your password.",
+      "passkey_failed_title": "Biometric unlock was not enabled",
+      "warning_unsecured": "This account lives only in this browser, its keys unprotected. Secure them in Safe Storage.",
+      "unlock_failed_title": "Safe Storage did not unlock",
+      "unlock_failed": "Safe Storage did not unlock, so nothing was sent. Try again.",
+      "locked": "Keys in Safe Storage: locked",
+      "unlocked": "Keys in Safe Storage: unlocked",
+      "lock": "Lock"
     }
   },
   "api_sets": {

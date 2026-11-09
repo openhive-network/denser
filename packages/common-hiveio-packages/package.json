@@ -18,7 +18,8 @@
     "./src/hb-auth": "./src/hb-auth/index.ts",
     "./safe-storage-generation-subscription": "./src/hb-auth/safe-storage-generation-subscription.ts",
     "./sign-out-epoch": "./src/hb-auth/sign-out-epoch.ts",
-    "./safe-storage-lock": "./src/hb-auth/safe-storage-lock.ts"
+    "./safe-storage-lock": "./src/hb-auth/safe-storage-lock.ts",
+    "./lite-wallet-users": "./src/hb-auth/lite-wallet-users.ts"
   },
   "devDependencies": {
     "@types/node": "^24",

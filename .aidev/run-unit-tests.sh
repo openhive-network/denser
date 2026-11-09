@@ -156,7 +156,8 @@ run_with_junit_fallback "$junit" common-hiveio-packages node --test \
     packages/common-hiveio-packages/src/hb-auth/safe-storage-generation.test.ts \
     packages/common-hiveio-packages/src/hb-auth/hbauth-service.test.ts \
     packages/common-hiveio-packages/src/hb-auth/worker-release.test.ts \
-    packages/common-hiveio-packages/src/hb-auth/safe-storage-lock.test.ts < /dev/null || status=1
+    packages/common-hiveio-packages/src/hb-auth/safe-storage-lock.test.ts \
+    packages/common-hiveio-packages/src/hb-auth/lite-wallet-client.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
@@ -225,6 +226,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-social-state.test.ts \
     apps/blog/features/lite-account/lite-read-marker.test.ts \
     apps/blog/features/lite-account/lite-identity-record.test.ts \
+    apps/blog/features/lite-account/lite-key-store.test.ts \
     apps/blog/features/lite-account/lite-authority-state.test.ts \
     apps/blog/features/lite-account/lite-passkey-label.test.ts \
     apps/blog/features/lite-account/lite-graduation-state.test.ts \

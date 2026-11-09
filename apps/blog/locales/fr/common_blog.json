@@ -1201,7 +1201,8 @@
       "forget_confirm": "Oublier",
       "my_feed": "Mon fil",
       "forget_description_unsecured": "Ce compte n'existe que dans ce navigateur : une fois oublié, plus personne ne pourra publier, modifier ni supprimer en tant que ce compte lite. Pour le garder, sécurisez-le d'abord avec une passkey. Ses brouillons lite et ses publications en attente sont aussi supprimés ; ses publications publiées restent.",
-      "forget_description_secured": "Ce navigateur oublie le compte, ses brouillons et ses publications en attente. Le compte reste le vôtre : reconnectez-vous avec votre passkey. La clé de cet appareil reste sur le compte jusqu'à son expiration ; Se déconnecter la retire maintenant."
+      "forget_description_secured": "Ce navigateur oublie le compte, ses brouillons et ses publications en attente. Le compte reste le vôtre : reconnectez-vous avec votre passkey. La clé de cet appareil reste sur le compte jusqu'à son expiration ; Se déconnecter la retire maintenant.",
+      "forget_description_safe_storage": "Ses clés ne sont que dans le stockage sécurisé de ce navigateur : une fois le compte oublié, elles sont supprimées et plus personne ne pourra publier, modifier ni supprimer en tant que ce compte lite. Ses brouillons et publications en file d'attente sont aussi supprimés ; ses publications déjà en ligne restent."
     },
     "social": {
       "failed_title": "Le compte lite n'a pas pu le faire",
@@ -1334,6 +1335,26 @@
         "signer_keys": "Le signataire n'a pas renvoyé toutes les clés du nouveau compte.",
         "unavailable": "Le passage n'a pas pu aboutir : la passerelle est injoignable. Réessayez."
       }
+    },
+    "safe_storage": {
+      "title": "Protéger dans le stockage sécurisé",
+      "secure_action": "Protéger dans le stockage sécurisé",
+      "description": "Ce navigateur conserve les clés de ce compte lite en clair. Le stockage sécurisé les chiffre avec un mot de passe ; la signature vous le demande (ou votre empreinte, Face ID ou code PIN) une fois le stockage verrouillé. Les clés restent uniquement dans ce navigateur.",
+      "use_instead": "Ou conservez les clés dans le stockage sécurisé de ce navigateur, protégées par un mot de passe",
+      "password_label": "Mot de passe du stockage sécurisé",
+      "password_repeat_label": "Répétez le mot de passe",
+      "password_mismatch": "Les mots de passe ne correspondent pas",
+      "confirm": "Protéger",
+      "working": "Enregistrement des clés…",
+      "secured_title": "Clés dans le stockage sécurisé",
+      "secured_description": "Ce navigateur conserve désormais les clés de ce compte lite dans le stockage sécurisé, protégées par votre mot de passe.",
+      "passkey_failed_title": "Le déverrouillage biométrique n'a pas été activé",
+      "warning_unsecured": "Ce compte n'existe que dans ce navigateur et ses clés ne sont pas protégées. Protégez-les dans le stockage sécurisé.",
+      "unlock_failed_title": "Le stockage sécurisé ne s'est pas déverrouillé",
+      "unlock_failed": "Le stockage sécurisé ne s'est pas déverrouillé, rien n'a donc été envoyé. Réessayez.",
+      "locked": "Clés dans le stockage sécurisé : verrouillées",
+      "unlocked": "Clés dans le stockage sécurisé : déverrouillées",
+      "lock": "Verrouiller"
     }
   },
   "api_sets": {

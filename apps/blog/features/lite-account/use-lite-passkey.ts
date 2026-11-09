@@ -10,7 +10,7 @@ import {
   type SecurityNotice
 } from './lite-authority-state';
 import type { AuthorityRelay } from './lite-authority-flows';
-import type { StoredLiteIdentity } from './lite-identity-record';
+import { canSecureInSafeStorage, type StoredLiteIdentity } from './lite-identity-record';
 import { liteRelayInfoQuery } from './lite-relay-info-query';
 
 // No runtime import of @hiveio/lite-account here: the header uses these. The flow runner
@@ -35,8 +35,9 @@ export function useLiteAuthority(name: string | undefined, enabled: boolean) {
 /**
  * The security warning for the browser's registered lite identity, where the gateway relays
  * authority edits: from the account's authority (read while `enabled`), with its passkey's label
- * when it has one, or, until it is read, from whether this browser secured it. An unregistered
- * identity has nothing on chain to secure yet.
+ * when it has one, or, until it is read, from whether this browser secured it. Elsewhere `unsecured`
+ * while its keys can still move into Safe Storage. An unregistered identity has nothing on chain to
+ * secure yet.
  */
 export function useLiteSecurityWarning(
   identity: StoredLiteIdentity | null,
@@ -45,7 +46,8 @@ export function useLiteSecurityWarning(
   const { available } = useLitePasskeyAccess();
   const registered = !!identity?.registered;
   const authority = useLiteAuthority(identity?.name, available && enabled && registered);
-  if (!available || !registered || !identity) return null;
+  if (!registered || !identity) return null;
+  if (!available) return canSecureInSafeStorage(identity) && !identity.secured ? { warning: 'unsecured' } : null;
   if (!authority.data) return identity.secured ? null : { warning: 'unsecured' };
   const warning = securityWarning(authority.data);
   if (!warning) return null;

@@ -13,11 +13,13 @@ const { graduateLiteAccount, GRADUATION_ROLES, LiteGraduationError, retryLiteLin
   './lite-graduation.ts'
 );
 const { storedFromCreated } = await import('./lite-identity-record.ts');
+const { liteKeyStore } = await import('./lite-key-store.ts');
 
 const NAME = 'brave-otter-482';
 const ACCOUNT = 'brave-otter';
 const RELAY = { chainId: 'beeab0de00000000000000000000000000000000000000000000000000000000', accountApp: 'lite_account_test' };
 const identity = { ...storedFromCreated(createLiteIdentity(NAME)), registered: true };
+const keys = liteKeyStore(identity, RELAY.chainId);
 const KEYS = {
   owner: 'STM6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4',
   active: 'STM8m5UgaFAAYQRuaNejYdS8FVLVp9Ghm2D6b2gUMUddLUMBDx7ZZ',
@@ -62,6 +64,7 @@ function run(gateway: ReturnType<typeof fakeGateway>['gateway'], readKeys = asyn
   const created: string[] = [];
   const outcome = graduateLiteAccount({
     identity,
+    keys,
     account: ACCOUNT,
     readKeys,
     relay: RELAY,
@@ -138,7 +141,7 @@ describe('graduateLiteAccount', () => {
 describe('retryLiteLink', () => {
   it('relays a freshly signed link through /l2 and waits for it to show', async () => {
     const fake = fakeGateway({ linkedAfter: 1 });
-    assert.equal(await retryLiteLink({ identity, account: ACCOUNT, relay: RELAY, gateway: fake.gateway, wait: noWait }), true);
+    assert.equal(await retryLiteLink({ identity, keys, account: ACCOUNT, relay: RELAY, gateway: fake.gateway, wait: noWait }), true);
     assert.equal(fake.relayed.length, 1);
     assert.deepEqual(fake.relayed[0].operations, [{ method: 'link', args: { name: NAME, account: ACCOUNT } }]);
     assertSignedByPostingKey(fake.relayed[0]);
@@ -147,6 +150,6 @@ describe('retryLiteLink', () => {
 
   it('resolves false when the relayed link does not show up', async () => {
     const fake = fakeGateway({ linkedAfter: Infinity });
-    assert.equal(await retryLiteLink({ identity, account: ACCOUNT, relay: RELAY, gateway: fake.gateway, wait: noWait }), false);
+    assert.equal(await retryLiteLink({ identity, keys, account: ACCOUNT, relay: RELAY, gateway: fake.gateway, wait: noWait }), false);
   });
 });
