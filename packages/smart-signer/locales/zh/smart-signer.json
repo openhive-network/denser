@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "安全存储中保存的发帖（posting）密钥已不再适用于您的账户，可能已被更改。请使用当前的发帖（posting）密钥重新登录。",
     "safe_storage_active_key_not_authorized": "安全存储中保存的活动（active）密钥已不再适用于您的账户，可能已被更改。请使用当前的活动（active）密钥重新登录。",
     "safe_storage_owner_key_not_authorized": "安全存储中保存的所有者（owner）密钥已不再适用于您的账户，可能已被更改。请使用当前的所有者（owner）密钥重新登录。",
-    "keychain_signing_failed": "在 Hive Keychain 中签名交易时出错。"
+    "keychain_signing_failed": "在 Hive Keychain 中签名交易时出错。",
+    "rewards_already_claimed": "您的奖励已被领取或少于显示的数额，因此未领取任何奖励。",
+    "balance_too_low": "您的余额不足以支付此金额，因此未发送任何内容。"
   },
   "request_error": {
     "timeout": "服务器未及时响应。请重试。",

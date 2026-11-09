@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "Klucz do publikowania (posting) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz do publikowania (posting).",
     "safe_storage_active_key_not_authorized": "Klucz aktywny (active) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz aktywny (active).",
     "safe_storage_owner_key_not_authorized": "Klucz właściciela (owner) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz właściciela (owner).",
-    "keychain_signing_failed": "Wystąpił błąd podczas podpisywania transakcji w Hive Keychain."
+    "keychain_signing_failed": "Wystąpił błąd podczas podpisywania transakcji w Hive Keychain.",
+    "rewards_already_claimed": "Twoje nagrody zostały już odebrane lub są mniejsze niż pokazane, więc nic nie odebrano.",
+    "balance_too_low": "Twoje saldo jest za niskie na tę kwotę, więc nic nie wysłano."
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",

@@ -151,7 +151,7 @@ const NotificationActivities = ({
         await claimRewardMutation.mutateAsync({ account: apiAccounts.accounts[0] });
       } catch (error) {
         claimedBalancesRef.current = null;
-        handleError(error, { method: 'claimReward', params: { account: apiAccounts.accounts[0] } });
+        handleError(error, { method: 'claim_reward_balance', params: { account: apiAccounts.accounts[0] } });
       }
     }
   }

@@ -1,6 +1,7 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { scrubSensitiveData } from '@hive/ui/lib/sentry-scrub';
 import { isJSON } from '@ui/lib/utils';
+import { describeError } from './describe-error';
 
 const logger = getLogger('app');
 
@@ -107,6 +108,24 @@ function findWalletResponseMessage(error: unknown): string | undefined {
 }
 
 /**
+ * A broadcast the chain rejected for asking more than the account holds, which the toast titles with the
+ * app's own text: wax's message interpolates the node's assets as "[object Object]". A claim is rejected
+ * when its rewards were already claimed (another tab, a stale page) or are smaller than shown.
+ */
+export type InsufficientBalance = 'rewards_already_claimed' | 'balance_too_low';
+
+const INSUFFICIENT_BALANCE_ERROR_NAME = 'WaxInsufficientBalanceError';
+const CLAIM_REWARD_METHOD = 'claim_reward_balance';
+// hived's claim_reward_balance evaluator ("Cannot claim that much HIVE/HBD/VESTS")
+const CLAIM_TOO_MUCH_PATTERN = /Cannot claim that much/i;
+
+function findInsufficientBalance(error: unknown, method: string | undefined): InsufficientBalance | null {
+  const isClaimTooMuch = CLAIM_TOO_MUCH_PATTERN.test(describeError(error));
+  if (!isClaimTooMuch && !(error instanceof Error && error.name === INSUFFICIENT_BALANCE_ERROR_NAME)) return null;
+  return isClaimTooMuch || method === CLAIM_REWARD_METHOD ? 'rewards_already_claimed' : 'balance_too_low';
+}
+
+/**
  * The error's message without the rest of it: a wallet's response or wax's error can carry the
  * transaction the user signed, which the always-on error log must not print.
  */
@@ -133,7 +152,8 @@ function stringifyError(error: unknown): string {
  * @param {*} e
  * @param {{ method: string, params: T }} ctx
  * @returns error description; `isWellKnownError` marks one not worth reporting,
- * `keychainFallback` a Keychain error to title with the app's own text rather than the description
+ * `keychainFallback` a Keychain error and `insufficientBalance` a chain rejection to title with the
+ * app's own text rather than the description
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   let description = 'Error';
@@ -141,6 +161,7 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
   let keychainFallback: KeychainFallback | null = null;
   const isUserCancel = isKeychainUserCancel(e);
   const walletResponseMessage = findWalletResponseMessage(e);
+  const insufficientBalance = findInsufficientBalance(e, ctx?.method);
 
   logger.error(
     'in transformError: got error (will be swallowed) on method %s: %s',
@@ -182,12 +203,13 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
       description = keychainFallback === 'no_message' ? errorDescription : keychainMessage;
     }
   }
-  isWellKnownError ||= isUserCancel;
+  isWellKnownError ||= isUserCancel || insufficientBalance !== null;
 
   return {
     errorTitle: defaultDescription ?? description,
     fullError: scrubSensitiveData(e.toString()),
     isWellKnownError,
-    keychainFallback
+    keychainFallback,
+    insufficientBalance
   };
 }

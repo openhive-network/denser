@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "La clé de publication (posting) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé de publication (posting) actuelle.",
     "safe_storage_active_key_not_authorized": "La clé active conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé active actuelle.",
     "safe_storage_owner_key_not_authorized": "La clé propriétaire (owner) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé propriétaire (owner) actuelle.",
-    "keychain_signing_failed": "Une erreur s'est produite lors de la signature de la transaction dans Hive Keychain."
+    "keychain_signing_failed": "Une erreur s'est produite lors de la signature de la transaction dans Hive Keychain.",
+    "rewards_already_claimed": "Vos récompenses ont déjà été réclamées ou sont inférieures à celles affichées, rien n'a donc été réclamé.",
+    "balance_too_low": "Votre solde est insuffisant pour ce montant, rien n'a donc été envoyé."
   },
   "request_error": {
     "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
