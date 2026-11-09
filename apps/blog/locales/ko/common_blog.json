@@ -144,6 +144,11 @@
         "active": "{{username}} 계정 메뉴, 액티브 키",
         "posting_and_active": "{{username}} 계정 메뉴, 포스팅 키와 액티브 키"
       },
+      "account_menu_key_locked": {
+        "posting": "{{username}} 계정 메뉴, 포스팅 키 잠김",
+        "active": "{{username}} 계정 메뉴, 액티브 키 잠김",
+        "posting_and_active": "{{username}} 계정 메뉴, 포스팅 키와 액티브 키 잠김"
+      },
       "account_menu_signer": "{{username}} 계정 메뉴, {{method}}",
       "profile": "프로필",
       "notifications": "알림",

@@ -215,7 +215,8 @@ export class SignerHbauth extends Signer {
         mode: PasswordFormMode.HBAUTH,
         showInputStorePassword: false,
         i18nKeysForCaptions: {
-          title: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
+          title: `login_form.enter_key_title_${singleSignKeyType}`,
+          description: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
           inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
         }
       };

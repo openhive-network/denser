@@ -144,6 +144,11 @@
         "active": "{{username}} のアカウントメニュー、アクティブキー",
         "posting_and_active": "{{username}} のアカウントメニュー、投稿キーとアクティブキー"
       },
+      "account_menu_key_locked": {
+        "posting": "{{username}} のアカウントメニュー、投稿キー（ロック中）",
+        "active": "{{username}} のアカウントメニュー、アクティブキー（ロック中）",
+        "posting_and_active": "{{username}} のアカウントメニュー、投稿キーとアクティブキー（ロック中）"
+      },
       "account_menu_signer": "{{username}} のアカウントメニュー、{{method}}",
       "profile": "プロフィール",
       "notifications": "通知",

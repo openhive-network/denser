@@ -25,7 +25,7 @@ export class LoginForm {
   readonly goBackButton: Locator;
   readonly closeDialog: Locator;
 
-  readonly headerEnterYourWifKey: Locator;
+  readonly headerEnterYourKey: Locator;
   readonly postingPrivateKeyInput: Locator;
   readonly storeKeyCheckbox: Locator;
   readonly postingPrivateKeySubmitButton: Locator;
@@ -72,7 +72,7 @@ export class LoginForm {
     this.hiveSignerButton = page.getByTestId('hive-signer-button');
     this.goBackButton = page.getByTestId('go-back-button');
 
-    this.headerEnterYourWifKey = page.getByText('Enter your WIF key');
+    this.headerEnterYourKey = page.getByText(/^Enter your (posting|active) key$/);
     this.postingPrivateKeyInput = page.getByTestId('posting-private-key-input');
     this.storeKeyCheckbox = page.getByLabel('Store key');
     this.postingPrivateKeySubmitButton = page.getByTestId('password-submit-button');
@@ -160,8 +160,8 @@ export class LoginForm {
   }
 
   async validateEnterYourWifKeyFormIsLoaded() {
-    await this.page.waitForSelector(locatorSelector(this.headerEnterYourWifKey));
-    await expect(this.headerEnterYourWifKey).toBeVisible();
+    await this.page.waitForSelector(locatorSelector(this.headerEnterYourKey));
+    await expect(this.headerEnterYourKey).toBeVisible();
     await expect(this.postingPrivateKeyInput).toBeVisible();
     await expect(this.storeKeyCheckbox).not.toBeChecked();
     await expect(this.postingPrivateKeySubmitButton).toBeVisible();

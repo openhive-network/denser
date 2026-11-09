@@ -128,7 +128,7 @@ async function transferWithoutKeyPrompt(page: Page, broadcasts: BroadcastInterce
     amount: naiAsset('1.000 HIVE'),
     memo: ''
   });
-  await expect(new LoginForm(page).headerEnterYourWifKey).toHaveCount(0);
+  await expect(new LoginForm(page).headerEnterYourKey).toHaveCount(0);
 }
 
 test.describe('An account whose posting and active keys are one key', () => {
@@ -151,7 +151,7 @@ test.describe('An account whose posting and active keys are one key', () => {
     await loginForm.otherSignInOptionsButton.click();
     await loginForm.otherSignInOptionsUsernameInput.fill(STUB_ACCOUNT);
     await loginForm.signInWithWifButton.click();
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await loginForm.storeKeyCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(SHARED_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();

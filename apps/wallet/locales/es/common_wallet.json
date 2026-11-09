@@ -93,6 +93,11 @@
         "active": "Menú de la cuenta {{username}}, clave activa",
         "posting_and_active": "Menú de la cuenta {{username}}, claves de publicación y activa"
       },
+      "account_menu_key_locked": {
+        "posting": "Menú de la cuenta {{username}}, clave de publicación bloqueada",
+        "active": "Menú de la cuenta {{username}}, clave activa bloqueada",
+        "posting_and_active": "Menú de la cuenta {{username}}, claves de publicación y activa bloqueadas"
+      },
       "account_menu_signer": "Menú de la cuenta {{username}}, {{method}}",
       "wallet": "Monedero",
       "blog": "Blog",

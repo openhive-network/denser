@@ -85,7 +85,8 @@ export class SignerWif extends SignerHbauth {
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
         inputStorePasswordLabel: 'password_form.store_key_label',
-        title: 'login_form.this_operation_requires_your_key_for_single_sign_active'
+        title: 'login_form.enter_key_title_active',
+        description: 'login_form.this_operation_requires_your_key_for_single_sign_active'
       },
       i18nValues: { keyType }
     };
@@ -152,7 +153,8 @@ export class SignerWif extends SignerHbauth {
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
         inputStorePasswordLabel: 'password_form.store_key_label',
-        title: 'login_form.title_wif_dialog_password'
+        title: `login_form.enter_key_title_${keyType}`,
+        description: `login_form.this_operation_requires_your_key_for_single_sign_${keyType}`
       },
       i18nValues: { keyType }
     };

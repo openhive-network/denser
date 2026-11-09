@@ -154,6 +154,11 @@
         "active": "قائمة حساب {{username}}، المفتاح النشط",
         "posting_and_active": "قائمة حساب {{username}}، مفتاح النشر والمفتاح النشط"
       },
+      "account_menu_key_locked": {
+        "posting": "قائمة حساب {{username}}، مفتاح النشر مقفل",
+        "active": "قائمة حساب {{username}}، المفتاح النشط مقفل",
+        "posting_and_active": "قائمة حساب {{username}}، مفتاح النشر والمفتاح النشط مقفلان"
+      },
       "account_menu_signer": "قائمة حساب {{username}}، {{method}}",
       "profile": "الملف الشخصي",
       "notifications": "الإشعارات",

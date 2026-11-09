@@ -93,6 +93,11 @@
         "active": "Menu konta {{username}}, klucz Active",
         "posting_and_active": "Menu konta {{username}}, klucze Posting i Active"
       },
+      "account_menu_key_locked": {
+        "posting": "Menu konta {{username}}, klucz Posting zablokowany",
+        "active": "Menu konta {{username}}, klucz Active zablokowany",
+        "posting_and_active": "Menu konta {{username}}, klucze Posting i Active zablokowane"
+      },
       "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "wallet": "Portfel",
       "blog": "Blog",

@@ -93,6 +93,11 @@
         "active": "Menu dell'account {{username}}, chiave attiva",
         "posting_and_active": "Menu dell'account {{username}}, chiavi di pubblicazione e attiva"
       },
+      "account_menu_key_locked": {
+        "posting": "Menu dell'account {{username}}, chiave di pubblicazione bloccata",
+        "active": "Menu dell'account {{username}}, chiave attiva bloccata",
+        "posting_and_active": "Menu dell'account {{username}}, chiavi di pubblicazione e attiva bloccate"
+      },
       "account_menu_signer": "Menu dell'account {{username}}, {{method}}",
       "wallet": "Portafoglio",
       "blog": "Blog",
