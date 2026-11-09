@@ -29,6 +29,8 @@ export function useClaimRewardsMutation() {
     }),
     invalidate: () => [queryKey],
     // The API has caught up by then; until then the component uses claimedBalances to suppress stale data.
-    invalidateDelays: [60000]
+    invalidateDelays: [60000],
+    // NotificationContent reports a failed claim itself.
+    reportErrors: false
   });
 }
