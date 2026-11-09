@@ -9,7 +9,6 @@ import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { getFindAccounts } from '@transaction/lib/hive-api';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
 import { handleError } from '@ui/lib/handle-error';
-import { toast } from '@ui/components/hooks/use-toast';
 
 interface RewardBalances {
   reward_hive_balance: NaiAsset;
@@ -46,18 +45,11 @@ const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps
   }, [rewardBalances, t]);
 
   const claimRewards = async () => {
-    const accounts = await getFindAccounts(username);
-    const params = { account: accounts.accounts[0] };
     try {
-      await claimRewardsMutation.mutateAsync(params);
+      const accounts = await getFindAccounts(username);
+      await claimRewardsMutation.mutateAsync({ account: accounts.accounts[0] });
     } catch (error) {
-      handleError(error, { method: 'claim_reward_balance', params });
-    } finally {
-      toast({
-        title: t('transfers_page.transaction_success'),
-        description: t('transfers_page.redeem_rewards'),
-        variant: 'success'
-      });
+      handleError(error, { method: 'claim_reward_balance', params: { account: username } });
     }
   };
 

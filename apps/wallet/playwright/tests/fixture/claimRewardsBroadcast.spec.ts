@@ -1,7 +1,7 @@
 import type { Server } from 'node:http';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type Route } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { BROADCAST_METHODS, installBroadcastInterceptor } from '../support/broadcastInterceptor';
 import { expectClaimRewardBalanceOperation, naiAsset, type NaiAsset } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -16,7 +16,8 @@ import {
  * `claim_reward_balance_operation` carrying the account's pending reward balances as the node
  * reports them. Reads come from the stub node (support/walletApiStub.ts), its accounts holding
  * `rewards`; the broadcast and `verify_authority` are answered by the interceptor. Claiming needs
- * the posting key, so the active-key WIF session stores the account's posting key as well.
+ * the posting key, so the active-key WIF session stores the account's posting key as well. A claim
+ * the node rejects shows only the error toast.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -72,6 +73,58 @@ const openOwnTransfersPage = async (page: Page) => {
   await storeStubAccountKey(page, 'active', ACTIVE_WIF);
   await storeStubAccountKey(page, 'posting', POSTING_WIF);
   await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+};
+
+const SUCCESS_TOAST_TITLE = 'Transaction Success';
+
+/** hived's answer to a claim of more than the account's pending rewards. */
+const CLAIM_TOO_MUCH_REJECTION = {
+  code: -32003,
+  message: 'Assert Exception:reward_hive <= acnt.reward_hive_balance: Cannot claim that much HIVE. Claim: 0.001 HIVE Actual: 0.000 HIVE',
+  data: {
+    code: 10,
+    name: 'assert_exception',
+    message: 'Assert Exception',
+    stack: [
+      {
+        context: {
+          level: 'error',
+          file: 'hive_evaluator.cpp',
+          line: 2876,
+          method: 'do_apply',
+          hostname: '',
+          thread_name: 'th_a',
+          timestamp: '2026-11-09T17:00:00'
+        },
+        format: 'Cannot claim that much HIVE. Claim: ${c} Actual: ${a}',
+        data: { c: '0.001 HIVE', a: '0.000 HIVE' }
+      }
+    ]
+  }
+};
+
+/** Answers every broadcast with CLAIM_TOO_MUCH_REJECTION and returns how many were answered. */
+const rejectBroadcasts = async (page: Page) => {
+  const rejected = { count: 0 };
+  await page.route(
+    (url) => url.hostname === '127.0.0.1',
+    (route: Route) => {
+      let body: { method?: unknown; id?: unknown } | null;
+      try {
+        body = route.request().postDataJSON();
+      } catch {
+        return route.fallback();
+      }
+      if (typeof body?.method !== 'string' || !BROADCAST_METHODS.has(body.method)) return route.fallback();
+      rejected.count++;
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ jsonrpc: '2.0', id: body.id ?? 1, error: CLAIM_TOO_MUCH_REJECTION })
+      });
+    }
+  );
+  return rejected;
 };
 
 const redeemButton = (page: Page) => page.getByRole('button', { name: 'Redeem Rewards (Transfer To Balance)' });
@@ -141,5 +194,18 @@ test.describe('Claim rewards broadcast', () => {
     await expect(page.getByText('Your current rewards:')).toHaveCount(0);
     await expect(redeemButton(page)).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-CLAIM-04 — a claim the node rejects shows only the error toast', async ({ page }) => {
+    rewards = { ...NO_REWARDS, reward_hive_balance: naiAsset('0.001 HIVE') };
+    await installBroadcastInterceptor(page);
+    const rejected = await rejectBroadcasts(page);
+    await openOwnTransfersPage(page);
+
+    await redeemButton(page).click({ timeout: HYDRATION_TIMEOUT });
+
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(1);
+    expect(rejected.count).toBeGreaterThan(0);
+    await expect(page.getByText(SUCCESS_TOAST_TITLE, { exact: true })).toHaveCount(0);
   });
 });
