@@ -13,6 +13,7 @@ globalThis.fakeHbAuthLogouts = [];
 const record = (call) => { globalThis.fakeHbAuthLogouts.push(call); return Promise.resolve(); };
 export const getOnlineClient = () => record('getOnlineClient');
 export const getOfflineClient = () => record('getOfflineClient');
+export const getLiteWalletClient = () => record('getLiteWalletClient');
 export const withOnlineClient = () => record('withOnlineClient');
 export const logoutFromEveryWorker = (username) => record('every:' + username);
 export const logoutFromStartedWorkers = (username) => record('started:' + username);

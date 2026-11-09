@@ -13,6 +13,8 @@ import { graduationErrorKey } from './lite-graduation-state';
 import { graduatedIdentity } from './lite-identity-record';
 import { useLiteGraduationAccess } from './use-lite-graduation';
 import { useStoredLiteIdentityState } from './use-stored-lite-identity';
+import { liteWalletFailureMessage } from './lite-wallet-errors';
+import { openLiteKeyStore } from './open-lite-key-store';
 
 const logger = getLogger('app');
 
@@ -26,9 +28,16 @@ export type GraduationFlowState =
   | { phase: 'done'; account: string }
   | { phase: 'link_failed'; account: string; retrying: boolean; error?: string };
 
-/** A failure's message key: the signer's, or the gateway's; null for a cancelled signer popup. */
-const failureKey = (error: unknown): string | null =>
-  error instanceof SignerError ? liteAuthorityErrorKey(error) : graduationErrorKey(error);
+/**
+ * A failure's message key: the signer's, Safe Storage's unlock step's, or the gateway's; null for a
+ * cancelled signer popup or unlock step.
+ */
+function failureKey(error: unknown): string | null {
+  if (error instanceof SignerError) return liteAuthorityErrorKey(error);
+  const unlock = liteWalletFailureMessage(error);
+  if (unlock !== undefined) return unlock === null ? null : 'lite_account.safe_storage.unlock_failed';
+  return graduationErrorKey(error);
+}
 
 /**
  * The graduation dialog's flow for the browser's lite identity. `start` opens the signer popup (call
@@ -61,20 +70,24 @@ export function useLiteGraduationFlow(pendingLink?: string) {
       const roles = [GRADUATION_ROLES.owner, GRADUATION_ROLES.active, GRADUATION_ROLES.posting, GRADUATION_ROLES.memo];
       return (await popup.call('getPublicKeys', { roles, account: 0 })).keys;
     };
-    void graduateLiteAccount({
-      identity,
-      account,
-      readKeys,
-      relay,
-      onStep: (step) => {
-        if (step !== 'keys') popup.close();
-        setState({ phase: 'running', step });
-      },
-      onCreated: (created, keys) => {
-        store(graduatedIdentity(identity, created));
-        rememberPasskeyBinding(created, { origin: popup.origin, publicKey: keys.posting });
-      }
-    })
+    void openLiteKeyStore(identity, relay.chainId)
+      .then((keys) =>
+        graduateLiteAccount({
+          identity,
+          keys,
+          account,
+          readKeys,
+          relay,
+          onStep: (step) => {
+            if (step !== 'keys') popup.close();
+            setState({ phase: 'running', step });
+          },
+          onCreated: (created, newKeys) => {
+            store(graduatedIdentity(identity, created));
+            rememberPasskeyBinding(created, { origin: popup.origin, publicKey: newKeys.posting });
+          }
+        })
+      )
       .then(({ account: created, linked }) =>
         setState(linked ? { phase: 'done', account: created } : { phase: 'link_failed', account: created, retrying: false })
       )
@@ -92,7 +105,8 @@ export function useLiteGraduationFlow(pendingLink?: string) {
   const retryLink = (account: string) => {
     if (!identity || !relay) return;
     setState({ phase: 'link_failed', account, retrying: true });
-    void retryLiteLink({ identity, account, relay })
+    void openLiteKeyStore(identity, relay.chainId)
+      .then((keys) => retryLiteLink({ identity, keys, account, relay }))
       .then((linked) =>
         setState(
           linked
@@ -102,7 +116,7 @@ export function useLiteGraduationFlow(pendingLink?: string) {
       )
       .catch((error: unknown) => {
         logger.error(error, 'Lite account link retry failed');
-        setState({ phase: 'link_failed', account, retrying: false, error: graduationErrorKey(error) });
+        setState({ phase: 'link_failed', account, retrying: false, error: failureKey(error) ?? undefined });
       })
       .finally(refresh);
   };

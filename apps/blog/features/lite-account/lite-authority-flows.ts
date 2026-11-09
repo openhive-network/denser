@@ -6,7 +6,6 @@ import {
   relayL2,
   removeDevice,
   renewDevice,
-  signL2Transaction,
   unsignedL2Transaction,
   type AuthorityKeyMemberView,
   type JcsObject,
@@ -19,7 +18,8 @@ import {
 import { DEVICE_LIFETIME_DAYS, chainTimeAfterDays, passkeyRoot } from './lite-authority-state';
 import { fetchLiteAuthority, LiteAuthorityError } from './lite-authority-query';
 import { liteGatewayEndpoint } from './lite-endpoints';
-import { securedIdentity, signedInIdentity, type StoredLiteIdentity } from './lite-identity-record';
+import { liteKeyStoreKind, securedIdentity, signedInIdentity, type StoredLiteIdentity } from './lite-identity-record';
+import { openLiteKeyStore } from './open-lite-key-store';
 import { authenticatorMeta } from './lite-passkey-label';
 import { SIGNER_ROLES, SignerError, type SignerAuthenticator, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
@@ -181,7 +181,8 @@ export type SecureParams = {
  * Signed by the browser's owner key, two edits: this browser's posting key restated with a
  * `DEVICE_LIFETIME_DAYS` expiry and `kind: device` meta, then the owner as the root (`enrollRoot`)
  * labelled `passkeyLabel`. Each is relayed and confirmed before the next; one already on chain is
- * skipped, so a retry resumes. Resolves with the identity to store: without the owner key.
+ * skipped, so a retry resumes. Resolves with the identity to store: without the owner key (taken out
+ * of Safe Storage too, where the identity's keys are).
  */
 export async function secureLiteAccount({
   identity,
@@ -192,8 +193,9 @@ export async function secureLiteAccount({
   relay,
   nowMs = Date.now()
 }: SecureParams): Promise<StoredLiteIdentity> {
-  const { name, ownerWif, postingPublicKey } = identity;
-  if (!ownerWif)
+  const { name, postingPublicKey } = identity;
+  const keys = await openLiteKeyStore(identity, relay.chainId);
+  if (!keys.publicKeys.owner)
     throw new LiteAuthorityError('not_owner', `this browser does not hold the owner key of ${name}`);
   const rootKey = root.key;
   const signer = recordSigner ? root.signer : undefined;
@@ -209,7 +211,7 @@ export async function secureLiteAccount({
       meta: deviceMeta(label, signer),
       ...txOptions(relay)
     });
-    current = await relayAndWait(name, signL2Transaction(fields, relay.chainId, [ownerWif]), (view) =>
+    current = await relayAndWait(name, await keys.sign('owner', fields), (view) =>
       isDeviceMember(postingMember(view, postingPublicKey))
     );
   }
@@ -223,11 +225,12 @@ export async function secureLiteAccount({
       ...txOptions(relay)
     });
     const fields = recordSigner ? withAuthenticatorMeta(enrolled, root) : withoutSignerMeta(enrolled);
-    await relayAndWait(
-      name,
-      signL2Transaction(fields, relay.chainId, [ownerWif]),
-      (view) => passkeyRoot(view)?.key === rootKey
-    );
+    await relayAndWait(name, await keys.sign('owner', fields), (view) => passkeyRoot(view)?.key === rootKey);
+  }
+  // The owner key in Safe Storage no longer signs for the account: the passkey root does
+  if (liteKeyStoreKind(identity) === 'safe-storage') {
+    const [{ browserLiteWallet }, { dropWalletKey }] = await Promise.all([import('./lite-wallet-browser'), import('./lite-wallet')]);
+    await dropWalletKey(identity, 'owner', await browserLiteWallet.client());
   }
   return securedIdentity(identity, rootKey, root.signer, deviceExpires);
 }
@@ -284,15 +287,12 @@ export async function signInOnDevice({
 
 /** Signs this browser out of its secured lite account: its posting key removes itself. Resolves once it is gone (or already was). */
 export async function signOutDevice(identity: StoredLiteIdentity, relay: AuthorityRelay): Promise<void> {
-  const { name, postingPublicKey, postingWif } = identity;
+  const { name, postingPublicKey } = identity;
   const current = await fetchLiteAuthority(name);
   if (!postingMember(current, postingPublicKey)) return;
   const fields = removeDevice({ name, current, deviceKey: postingPublicKey, ...txOptions(relay) });
-  await relayAndWait(
-    name,
-    signL2Transaction(fields, relay.chainId, [postingWif]),
-    (view) => !postingMember(view, postingPublicKey)
-  );
+  const keys = await openLiteKeyStore(identity, relay.chainId);
+  await relayAndWait(name, await keys.sign('posting', fields), (view) => !postingMember(view, postingPublicKey));
 }
 
 export type RootEditParams = {

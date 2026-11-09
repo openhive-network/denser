@@ -1191,7 +1191,8 @@
       "forget_confirm": "忘记",
       "my_feed": "我的动态",
       "forget_description_unsecured": "此账户仅存在于此浏览器中：一旦忘记，任何人都无法再以此轻账户发布、编辑或删除内容。若要保留，请先用通行密钥保护它。其轻草稿和排队的帖子也会被删除；已发布的帖子会保留。",
-      "forget_description_secured": "此浏览器将忘记该账户及其草稿和排队的帖子。账户仍归你所有：可用通行密钥重新登录。此设备的密钥会保留在账户上直到过期；“退出登录”会立即将其移除。"
+      "forget_description_secured": "此浏览器将忘记该账户及其草稿和排队的帖子。账户仍归你所有：可用通行密钥重新登录。此设备的密钥会保留在账户上直到过期；“退出登录”会立即将其移除。",
+      "forget_description_safe_storage": "其密钥只保存在此浏览器的安全存储中：遗忘后密钥会被删除，任何人都无法再以此轻量账户发布、编辑或删除内容。其草稿和排队中的帖子也会被删除；已发布的帖子会保留。"
     },
     "social": {
       "failed_title": "轻量账户无法完成此操作",
@@ -1324,6 +1325,26 @@
         "signer_keys": "签名服务没有返回新账户的全部密钥。",
         "unavailable": "无法完成升级：网关无法访问。请重试。"
       }
+    },
+    "safe_storage": {
+      "title": "用安全存储保护",
+      "secure_action": "用安全存储保护",
+      "description": "此浏览器以明文保存此轻量账户的密钥。安全存储会用密码加密它们；安全存储锁定后签名时会要求输入密码（或指纹、面容 ID、PIN）。密钥仍然只保存在此浏览器中。",
+      "use_instead": "或者将密钥保存在此浏览器的安全存储中，由密码保护",
+      "password_label": "安全存储密码",
+      "password_repeat_label": "再次输入密码",
+      "password_mismatch": "两次输入的密码不一致",
+      "confirm": "保护",
+      "working": "正在保存密钥…",
+      "secured_title": "密钥已在安全存储中",
+      "secured_description": "此浏览器现在将此轻量账户的密钥保存在安全存储中，由您的密码保护。",
+      "passkey_failed_title": "未启用生物识别解锁",
+      "warning_unsecured": "此账户只存在于此浏览器中，其密钥未受保护。请用安全存储保护它们。",
+      "unlock_failed_title": "安全存储未解锁",
+      "unlock_failed": "安全存储未解锁，因此没有发送任何内容。请重试。",
+      "locked": "安全存储中的密钥：已锁定",
+      "unlocked": "安全存储中的密钥：已解锁",
+      "lock": "锁定"
     }
   },
   "api_sets": {

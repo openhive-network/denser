@@ -2,15 +2,7 @@
 
 import { useCallback, useRef } from 'react';
 import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import {
-  buildLiteDeleteRequest,
-  buildLiteEditRequest,
-  postLiteDelete,
-  postLiteEdit,
-  type LiteAppIds,
-  type LiteDeleteMode,
-  type LiteIdentity
-} from '@hiveio/lite-account';
+import { postLiteDelete, postLiteEdit, type LiteAppIds, type LiteDeleteMode } from '@hiveio/lite-account';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -28,7 +20,11 @@ import {
   withLiteEdit,
   type Discussion
 } from './lite-manage-cache';
+import type { StoredLiteIdentity } from './lite-identity-record';
+import { signedLiteDelete, signedLiteEdit } from './lite-signed-requests';
+import { openLiteKeyStore } from './open-lite-key-store';
 import { useLiteIdentity } from './use-lite-identity';
+import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
 import { liteGatewayEndpoint } from './lite-endpoints';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 
@@ -39,7 +35,7 @@ export type LiteEditVariables = LiteManageTarget & { title: string; body: string
 
 /** Where an entry lives on L1 and who signs for it; null when this browser cannot change it. */
 type SigningContext = {
-  identity: LiteIdentity;
+  identity: StoredLiteIdentity;
   chainId: string;
   apps: LiteAppIds;
   clientId: string;
@@ -80,8 +76,10 @@ function useSigningContext() {
 
 function useFailureToast(titleKey: string) {
   const { t } = useTranslation('common_blog');
+  const walletFailed = useLiteWalletFailureToast();
   return (error: unknown) => {
     logger.error(error, 'Lite post change failed');
+    if (walletFailed(error)) return;
     const description = t(`lite_account.manage.errors.${liteManageErrorKey(relayErrorCode(error)?.code)}`);
     toast({ title: t(titleKey), description, variant: 'destructive' });
   };
@@ -115,8 +113,9 @@ export function useLiteEditMutation() {
     },
     mutationFn: async (v: LiteEditVariables) => {
       const ctx = signing(v);
-      const { request } = buildLiteEditRequest({
+      const { request } = await signedLiteEdit({
         identity: ctx.identity,
+        keys: await openLiteKeyStore(ctx.identity, ctx.chainId),
         l1Author: ctx.l1Author,
         permlink: v.entry.permlink,
         chainId: ctx.chainId,
@@ -162,8 +161,9 @@ export function useLiteDeleteMutation() {
   return useMutation({
     mutationFn: async (v: LiteManageTarget) => {
       const ctx = signing(v);
-      const { request } = buildLiteDeleteRequest({
+      const { request } = await signedLiteDelete({
         identity: ctx.identity,
+        keys: await openLiteKeyStore(ctx.identity, ctx.chainId),
         l1Author: ctx.l1Author,
         permlink: v.entry.permlink,
         chainId: ctx.chainId,

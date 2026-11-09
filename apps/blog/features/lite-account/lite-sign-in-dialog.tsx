@@ -108,7 +108,7 @@ function PasskeyStep({ found, onDone }: { found: Found; onDone: () => void }) {
         label: label.trim(),
         relay
       });
-      if (stored && stored.name !== identity.name) forgetLiteAccount();
+      if (stored && stored.name !== identity.name) await forgetLiteAccount();
       store(identity);
       toast({
         title: t('lite_account.passkey.signed_in_title', { name: identity.name }),

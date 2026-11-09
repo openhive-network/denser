@@ -38,13 +38,14 @@ import {
  *   LITE-ID-05 – Devices: labels and dates; Renew extends only this device; Remove another device
  *   LITE-ID-06 – the "lives only in this browser" warning, the backup note, and neither, in the
  *                menu and on the profile
- *   LITE-ID-07 – a gateway that does not relay update_authority: no passkey UI, Forget unchanged
+ *   LITE-ID-07 – a gateway that does not relay update_authority: no passkey UI, Forget unchanged;
+ *                the keys can still move into Safe Storage (liteIdentitySafeStorage.spec.ts)
  *   LITE-ID-08 – a popup closed by the user changes nothing, silently; a signer error is named
  *   LITE-ID-11 – the signer's address not recorded: neither `meta.signer` nor `meta.authenticator`
  *                is written, the edited passkey label is
  *   LITE-ID-12 – no configured signer (`REACT_APP_PASSKEY_SIGNERS` empty): a gateway that relays
- *                update_authority still shows no passkey UI, and the Login dialog has no
- *                "Passkey signer" method
+ *                update_authority still shows no passkey UI (only Secure in Safe Storage), and the
+ *                Login dialog has no "Passkey signer" method
  *
  * LITE-ID-03 (sign in on a fresh browser) and LITE-ID-09 (the first-post prompt) are in
  * liteIdentityPasskeySignIn.spec.ts, on the `litePost` recording, whose post takes a guest reply.
@@ -319,7 +320,7 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     });
   }
 
-  test('LITE-ID-07: without update_authority relay there is no passkey UI', async ({ page }) => {
+  test('LITE-ID-07: without update_authority relay there is no passkey UI, only Safe Storage', async ({ page }) => {
     await holdIdentity(page, unsecuredIdentity(LITE_NAME));
     await mockPasskeyGateway(page, LITE_NAME, unsecuredAuthority(), false);
     await page.goto(PROFILE, { waitUntil: 'domcontentloaded' });
@@ -330,10 +331,13 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     await expect(
       page.getByTestId('profile-navigation').getByRole('link', { name: 'Devices', exact: true })
     ).toHaveCount(0);
-    await expect(page.getByTestId('lite-security-notice')).toHaveCount(0);
+    const profileNotice = page.getByTestId('lite-security-notice');
+    await expect(profileNotice).toHaveAttribute('data-warning', 'unsecured');
+    await expect(profileNotice.getByTestId('lite-security-secure')).toHaveText('Secure in Safe Storage');
     const menu = await openMenu(page);
     await expect(menu.getByTestId('lite-identity-forget')).toBeVisible();
     await expect(menu.getByTestId('lite-identity-secure')).toHaveCount(0);
+    await expect(menu.getByTestId('lite-identity-secure-safe-storage')).toBeVisible();
     await expect(menu.getByTestId('lite-identity-sign-out')).toHaveCount(0);
     await expect(menu.getByTestId('lite-security-notice')).toHaveCount(0);
     await menu.getByTestId('lite-identity-forget').click();
@@ -359,6 +363,7 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     const menu = await openMenu(page);
     await expect(menu.getByTestId('lite-identity-forget')).toBeVisible();
     await expect(menu.getByTestId('lite-identity-secure')).toHaveCount(0);
+    await expect(menu.getByTestId('lite-identity-secure-safe-storage')).toBeVisible();
     await expect(menu.getByTestId('lite-identity-sign-out')).toHaveCount(0);
     await expect(menu.getByTestId('lite-security-notice')).toHaveCount(0);
     await page.keyboard.press('Escape');

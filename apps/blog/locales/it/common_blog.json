@@ -1201,7 +1201,8 @@
       "forget_confirm": "Dimentica",
       "my_feed": "Il mio feed",
       "forget_description_unsecured": "Questo account esiste solo in questo browser: una volta dimenticato, nessuno potrà più pubblicare, modificare o eliminare come questo account lite. Per conservarlo, proteggilo prima con una passkey. Vengono rimosse anche le sue bozze lite e i post in coda; i post pubblicati restano.",
-      "forget_description_secured": "Questo browser dimentica l'account, le sue bozze e i post in coda. L'account resta tuo: accedi di nuovo con la tua passkey. La chiave di questo dispositivo resta sull'account fino alla scadenza; Esci la rimuove subito."
+      "forget_description_secured": "Questo browser dimentica l'account, le sue bozze e i post in coda. L'account resta tuo: accedi di nuovo con la tua passkey. La chiave di questo dispositivo resta sull'account fino alla scadenza; Esci la rimuove subito.",
+      "forget_description_safe_storage": "Le sue chiavi sono solo nell'archivio sicuro di questo browser: una volta dimenticato vengono rimosse e nessuno potrà più pubblicare, modificare o eliminare come questo account lite. Vengono rimosse anche le bozze e i post in coda; i post pubblicati restano."
     },
     "social": {
       "failed_title": "L'account lite non ha potuto farlo",
@@ -1334,6 +1335,26 @@
         "signer_keys": "Il firmatario non ha restituito tutte le chiavi del nuovo account.",
         "unavailable": "Impossibile completare il passaggio: il gateway non è raggiungibile. Riprova."
       }
+    },
+    "safe_storage": {
+      "title": "Proteggi nell'archivio sicuro",
+      "secure_action": "Proteggi nell'archivio sicuro",
+      "description": "Questo browser conserva le chiavi di questo account lite in chiaro. L'archivio sicuro le cifra con una password; la firma la chiede (o l'impronta, Face ID o PIN) quando l'archivio si è bloccato. Le chiavi restano solo in questo browser.",
+      "use_instead": "Oppure conserva le chiavi nell'archivio sicuro di questo browser, protette da una password",
+      "password_label": "Password dell'archivio sicuro",
+      "password_repeat_label": "Ripeti la password",
+      "password_mismatch": "Le password non coincidono",
+      "confirm": "Proteggi",
+      "working": "Salvataggio delle chiavi…",
+      "secured_title": "Chiavi nell'archivio sicuro",
+      "secured_description": "Questo browser conserva ora le chiavi di questo account lite nell'archivio sicuro, protette dalla tua password.",
+      "passkey_failed_title": "Lo sblocco biometrico non è stato attivato",
+      "warning_unsecured": "Questo account esiste solo in questo browser e le sue chiavi non sono protette. Proteggile nell'archivio sicuro.",
+      "unlock_failed_title": "L'archivio sicuro non si è sbloccato",
+      "unlock_failed": "L'archivio sicuro non si è sbloccato, quindi non è stato inviato nulla. Riprova.",
+      "locked": "Chiavi nell'archivio sicuro: bloccate",
+      "unlocked": "Chiavi nell'archivio sicuro: sbloccate",
+      "lock": "Blocca"
     }
   },
   "api_sets": {

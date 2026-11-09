@@ -1206,7 +1206,8 @@
       "forget_confirm": "Zapomnij",
       "my_feed": "Mój kanał",
       "forget_description_unsecured": "To konto istnieje tylko w tej przeglądarce: po zapomnieniu nikt już nie opublikuje, nie edytuje ani nie usunie niczego jako to konto lite. Aby je zachować, najpierw zabezpiecz je kluczem dostępu. Usunięte zostaną też jego szkice lite i posty w kolejce; opublikowane posty zostają.",
-      "forget_description_secured": "Ta przeglądarka zapomni konto, jego szkice i posty w kolejce. Konto pozostaje Twoje: zaloguj się ponownie kluczem dostępu. Klucz tego urządzenia pozostaje na koncie do czasu wygaśnięcia; Wyloguj usuwa go od razu."
+      "forget_description_secured": "Ta przeglądarka zapomni konto, jego szkice i posty w kolejce. Konto pozostaje Twoje: zaloguj się ponownie kluczem dostępu. Klucz tego urządzenia pozostaje na koncie do czasu wygaśnięcia; Wyloguj usuwa go od razu.",
+      "forget_description_safe_storage": "Jego klucze są tylko w bezpiecznym magazynie tej przeglądarki: po zapomnieniu zostaną usunięte i nikt już nie opublikuje, nie edytuje ani nie usunie niczego jako to konto lite. Jego szkice i posty w kolejce też zostaną usunięte; opublikowane posty pozostaną."
     },
     "social": {
       "failed_title": "Konto lite nie mogło tego zrobić",
@@ -1339,6 +1340,26 @@
         "signer_keys": "Serwis podpisujący nie zwrócił wszystkich kluczy nowego konta.",
         "unavailable": "Nie udało się dokończyć przejścia: bramka jest nieosiągalna. Spróbuj ponownie."
       }
+    },
+    "safe_storage": {
+      "title": "Zabezpiecz w bezpiecznym magazynie",
+      "secure_action": "Zabezpiecz w bezpiecznym magazynie",
+      "description": "Ta przeglądarka przechowuje klucze tego konta lite w zwykłej pamięci. Bezpieczny magazyn szyfruje je hasłem; podpisywanie prosi o nie (albo o odcisk palca, Face ID lub PIN), gdy magazyn się zablokuje. Klucze zostają tylko w tej przeglądarce.",
+      "use_instead": "Albo trzymaj klucze w bezpiecznym magazynie tej przeglądarki, chronione hasłem",
+      "password_label": "Hasło bezpiecznego magazynu",
+      "password_repeat_label": "Powtórz hasło",
+      "password_mismatch": "Hasła się różnią",
+      "confirm": "Zabezpiecz",
+      "working": "Zapisywanie kluczy…",
+      "secured_title": "Klucze w bezpiecznym magazynie",
+      "secured_description": "Ta przeglądarka przechowuje teraz klucze tego konta lite w bezpiecznym magazynie, chronione Twoim hasłem.",
+      "passkey_failed_title": "Nie włączono odblokowania biometrycznego",
+      "warning_unsecured": "To konto istnieje tylko w tej przeglądarce, a jego klucze nie są chronione. Zabezpiecz je w bezpiecznym magazynie.",
+      "unlock_failed_title": "Bezpieczny magazyn nie został odblokowany",
+      "unlock_failed": "Bezpieczny magazyn nie został odblokowany, więc nic nie wysłano. Spróbuj ponownie.",
+      "locked": "Klucze w bezpiecznym magazynie: zablokowane",
+      "unlocked": "Klucze w bezpiecznym magazynie: odblokowane",
+      "lock": "Zablokuj"
     }
   },
   "api_sets": {

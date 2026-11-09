@@ -4,9 +4,13 @@ import { createHash } from 'node:crypto';
 import { createLiteIdentity, l2Digest, MAINNET_CHAIN_ID, recoverPublicKey } from '@hiveio/lite-account';
 
 const { buildLiteSocialTransaction, liteSocialOperation, LiteSocialError, relayLiteSocial } = await import('./lite-social.ts');
+const { storedFromCreated } = await import('./lite-identity-record.ts');
+const { liteKeyStore } = await import('./lite-key-store.ts');
 
 const NOW = Date.parse('2026-10-21T12:00:00Z');
 const identity = createLiteIdentity('social-guest-1', NOW);
+const keys = liteKeyStore(storedFromCreated(identity), MAINNET_CHAIN_ID);
+const name = identity.name;
 
 describe('liteSocialOperation', () => {
   it('names the actor and a follow, mute or their undo target by DID', () => {
@@ -40,10 +44,10 @@ describe('liteSocialOperation', () => {
 
 describe('buildLiteSocialTransaction', () => {
   const action = { method: 'follow' as const, target: 'test-gateway-1' };
-  const tx = buildLiteSocialTransaction({ identity, app: 'lite_social_test', chainId: MAINNET_CHAIN_ID, action, nowMs: NOW });
+  const tx = buildLiteSocialTransaction({ name, keys, app: 'lite_social_test', action, nowMs: NOW });
 
-  it('builds one op of the social app, expiring in 10 minutes', () => {
-    const { signatures, ...fields } = tx;
+  it('builds one op of the social app, expiring in 10 minutes', async () => {
+    const { signatures, ...fields } = await tx;
     assert.deepEqual(fields, {
       app: 'lite_social_test',
       version: 1,
@@ -53,8 +57,8 @@ describe('buildLiteSocialTransaction', () => {
     assert.equal(signatures.length, 1);
   });
 
-  it('signs sha256(chain id || JCS of the signed fields) with the posting key', () => {
-    const { signatures, ...fields } = tx;
+  it('signs sha256(chain id || JCS of the signed fields) with the posting key', async () => {
+    const { signatures, ...fields } = await tx;
     // The JCS text written out by hand: keys sorted at every level, no whitespace.
     const jcs =
       '{"app":"lite_social_test","expiration":"2026-10-21T12:10:00","operations":[{"args":{"actor":"did:lite:social-guest-1",' +
@@ -64,11 +68,11 @@ describe('buildLiteSocialTransaction', () => {
     assert.equal(recoverPublicKey(digest, signatures[0]), identity.postingPublicKey);
   });
 
-  it('builds set_last_read as the actor and the naive-UTC date, signed like any social op', () => {
-    const marked = buildLiteSocialTransaction({
-      identity,
+  it('builds set_last_read as the actor and the naive-UTC date, signed like any social op', async () => {
+    const marked = await buildLiteSocialTransaction({
+      name,
+      keys,
       app: 'lite_social_test',
-      chainId: MAINNET_CHAIN_ID,
       action: { method: 'set_last_read', date: '2026-10-21T11:58:30' },
       nowMs: NOW
     });
@@ -79,18 +83,20 @@ describe('buildLiteSocialTransaction', () => {
     assert.equal(recoverPublicKey(l2Digest(fields, MAINNET_CHAIN_ID), signatures[0]), identity.postingPublicKey);
   });
 
-  it('refuses a profile over 8192 bytes of JCS', () => {
+  it('refuses a profile over 8192 bytes of JCS', async () => {
     const profile = { about: 'x'.repeat(8200) };
-    assert.throws(
-      () => buildLiteSocialTransaction({ identity, app: 'lite_social_test', chainId: MAINNET_CHAIN_ID, action: { method: 'set_profile', profile } }),
+    await assert.rejects(
+      buildLiteSocialTransaction({ name, keys, app: 'lite_social_test', action: { method: 'set_profile', profile } }),
       (error: unknown) => error instanceof LiteSocialError && error.code === 'too_large'
     );
   });
 });
 
+const muteTx = await buildLiteSocialTransaction({ name, keys, app: 'lite_social_test', action: { method: 'mute', target: 'bob' } });
+
 describe('relayLiteSocial', () => {
   const realFetch = globalThis.fetch;
-  const tx = buildLiteSocialTransaction({ identity, app: 'lite_social_test', chainId: MAINNET_CHAIN_ID, action: { method: 'mute', target: 'bob' } });
+  const tx = muteTx;
   let sent: { url: string; body: unknown } | undefined;
   const answer = (status: number, body: string) => {
     globalThis.fetch = async (url, init) => {

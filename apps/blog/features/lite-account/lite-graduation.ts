@@ -2,8 +2,8 @@ import {
   graduate,
   l2Expiration,
   linkOp,
+  l2SignedFields,
   relayL2,
-  signL2Operations,
   type GraduationKeys,
   type L2Transaction,
   type LiteGraduateRequest,
@@ -12,6 +12,7 @@ import {
 import { liteGatewayEndpoint } from './lite-endpoints.ts';
 import { fetchLiteGraduation } from './lite-graduation-query.ts';
 import type { StoredLiteIdentity } from './lite-identity-record.ts';
+import type { LiteKeyStore } from './lite-key-store.ts';
 
 // Graduating a lite account to a Hive account: the signer derives the new account's keys from the
 // passkey, the lite account signs `link` with its posting key, the gateway creates the account,
@@ -64,9 +65,9 @@ export function graduationKeys(keys: readonly SignerKey[]): GraduationKeys {
   return { owner: of('owner'), active: of('active'), posting: of('posting'), memo: of('memo') };
 }
 
-/** The lite account's `link` to `account`, signed with this browser's posting key. */
-export const signedLink = (identity: StoredLiteIdentity, account: string, relay: GraduationRelay): L2Transaction =>
-  signL2Operations([linkOp(identity.name, account)], identity.postingWif, relay.accountApp, l2Expiration(), relay.chainId);
+/** The lite account's `link` to `account`, signed with this browser's posting key (`keys`, on the relay's chain). */
+const signedLink = (identity: StoredLiteIdentity, account: string, relay: GraduationRelay, keys: LiteKeyStore): Promise<L2Transaction> =>
+  keys.sign('posting', l2SignedFields(relay.accountApp, [linkOp(identity.name, account)], l2Expiration()));
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -82,6 +83,8 @@ async function waitUntilLinked(gateway: GraduationGateway, name: string, account
 
 export type GraduationParams = {
   identity: StoredLiteIdentity;
+  /** The identity's keys, for the relay's chain. */
+  keys: LiteKeyStore;
   /** The Hive account name to create. */
   account: string;
   /** The signer's `getPublicKeys` for the four roles of account 0. */
@@ -104,6 +107,7 @@ export type GraduationOutcome = { account: string; keys: GraduationKeys; linked:
  */
 export async function graduateLiteAccount({
   identity,
+  keys: liteKeys,
   account,
   readKeys,
   relay,
@@ -114,7 +118,7 @@ export async function graduateLiteAccount({
 }: GraduationParams): Promise<GraduationOutcome> {
   onStep('keys');
   const keys = graduationKeys(await readKeys());
-  const tx = signedLink(identity, account, relay);
+  const tx = await signedLink(identity, account, relay, liteKeys);
   onStep('creating');
   const created = await gateway.graduate({ tx, keys });
   onCreated(created.account, keys);
@@ -124,7 +128,7 @@ export async function graduateLiteAccount({
   return { account: created.account, keys, linked };
 }
 
-export type RetryLinkParams = Pick<GraduationParams, 'identity' | 'account' | 'relay' | 'gateway' | 'wait'>;
+export type RetryLinkParams = Pick<GraduationParams, 'identity' | 'keys' | 'account' | 'relay' | 'gateway' | 'wait'>;
 
 /**
  * Relays the lite account's `link` to `account` again through `/l2`, signed afresh (the first one's
@@ -133,11 +137,12 @@ export type RetryLinkParams = Pick<GraduationParams, 'identity' | 'account' | 'r
  */
 export async function retryLiteLink({
   identity,
+  keys,
   account,
   relay,
   gateway = liteGraduationGateway,
   wait = sleep
 }: RetryLinkParams): Promise<boolean> {
-  await gateway.relayLink(signedLink(identity, account, relay));
+  await gateway.relayLink(await signedLink(identity, account, relay, keys));
   return waitUntilLinked(gateway, identity.name, account, wait);
 }

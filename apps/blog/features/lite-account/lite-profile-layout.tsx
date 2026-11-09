@@ -68,7 +68,8 @@ export default function LiteProfileLayout({
   const pathname = usePathname() ?? '';
   const isOwner = useIsLiteIdentity(profile.name);
   const identity = useStoredLiteIdentity();
-  const passkey = useLitePasskeyAccess().available && isOwner && !!identity?.registered;
+  const passkeyAccess = useLitePasskeyAccess().available;
+  const passkey = passkeyAccess && isOwner && !!identity?.registered;
   const securityNotice = useLiteSecurityWarning(isOwner ? identity : null, isOwner);
   const [isSecureOpen, setIsSecureOpen] = useState(false);
   const tabs = useTabs(profile.name, { social, notifications, isOwner, devices: passkey });
@@ -79,10 +80,10 @@ export default function LiteProfileLayout({
       <LiteProfileCard profile={profile} social={social} isOwner={isOwner} />
       {securityNotice ? (
         <div className="container mx-auto max-w-screen-xl px-4 pb-2 sm:px-8">
-          <LiteSecurityNotice notice={securityNotice} onSecure={() => setIsSecureOpen(true)} />
+          <LiteSecurityNotice notice={securityNotice} onSecure={() => setIsSecureOpen(true)} safeStorageOnly={!passkeyAccess} />
         </div>
       ) : null}
-      {passkey && isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}
+      {isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}
       <div className="flex flex-col pb-8 md:pb-4">
         <div className="bg-gray-700" data-testid="profile-navigation">
           <div className="container mx-auto max-w-screen-xl px-0 sm:px-8">

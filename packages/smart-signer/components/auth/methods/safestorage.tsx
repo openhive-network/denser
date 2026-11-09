@@ -5,11 +5,9 @@ import { useForm } from 'react-hook-form';
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
-import {
-  declinePasskeyPrompt,
-  isPasskeyPromptDismissed,
-  snoozePasskeyPrompt
-} from '@smart-signer/lib/auth/passkey-prompt-dismissal';
+import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
+import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
+import PasskeyPrompt from '../passkey-prompt';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -156,17 +154,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     /** Stores the idle lock picked, before the client the sign-in unlocks is asked for */
     function storePickedSessionTime() {
       if (isSessionTimePicked) chooseSessionTime(pickedSessionTime);
-    }
-
-    async function shouldOfferPasskey(client: OnlineClient, username: string): Promise<boolean> {
-      try {
-        const supported = await client.isPasskeySupported();
-        const hasPasskey = await client.hasPasskey(username);
-        return supported && !hasPasskey && !isPasskeyPromptDismissed(username);
-      } catch {
-        // Non-critical — silently skip passkey prompt on any error
-        return false;
-      }
     }
 
     /**
@@ -317,7 +304,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       const client = await getAuthClient();
       await client.logout(username);
       const users = await client.getAuths();
-      setAuthUsers(users);
+      setAuthUsers(hiveSafeStorageUsers(users));
       setLoading(false);
     }
 
@@ -327,7 +314,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           // populate authUsers with existing user list
           authClient.current = await hbauthService.getOnlineClient();
 
-          const auths = await authClient.current.getRegisteredUsers();
+          // The lite accounts' entries are the blog's own, not Hive accounts to sign in as
+          const auths = hiveSafeStorageUsers(await authClient.current.getRegisteredUsers());
           setAuthUsers(auths);
 
           // Auto-trigger biometric unlock if a passkey is registered.
@@ -677,67 +665,19 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
         {/* Passkey enrollment prompt — shown after successful password login */}
         {showPasskeyPrompt && (
-          <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-            <p className="mb-2 text-sm font-medium">{t('login_form.passkey_prompt.title')}</p>
-            <p className="mb-3 text-xs text-muted-foreground">{t('login_form.passkey_prompt.description')}</p>
-            <div className="flex select-none gap-2">
-              <Button
-                size="sm"
-                className="bg-blue-600 text-white hover:bg-blue-500"
-                onClick={async () => {
-                  try {
-                    await (await getAuthClient()).registerPasskey(
-                      form.getValues().username,
-                      lastAuthPassword
-                    );
-                  } catch (err) {
-                    const msg = err instanceof Error ? err.message : String(err);
-                    setError(msg);
-                  } finally {
-                    setShowPasskeyPrompt(false);
-                    setLastAuthPassword('');
-                    if (pendingFinalizeRef.current) {
-                      await finalize(pendingFinalizeRef.current);
-                      pendingFinalizeRef.current = null;
-                    }
-                  }
-                }}
-              >
-                {t('login_form.passkey_prompt.enable')}
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={async () => {
-                  snoozePasskeyPrompt(form.getValues().username);
-                  setShowPasskeyPrompt(false);
-                  setLastAuthPassword('');
-                  if (pendingFinalizeRef.current) {
-                    await finalize(pendingFinalizeRef.current);
-                    pendingFinalizeRef.current = null;
-                  }
-                }}
-              >
-                {t('login_form.passkey_prompt.not_now')}
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="text-muted-foreground"
-                onClick={async () => {
-                  declinePasskeyPrompt(form.getValues().username);
-                  setShowPasskeyPrompt(false);
-                  setLastAuthPassword('');
-                  if (pendingFinalizeRef.current) {
-                    await finalize(pendingFinalizeRef.current);
-                    pendingFinalizeRef.current = null;
-                  }
-                }}
-              >
-                {t('login_form.passkey_prompt.never_ask_again')}
-              </Button>
-            </div>
-          </div>
+          <PasskeyPrompt
+            username={form.getValues().username}
+            onEnable={async () => (await getAuthClient()).registerPasskey(form.getValues().username, lastAuthPassword)}
+            onError={setError}
+            onDone={async () => {
+              setShowPasskeyPrompt(false);
+              setLastAuthPassword('');
+              if (pendingFinalizeRef.current) {
+                await finalize(pendingFinalizeRef.current);
+                pendingFinalizeRef.current = null;
+              }
+            }}
+          />
         )}
       </Step>
     );
