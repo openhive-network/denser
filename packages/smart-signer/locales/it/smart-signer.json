@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "La chiave di pubblicazione (posting) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave di pubblicazione (posting) attuale.",
     "safe_storage_active_key_not_authorized": "La chiave attiva (active) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave attiva (active) attuale.",
     "safe_storage_owner_key_not_authorized": "La chiave proprietario (owner) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave proprietario (owner) attuale.",
-    "keychain_signing_failed": "Si è verificato un errore durante la firma della transazione in Hive Keychain."
+    "keychain_signing_failed": "Si è verificato un errore durante la firma della transazione in Hive Keychain.",
+    "rewards_already_claimed": "Le tue ricompense sono già state riscosse o sono inferiori a quelle mostrate, quindi non è stato riscosso nulla.",
+    "balance_too_low": "Il tuo saldo è troppo basso per questo importo, quindi non è stato inviato nulla."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",

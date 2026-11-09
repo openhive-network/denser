@@ -14,6 +14,7 @@ import { findTransactionExpirationRejection } from '@hive/transaction/lib/transa
 import { EarlierBroadcastPendingError } from '@hive/transaction/lib/unconfirmed-broadcasts';
 import { AssetPrecisionMessage } from '@smart-signer/components/asset-precision-message';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
+import { InsufficientBalanceTitle } from '@smart-signer/components/insufficient-balance-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
 import { SignedOutMessage } from '@smart-signer/components/signed-out-message';
@@ -59,6 +60,12 @@ function reportToSentry(error: unknown): void {
   import('@sentry/nextjs')
     .then(({ captureException }) => captureException(error))
     .catch(importError => logger.error('Loading Sentry to report an error failed: %o', importError));
+}
+
+function errorToastTitle({ errorTitle, keychainFallback, insufficientBalance }: ReturnType<typeof transformError>) {
+  if (keychainFallback) return <KeychainErrorFallbackTitle fallback={keychainFallback} />;
+  if (insufficientBalance) return <InsufficientBalanceTitle reason={insufficientBalance} />;
+  return errorTitle;
 }
 
 export function handleError<T>(error: unknown, ctx?: { method: string; params: T }, toastOptions?: Toast) {
@@ -268,7 +275,8 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  const { errorTitle, fullError, isWellKnownError, keychainFallback } = transformError<T>(error, ctx);
+  const transformed = transformError<T>(error, ctx);
+  const { fullError, isWellKnownError } = transformed;
 
   if (!!env('SENTRY_DSN') && !isWellKnownError)
     reportToSentry(fullError);
@@ -276,7 +284,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   toast({
     description: (
       <ErrorToastContent
-        errorTitle={keychainFallback ? <KeychainErrorFallbackTitle fallback={keychainFallback} /> : errorTitle}
+        errorTitle={errorToastTitle(transformed)}
         fullError={fullError}
         displayControls={!isWellKnownError}
       />

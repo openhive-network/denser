@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "안전한 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
     "safe_storage_active_key_not_authorized": "안전한 저장소에 보관된 액티브(active) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 액티브(active) 키로 다시 로그인해 주세요.",
     "safe_storage_owner_key_not_authorized": "안전한 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요.",
-    "keychain_signing_failed": "Hive Keychain에서 트랜잭션에 서명하는 중 오류가 발생했습니다."
+    "keychain_signing_failed": "Hive Keychain에서 트랜잭션에 서명하는 중 오류가 발생했습니다.",
+    "rewards_already_claimed": "보상이 이미 수령되었거나 표시된 것보다 적어 아무것도 수령되지 않았습니다.",
+    "balance_too_low": "잔액이 이 금액보다 부족하여 아무것도 전송되지 않았습니다."
   },
   "request_error": {
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",

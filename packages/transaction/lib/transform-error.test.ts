@@ -121,11 +121,51 @@ describe('transformError', () => {
     expect(isWellKnownError).to.equal(true);
   });
 
+  /** What wax throws for hived's balance assertions: the node's assets interpolated as "[object Object]" */
+  class WaxInsufficientBalanceError extends Error {
+    name = 'WaxInsufficientBalanceError';
+  }
+
+  it('titles a claim of more rewards than the chain holds with the app text, not wax\'s message', () => {
+    const error = new WaxInsufficientBalanceError(
+      '[Chain Error] Cannot claim that much HIVE. Claim: [object Object] Actual: [object Object]'
+    );
+    const { errorTitle, isWellKnownError, insufficientBalance } = transformError(error, {
+      method: 'claim_reward_balance',
+      params: { account: 'alice' }
+    });
+    expect(insufficientBalance).to.equal('rewards_already_claimed');
+    expect(isWellKnownError).to.equal(true);
+    expect(errorTitle).not.to.contain('[object Object]');
+    expect(errorTitle).not.to.contain('WaxInsufficientBalanceError');
+  });
+
+  it('recognises the claim rejection by its text whatever method reported it', () => {
+    const error = new Error('Assert Exception:reward_hive <= acnt.reward_hive_balance: Cannot claim that much HBD.');
+    expect(transformError(error, { method: 'claimReward', params: {} }).insufficientBalance).to.equal(
+      'rewards_already_claimed'
+    );
+  });
+
+  it('titles a transfer larger than the balance as a balance too low', () => {
+    const error = new WaxInsufficientBalanceError(
+      '[Chain Error] Account does not have sufficient funds for transfer. Balance: [object Object]'
+    );
+    const { errorTitle, isWellKnownError, insufficientBalance } = transformError(error, {
+      method: 'transfer',
+      params: { from: 'alice' }
+    });
+    expect(insufficientBalance).to.equal('balance_too_low');
+    expect(isWellKnownError).to.equal(true);
+    expect(errorTitle).not.to.contain('[object Object]');
+  });
+
   it('keeps the generic title for an unknown error', () => {
-    const { errorTitle, isWellKnownError, keychainFallback } = transformError(new Error('boom'));
+    const { errorTitle, isWellKnownError, keychainFallback, insufficientBalance } = transformError(new Error('boom'));
     expect(errorTitle).to.equal('Error');
     expect(isWellKnownError).to.equal(false);
     expect(keychainFallback).to.equal(null);
+    expect(insufficientBalance).to.equal(null);
   });
 });
 

@@ -17,7 +17,8 @@ import {
  * reports them. Reads come from the stub node (support/walletApiStub.ts), its accounts holding
  * `rewards`; the broadcast and `verify_authority` are answered by the interceptor. Claiming needs
  * the posting key, so the active-key WIF session stores the account's posting key as well. A claim
- * the node rejects shows only the error toast.
+ * the node rejects shows only the error toast, saying in the app's words that nothing was claimed,
+ * and the banner re-reads the account.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -103,7 +104,12 @@ const CLAIM_TOO_MUCH_REJECTION = {
   }
 };
 
-/** Answers every broadcast with CLAIM_TOO_MUCH_REJECTION and returns how many were answered. */
+const REWARDS_ALREADY_CLAIMED_TITLE = 'Your rewards were already claimed or are smaller than shown, so nothing was claimed.';
+
+/**
+ * Answers every broadcast with CLAIM_TOO_MUCH_REJECTION, the stub node then holding no rewards (as
+ * after a claim from another tab), and returns how many were answered.
+ */
 const rejectBroadcasts = async (page: Page) => {
   const rejected = { count: 0 };
   await page.route(
@@ -117,6 +123,7 @@ const rejectBroadcasts = async (page: Page) => {
       }
       if (typeof body?.method !== 'string' || !BROADCAST_METHODS.has(body.method)) return route.fallback();
       rejected.count++;
+      rewards = NO_REWARDS;
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -196,7 +203,9 @@ test.describe('Claim rewards broadcast', () => {
     expect(broadcasts.calls).toHaveLength(0);
   });
 
-  test('WALLET-TX-CLAIM-04 — a claim the node rejects shows only the error toast', async ({ page }) => {
+  test('WALLET-TX-CLAIM-04 — a claim the node rejects says nothing was claimed and the banner re-reads the account', async ({
+    page
+  }) => {
     rewards = { ...NO_REWARDS, reward_hive_balance: naiAsset('0.001 HIVE') };
     await installBroadcastInterceptor(page);
     const rejected = await rejectBroadcasts(page);
@@ -204,8 +213,13 @@ test.describe('Claim rewards broadcast', () => {
 
     await redeemButton(page).click({ timeout: HYDRATION_TIMEOUT });
 
-    await expect(page.getByTestId('error-toast-content')).toHaveCount(1);
+    const errorToast = page.getByTestId('error-toast-content');
+    await expect(errorToast).toHaveCount(1);
+    await expect(errorToast).toContainText(REWARDS_ALREADY_CLAIMED_TITLE);
+    await expect(errorToast).not.toContainText('WaxInsufficientBalanceError');
+    await expect(errorToast).not.toContainText('[object Object]');
     expect(rejected.count).toBeGreaterThan(0);
     await expect(page.getByText(SUCCESS_TOAST_TITLE, { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Your current rewards:')).toHaveCount(0);
   });
 });

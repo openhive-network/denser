@@ -217,7 +217,9 @@
     "safe_storage_posting_key_not_authorized": "安全なストレージに保存されている投稿用（posting）キーは、このアカウントでは使用できなくなりました。変更された可能性があります。現在の投稿用（posting）キーで再度サインインしてください。",
     "safe_storage_active_key_not_authorized": "安全なストレージに保存されているアクティブ（active）キーは、このアカウントでは使用できなくなりました。変更された可能性があります。現在のアクティブ（active）キーで再度サインインしてください。",
     "safe_storage_owner_key_not_authorized": "安全なストレージに保存されているオーナー（owner）キーは、このアカウントでは使用できなくなりました。変更された可能性があります。現在のオーナー（owner）キーで再度サインインしてください。",
-    "keychain_signing_failed": "Hive Keychain でトランザクションの署名中にエラーが発生しました。"
+    "keychain_signing_failed": "Hive Keychain でトランザクションの署名中にエラーが発生しました。",
+    "rewards_already_claimed": "報酬はすでに受け取り済みか、表示より少ないため、何も受け取られませんでした。",
+    "balance_too_low": "残高がこの金額に足りないため、何も送信されませんでした。"
   },
   "request_error": {
     "timeout": "サーバーが時間内に応答しませんでした。もう一度お試しください。",
