@@ -2,12 +2,11 @@ import {
   canonicalize,
   l2Expiration,
   l2SignedFields,
-  signL2Transaction,
   type JcsObject,
   type L2Operation,
-  type L2Transaction,
-  type LiteIdentity
+  type L2Transaction
 } from '@hiveio/lite-account';
+import type { LiteKeyStore } from './lite-key-store.ts';
 import { liteActorDid, socialTargetDid, type LiteSocialAction } from './lite-social-state.ts';
 
 // TODO: build and relay with the package's buildSocialOp / relayL2 once @hiveio/lite-account
@@ -64,27 +63,28 @@ export function liteSocialOperation(actorName: string, action: LiteSocialAction)
 }
 
 export type BuildLiteSocialParams = {
-  /** The acting lite account and its posting key. */
-  identity: Pick<LiteIdentity, 'name' | 'postingWif'>;
+  /** The acting lite account. */
+  name: string;
+  /** Its keys: the op is signed with the posting key. */
+  keys: LiteKeyStore;
   /** The node's social app id (`lite.get_info.apps.social`), the transaction's `app`. */
   app: string;
-  /** The gateway's chain id (`/info.chain_id`), bound into the signature. */
-  chainId: string;
   action: LiteSocialAction;
   nowMs?: number;
 };
 
 /**
- * One L2 transaction carrying `action`, signed with the identity's posting key over
- * `l2Digest(signed fields, chainId)`. Throws `LiteSocialError('too_large')` for a profile over
- * lite_social's limit.
+ * One L2 transaction carrying `action`, signed with the account's posting key over
+ * `l2Digest(signed fields, chain id)`, the key store's chain (the gateway's `/info.chain_id`).
+ * Rejects with `LiteSocialError('too_large')` for a profile over lite_social's limit, before
+ * anything is signed.
  */
-export function buildLiteSocialTransaction({ identity, app, chainId, action, nowMs }: BuildLiteSocialParams): L2Transaction {
+export async function buildLiteSocialTransaction({ name, keys, app, action, nowMs }: BuildLiteSocialParams): Promise<L2Transaction> {
   if (action.method === 'set_profile' && new TextEncoder().encode(canonicalize(definedFields(action.profile))).length > MAX_PROFILE_BYTES) {
     throw new LiteSocialError('too_large', `profile over ${MAX_PROFILE_BYTES} bytes`);
   }
-  const fields = l2SignedFields(app, [liteSocialOperation(identity.name, action)], l2Expiration(EXPIRATION_MINUTES, nowMs));
-  return signL2Transaction(fields, chainId, [identity.postingWif]);
+  const fields = l2SignedFields(app, [liteSocialOperation(name, action)], l2Expiration(EXPIRATION_MINUTES, nowMs));
+  return keys.sign('posting', fields);
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;

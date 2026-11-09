@@ -15,14 +15,17 @@ import { useTranslation } from '@/blog/i18n/client';
 /**
  * What forgetting means: `plain` where passkeys are not offered (the key exists only here),
  * `unsecured` (forgetting destroys the account; securing it first keeps it), `secured` (the
- * account lives on; this browser's key stays on it until it expires, Sign out removes it now).
+ * account lives on; this browser's key stays on it until it expires, Sign out removes it now),
+ * `safe_storage` (its keys are in this browser's Safe Storage only, and are removed with it: the
+ * account is lost as an unsecured one is).
  */
-export type LiteForgetVariant = 'plain' | 'unsecured' | 'secured';
+export type LiteForgetVariant = 'plain' | 'unsecured' | 'secured' | 'safe_storage';
 
 const DESCRIPTION_KEYS: Record<LiteForgetVariant, string> = {
   plain: 'lite_account.identity.forget_description',
   unsecured: 'lite_account.identity.forget_description_unsecured',
-  secured: 'lite_account.identity.forget_description_secured'
+  secured: 'lite_account.identity.forget_description_secured',
+  safe_storage: 'lite_account.identity.forget_description_safe_storage'
 };
 
 type Props = { name: string; variant?: LiteForgetVariant; open: boolean; onOpenChange: (open: boolean) => void; onConfirm: () => void };

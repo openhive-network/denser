@@ -150,7 +150,8 @@ const MODULES: Record<string, string> = {
   './worker-release': new URL('./worker-release.ts', import.meta.url).href,
   './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href,
   './sign-out-epoch': new URL('./sign-out-epoch.ts', import.meta.url).href,
-  './safe-storage-lock': new URL('./safe-storage-lock.ts', import.meta.url).href
+  './safe-storage-lock': new URL('./safe-storage-lock.ts', import.meta.url).href,
+  './lite-wallet-client': new URL('./lite-wallet-client.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {

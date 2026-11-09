@@ -3,10 +3,8 @@
 import { useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  buildLiteReplyRequest,
   postLiteRootPost,
   type CommentContent,
-  type LiteIdentity,
   type LiteQueued,
   type LiteRelayOk,
   type LiteReplyRequest
@@ -18,14 +16,18 @@ import { relayErrorCode, rootPostErrorKey, rootPostExpirationMinutes } from './l
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
 import { liteGatewayEndpoint } from './lite-endpoints';
+import type { StoredLiteIdentity } from './lite-identity-record';
 import { isLiteNameTaken } from './lite-name-availability';
+import { signedLiteReply } from './lite-signed-requests';
+import { openLiteKeyStore } from './open-lite-key-store';
 import { useLiteRelayInfo } from './use-lite-relay-info';
+import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
 
 const logger = getLogger('app');
 
 const SECONDS_PER_MINUTE = 60;
 
-export type LiteRootPostVariables = { identity: LiteIdentity; comment: CommentContent };
+export type LiteRootPostVariables = { identity: StoredLiteIdentity; comment: CommentContent };
 
 export type LiteRootPostOutcome =
   | { kind: 'posted'; result: LiteRelayOk; comment: CommentContent }
@@ -41,7 +43,8 @@ export class LiteGatewayNotReadyError extends Error {
 
 /**
  * Signs `comment` as a root post for `gateAccount` with the gateway's app namespace and its
- * longest attestation lifetime; null while the gateway's /info is unknown or disabled.
+ * longest attestation lifetime, through the identity's key store; null while the gateway's /info
+ * is unknown or disabled.
  */
 export function useLiteRootPostBuilder() {
   const relay = useLiteRelayInfo();
@@ -49,17 +52,19 @@ export function useLiteRootPostBuilder() {
   const info = relay.data?.enabled ? relay.data : undefined;
 
   return useCallback(
-    (identity: LiteIdentity, comment: CommentContent, gateAccount?: string): LiteReplyRequest | null => {
+    async (identity: StoredLiteIdentity, comment: CommentContent, gateAccount?: string): Promise<LiteReplyRequest | null> => {
       if (!info) return null;
-      return buildLiteReplyRequest({
+      const built = await signedLiteReply({
         identity,
+        keys: await openLiteKeyStore(identity, info.chain_id),
         gateAccount: gateAccount ?? info.gate_account,
         chainId: info.chain_id,
         apps: info.apps,
         comment,
         expirationMinutes: rootPostExpirationMinutes(info.limits),
         clientId: ensureClientId()
-      }).request;
+      });
+      return built.request;
     },
     [info, ensureClientId]
   );
@@ -77,12 +82,13 @@ export function useLiteRootPostMutation() {
   const health = useLiteGatewayHealth(!!relay.data?.enabled);
   const { markRegistered } = useLiteIdentity();
   const build = useLiteRootPostBuilder();
+  const walletFailed = useLiteWalletFailureToast();
 
   return useMutation({
     mutationFn: async ({ identity, comment }: LiteRootPostVariables): Promise<LiteRootPostOutcome> => {
       const ready = readiness((await health.refetch()).data, 'root');
       if (!ready.ok) throw new LiteGatewayNotReadyError(ready);
-      const request = build(identity, comment);
+      const request = await build(identity, comment);
       if (!request) throw new LiteGatewayNotReadyError({ ok: false, reason: 'down' });
       if (ready.queueWaitS) {
         const minutes = Math.ceil(ready.queueWaitS / SECONDS_PER_MINUTE);
@@ -98,6 +104,7 @@ export function useLiteRootPostMutation() {
     onError: (error: unknown) => {
       logger.error(error, 'Lite root post failed');
       if (isLiteNameTaken(error)) return; // the post entry reopens the name dialog instead
+      if (walletFailed(error)) return;
       const draftKept = t('lite_account.gateway.draft_kept');
       if (error instanceof LiteGatewayNotReadyError) {
         const description = `${readinessText(t, error.readiness)} ${draftKept}`;
