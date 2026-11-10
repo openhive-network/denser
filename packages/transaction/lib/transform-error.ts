@@ -118,10 +118,20 @@ const INSUFFICIENT_BALANCE_ERROR_NAME = 'WaxInsufficientBalanceError';
 const CLAIM_REWARD_METHOD = 'claim_reward_balance';
 // hived's claim_reward_balance evaluator ("Cannot claim that much HIVE/HBD/VESTS")
 const CLAIM_TOO_MUCH_PATTERN = /Cannot claim that much/i;
+/**
+ * hived's adjust_balance (transfer, power up, transfer to savings, ...) asserts without the chain's balance
+ * tag, so wax raises it as a plain WaxAssertionError rather than WaxInsufficientBalanceError
+ */
+const NOT_SUFFICIENT_FUNDS_PATTERN = /does not have sufficient funds/i;
 
 function findInsufficientBalance(error: unknown, method: string | undefined): InsufficientBalance | null {
-  const isClaimTooMuch = CLAIM_TOO_MUCH_PATTERN.test(describeError(error));
-  if (!isClaimTooMuch && !(error instanceof Error && error.name === INSUFFICIENT_BALANCE_ERROR_NAME)) return null;
+  const description = describeError(error);
+  const isClaimTooMuch = CLAIM_TOO_MUCH_PATTERN.test(description);
+  const isInsufficientBalance =
+    isClaimTooMuch ||
+    NOT_SUFFICIENT_FUNDS_PATTERN.test(description) ||
+    (error instanceof Error && error.name === INSUFFICIENT_BALANCE_ERROR_NAME);
+  if (!isInsufficientBalance) return null;
   return isClaimTooMuch || method === CLAIM_REWARD_METHOD ? 'rewards_already_claimed' : 'balance_too_low';
 }
 
