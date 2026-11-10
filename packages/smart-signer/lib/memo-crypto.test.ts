@@ -92,6 +92,40 @@ describe('memo-crypto: encrypt/decrypt with a MEMO private key', () => {
     await assert.rejects(decryptMemoWithPrivateKey(UNRELATED_WIF, encrypted));
   });
 
+  it('encrypts and decrypts several memos started at once to the same results as one by one', async () => {
+    const memos = ['#first', '#second', '#third', '#fourth'];
+    const encryptedOneByOne: string[] = [];
+    for (const memo of memos) {
+      encryptedOneByOne.push(await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, memo));
+    }
+
+    const [encryptedAtOnce, decryptedAtOnce] = await Promise.all([
+      Promise.all(memos.map((memo) => encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, memo))),
+      Promise.all(encryptedOneByOne.map((encrypted) => decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted)))
+    ]);
+
+    assert.deepEqual(decryptedAtOnce, memos);
+    for (const encrypted of encryptedAtOnce) assert.match(encrypted, BASE58_CIPHERTEXT);
+    assert.deepEqual(
+      await Promise.all(encryptedAtOnce.map((encrypted) => decryptMemoWithPrivateKey(SENDER_MEMO_WIF, encrypted))),
+      memos
+    );
+  });
+
+  it('keeps decrypting after a decryption started alongside them fails', async () => {
+    const encrypted = await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+    const [first, failed, last] = await Promise.allSettled([
+      decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted),
+      decryptMemoWithPrivateKey(UNRELATED_WIF, encrypted),
+      decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted)
+    ]);
+
+    assert.deepEqual(first, { status: 'fulfilled', value: '#hello' });
+    assert.equal(failed.status, 'rejected');
+    assert.deepEqual(last, { status: 'fulfilled', value: '#hello' });
+  });
+
   // Beekeeper's unlock timeout counts idle time across the whole (shared, page-lifetime) instance.
   it('still encrypts and decrypts after the page has been idle past beekeeper\'s default unlock timeout', async (t) => {
     await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#warm up the shared instance');
