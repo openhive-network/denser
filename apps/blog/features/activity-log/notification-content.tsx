@@ -9,7 +9,7 @@
  */
 
 import { SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 import NotificationList from './list';
 import { LoadMoreButton } from './load-more-button';
@@ -24,6 +24,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { getNotifications } from '@transaction/lib/lite-notifications-api';
+import { TransactionNotConfirmedError } from '@transaction/lib/transaction-inclusion';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Icons } from '@hive/ui/components/icons';
@@ -70,6 +71,7 @@ const NotificationActivities = ({
   const accountOwner = !!reader && reader === username;
   const markAllRead = useMarkAllRead(!user.isLoggedIn && accountOwner, state);
   const claimRewardMutation = useClaimRewardsMutation();
+  const queryClient = useQueryClient();
 
   // After claiming, remember the exact balances that were claimed. If the API
   // returns the same values again (stale cache), we know they're phantom and
@@ -151,6 +153,11 @@ const NotificationActivities = ({
         await claimRewardMutation.mutateAsync({ account: apiAccounts.accounts[0] });
       } catch (error) {
         claimedBalancesRef.current = null;
+        // A rejected claim changed nothing, so the banner can re-read at once instead of after the
+        // mutation's 60 s refresh; a claim sent but not yet seen in a block may still apply.
+        if (!(error instanceof TransactionNotConfirmedError)) {
+          queryClient.invalidateQueries({ queryKey: ['profileData', user.username] });
+        }
         handleError(error, { method: 'claim_reward_balance', params: { account: apiAccounts.accounts[0] } });
       }
     }

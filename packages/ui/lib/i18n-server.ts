@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { createInstance, type InitOptions, type TFunction } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import { I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
 
 /** The app's `i18n/settings` module. */
 interface I18nSettings {
@@ -38,7 +38,10 @@ export function createI18nServer(
           ...getOptions(lng, ns),
           interpolation: I18N_INTERPOLATION
         })
-        .then(() => instance.getFixedT(lng, ns));
+        .then(() => {
+          addI18nFormatters(instance);
+          return instance.getFixedT(lng, ns);
+        });
       instances.set(cacheKey, pending);
     }
     return pending;

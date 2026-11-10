@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "e",
     "close": "Chiudi",
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Caricamento",
@@ -128,6 +129,8 @@
       "unclaimed_rewards": "Premi non riscossi: ",
       "no_notifications_yet": "Ancora nessuna notifica",
       "redeem": "Riscattare",
+      "claim_success_title": "Riscatta ricompense",
+      "claim_success_description": "Le tue ricompense sono state riscattate correttamente.",
       "mark_all": "Segna tutti come letti",
       "all": "Tutte",
       "replies": "Risponde",
@@ -477,6 +480,7 @@
       "reblogged_on_your_post": "@{{username}} ha condiviso il tuo post",
       "followed_you": "@{{username}} ha iniziato a seguirti",
       "mentioned_you_and_others": "@{{username}} ha menzionato te e altri {{others}}",
+      "mentioned_you": "@{{username}} ti ha menzionato",
       "subscribed_to": "@{{username}} si è iscritto a {{community}}"
     },
     "load_more_failed": "Impossibile caricare altri post.",

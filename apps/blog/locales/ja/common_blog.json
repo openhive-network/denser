@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "と",
     "close": "閉じる",
     "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "読み込み中",
@@ -124,6 +125,8 @@
       "unclaimed_rewards": "未請求の報酬: ",
       "no_notifications_yet": "まだ通知はありません",
       "redeem": "償還",
+      "claim_success_title": "報酬を受け取る",
+      "claim_success_description": "報酬を受け取りました。",
       "mark_all": "すべて既読としてマークする",
       "all": "すべて",
       "replies": "返信",
@@ -467,6 +470,7 @@
       "reblogged_on_your_post": "@{{username}} があなたの投稿をReblogしました",
       "followed_you": "@{{username}}さんがあなたをフォローしました",
       "mentioned_you_and_others": "@{{username}} があなたと他{{others}}人をメンションしました",
+      "mentioned_you": "@{{username}} があなたをメンションしました",
       "subscribed_to": "@{{username}} が {{community}} を購読しました"
     },
     "load_more_failed": "これ以上投稿を読み込めませんでした。",

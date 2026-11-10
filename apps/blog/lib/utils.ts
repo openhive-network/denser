@@ -190,10 +190,10 @@ export function getRewardsString(account: FullAccount, t: TFunction<'common_blog
   let rewards_str;
   switch (rewards.length) {
     case 3:
-      rewards_str = `${rewards[0]}, ${rewards[1]} and ${rewards[2]}`;
+      rewards_str = `${rewards[0]}, ${rewards[1]} ${t('global.and')} ${rewards[2]}`;
       break;
     case 2:
-      rewards_str = `${rewards[0]} and ${rewards[1]}`;
+      rewards_str = `${rewards[0]} ${t('global.and')} ${rewards[1]}`;
       break;
     case 1:
       rewards_str = `${rewards[0]}`;

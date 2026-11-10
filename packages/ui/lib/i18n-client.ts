@@ -7,7 +7,7 @@ import resourcesToBackend from 'i18next-resources-to-backend';
 import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
 import { readLocaleCookie } from '@ui/lib/locale-cookie';
-import { I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
 
 export { Trans } from 'react-i18next';
 /**
@@ -73,6 +73,7 @@ export function createI18nClient(
       // languages are fetched by `changeLanguage` when the user switches.
       preload: isServer ? languages : false
     });
+  addI18nFormatters(i18next);
 
   function useTranslation(ns: string, options?: Parameters<typeof useTranslationOrg>[1]) {
     const { locale } = useLocale();

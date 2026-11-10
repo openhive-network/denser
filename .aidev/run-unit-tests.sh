@@ -190,6 +190,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/activity-log/lib/notification-source.test.ts \
+    apps/blog/features/activity-log/lib/notification-message.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
     apps/blog/features/post-editor/lib/image-markdown.test.ts \
     apps/blog/features/post-editor/lib/mention-completion.test.ts \

@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "et",
     "close": "Fermer",
     "no_rewards": "Aucune récompense en attente d'échange.",
     "loading": "Chargement",
@@ -128,6 +129,8 @@
       "unclaimed_rewards": "Récompenses non réclamées: ",
       "no_notifications_yet": "Aucune notification pour le moment",
       "redeem": "Racheter",
+      "claim_success_title": "Réclamer les gains",
+      "claim_success_description": "Vos gains ont été réclamés avec succès.",
       "mark_all": "Tout marquer comme lu",
       "all": "Toutes",
       "replies": "Réponses",
@@ -477,6 +480,7 @@
       "reblogged_on_your_post": "@{{username}} a rebloggé votre article",
       "followed_you": "@{{username}} vous suit",
       "mentioned_you_and_others": "@{{username}} vous a mentionné, ainsi que {{others}} autres personnes",
+      "mentioned_you": "@{{username}} vous a mentionné",
       "subscribed_to": "@{{username}} s'est abonné à {{community}}"
     },
     "load_more_failed": "Impossible de charger plus d'articles.",

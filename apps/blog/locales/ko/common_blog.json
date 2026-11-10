@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "및",
     "close": "닫기",
     "no_rewards": "받을 보상이 없습니다.",
     "loading": "불러오는 중",
@@ -124,6 +125,8 @@
       "unclaimed_rewards": "받지 않은 보상: ",
       "no_notifications_yet": "아직 알림이 없습니다",
       "redeem": "받기",
+      "claim_success_title": "보상 받기",
+      "claim_success_description": "보상을 성공적으로 받았습니다.",
       "mark_all": "모두 읽음으로 표시",
       "all": "전체",
       "replies": "답글",
@@ -467,6 +470,7 @@
       "reblogged_on_your_post": "@{{username}} 님이 내 게시물을 리블로그했습니다",
       "followed_you": "@{{username}} 님이 나를 팔로우했습니다",
       "mentioned_you_and_others": "@{{username}} 님이 나와 다른 {{others}}명을 멘션했습니다",
+      "mentioned_you": "@{{username}} 님이 나를 멘션했습니다",
       "subscribed_to": "@{{username}} 님이 {{community}}을(를) 구독했습니다"
     },
     "load_more_failed": "게시물을 더 불러올 수 없습니다.",

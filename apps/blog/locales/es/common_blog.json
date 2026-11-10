@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "y",
     "close": "Cerrar",
     "no_rewards": "No hay recompensas pendientes de canjear.",
     "loading": "Cargando",
@@ -128,6 +129,8 @@
       "unclaimed_rewards": "Recompensas no reclamadas: ",
       "no_notifications_yet": "Aún no hay notificaciones",
       "redeem": "Canjear",
+      "claim_success_title": "Canjear recompensas",
+      "claim_success_description": "Tus recompensas se han canjeado correctamente.",
       "mark_all": "Marcar todo como leído",
       "all": "Todas",
       "replies": "Respuestas",
@@ -477,6 +480,7 @@
       "reblogged_on_your_post": "@{{username}} reblogueó tu publicación",
       "followed_you": "@{{username}} te ha seguido",
       "mentioned_you_and_others": "@{{username}} te mencionó a ti y a {{others}} más",
+      "mentioned_you": "@{{username}} te mencionó",
       "subscribed_to": "@{{username}} se suscribió a {{community}}"
     },
     "load_more_failed": "No se pudieron cargar más publicaciones.",

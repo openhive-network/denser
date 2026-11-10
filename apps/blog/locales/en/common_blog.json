@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "and",
     "close": "Close",
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
@@ -126,6 +127,8 @@
       "unclaimed_rewards": "Unclaimed rewards: ",
       "no_notifications_yet": "No notifications yet",
       "redeem": "Redeem",
+      "claim_success_title": "Claim rewards",
+      "claim_success_description": "Your rewards have been claimed successfully.",
       "mark_all": "Mark all as read",
       "all": "All",
       "replies": "Replies",
@@ -472,6 +475,7 @@
       "reblogged_on_your_post": "@{{username}} reblogged your post",
       "followed_you": "@{{username}} followed you",
       "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
+      "mentioned_you": "@{{username}} mentioned you",
       "subscribed_to": "@{{username}} subscribed to {{community}}"
     },
     "load_more_failed": "Couldn't load more posts.",

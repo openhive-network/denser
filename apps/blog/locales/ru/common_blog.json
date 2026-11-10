@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "и",
     "close": "Закрыть",
     "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Загрузка",
@@ -130,6 +131,8 @@
       "unclaimed_rewards": "Невостребованные награды: ",
       "no_notifications_yet": "Уведомлений пока нет",
       "redeem": "Выкупать",
+      "claim_success_title": "Получить вознаграждения",
+      "claim_success_description": "Вознаграждения успешно получены.",
       "mark_all": "отметить все как прочитанное",
       "all": "Все",
       "replies": "Ответы",
@@ -482,6 +485,7 @@
       "reblogged_on_your_post": "@{{username}} сделал репост вашего поста",
       "followed_you": "@{{username}} подписался на вас",
       "mentioned_you_and_others": "@{{username}} упомянул вас и других пользователей ({{others}})",
+      "mentioned_you": "@{{username}} упомянул вас",
       "subscribed_to": "@{{username}} подписался на {{community}}"
     },
     "load_more_failed": "Не удалось загрузить больше постов.",
