@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "i",
     "close": "Zamknij",
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
@@ -129,7 +130,9 @@
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Nieodebrane nagrody: ",
       "no_notifications_yet": "Brak powiadomień",
-      "redeem": "Obierz",
+      "redeem": "Odbierz",
+      "claim_success_title": "Odbierz nagrody",
+      "claim_success_description": "Nagrody zostały odebrane.",
       "mark_all": "Oznacz wszystkie jako przeczytane",
       "all": "Wszystkie",
       "replies": "Odpowiedzi",
@@ -351,7 +354,7 @@
     "google_wallet_not_found_description": "Twój Google Drive nie zawiera pliku portfela Hive. Najpierw musisz go utworzyć za pomocą Hive Bridge.",
     "google_wallet_not_found_help": "Hive Bridge to bezpieczna aplikacja, która pomaga utworzyć i przechowywać portfel Hive na Google Drive. Pozwala to podpisywać transakcje Hive bez instalowania rozszerzeń przeglądarki.",
     "google_key_not_found_title": "Nie znaleziono klucza w portfelu",
-    "google_key_not_found_description": "Nie znaleziono klucza {{keyType}} Hive dla użytkownika {{username}} w portfelu Google Drive.",
+    "google_key_not_found_description": "Nie znaleziono klucza {{keyType, capitalize}} Hive dla użytkownika {{username}} w portfelu Google Drive.",
     "go_to_hive_bridge": "Przejdź do Hive Bridge",
     "completing_google_auth": "Kończenie autoryzacji Google...",
     "dialog_title": "Logowanie",
@@ -477,11 +480,12 @@
     },
     "notifications_tab": {
       "voted_on_your_post": "@{{username}} zagłosował na twój post {{amount}}",
-      "replied_on_your_post": "@{{username}} odpowiedzial na twój post",
-      "replied_to_your_comment": "@{{username}} dpowiedzial na twój komentarz",
+      "replied_on_your_post": "@{{username}} odpowiedział na twój post",
+      "replied_to_your_comment": "@{{username}} odpowiedział na twój komentarz",
       "reblogged_on_your_post": "@{{username}} zreblogował twój post",
       "followed_you": "@{{username}} zaobserwował twój profil",
       "mentioned_you_and_others": "@{{username}} wspomniał o tobie i {{others}} innych osobach",
+      "mentioned_you": "@{{username}} wspomniał o tobie",
       "subscribed_to": "@{{username}} zasubskrybował społeczność {{community}}"
     },
     "load_more_failed": "Nie udało się wczytać kolejnych wpisów.",

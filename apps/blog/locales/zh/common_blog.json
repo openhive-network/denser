@@ -1,5 +1,6 @@
 {
   "global": {
+    "and": "和",
     "close": "关闭",
     "no_rewards": "没有等待兑换的奖励",
     "loading": "加载中",
@@ -124,6 +125,8 @@
       "unclaimed_rewards": "无人领取的奖励： ",
       "no_notifications_yet": "暂无通知",
       "redeem": "赎回",
+      "claim_success_title": "领取奖励",
+      "claim_success_description": "奖励已成功领取。",
       "mark_all": "标记为已读",
       "all": "全部",
       "replies": "留言",
@@ -467,6 +470,7 @@
       "reblogged_on_your_post": "@{{username}} 转发了你的帖子",
       "followed_you": "@{{username}} 关注了你",
       "mentioned_you_and_others": "@{{username}} 提到了你和其他 {{others}} 人",
+      "mentioned_you": "@{{username}} 提到了你",
       "subscribed_to": "@{{username}} 订阅了 {{community}}"
     },
     "load_more_failed": "无法加载更多帖子。",

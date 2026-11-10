@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createInstance } from 'i18next';
-import { I18N_INTERPOLATION } from './i18n-interpolation.ts';
+import { addI18nFormatters, I18N_INTERPOLATION } from './i18n-interpolation.ts';
 
 async function translate(template: string, values: Record<string, string>): Promise<string> {
   const instance = createInstance();
@@ -10,6 +10,7 @@ async function translate(template: string, values: Record<string, string>): Prom
     resources: { en: { translation: { key: template } } },
     interpolation: I18N_INTERPOLATION
   });
+  addI18nFormatters(instance);
   return instance.t('key', values);
 }
 
@@ -26,5 +27,13 @@ describe('I18N_INTERPOLATION', () => {
 
   it('leaves HTML-significant characters for the renderer to escape', async () => {
     assert.equal(await translate('{{value}}', { value: `a & b <c> "d" 'e'` }), `a & b <c> "d" 'e'`);
+  });
+
+  it('capitalizes a value formatted with capitalize', async () => {
+    assert.equal(
+      await translate('Twój prywatny klucz {{keyType, capitalize}}', { keyType: 'active' }),
+      'Twój prywatny klucz Active'
+    );
+    assert.equal(await translate('Your {{keyType}} private key', { keyType: 'active' }), 'Your active private key');
   });
 });

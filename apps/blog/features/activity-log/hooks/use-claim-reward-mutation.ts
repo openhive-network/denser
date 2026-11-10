@@ -3,12 +3,14 @@ import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { useTranslation } from '@/blog/i18n/client';
 
 const ZERO_HBD = { amount: '0', nai: '@@000000013', precision: 3 };
 const ZERO_HIVE = { amount: '0', nai: '@@000000021', precision: 3 };
 
 export function useClaimRewardsMutation() {
   const { user } = useUserClient();
+  const { t } = useTranslation('common_blog');
   const queryKey = ['profileData', user.username];
   return useOperationMutation({
     name: 'useClaimRewardsMutation',
@@ -24,8 +26,8 @@ export function useClaimRewardsMutation() {
       });
     },
     successToast: () => ({
-      title: 'Claim rewards',
-      description: 'Your rewards have been claimed successfully.'
+      title: t('navigation.profile_notifications_tab_navbar.claim_success_title'),
+      description: t('navigation.profile_notifications_tab_navbar.claim_success_description')
     }),
     invalidate: () => [queryKey],
     // The API has caught up by then; until then the component uses claimedBalances to suppress stale data.

@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/co
 import LiteDidBadge from '@/blog/features/lite-account/lite-did-badge';
 import { authorDisplayName, isLiteDid } from '@/blog/features/lite-account/lite-did';
 import { notificationSource } from './lib/notification-source';
+import { translateNotificationMessage } from './lib/notification-message';
 
 /** Get icon and color based on notification type */
 function getNotificationIcon(type: string) {
@@ -65,6 +66,7 @@ const NotificationListItem = ({
   const { t } = useTranslation('common_blog');
 
   const source = notificationSource(msg);
+  const translated = source ? translateNotificationMessage(source.text, t) : null;
   const notificationDate = new Date(date);
   const { icon, color } = getNotificationIcon(type);
   const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
@@ -123,6 +125,7 @@ const NotificationListItem = ({
           className="line-clamp-2 text-sm hover:text-destructive visited:text-gray-500 dark:visited:text-gray-400"
         >
           <span data-testid="notification-account-and-message">
+            {translated?.before}
             {source && isLiteDid(source.account) ? (
               <>
                 <strong data-testid="subscriber-name" translate="no">
@@ -133,11 +136,13 @@ const NotificationListItem = ({
             ) : (
               <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
             )}
-            {source
-              ? source.text
-              : errorMessage
-                ? msg.split('error:')[1]
-                : null}
+            {translated
+              ? translated.after
+              : source
+                ? source.text
+                : errorMessage
+                  ? msg.split('error:')[1]
+                  : null}
           </span>
         </Link>
         <span className="flex items-center gap-2 text-xs text-gray-500" data-testid="notification-timestamp">
