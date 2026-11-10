@@ -160,6 +160,44 @@ describe('transformError', () => {
     expect(errorTitle).not.to.contain('[object Object]');
   });
 
+  /** What wax throws for hived's untagged adjust_balance assertion */
+  class WaxAssertionError extends Error {
+    name = 'WaxAssertionError';
+  }
+
+  const ADJUST_BALANCE_MESSAGE =
+    '[Chain Error] Account guest4test1 does not have sufficient funds for balance adjustment. ' +
+    'Required: [object Object], Available: [object Object]';
+
+  for (const [ErrorClass, method] of [
+    [WaxAssertionError, 'transfer'],
+    [WaxAssertionError, 'transfer_to_vesting'],
+    [WaxAssertionError, 'transfer_to_savings'],
+    [WaxInsufficientBalanceError, 'transfer']
+  ] as const) {
+    it(`titles hived's adjust_balance rejection on ${method} as a balance too low (${ErrorClass.name})`, () => {
+      const { errorTitle, isWellKnownError, insufficientBalance } = transformError(new ErrorClass(ADJUST_BALANCE_MESSAGE), {
+        method,
+        params: { from: 'guest4test1' }
+      });
+      expect(insufficientBalance).to.equal('balance_too_low');
+      expect(isWellKnownError).to.equal(true);
+      expect(errorTitle).to.equal('Error');
+    });
+  }
+
+  it("titles hived's adjust_balance rejection of a claim as rewards already claimed", () => {
+    const error = new WaxAssertionError(ADJUST_BALANCE_MESSAGE);
+    expect(transformError(error, { method: 'claim_reward_balance', params: {} }).insufficientBalance).to.equal(
+      'rewards_already_claimed'
+    );
+  });
+
+  it('does not take an unrelated WaxAssertionError for an insufficient balance', () => {
+    const error = new WaxAssertionError('[Chain Error] Missing Active Authority guest4test1');
+    expect(transformError(error, { method: 'transfer', params: {} }).insufficientBalance).to.equal(null);
+  });
+
   it('keeps the generic title for an unknown error', () => {
     const { errorTitle, isWellKnownError, keychainFallback, insufficientBalance } = transformError(new Error('boom'));
     expect(errorTitle).to.equal('Error');
