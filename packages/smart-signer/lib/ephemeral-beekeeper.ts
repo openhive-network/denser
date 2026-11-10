@@ -25,10 +25,32 @@ export function createLazyAsyncSingleton<T>(factory: () => Promise<T>): () => Pr
 // page sat idle that long throws "Wallet locked due to timeout", and so does every later one.
 // Each wallet here lives for one call only, so the instance never times out.
 const NO_UNLOCK_TIMEOUT = 0;
-const getBeekeeperInstance = createLazyAsyncSingleton<IBeekeeperInstance>(async () => {
+
+/** Runs each task only after every task enqueued before it has settled, in enqueue order. */
+type SerialQueue = <T>(task: () => Promise<T>) => Promise<T>;
+
+function createSerialQueue(): SerialQueue {
+  let tail: Promise<unknown> = Promise.resolve();
+  return <T>(task: () => Promise<T>) => {
+    const run = tail.then(task);
+    // A rejection belongs to its own caller only: the next task still runs.
+    tail = run.catch(() => undefined);
+    return run;
+  };
+}
+
+interface QueuedBeekeeper {
+  instance: IBeekeeperInstance;
+  enqueue: SerialQueue;
+}
+
+// Beekeeper refuses a synchronous call (`createSession`, `close`, `getPublicKeys`, `hasWallet`)
+// while an asynchronous one runs on the same instance, so every call on it goes through its queue.
+const getBeekeeper = createLazyAsyncSingleton<QueuedBeekeeper>(async () => {
   // Loaded on first use, so Beekeeper's WASM stays out of the page's initial chunks.
   const { default: createBeekeeper } = await import('@hiveio/beekeeper');
-  return createBeekeeper({ inMemory: true, unlockTimeout: NO_UNLOCK_TIMEOUT });
+  const instance = await createBeekeeper({ inMemory: true, unlockTimeout: NO_UNLOCK_TIMEOUT });
+  return { instance, enqueue: createSerialQueue() };
 });
 
 /**
@@ -36,7 +58,7 @@ const getBeekeeperInstance = createLazyAsyncSingleton<IBeekeeperInstance>(async 
  * JS and WASM. A failed load is only logged: the next signature retries it.
  */
 export function warmEphemeralBeekeeper(): void {
-  getBeekeeperInstance().catch((error: unknown) => {
+  getBeekeeper().catch((error: unknown) => {
     logger.warn(error, 'Beekeeper warm-up failed; the next signature retries the load');
   });
 }
@@ -44,13 +66,22 @@ export function warmEphemeralBeekeeper(): void {
 /**
  * Runs `fn` with a temporary in-memory Beekeeper wallet, in a session closed afterwards, so no key
  * imported into it outlives the call. `walletPrefix` names the wallet, for Beekeeper's errors.
+ * Runs are serialized on the shared instance: one starts only once every earlier one has closed its
+ * session, so `fn` must not start another run, and must not leave a wallet call running when it returns.
  */
 export async function withEphemeralWallet<T>(
   walletPrefix: string,
   fn: (wallet: IBeekeeperUnlockedWallet) => Promise<T>
 ): Promise<T> {
-  const beekeeperInstance = await getBeekeeperInstance();
+  const { instance, enqueue } = await getBeekeeper();
+  return enqueue(() => runInEphemeralWallet(instance, walletPrefix, fn));
+}
 
+async function runInEphemeralWallet<T>(
+  beekeeperInstance: IBeekeeperInstance,
+  walletPrefix: string,
+  fn: (wallet: IBeekeeperUnlockedWallet) => Promise<T>
+): Promise<T> {
   let session: IBeekeeperSession;
   try {
     session = beekeeperInstance.createSession(crypto.randomUUID());

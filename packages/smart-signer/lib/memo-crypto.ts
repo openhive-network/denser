@@ -92,13 +92,17 @@ async function withEphemeralMemoProvider<T>(
 ): Promise<T> {
   // Loaded on first use, so the WASM stays out of the page's initial chunks. Kicked off
   // before the wallet is created (not inside it) so the cache-miss path still races the
-  // Beekeeper instance instead of serializing behind it.
-  const modulesPromise = Promise.all([import('@hiveio/wax-signers-beekeeper'), import('@hiveio/wax')]);
+  // Beekeeper instance, and wax loads without holding Beekeeper's queue.
+  const depsPromise = Promise.all([import('@hiveio/wax-signers-beekeeper'), import('@hiveio/wax')]).then(
+    async ([{ default: BeekeeperProvider }, { createWaxFoundation }]) => ({
+      BeekeeperProvider,
+      waxBase: await createWaxFoundation()
+    })
+  );
   try {
     return await withEphemeralWallet('memo-crypto', async (wallet) => {
       const publicKey = await wallet.importKey(memoPrivateKeyWif);
-      const [{ default: BeekeeperProvider }, { createWaxFoundation }] = await modulesPromise;
-      const waxBase = await createWaxFoundation();
+      const { BeekeeperProvider, waxBase } = await depsPromise;
       const provider = BeekeeperProvider.for(waxBase, wallet, publicKey);
       return await fn(provider);
     });
