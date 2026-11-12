@@ -19,7 +19,7 @@ test.describe.configure({ mode: 'serial' });
 
 const POST_PATH = '/communityfork/@hiveio/announcing-the-launch-of-hive-blockchain';
 const DISCUSSION_REQUEST =
-  '/hivemind-api/posts/hiveio/announcing-the-launch-of-hive-blockchain/discussion?observer=hive.blog';
+  '/hivemind-api/posts/hiveio/announcing-the-launch-of-hive-blockchain/discussion?observer=hive.blog&votes=none';
 
 const rest = useHivemindRestStub();
 

@@ -90,33 +90,78 @@ export type TPostListShape = Pick<HivemindRestPostPage, 'votes' | 'truncate-body
 
 const POST_LIST_SHAPE: TPostListShape = { votes: 'none', 'truncate-body': POST_LIST_BODY_LENGTH };
 
-let postListShapeRejectedUntil = 0;
+/** The params a REST single post or discussion read adds for a read without votes. */
+export type TPostShape = Pick<HivemindRestPostPage, 'votes'>;
+
+const POST_SHAPE: TPostShape = { votes: 'none' };
+
+/** The REST reads asking for a shape, each with its own record: a node may take it on one and not another. */
+type TShapedRead = 'post lists' | 'posts';
+
+const shapeRejectedUntil = new Map<TShapedRead, number>();
+
+/** PostgREST error codes a function raises itself: it was found and took the request's params. */
+const FUNCTION_OWN_ANSWERS = new Set(['P0001', 'PT404']);
+
+const isFunctionOwnAnswer = ({ body }: ReadTransportError): boolean =>
+  typeof body === 'object' && body !== null && FUNCTION_OWN_ANSWERS.has(String(Reflect.get(body, 'code')));
 
 const isShapeRejected = (error: unknown): boolean =>
   error instanceof ReadTransportError &&
+  !isFunctionOwnAnswer(error) &&
   (isEndpointMissing(error) || (error.status !== undefined && isRequestRejected(error.status)));
+
+const rejectShape = (kind: TShapedRead): void => {
+  shapeRejectedUntil.set(kind, Date.now() + HIVEMIND_ENDPOINT_MISSING_TTL_MS);
+  logger.info('hivemind REST rejects votes=none, reading %s with votes for %d ms', kind, HIVEMIND_ENDPOINT_MISSING_TTL_MS);
+};
+
+/**
+ * `read` asked with `shape`, unless `kind` was rejected within HIVEMIND_ENDPOINT_MISSING_TTL_MS.
+ * A node that rejects the shape (an older hivemind: a 4xx, or a function not found, but not the
+ * function's own answer such as "Post … does not exist") is asked again without it, and once that
+ * second request is served or gets the function's own answer, for HIVEMIND_ENDPOINT_MISSING_TTL_MS
+ * no `kind` read is asked with it. `shaped` maps an answer to the shaped request. Every other error,
+ * and any of the second request, is thrown.
+ */
+async function readWithShape<T, S extends object>(
+  kind: TShapedRead,
+  shape: S,
+  read: (shape: Partial<S>) => Promise<T>,
+  shaped: (answer: T) => T = (answer) => answer
+): Promise<T> {
+  if (Date.now() < (shapeRejectedUntil.get(kind) ?? 0)) return read({});
+  try {
+    return shaped(await read(shape));
+  } catch (error) {
+    if (!isShapeRejected(error)) throw error;
+    try {
+      const answer = await read({});
+      rejectShape(kind);
+      return answer;
+    } catch (retryError) {
+      // The function answered the request without the shape itself, so the node rejects only the shape.
+      if (retryError instanceof ReadTransportError && isFunctionOwnAnswer(retryError)) rejectShape(kind);
+      throw retryError;
+    }
+  }
+}
 
 const markBodiesCut = (entries: Entry[] | null): Entry[] | null =>
   entries && entries.map((entry) => ({ ...entry, _bodyCutAt: POST_LIST_BODY_LENGTH }));
 
 /**
  * A REST post list (`/posts`, `/accounts/{name}/posts`) read by `read` with `votes=none` and bodies
- * cut at POST_LIST_BODY_LENGTH, each entry marked with the length (`_bodyCutAt`). A node that rejects
- * those params (an older hivemind: a 4xx, or a function not found) is asked again as before, without
- * them, and for HIVEMIND_ENDPOINT_MISSING_TTL_MS no list is asked with them. Every other error, and
- * any of the second request, is thrown.
+ * cut at POST_LIST_BODY_LENGTH, each entry marked with the length (`_bodyCutAt`), on a node that
+ * rejects those params with them left out (see `readWithShape`).
  */
-export async function readRestPostList(
-  read: (shape: TPostListShape) => Promise<Entry[] | null>
-): Promise<Entry[] | null> {
-  if (Date.now() < postListShapeRejectedUntil) return read({});
-  try {
-    return markBodiesCut(await read(POST_LIST_SHAPE));
-  } catch (error) {
-    if (!isShapeRejected(error)) throw error;
-    const posts = await read({});
-    postListShapeRejectedUntil = Date.now() + HIVEMIND_ENDPOINT_MISSING_TTL_MS;
-    logger.info('hivemind REST rejects votes=none, reading post lists with votes for %d ms', HIVEMIND_ENDPOINT_MISSING_TTL_MS);
-    return posts;
-  }
-}
+export const readRestPostList = (read: (shape: TPostListShape) => Promise<Entry[] | null>): Promise<Entry[] | null> =>
+  readWithShape('post lists', POST_LIST_SHAPE, read, markBodiesCut);
+
+/**
+ * A REST single post or discussion (`/posts/{author}/{permlink}`, its `/discussion`) read by `read`
+ * with `votes=none`, its entries carrying `observer_vote` and no `active_votes`, on a node that
+ * rejects it without (see `readWithShape`).
+ */
+export const readRestPost = <T>(read: (shape: TPostShape) => Promise<T>): Promise<T> =>
+  readWithShape('posts', POST_SHAPE, read);

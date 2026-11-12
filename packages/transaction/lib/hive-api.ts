@@ -9,7 +9,8 @@ import {
   IProfile,
   IVote,
   IVoteListItem,
-  IWitnessSchedule
+  IWitnessSchedule,
+  SearchType
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getHiveChainService } from './hive-chain-service';
@@ -33,6 +34,7 @@ import { createViewerVoteBatcher, listVotesNodeOf } from './viewer-votes-batch';
 import { readAccountProfile } from './profile-metadata';
 import { getLogger } from '@ui/lib/logging';
 import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
+import { createVoteFreeSupport, listWithObserverVotes, readVoteFree } from './vote-free-posts';
 
 const logger = getLogger('hive-api');
 
@@ -475,46 +477,61 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-export const getByText = async (
-  {
-    pattern,
-    sort = 'relevance',
-    author = '',
-    limit = DATA_LIMIT,
-    observer,
-    start_author = '',
-    start_permlink = ''
-  }: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
-): Promise<Entry[]> => {
-  // A search is asked of each node once, without moving any other call off a node it is slow on.
-  const findText = () =>
-    getSearchReadChain().api['search-api'].find_text({
-      pattern,
-      sort,
-      author,
-      limit,
-      observer,
-      start_author,
-      start_permlink
-    });
-  // A search endpoint the reader picked is asked, not hivemind's own search.
-  if (getHiveChainService().getApiEndpoints().searchApiEndpoint) return findText();
-  return readFromHivemind(
-    'searchPosts',
-    {},
-    (api) =>
-      api.searchPosts({
-        q: pattern,
-        sort,
-        author: nonEmpty(author),
-        observer,
-        'page-size': limit,
-        'start-author': nonEmpty(start_author),
-        'start-permlink': nonEmpty(start_permlink)
-      }),
-    findText,
-    getSearchHivemindRestApi()
+// The search nodes, per process or browser tab, that answered `search-api.find_text_v2` with "unknown method".
+const searchVoteFree = createVoteFreeSupport();
+
+/** The top votes a vote-free search is asked for: search results show no voters. */
+const SEARCH_TOP_VOTES = 0;
+
+/**
+ * `search-api.find_text` in hivemind's vote-free form (`find_text_v2`) unless the node the search
+ * goes to (the search endpoint the reader picked, else the API node) answered it with "unknown
+ * method" before.
+ */
+const findText = (params: SearchType): Promise<Entry[]> => {
+  const chain = getSearchReadChain();
+  const api = chain.api['search-api'];
+  const node = getHiveChainService().getApiEndpoints().searchApiEndpoint || chain.endpointUrl;
+  return readVoteFree(
+    searchVoteFree,
+    node,
+    () => api.find_text_v2({ ...params, top_votes: SEARCH_TOP_VOTES }),
+    () => api.find_text(params)
   );
+};
+
+export const getByText = async ({
+  pattern,
+  sort = 'relevance',
+  author = '',
+  limit = DATA_LIMIT,
+  observer,
+  start_author = '',
+  start_permlink = ''
+}: SearchType): Promise<Entry[]> => {
+  // A search is asked of each node once, without moving any other call off a node it is slow on.
+  const readFindText = () => findText({ pattern, sort, author, limit, observer, start_author, start_permlink });
+  const read = (): Promise<Entry[]> => {
+    // A search endpoint the reader picked is asked, not hivemind's own search.
+    if (getHiveChainService().getApiEndpoints().searchApiEndpoint) return readFindText();
+    return readFromHivemind(
+      'searchPosts',
+      {},
+      (api) =>
+        api.searchPosts({
+          q: pattern,
+          sort,
+          author: nonEmpty(author),
+          observer,
+          'page-size': limit,
+          'start-author': nonEmpty(start_author),
+          'start-permlink': nonEmpty(start_permlink)
+        }),
+      readFindText,
+      getSearchHivemindRestApi()
+    );
+  };
+  return listWithObserverVotes(await read(), observer ?? '') ?? [];
 };
 
 const ACTIVE_VOTES_PAGE_SIZE = 1000;

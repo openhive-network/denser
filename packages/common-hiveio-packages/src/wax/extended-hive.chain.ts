@@ -1108,6 +1108,8 @@ export type ExtendedNodeApi = {
   };
   'search-api': {
     find_text: TWaxApiRequest<SearchType, Entry[]>;
+    /** `find_text` without votes (hivemind's `find_text_v2`): its entries carry `observer_vote`, no `active_votes`. */
+    find_text_v2: TWaxApiRequest<SearchType & IVoteFreeParams, Entry[]>;
   };
 };
 
@@ -1404,7 +1406,7 @@ Together with the author name, it uniquely identifies the post.
       result: Entry[] | null;
     };
     post: {
-      params: { author: string; permlink: string; observer?: string };
+      params: { author: string; permlink: string; observer?: string } & Pick<HivemindRestPostPage, 'votes'>;
       result: Entry | null;
     };
     postVotes: {
@@ -1412,7 +1414,7 @@ Together with the author name, it uniquely identifies the post.
       result: HivemindRestPostVote[];
     };
     postDiscussion: {
-      params: { author: string; permlink: string; observer?: string };
+      params: { author: string; permlink: string; observer?: string } & Pick<HivemindRestPostPage, 'votes'>;
       result: Record<string, Entry> | null;
     };
     postHeader: {

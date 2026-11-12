@@ -10,7 +10,7 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getApiSetCallNode, getReadChain } from './chain';
-import { nonEmpty, readFromHivemind, readRestPostList } from './hivemind-rest';
+import { nonEmpty, readFromHivemind, readRestPost, readRestPostList } from './hivemind-rest';
 import {
   postsReadOptionsOf,
   readPosts,
@@ -206,7 +206,7 @@ export const getPost = async (
       readFromHivemind(
         'post',
         { accounts: [author], permlinks: [permlink] },
-        (api) => api.post(params),
+        (api) => readRestPost((shape) => api.post({ ...params, ...shape })),
         () => read(getReadChain().api.bridge)
       ),
     postsReadOptionsOf(author)
@@ -362,7 +362,7 @@ export const getDiscussion = async (
       readFromHivemind(
         'postDiscussion',
         { accounts: [author], permlinks: [permlink] },
-        (api) => api.postDiscussion(params),
+        (api) => readRestPost((shape) => api.postDiscussion({ ...params, ...shape })),
         () => read(getReadChain().api.bridge)
       ),
     postsReadOptionsOf(author)
