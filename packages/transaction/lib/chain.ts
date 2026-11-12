@@ -169,7 +169,10 @@ const getReadClientConfig = (): IReadClientConfig => {
     restApiEndpoint: endpoints.restApiEndpoint,
     timeoutMs: endpoints.apiTimeout,
     jsonRpcEndpoints: endpoints.searchApiEndpoint
-      ? { 'search-api.find_text': endpoints.searchApiEndpoint }
+      ? {
+          'search-api.find_text': endpoints.searchApiEndpoint,
+          'search-api.find_text_v2': endpoints.searchApiEndpoint
+        }
       : undefined,
     restEndpoints: { 'hivesense-api': endpoints.aiEndpoint }
   };

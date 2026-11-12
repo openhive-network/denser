@@ -11,6 +11,7 @@ import {
   getCommunities,
   getCommunity,
   getDiscussion,
+  getDiscussionWithVotes,
   getFollowList,
   getListCommunityRoles,
   getPost,
@@ -35,6 +36,8 @@ const fixtures = JSON.parse(readFileSync(join(__dirname, '__fixtures__/hivemind-
 const [post] = fixtures.rankedPosts;
 /** What a REST post list adds to its query: the posts without votes, bodies cut for cards. */
 const LIST_SHAPE = 'votes=none&truncate-body=9000';
+/** What a REST single post or discussion read adds to its query: the posts without votes. */
+const POST_SHAPE = 'votes=none';
 /** A REST post list's posts as read: marked with the length their bodies were cut at. */
 const cutPosts = (posts: object[]) => posts.map((entry) => ({ ...entry, _bodyCutAt: 9000 }));
 /** The JSON-RPC calls but the vote-free post reads, which a node without them answers "unknown method". */
@@ -232,7 +235,9 @@ describe('hivemind REST reads', function () {
     const result = await getPost(post.author, post.permlink, 'carol');
 
     expect(result).to.deep.equal(post);
-    expect(rest.requests).to.deep.equal([`/hivemind-api/posts/${post.author}/${post.permlink}?observer=carol`]);
+    expect(rest.requests).to.deep.equal([
+      `/hivemind-api/posts/${post.author}/${post.permlink}?observer=carol&${POST_SHAPE}`
+    ]);
   });
 
   it('reads a community and the community list, leaving out an absent search query', async () => {
@@ -334,6 +339,7 @@ describe('hivemind REST reads', function () {
       '/hivemind-api/accounts/alice/followers'
     ]);
     expect(rpc.calls.map(({ method }) => method).filter((method) => method !== 'lite.get_info')).to.deep.equal([
+      'search-api.find_text_v2',
       'search-api.find_text'
     ]);
   });
@@ -377,7 +383,9 @@ describe('hivemind REST reads', function () {
 
     expect(discussion).to.deep.equal(fixtures.discussion);
     expect(discussion?.[`${author}/${permlink}`].replies).to.deep.equal(discussionRoot.replies);
-    expect(rest.requests).to.deep.equal([`/hivemind-api/posts/${author}/${permlink}/discussion?observer=alice`]);
+    expect(rest.requests).to.deep.equal([
+      `/hivemind-api/posts/${author}/${permlink}/discussion?observer=alice&${POST_SHAPE}`
+    ]);
     expect(rpc.calls).to.deep.equal([]);
   });
 
@@ -423,6 +431,79 @@ describe('hivemind REST reads', function () {
       '/hivemind-api/posts/hiveio/hive-at-blockchain-rio/reblogged-by'
     ]);
     expect(rpc.calls).to.deep.equal([]);
+  });
+
+  const { active_votes: _activeVotes, ...voteFreeEntry } = post;
+  const viewerVote = { rshares: 1200, percent: 5000 };
+  const restPostPath = `/hivemind-api/posts/${post.author}/${post.permlink}`;
+
+  it("reads a post and its discussion with votes=none, each entry with the observer's vote from observer_vote", async () => {
+    rest.routes[restPostPath] = { body: { ...voteFreeEntry, observer_vote: viewerVote } };
+    rest.routes[`${restPostPath}/discussion`] = {
+      body: { [`${post.author}/${post.permlink}`]: { ...voteFreeEntry, observer_vote: null }, 'bob/reply': voteFreeEntry }
+    };
+
+    const single = await getPost(post.author, post.permlink, 'bob');
+    const discussion = await getDiscussion(post.author, post.permlink, 'bob');
+
+    expect(single).to.deep.equal({ ...voteFreeEntry, observer_vote: viewerVote, _observer: 'bob' });
+    expect(discussion).to.deep.equal({
+      [`${post.author}/${post.permlink}`]: { ...voteFreeEntry, observer_vote: null, _observer: 'bob' },
+      'bob/reply': { ...voteFreeEntry, observer_vote: null, _observer: 'bob' }
+    });
+    expect(rest.requests).to.deep.equal([
+      `${restPostPath}?observer=bob&${POST_SHAPE}`,
+      `${restPostPath}/discussion?observer=bob&${POST_SHAPE}`
+    ]);
+    expect(rpc.calls).to.deep.equal([]);
+  });
+
+  it('reads a discussion for its votes without votes=none', async () => {
+    rest.routes[`${restPostPath}/discussion`] = { body: fixtures.discussion };
+
+    expect(await getDiscussionWithVotes(post.author, post.permlink, 'bob')).to.deep.equal(fixtures.discussion);
+    expect(rest.requests).to.deep.equal([`${restPostPath}/discussion?observer=bob`]);
+  });
+
+  describe('vote-free search reads', () => {
+    const search = { pattern: 'solar array', observer: 'bob' };
+    const findTextParams = {
+      pattern: 'solar array',
+      sort: 'relevance',
+      author: '',
+      limit: 20,
+      observer: 'bob',
+      start_author: '',
+      start_permlink: ''
+    };
+    const searchCalls = (node: IJsonRpcNode) => node.calls.filter(({ method }) => method.startsWith('search-api.'));
+
+    it("searches with find_text_v2 where the node serves it, each entry with the observer's vote", async () => {
+      useRestNodes('');
+      await onFreshNode(async (node) => {
+        node.results['search-api.find_text_v2'] = [{ ...voteFreeEntry, observer_vote: viewerVote }];
+
+        expect(await getByText(search)).to.deep.equal([{ ...voteFreeEntry, observer_vote: viewerVote, _observer: 'bob' }]);
+        expect(searchCalls(node)).to.deep.equal([
+          { method: 'search-api.find_text_v2', params: { ...findTextParams, top_votes: 0 } }
+        ]);
+      });
+    });
+
+    it('searches with find_text on a node without find_text_v2, asking it for find_text_v2 only once', async () => {
+      useRestNodes('');
+      await onFreshNode(async (node) => {
+        node.results['search-api.find_text'] = fixtures.rankedPosts;
+
+        expect(await getByText(search)).to.deep.equal(fixtures.rankedPosts);
+        expect(await getByText(search)).to.deep.equal(fixtures.rankedPosts);
+        expect(searchCalls(node)).to.deep.equal([
+          { method: 'search-api.find_text_v2', params: { ...findTextParams, top_votes: 0 } },
+          { method: 'search-api.find_text', params: findTextParams },
+          { method: 'search-api.find_text', params: findTextParams }
+        ]);
+      });
+    });
   });
 
   // Runs after the cases above: each endpoint it makes fall back stays on JSON-RPC from then on.
@@ -489,7 +570,9 @@ describe('hivemind REST reads', function () {
 
       expect(await read(), method).to.deep.equal(result);
       expect(await read(), `${method} again`).to.deep.equal(result);
-      expect(rest.requests.map((request) => request.split('?')[0]), method).to.deep.equal([path]);
+      // A discussion asked with votes=none first is asked once more without it before it falls back.
+      const asked = method === 'bridge.get_discussion' ? [path, path] : [path];
+      expect(rest.requests.map((request) => request.split('?')[0]), method).to.deep.equal(asked);
       expect(stockCalls(rpc.calls), method).to.deep.equal([
         { method, params },
         { method, params }
@@ -544,6 +627,8 @@ describe('hivemind REST reads', function () {
     };
 
     expect(await getPost('nobody', 'missing')).to.deep.equal(post);
+    // The function's own answer is no rejection of votes=none: it is not asked again without it.
+    expect(rest.requests).to.deep.equal([`/hivemind-api/posts/nobody/missing?observer=hive.blog&${POST_SHAPE}`]);
     expect(stockCalls(rpc.calls)).to.deep.equal([
       { method: 'bridge.get_post', params: { author: 'nobody', permlink: 'missing', observer: 'hive.blog' } }
     ]);
@@ -561,9 +646,9 @@ describe('hivemind REST reads', function () {
     expect(await getPost(post.author, post.permlink, 'carol')).to.deep.equal(post);
 
     expect(rest.requests).to.deep.equal([
-      '/hivemind-api/posts/nobody/gone?observer=carol',
-      '/hivemind-api/posts/nobody/gone?observer=carol',
-      `/hivemind-api/posts/${post.author}/${post.permlink}?observer=carol`
+      `/hivemind-api/posts/nobody/gone?observer=carol&${POST_SHAPE}`,
+      `/hivemind-api/posts/nobody/gone?observer=carol&${POST_SHAPE}`,
+      `/hivemind-api/posts/${post.author}/${post.permlink}?observer=carol&${POST_SHAPE}`
     ]);
     expect(rpc.calls.filter(({ method }) => method === 'bridge.get_post')).to.have.length(2);
   });
@@ -720,5 +805,35 @@ describe('hivemind REST reads', function () {
       '/hivemind-api/posts?sort=hot&observer=bob&page-size=20'
     ]);
     expect(stockCalls(rpc.calls).filter(({ method }) => method !== 'lite.get_info')).to.deep.equal([]);
+  });
+
+  // Last: the rejection keeps every later REST single post and discussion in this process on the old request.
+  it('asks a REST node that rejects votes=none for a post as before, a missing post still not found, and then no more', async () => {
+    const pgrst202 = {
+      status: 404,
+      body: { code: 'PGRST202', message: 'Could not find the function hivemind_endpoints.get_post(author, permlink, votes)' }
+    };
+    const olderHivemind = (answer: IRestAnswer) => (url: string) => (url.includes('votes=') ? pgrst202 : answer);
+    const postPath = `/hivemind-api/posts/${post.author}/${post.permlink}`;
+    rest.routes['/hivemind-api/posts/nobody/missing'] = olderHivemind({
+      status: 400,
+      body: { code: 'P0001', message: 'Post @nobody/missing does not exist' }
+    });
+    rest.routes[postPath] = olderHivemind({ body: post });
+
+    expect(await getPost('nobody', 'missing', 'bob')).to.equal(null);
+    expect(await getPost(post.author, post.permlink, 'bob')).to.deep.equal(post);
+    expect(await getPost(post.author, post.permlink, 'carol')).to.deep.equal(post);
+
+    expect(rest.requests).to.deep.equal([
+      `/hivemind-api/posts/nobody/missing?observer=bob&${POST_SHAPE}`,
+      '/hivemind-api/posts/nobody/missing?observer=bob',
+      `${postPath}?observer=bob`,
+      `${postPath}?observer=carol`
+    ]);
+    // The missing post is answered by JSON-RPC, as before.
+    expect(stockCalls(rpc.calls).filter(({ method }) => method !== 'lite.get_info')).to.deep.equal([
+      { method: 'bridge.get_post', params: { author: 'nobody', permlink: 'missing', observer: 'bob' } }
+    ]);
   });
 });
