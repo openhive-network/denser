@@ -7,6 +7,7 @@ import { accountReputation } from '@ui/lib/reputation';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { commonVariables } from '@ui/lib/common-variables';
 import { configuredFypApiUrl } from '@ui/config/public-vars';
+import { matchHiveBlogImageUrl } from './body-image-url';
 
 // Re-export Symbol and accountReputation for backwards compatibility
 export { Symbol, accountReputation };
@@ -146,13 +147,11 @@ export function extractLinks(text: string): string[] {
 }
 
 export function extractPictureFromPostBody(urls: string[]): string[] {
-  const picturesRegex = /(?:https?:\/\/)?(?:images\.hive\.blog)\/([a-zA-Z0-9_\/-]+\.(jpeg|png|jpg|webp))/i;
-
   const picturesFromPostBody: string[] = [];
   for (const url of urls) {
-    const match = url.match(picturesRegex);
-    if (match && match[1]) {
-      picturesFromPostBody.push(proxifyImageSrc(match[0]));
+    const picture = matchHiveBlogImageUrl(url);
+    if (picture) {
+      picturesFromPostBody.push(proxifyImageSrc(picture));
     }
   }
 

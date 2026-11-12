@@ -185,6 +185,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/matrix-login-token-route.test.ts \
     apps/blog/lib/fetch-matrix-login-token.test.ts \
     apps/blog/lib/service-unavailable.test.ts \
+    apps/blog/lib/body-image-url.test.ts \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/components/hooks/use-auto-retry.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
