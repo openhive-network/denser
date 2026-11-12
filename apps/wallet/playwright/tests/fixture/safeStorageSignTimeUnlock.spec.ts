@@ -122,7 +122,8 @@ const rotateSharedKey = (page: Page) =>
 
 /**
  * Confirms a 0.001 HIVE transfer, in the page's language whose wallet texts are `wallet`, up to the
- * password prompt unlocking the key, and resolves with the confirm dialog.
+ * password prompt unlocking the key, and resolves with a check that the failed attempt closed the
+ * confirmation and left the transfer form as it was filled, for a fresh Next and OK.
  */
 async function transferUpToUnlockPrompt(page: Page, loginForm: LoginForm, wallet: typeof enWallet = enWallet) {
   const { transfers_page: texts } = wallet;
@@ -140,7 +141,11 @@ async function transferUpToUnlockPrompt(page: Page, loginForm: LoginForm, wallet
   const confirmDialog = page.getByRole('dialog', { name: texts.confirm_title.transfers });
   await confirmDialog.getByRole('button', { name: texts.ok }).click();
   await expect(loginForm.enterYourPasswordForm).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-  return confirmDialog;
+  return async () => {
+    await expect(confirmDialog).toBeHidden();
+    await expect(dialog.getByPlaceholder(texts.amount, { exact: true })).toHaveValue('0.001');
+    await expect(dialog.getByRole('button', { name: texts.next })).toBeEnabled();
+  };
 }
 
 test.describe('Safe-storage unlock at sign time', () => {
@@ -151,7 +156,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     const loginForm = await signInWithSafeStorage(page);
     await page.reload();
 
-    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
+    const expectBackAtTheForm = await transferUpToUnlockPrompt(page, loginForm);
     await holdFindAccounts(page);
     await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
     await loginForm.passwordToUnlockKeySubmitButton.click();
@@ -161,7 +166,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     });
     await expect(page.getByText('Request timed out')).toHaveCount(0);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
-    await expect(confirmDialog).toBeVisible();
+    await expectBackAtTheForm();
     expect(broadcasts.calls).toHaveLength(0);
   });
 
@@ -172,7 +177,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     const loginForm = await signInWithSafeStorage(page);
     await page.reload();
 
-    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
+    const expectBackAtTheForm = await transferUpToUnlockPrompt(page, loginForm);
     await abortFindAccounts(page);
     await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
     await loginForm.passwordToUnlockKeySubmitButton.click();
@@ -182,7 +187,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     });
     await expect(page.getByText('Unknown request error caught')).toHaveCount(0);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
-    await expect(confirmDialog).toBeVisible();
+    await expectBackAtTheForm();
     expect(broadcasts.calls).toHaveLength(0);
   });
 
@@ -197,7 +202,7 @@ test.describe('Safe-storage unlock at sign time', () => {
       await page.reload();
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
 
-      const confirmDialog = await transferUpToUnlockPrompt(page, loginForm, wallet);
+      const expectBackAtTheForm = await transferUpToUnlockPrompt(page, loginForm, wallet);
       await loginForm.passwordToUnlockKeyInput.fill(`${SAFE_STORAGE_PASSWORD}-wrong`);
       await loginForm.passwordToUnlockKeySubmitButton.click();
 
@@ -206,7 +211,7 @@ test.describe('Safe-storage unlock at sign time', () => {
         { timeout: UNLOCK_TIMEOUT }
       );
       await expect(page.getByText('Invalid credentials')).toHaveCount(0);
-      await expect(confirmDialog).toBeVisible();
+      await expectBackAtTheForm();
       expect(broadcasts.calls).toHaveLength(0);
     });
   }
@@ -218,7 +223,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     const loginForm = await signInWithSafeStorage(page);
     await page.reload();
 
-    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
+    const expectBackAtTheForm = await transferUpToUnlockPrompt(page, loginForm);
     await rotateSharedKey(page);
     await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
     await loginForm.passwordToUnlockKeySubmitButton.click();
@@ -229,7 +234,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     );
     await expect(page.getByTestId('wrong-safe-storage-password-message')).toHaveCount(0);
     await expect(page.getByText('Invalid credentials')).toHaveCount(0);
-    await expect(confirmDialog).toBeVisible();
+    await expectBackAtTheForm();
     expect(broadcasts.calls).toHaveLength(0);
   });
 });

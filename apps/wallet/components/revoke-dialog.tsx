@@ -15,15 +15,18 @@ import { CircleSpinner } from '@ui/components/circle-spinner';
 import { getAsset } from '@transaction/lib/utils';
 import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/wallet/i18n/client';
-import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
 
 const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: string }) => {
   const { t } = useTranslation('common_wallet');
   const [open, setOpen] = useState(false);
   const delegateMutation = useDelegateMutation();
-  const onRevokeError = (error: unknown) => {
+  const reportRevokeFailure = (error: unknown) =>
     handleError(error, { method: 'delegateVestingShares', params: { delegator, delegatee } });
-    if (closesDialogOnFailure(error)) setOpen(false);
+  // Once the revoke was attempted the confirmation is spent: OK could send again what the node has
+  // received or rejected.
+  const onRevokeError = (error: unknown) => {
+    reportRevokeFailure(error);
+    setOpen(false);
   };
   const onRevoke = async () => {
     try {
@@ -34,7 +37,7 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
         { onSuccess: () => setOpen(false), onError: onRevokeError }
       );
     } catch (error) {
-      onRevokeError(error);
+      reportRevokeFailure(error);
     }
   };
   const loading = delegateMutation.isPending;

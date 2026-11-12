@@ -322,7 +322,7 @@ test.describe('Wallet RC delegations', () => {
     await expect(dialog).toHaveCount(0);
   });
 
-  test('WALLET-RC-DELEGATIONS-08 — a revoke the node rejects shows the error and leaves the dialog open', async ({
+  test('WALLET-RC-DELEGATIONS-08 — a revoke the node rejects shows the error and closes the dialog', async ({
     page
   }) => {
     await installBroadcastInterceptor(page);
@@ -339,9 +339,9 @@ test.describe('Wallet RC delegations', () => {
     await dialog.getByRole('button', { name: 'Ok' }).click();
 
     await expect(page.getByTestId('error-toast-content')).toHaveCount(1);
-    await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('button', { name: 'Ok' })).toBeEnabled();
-    expect(rejected).toBeGreaterThan(0);
+    // OK must not be there to send the rejected revoke again
+    await expect(dialog).toHaveCount(0);
+    expect(rejected).toBe(1);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
   });
 });

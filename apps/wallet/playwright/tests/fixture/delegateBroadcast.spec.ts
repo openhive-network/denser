@@ -59,19 +59,26 @@ const rpcMethod = (route: Route): string | null => {
   }
 };
 
-/** Answers the stub node's `methods` with `answer` (a JSON-RPC body without `id`); other calls go on. */
-const answerRpc = (page: Page, methods: readonly string[], answer: Record<string, unknown>) =>
-  page.route(
+/**
+ * Answers the stub node's `methods` with `answer` (a JSON-RPC body without `id`); other calls go on.
+ * Resolves with how many calls it has answered so far.
+ */
+const answerRpc = async (page: Page, methods: readonly string[], answer: Record<string, unknown>) => {
+  const answered = { count: 0 };
+  await page.route(
     (url) => url.hostname === '127.0.0.1',
-    (route) =>
-      methods.includes(rpcMethod(route) ?? '')
-        ? route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({ jsonrpc: '2.0', id: route.request().postDataJSON().id ?? 1, ...answer })
-          })
-        : route.fallback()
+    (route) => {
+      if (!methods.includes(rpcMethod(route) ?? '')) return route.fallback();
+      answered.count++;
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ jsonrpc: '2.0', id: route.request().postDataJSON().id ?? 1, ...answer })
+      });
+    }
   );
+  return answered;
+};
 
 /** hived's answer to a delegation below the minimum: 1,833.333334 VESTS, 1.000 HP at the stub's fund. */
 const BROADCAST_METHODS = [
@@ -198,12 +205,12 @@ test.describe('Delegate broadcast', () => {
     await expect(dialog.getByRole('button', { name: 'Next' })).toBeDisabled();
   });
 
-  test('WALLET-TX-DELEGATE-05 — a delegation the chain rejects for the minimum is explained in HP', async ({
+  test('WALLET-TX-DELEGATE-05 — a delegation the chain rejects for the minimum is explained in HP and its confirmation closed', async ({
     page
   }) => {
     await installBroadcastInterceptor(page);
-    await answerRpc(page, BROADCAST_METHODS, MIN_DELEGATION_REJECTION);
-    await fillDelegateDialog(page, '3');
+    const rejected = await answerRpc(page, BROADCAST_METHODS, MIN_DELEGATION_REJECTION);
+    const dialog = await fillDelegateDialog(page, '3');
 
     const confirm = page.getByRole('dialog', { name: CONFIRM_TITLE });
     await confirm.getByRole('button', { name: 'OK' }).click();
@@ -211,7 +218,11 @@ test.describe('Delegate broadcast', () => {
     await expect(
       page.getByText('Delegation rejected: the minimum is 1.000 HP (you tried 3.000 HP).', { exact: true })
     ).toBeVisible();
-    await expect(confirm.getByRole('heading', { name: CONFIRM_TITLE })).toBeFocused();
+    await expect(confirm).toBeHidden();
+    await expect(dialog.getByRole('combobox', { name: 'To' })).toHaveValue(STUB_FOLLOWED);
+    await expect(dialog.getByPlaceholder('Amount')).toHaveValue('3');
+    await expect(dialog.getByRole('button', { name: 'Next' })).toBeEnabled();
+    expect(rejected.count).toBe(1);
   });
 });
 

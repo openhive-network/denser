@@ -3,6 +3,7 @@ import { test, expect, type Locator, type Page } from '@playwright/test';
 import { openBalanceMenuDialog } from '../support/balanceMenu';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { BALANCE_TOO_LOW_TITLE, rejectBroadcastsForBalance } from '../support/balanceRejection';
 import { expectTransferToSavingsOperation, naiAsset } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -101,5 +102,22 @@ test.describe('Transfer to savings broadcast', () => {
     await expect(dialog.getByText('Use only 3 digits of precision')).toBeVisible();
     await expect(confirmDialog(page)).toBeHidden();
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-SAVINGS-IN-04 — a transfer the node rejects for the balance closes its confirmation and keeps the form', async ({
+    page
+  }) => {
+    // The stub's balance lets 2 HIVE through the form; the node holds less
+    await installBroadcastInterceptor(page);
+    const rejected = await rejectBroadcastsForBalance(page);
+    const dialog = await openTransferToSavingsDialog(page, 'wallet-hive-value');
+    await submitAmount(dialog, '2');
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+
+    await expect(page.getByTestId('error-toast-content')).toContainText(BALANCE_TOO_LOW_TITLE);
+    await expect(confirmDialog(page)).toBeHidden();
+    await expect(dialog.getByPlaceholder('Amount')).toHaveValue('2');
+    await expect(dialog.getByRole('button', { name: 'Next' })).toBeEnabled();
+    expect(rejected.calls).toHaveLength(1);
   });
 });
