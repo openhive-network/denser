@@ -2,6 +2,7 @@ import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { BALANCE_TOO_LOW_TITLE, rejectBroadcastsForBalance } from '../support/balanceRejection';
 import { expectTransferToVestingOperation, naiAsset } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -60,8 +61,9 @@ const openPowerUpDialog = async (page: Page) => {
   return page.getByRole('dialog', { name: 'Power Up', exact: true });
 };
 
-const confirmPowerUp = (page: Page) =>
-  page.getByRole('dialog', { name: 'Confirm Power Up' }).getByRole('button', { name: 'OK' }).click();
+const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Power Up' });
+
+const confirmPowerUp = (page: Page) => confirmDialog(page).getByRole('button', { name: 'OK' }).click();
 
 test.describe('Power up broadcast', () => {
   test('WALLET-TX-POWERUP-01 — powering up broadcasts the HIVE amount from and to the account itself', async ({
@@ -115,5 +117,24 @@ test.describe('Power up broadcast', () => {
     await expect(dialog.getByText('Insufficient funds.')).toBeVisible();
     await expect(page.getByRole('dialog', { name: 'Confirm Power Up' })).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-POWERUP-04 — a power up the node rejects for the balance closes its confirmation and keeps the form', async ({
+    page
+  }) => {
+    // The stub's balance lets 2 HIVE through the form; the node holds less
+    await installBroadcastInterceptor(page);
+    const rejected = await rejectBroadcastsForBalance(page);
+    const dialog = await openPowerUpDialog(page);
+
+    await dialog.getByPlaceholder('Amount').fill('2');
+    await dialog.getByRole('button', { name: 'Power Up', exact: true }).click();
+    await confirmPowerUp(page);
+
+    await expect(page.getByTestId('error-toast-content')).toContainText(BALANCE_TOO_LOW_TITLE);
+    await expect(confirmDialog(page)).toBeHidden();
+    await expect(dialog.getByPlaceholder('Amount')).toHaveValue('2');
+    await expect(dialog.getByRole('button', { name: 'Power Up', exact: true })).toBeEnabled();
+    expect(rejected.calls).toHaveLength(1);
   });
 });

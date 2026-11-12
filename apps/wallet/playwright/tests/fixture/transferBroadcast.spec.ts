@@ -3,6 +3,7 @@ import { test, expect, type Locator, type Page } from '@playwright/test';
 import { openBalanceMenuDialog } from '../support/balanceMenu';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { BALANCE_TOO_LOW_TITLE, rejectBroadcastsForBalance } from '../support/balanceRejection';
 import { FIXTURE_API_PORT } from '../support/apiStub';
 import { expectTransferOperation, naiAsset } from '../support/walletOperations';
 import {
@@ -71,6 +72,14 @@ const fillTransfer = async (dialog: Locator, amount: string, memo: string) => {
 };
 
 const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Transfer To Account' });
+
+/** The transfer form still holds what `fillTransfer` entered, and Next is there to confirm it again. */
+const expectFilledTransfer = async (dialog: Locator, amount: string, memo: string) => {
+  await expect(dialog.getByRole('combobox', { name: 'To' })).toHaveValue(STUB_FOLLOWED);
+  await expect(dialog.getByPlaceholder('Amount')).toHaveValue(amount);
+  await expect(dialog.getByPlaceholder('Memo')).toHaveValue(memo);
+  await expect(dialog.getByRole('button', { name: 'Next' })).toBeEnabled();
+};
 
 /** The confirmation's read-only amount, after its From and To rows. */
 const confirmAmount = (page: Page) => confirmDialog(page).locator('input').nth(2);
@@ -259,8 +268,9 @@ test.describe('Transfer broadcast', () => {
     });
     await expect(page.getByText(RAW_NETWORK_ERROR)).toHaveCount(0);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
-    await expect(confirmDialog(page)).toBeVisible();
-    await expect(confirmDialog(page).getByRole('button', { name: 'OK' })).toBeEnabled();
+    // The transaction was attempted, so its confirmation is spent: the form is back as it was filled
+    await expect(confirmDialog(page)).toBeHidden();
+    await expectFilledTransfer(dialog, '1.5', MEMO);
     expect(broadcasts.calls).toHaveLength(0);
   });
 
@@ -279,8 +289,9 @@ test.describe('Transfer broadcast', () => {
     // While it spins OK has no name: it is the dialog's only disabled button
     await expect(confirmDialog(page).locator('button[disabled]')).toHaveCount(1);
     await broadcasts.waitForCount(1);
-    // Once the submission has ended, a second one would have broadcast too
-    await expect(ok).toBeEnabled({ timeout: 20_000 });
+    // Once the submission has ended its confirmation is closed: only a fresh Next and OK can send again
+    await expect(dialog.getByRole('button', { name: 'Next' })).toBeEnabled({ timeout: 20_000 });
+    await expect(confirmDialog(page)).toBeHidden();
     expect(broadcasts.calls).toHaveLength(1);
     expectTransferOperation(broadcasts.calls[0], {
       from: STUB_ACCOUNT,
@@ -363,5 +374,28 @@ test.describe('Transfer broadcast', () => {
     await transferAgain(page);
     await broadcasts.waitForCount(1, testTimeout('broadcast-count', 20_000));
     expect(broadcasts.calls).toHaveLength(1);
+  });
+
+  test('WALLET-TX-TRANSFER-12 — a transfer the node rejects for the balance closes its confirmation and keeps the form', async ({
+    page
+  }) => {
+    // The stub's balance lets 2 HIVE through the form; the node holds less
+    await installBroadcastInterceptor(page);
+    const rejected = await rejectBroadcastsForBalance(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '2', MEMO);
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+
+    await expect(page.getByTestId('error-toast-content')).toContainText(BALANCE_TOO_LOW_TITLE);
+    await expect(confirmDialog(page)).toBeHidden();
+    await expectFilledTransfer(dialog, '2', MEMO);
+    expect(rejected.calls).toHaveLength(1);
+
+    // Only Next and OK again send it again, from a fresh confirmation
+    await dialog.getByRole('button', { name: 'Next' }).click();
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+    await rejected.waitForCount(2);
+    await expect(confirmDialog(page)).toBeHidden();
+    expect(rejected.calls).toHaveLength(2);
   });
 });

@@ -189,6 +189,9 @@ export function TransferDialog({
         await transaction(params);
         invalidateData();
       } catch (error) {
+        // Once the transaction was attempted the confirmation is spent: its OK could send again what the
+        // node has received or rejected. The form keeps its input, so Next draws a fresh confirmation.
+        if (params !== undefined) setNextOpen(false);
         if (await isPrivateKeyLeak(error)) {
           toast({ title: t('transfers_page.memo_secret_wif'), variant: 'destructive' });
           return;
@@ -202,7 +205,6 @@ export function TransferDialog({
         // OK would only bring the Google Drive dialog back: this sign-in method cannot sign the operation.
         // After a broadcast the node took but no block was seen to include, OK could send it twice.
         if (closesDialogOnFailure(error)) {
-          setNextOpen(false);
           setEncryptDialogOpen(false);
           onOpenChange(false);
         }
@@ -458,7 +460,8 @@ export function TransferDialog({
     delegateMutation.isPending ||
     withdrawFromSavingsMutation.isPending;
 
-  // OK is disabled while broadcasting, so the focus it held is lost: give it to the heading when a broadcast fails.
+  // OK is disabled while broadcasting, so the focus it held is lost: give it to the heading when the
+  // confirmation stays open, after a failure before the transaction was attempted.
   useEffect(() => {
     if (!isBroadcasting && nextOpen) confirmTitleRef.current?.focus();
   }, [isBroadcasting]);
