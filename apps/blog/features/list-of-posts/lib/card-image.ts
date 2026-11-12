@@ -11,6 +11,7 @@ import {
   extractUrlsFromJsonString,
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
+import { findImgTagSrc } from '@/blog/lib/body-image-url';
 import type { TrimmedEntry, CardEntry } from './card-entry';
 
 // The first feed images are the LCP candidates, so they must not wait for lazy-loading.
@@ -81,10 +82,9 @@ export function find_first_img(post: Entry) {
     if (peakd_img !== null) {
       return proxifyImageSrc(peakd_img[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
     }
-    const regexgif = /<img\s+src="([^"]+)"/;
-    const matchgif = post.body.match(regexgif);
-    if (matchgif && matchgif[1]) {
-      return proxifyImageSrc(matchgif[1], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+    const imgTagSrc = findImgTagSrc(post.body);
+    if (imgTagSrc) {
+      return proxifyImageSrc(imgTagSrc, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
     }
     // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {
