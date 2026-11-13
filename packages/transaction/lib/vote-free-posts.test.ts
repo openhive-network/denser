@@ -61,6 +61,7 @@ describe('readVoteFree', () => {
       readVoteFree(
         support,
         node,
+        {},
         () => {
           calls.push(`v2 ${node}`);
           return voteFree();

@@ -179,7 +179,7 @@ interface IFailoverCall<T> {
    * given it skips the node for; without it a connection failure is recorded under `healthKey` only.
    */
   unreachableKey?: (node: string) => string;
-  invoke: (target: T) => Promise<unknown>;
+  invoke: (target: T, node: string) => Promise<unknown>;
   /** Whether a failure means the node could not serve the call, so another node may. */
   isNodeFailure: (error: unknown) => boolean | Promise<boolean>;
   /** Whether a failure the node answered means it lacks the API rather than that it failed. */
@@ -213,6 +213,25 @@ const resolveApiPath = (api: object | undefined, path: readonly string[], rootNa
 };
 
 const endpointOf = (apiNode: object): unknown => Reflect.get(apiNode, 'endpointUrl');
+
+/**
+ * One call replayed on whichever chain serves it: `root` is that chain's `api` or `restApi`, `node`
+ * its node (undefined when the call is not failed over and its node is not known).
+ */
+type TInvoke = (root: object | undefined, node?: string) => Promise<unknown>;
+
+const ASK_EACH_NODE = Symbol('askEachNode');
+
+/**
+ * `ask(api)`, for an API namespace or method `api` of a failover chain (e.g. `chain.api.bridge`)
+ * asked of each node the failover tries: `ask` is given that node's `api` and the node, so the call
+ * may take another form on some nodes. The failover handles what `ask` returns or throws as it would
+ * a call of `api`. Of an `api` without failover, `ask(api)` once, without a node.
+ */
+export function askEachNode<A extends object, R>(api: A, ask: (nodeApi: A, node?: string) => Promise<R>): Promise<R> {
+  const askNodes: unknown = Reflect.get(api, ASK_EACH_NODE);
+  return typeof askNodes === 'function' ? askNodes(ask) : ask(api);
+}
 
 /** The `health` key recording whether `node` serves the REST API `apiName`, e.g. `https://api.example.com/balance-api`. */
 export const restApiHealthKey = (node: string, apiName: string): string => `${node}/${apiName}`;
@@ -454,7 +473,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
           if (settled || !fitsBudget()) break;
         }
         try {
-          const value = await call.invoke(target());
+          const value = await call.invoke(target(), node);
           markUp(node);
           call.report?.(node, { ok: true, latencyMs: now() - nodeStartedAt });
           return { kind: 'served', value };
@@ -548,14 +567,14 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     throw lastError;
   };
 
-  const callJsonRpc = async (path: readonly string[], args: unknown[]): Promise<unknown> => {
+  const callJsonRpc = async (path: readonly string[], invoke: TInvoke): Promise<unknown> => {
     const [namespace] = path;
     const route = await routeOf('api', path, configuredNodesOf(chain.endpointUrl));
     if (NON_RETRYABLE_NAMESPACES.has(namespace)) {
       // Sent once, to the routed node: a failed broadcast may still have been accepted.
-      const node = route?.nodes[0];
-      const target = !node || node === chain.endpointUrl ? chain : getAttemptChain(node);
-      return callOn(target.api, 'api', path, args);
+      const node = route?.nodes[0] ?? chain.endpointUrl;
+      const target = node === chain.endpointUrl ? chain : getAttemptChain(node);
+      return invoke(target.api, node);
     }
     const isOptional = OPTIONAL_NAMESPACES.has(namespace);
     const family = route?.family ?? namespace;
@@ -565,7 +584,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       chainEndpoint: chain.endpointUrl,
       healthKey: (node) => jsonRpcHealthKey(node, family),
       unreachableKey: nodeUnreachableKey,
-      invoke: (target) => callOn(target.api, 'api', path, args),
+      invoke: (target, node) => invoke(target.api, node),
       isNodeFailure: isOptional
         ? async (error) => isApiNotServedError(error) || (await isTransportError(error))
         : isTransportError,
@@ -581,24 +600,22 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
   const callRest = async (
     isUnavailable: (error: unknown, path: readonly string[]) => boolean,
     path: readonly string[],
-    args: unknown[]
+    invoke: TInvoke
   ): Promise<unknown> => {
     const primary = endpointOf(resolveApiPath(chain.restApi, [], 'restApi'));
     const ownEndpoint = endpointOf(resolveApiPath(chain.restApi, path, 'restApi'));
-    if (typeof primary !== 'string' || typeof ownEndpoint !== 'string') {
-      return callOn(chain.restApi, 'restApi', path, args);
-    }
+    if (typeof primary !== 'string' || typeof ownEndpoint !== 'string') return invoke(chain.restApi);
     // A REST API with an endpoint of its own is failed over only when it is routed by its family.
     const configured = ownEndpoint === primary ? configuredNodesOf(primary) : [ownEndpoint];
     const route = await routeOf('restApi', path, configured);
-    if (!route && ownEndpoint !== primary) return callOn(chain.restApi, 'restApi', path, args);
+    if (!route && ownEndpoint !== primary) return invoke(chain.restApi, ownEndpoint);
     const apiName = path[0];
     return callWithFailover({
       label: path.join('.'),
       nodes: route?.nodes ?? configured,
       chainEndpoint: ownEndpoint,
       healthKey: (node) => restApiHealthKey(node, apiName),
-      invoke: (target) => callOn(target.restApi, 'restApi', path, args),
+      invoke: (target, node) => invoke(target.restApi, node),
       isNodeFailure: (error) => isUnavailable(error, path),
       isApiNotServed: isEndpointMissing,
       retriesPrimary: false,
@@ -614,17 +631,21 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     getRoot: () => object | undefined,
     rootName: string,
     path: readonly string[],
-    onCall: (path: readonly string[], args: unknown[]) => Promise<unknown>
+    onCall: (path: readonly string[], invoke: TInvoke) => Promise<unknown>
   ): object =>
     new Proxy(function apiPath() {}, {
       get: (_target, prop) => {
+        if (prop === ASK_EACH_NODE) {
+          return (ask: (nodeApi: object, node?: string) => Promise<unknown>) =>
+            onCall(path, (root, node) => ask(resolveApiPath(root, path, rootName), node));
+        }
         if (typeof prop === 'symbol' || prop === 'endpointUrl') {
           return Reflect.get(resolveApiPath(getRoot(), path, rootName), prop);
         }
         return createApiProxy(getRoot, rootName, [...path, prop], onCall);
       },
       set: (_target, prop, value) => Reflect.set(resolveApiPath(getRoot(), path, rootName), prop, value),
-      apply: (_target, _thisArg, args: unknown[]) => onCall(path, args)
+      apply: (_target, _thisArg, args: unknown[]) => onCall(path, (root) => callOn(root, rootName, path, args))
     });
 
   // Cached per timeout, so the derived chain's per-node attempt chains are reused across calls.
@@ -644,8 +665,8 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       if (prop === 'withTimeout' && typeof chain.withTimeout === 'function') return withTimeout;
       if (prop === 'api') return createApiProxy(() => chain.api, 'api', [], callJsonRpc);
       if (prop === 'restApi' && isRestApiUnavailable && chain.restApi) {
-        return createApiProxy(() => chain.restApi, 'restApi', [], (path, args) =>
-          callRest(isRestApiUnavailable, path, args)
+        return createApiProxy(() => chain.restApi, 'restApi', [], (path, invoke) =>
+          callRest(isRestApiUnavailable, path, invoke)
         );
       }
       return Reflect.get(target, prop, receiver);

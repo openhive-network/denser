@@ -103,7 +103,8 @@ export const getBridgeReadNode = async (): Promise<string> => {
  * The post read `method` in hivemind's vote-free form (`voteFree`, `<method>_v2`) where its node
  * serves it, else with votes (`stock`): on a lite node, only when its `lite.get_info` lists the
  * method; on `bridge.*`, unless the bridge node the call goes to (past the nodes failover skips)
- * answered it with "unknown method" before.
+ * answered it with "unknown method" before. A node failover carries the read to that answered so
+ * before is asked it with votes.
  */
 const voteFreeRead =
   <T>(
@@ -114,9 +115,9 @@ const voteFreeRead =
   async (api, lite) => {
     if (lite) {
       if (!servesVoteFreeLite(lite.info, method)) return stock(api);
-      return readVoteFree(liteVoteFree, lite.node, () => voteFree(api), () => stock(api));
+      return readVoteFree(liteVoteFree, lite.node, api, voteFree, stock);
     }
-    return readVoteFree(bridgeVoteFree, await getBridgeReadNode(), () => voteFree(api), () => stock(api));
+    return readVoteFree(bridgeVoteFree, await getBridgeReadNode(), api, voteFree, stock);
   };
 
 export const getPostsRanked = async (

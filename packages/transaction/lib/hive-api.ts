@@ -490,13 +490,13 @@ const SEARCH_TOP_VOTES = 0;
  */
 const findText = (params: SearchType): Promise<Entry[]> => {
   const chain = getSearchReadChain();
-  const api = chain.api['search-api'];
   const node = getHiveChainService().getApiEndpoints().searchApiEndpoint || chain.endpointUrl;
   return readVoteFree(
     searchVoteFree,
     node,
-    () => api.find_text_v2({ ...params, top_votes: SEARCH_TOP_VOTES }),
-    () => api.find_text(params)
+    chain.api['search-api'],
+    (api) => api.find_text_v2({ ...params, top_votes: SEARCH_TOP_VOTES }),
+    (api) => api.find_text(params)
   );
 };
 
