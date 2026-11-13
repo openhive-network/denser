@@ -1,0 +1,24 @@
+# The bot gate (on unless .env says DENSER_BOT_GATE=off): varnish deciding, for caddy,
+# whether a page document of the blog or the wallet reaches the app or gets the JS
+# challenge, a 403 or a 429 (varnish/bot-gate.vcl). An overlay: upgrade.sh adds it
+# before compose.cache.yml; a session stack never does. Independent of the HTML cache:
+# caddy asks it before routing, whichever upstream the route has. See README.md, "Bot gate".
+#
+#   caddy -> bot-gate:80 (204: go on) -> caddy's /blog or /wallet route
+
+services:
+  bot-gate:
+    image: varnish:7.7-alpine
+    restart: unless-stopped
+    environment:
+      VARNISH_VCL_FILE: /etc/varnish/bot-gate.vcl
+      # It stores nothing: synthetic answers only.
+      VARNISH_SIZE: 16M
+    volumes:
+      # The directory, as caddy/ is mounted; varnish-apply.sh loads a changed VCL.
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/varnish:/etc/varnish:ro
+    networks: [default]
+
+  caddy:
+    environment:
+      DENSER_BOT_GATE: "on"

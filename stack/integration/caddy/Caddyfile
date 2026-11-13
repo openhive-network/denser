@@ -16,6 +16,8 @@
 	}
 }
 
+import Caddyfile.bot-gate
+
 {$SITE_HOST} {
 	# Certificates by DNS-01: the name resolves to a LAN address the ACME
 	# servers can't reach.
@@ -24,6 +26,7 @@
 	}
 	encode zstd gzip
 
+	import bot-gate-{$DENSER_BOT_GATE:off}
 	import Caddyfile.routes
 }
 

@@ -32,6 +32,9 @@ each a production (`output: 'standalone'`) build with that base path.
   On mainnet, logging in signs **real** transactions.
 - **HTML cache** (optional, `DENSER_HTML_CACHE=varnish`): varnish between caddy and the
   blog stores the anonymous pages the blog marks public; see "Shared HTML cache" below.
+- **Bot gate** (on unless `DENSER_BOT_GATE=off`): a JS cookie challenge, a crawler
+  fingerprint block and a per-address rate limit on the page documents of both apps;
+  see "Bot gate" below.
 
 ## How it updates (follow mode)
 
@@ -236,6 +239,75 @@ only for a page that renders the same for every anonymous reader
   (hits, misses and passes since varnish started; `backend_req` is what reached the
   blog), or `varnishncsa -F '%U%q %{Varnish:handling}x %s'` for a request log.
 
+## Bot gate
+
+On 2026-11-13 a distributed crawl (about 22,600 addresses in 10 minutes, one or two
+requests each, browser user agents, `robots.txt` ignored) had the blog rendering about
+60 uncached pages a second, and real readers waited behind it. The gate keeps such a
+crawl from reaching the apps' servers.
+
+- **What:** varnish (`compose.bot-gate.yml`, rules in `varnish/bot-gate.vcl`) answering
+  caddy, not serving: before any route, caddy sends each page document to it
+  (`caddy/Caddyfile.bot-gate`, the way `forward_auth` asks an auth service) with the
+  client's address (from the PROXY header) as `X-Gate-Client`. A `204` lets the request
+  go on to its `/blog` or `/wallet` route; any other answer is the client's. Varnish
+  because caddy has no rate limiter without a third-party module (our own caddy build,
+  as "Shared HTML cache" says), and `vsthrottle` ships in the varnish image the cache
+  uses already. The gate sits beside the data path, so it works the same with the
+  HTML cache on or off, and for the wallet, which does not go through the cache.
+- **Gated:** a GET or HEAD under `/blog` or `/wallet`, except `/<app>/api/*`,
+  `/<app>/_next/*`, `/<app>/robots.txt`, a `_rsc` query and the client router's requests
+  (`RSC`, `Next-Router-State-Tree`, `Next-Router-Prefetch`,
+  `Next-Router-Segment-Prefetch`). `/robots.txt`, `/status` and the redirects into
+  `/blog` and `/wallet` never reach the gate.
+- **Rules,** in order:
+  1. A client address in `127/8`, `10/8`, `172.16/12`, `192.168/16`, `::1` or `fc00::/7`
+     passes: the fleet's tests, live checks and probes see real pages. The request
+     header `X-Gate-Test: 1` puts such a client through the rules below, to test them.
+  2. `Sec-Fetch-Site: none` with a `Referer` that is a bare origin (`https://host` or
+     `https://host/`): `403`, `Cache-Control: no-store`. A typed navigation never sends
+     a Referer; the crawl did.
+  3. More than 60 page documents a minute from one address: `429`, `Retry-After: 300`,
+     `no-store`, for 5 minutes. The challenge page counts; a 403 does not. The counts are
+     in the gate's memory and start over when it restarts.
+  4. No `denser_human=1` cookie and none of the signed-in cookies the HTML cache
+     recognises (`*_session`, `observer`, `observer-no-own-lists`, `account_info`): a
+     tiny `200` page, `no-store` and `noindex`, whose script sets `denser_human=1` (30
+     days, `Path=/`, `SameSite=Lax`, `Secure` on https) and reloads once the cookie is
+     there. A browser pays one reload on its first page; a client without JavaScript
+     never gets further.
+  5. Anything else passes.
+- **Caching:** the HTML cache drops `denser_human` with the other cookies it does not
+  key on, so anonymous pages are still keyed on URL and language only.
+- **If the gate is down:** caddy waits up to 5 s for it, then answers a page document
+  `502`; API routes, Next's files and router requests still work. `restart:
+  unless-stopped` brings it back.
+- **Turning it off:** `DENSER_BOT_GATE=off` in `.env`, then `./upgrade.sh`: compose drops
+  `compose.bot-gate.yml`, recreates caddy without the gate (`DENSER_BOT_GATE` in its
+  environment picks `bot-gate-on` or `bot-gate-off` in `Caddyfile.bot-gate`) and removes
+  the `bot-gate` container. Removing the line turns it on again. A session stack never
+  runs it (`Caddyfile.session` imports it, off).
+- **Changing the rules:** `varnish/bot-gate.vcl` is loaded by `varnish-apply.sh` like the
+  cache's VCL (each varnish service gets its own file, so a VCL loaded by hand with
+  `varnishadm` is replaced on the next change of `varnish/`); `caddy/Caddyfile.bot-gate`
+  by `caddy-apply.sh`.
+- **Checking it:** `./test-cache.sh` runs the gate in its throwaway stack and checks,
+  besides the cache: real pages for this (LAN) client, with the crawler's headers too;
+  with `X-Gate-Test: 1` the challenge on a blog and a wallet page, the 403, the real
+  (cached) page with `denser_human=1` or a session cookie, the exempt paths and router
+  requests, and the 429 on the 61st page document of a minute, while API routes and the
+  LAN exemption still pass. `./test-cache.sh https://$SITE_HOST` runs all but the 429
+  against the site. By hand, from a LAN host:
+
+  ```bash
+  site=https://denser.discuss.peerverity.info
+  curl -s -H 'X-Gate-Test: 1' "$site/blog/trending"                       # challenge
+  curl -s -H 'X-Gate-Test: 1' -H 'Cookie: denser_human=1' "$site/blog/trending"  # page
+  curl -sI -H 'X-Gate-Test: 1' -H 'Sec-Fetch-Site: none' -H "Referer: $site" "$site/blog/trending"  # 403
+  ```
+- **Measuring:** `docker compose exec bot-gate varnishncsa -F '%s %{X-Gate-Client}i %U'`
+  lists the gate's answers (204 passed, 200 challenged, 403, 429).
+
 ## OAuth2 check after each deploy
 
 The blog is the OAuth2 provider of openhive.chat ("Sign in with Denser"), with the
@@ -368,7 +440,8 @@ names stay `${APP_NAME}_` (`blog_session`, `wallet_session`).
 
 ## Setup (done once per host)
 
-The shared HTML cache is off unless `.env` says `DENSER_HTML_CACHE=varnish` (above).
+The shared HTML cache is off unless `.env` says `DENSER_HTML_CACHE=varnish` (above);
+the bot gate is on unless it says `DENSER_BOT_GATE=off`.
 
 ```bash
 git clone --branch aidev/integration git@gitlab.syncad.com:hive/denser.git ~/denser-integration
@@ -391,7 +464,8 @@ containers keep serving, then replaces them. Copying the units again (the comman
 above) shortens the timer to 2 minutes, and on a site whose `upgrade.sh` still ran
 `lighthouse.sh` itself, installs the Lighthouse unit that now does: until it is
 enabled, nothing is measured. By hand, compose needs the same file list:
-`COMPOSE_FILE=compose.yml:compose.follow.yml DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh) docker compose ps`.
+`COMPOSE_FILE=compose.yml:compose.follow.yml:compose.bot-gate.yml DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh) docker compose ps`
+(and `:compose.cache.yml` last with the cache).
 
 ## A session's stack (`session-stack.sh`)
 

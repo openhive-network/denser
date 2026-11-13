@@ -1,0 +1,40 @@
+# The bot gate (compose.bot-gate.yml, varnish/bot-gate.vcl; README.md, "Bot gate"),
+# imported at the top level of Caddyfile and Caddyfile.session. A site turns it on with
+#
+#   import bot-gate-{$DENSER_BOT_GATE:off}
+#
+# which compose.bot-gate.yml sets to `on`. Before any route, each page document of the
+# blog and the wallet is sent to the gate, the way forward_auth asks an auth service:
+# a 204 lets the request carry on to its route, anything else (the challenge page, a
+# 403, a 429) is the answer. API routes, Next's files, the client router's requests,
+# robots.txt, /status and the redirects outside /blog and /wallet never reach it.
+
+(bot-gate-on) {
+	invoke bot-gate
+}
+
+(bot-gate-off) {
+}
+
+&(bot-gate) {
+	@page {
+		method GET HEAD
+		path /blog /blog/* /wallet /wallet/*
+		not path /blog/robots.txt /wallet/robots.txt
+		not path_regexp ^/[^/]+/(api|_next)(/|$)
+		not query _rsc=*
+		not header RSC *
+		not header Next-Router-State-Tree *
+		not header Next-Router-Prefetch *
+		not header Next-Router-Segment-Prefetch *
+	}
+	reverse_proxy @page bot-gate:80 {
+		# The site's :443 server trusts no proxy, so this is the PROXY header's address.
+		header_up X-Gate-Client {client_ip}
+		lb_try_duration 5s
+		@pass status 204
+		handle_response @pass {
+			vars bot_gate pass
+		}
+	}
+}

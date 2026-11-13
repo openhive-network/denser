@@ -46,8 +46,10 @@ site=$checkout/stack/integration
 mkdir -p "$site/follow" "$checkout/.aidev" "$t/bin" "$t/run"
 cp upgrade.sh "$site/"
 cp follow/deployed.py follow/environment-image.sh "$site/follow/"
-printf '#!/usr/bin/env bash\nexit 0\n' > "$site/caddy-apply.sh"
-chmod +x "$site/caddy-apply.sh"
+for apply in caddy-apply.sh varnish-apply.sh; do
+    printf '#!/usr/bin/env bash\nexit 0\n' > "$site/$apply"
+    chmod +x "$site/$apply"
+done
 site_env() { # site_env [LINE...]: .env with the site's settings and LINEs
     { echo SITE_HOST=test-upkeep.invalid
       echo DENSER_MIN_FREE_GB=5
