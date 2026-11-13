@@ -49,8 +49,16 @@ function* walk(dir, inside, playwrightOnly) {
   }
 }
 
+// A file gone since it was listed (a build's `clean` running alongside) imports nothing.
 function* specifiers(file) {
-  for (const [, , specifier] of fs.readFileSync(file, 'utf8').matchAll(IMPORT_PATTERN)) yield specifier;
+  let text;
+  try {
+    text = fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return;
+    throw error;
+  }
+  for (const [, , specifier] of text.matchAll(IMPORT_PATTERN)) yield specifier;
 }
 
 // The repository path a relative or app-alias specifier names; null for any other.
