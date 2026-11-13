@@ -3,11 +3,11 @@ import type { AddressInfo } from 'node:net';
 import { after, afterEach, before, beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 import { logger } from '@ui/lib/logger';
-import { getSimilarPostsByPost } from './hivesense-api';
+import { getPostsByIds, getSimilarPostsByPost, searchPosts } from './hivesense-api';
 import { getHiveChainService } from './hive-chain-service';
 
 /**
- * `getSimilarPostsByPost` over a real socket, against a HiveSense node that answers every request
+ * `getSimilarPostsByPost` (and, for the viewer's vote, `searchPosts` and `getPostsByIds`) over a real socket, against a HiveSense node that answers every request
  * with the status and body a case sets, after the delay it sets.
  *
  * The read chain is a process-wide singleton that fixes its fallback nodes when first created, and
@@ -144,5 +144,40 @@ describe('getSimilarPostsByPost', function () {
     expect(loggedWarnings).to.have.length(1);
     expect(loggedWarnings[0][0]).to.be.instanceOf(Error).with.property('status', 503);
     expect(loggedErrors).to.deep.equal([]);
+  });
+
+  describe("the viewer's vote on HiveSense's full posts", () => {
+    const fullPost = { author: 'bob', permlink: 'similar', title: 'Similar', body: 'text' };
+    const stub = { author: 'carol', permlink: 'stub' };
+    const viewerVote = { rshares: 1200, percent: 5000 };
+    const withVotes = { ...fullPost, active_votes: [{ voter: 'hive.blog', rshares: 1200, percent: 5000 }] };
+    const reads = {
+      similar: getSimilar,
+      search: () => searchPosts({ query: 'solar array', observer: 'hive.blog' }),
+      byIds: () => getPostsByIds({ posts: [fullPost, stub], observer: 'hive.blog' })
+    };
+
+    for (const [name, read] of Object.entries(reads)) {
+      it(`${name}: carries a vote-free post's observer_vote as the observer's, a stub as it came`, async () => {
+        hiveSense.status = 200;
+        hiveSense.body = [{ ...fullPost, observer_vote: viewerVote }, { ...fullPost, permlink: 'unvoted' }, stub];
+
+        const posts = await read();
+
+        expect(posts?.filter((post) => post.permlink !== 'stub')).to.deep.equal([
+          { ...fullPost, observer_vote: viewerVote, _observer: 'hive.blog' },
+          { ...fullPost, permlink: 'unvoted', observer_vote: null, _observer: 'hive.blog' }
+        ]);
+        // getPostsByIds drops stubs; the other reads keep them for a later by-ids page.
+        if (name !== 'byIds') expect(posts?.[2]).to.deep.equal(stub);
+      });
+
+      it(`${name}: returns a post with its votes as it came`, async () => {
+        hiveSense.status = 200;
+        hiveSense.body = [withVotes];
+
+        expect(await read()).to.deep.equal([withVotes]);
+      });
+    }
   });
 });

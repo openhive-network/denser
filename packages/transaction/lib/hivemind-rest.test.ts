@@ -322,7 +322,7 @@ describe('hivemind REST reads', function () {
 
     expect(posts).to.deep.equal(fixtures.rankedPosts);
     expect(rest.requests).to.deep.equal([
-      '/hivemind-api/search/posts?q=solar%20array&sort=relevance&observer=hive.blog&page-size=20'
+      `/hivemind-api/search/posts?q=solar%20array&sort=relevance&observer=hive.blog&page-size=20&${POST_SHAPE}`
     ]);
   });
 
@@ -465,6 +465,38 @@ describe('hivemind REST reads', function () {
 
     expect(await getDiscussionWithVotes(post.author, post.permlink, 'bob')).to.deep.equal(fixtures.discussion);
     expect(rest.requests).to.deep.equal([`${restPostPath}/discussion?observer=bob`]);
+  });
+
+  const searchPath = '/hivemind-api/search/posts';
+  const restSearch = { pattern: 'solar array', observer: 'bob' };
+  const searchUrl = `${searchPath}?q=solar%20array&sort=relevance&observer=bob&page-size=20&${POST_SHAPE}`;
+
+  it("searches /search/posts with votes=none, each entry with the observer's vote from observer_vote", async () => {
+    rest.routes[searchPath] = { body: [{ ...voteFreeEntry, observer_vote: viewerVote }, voteFreeEntry] };
+
+    expect(await getByText(restSearch)).to.deep.equal([
+      { ...voteFreeEntry, observer_vote: viewerVote, _observer: 'bob' },
+      { ...voteFreeEntry, observer_vote: null, _observer: 'bob' }
+    ]);
+    expect(rest.requests).to.deep.equal([searchUrl]);
+    expect(rpc.calls.filter(({ method }) => method.startsWith('search-api.'))).to.deep.equal([]);
+  });
+
+  it("takes a P0001 answer to /search/posts as the search's own, still asking with votes=none", async () => {
+    rest.routes[searchPath] = (url) =>
+      url.includes('q=solar')
+        ? { status: 400, body: { code: 'P0001', message: 'missing a required argument: sort' } }
+        : { body: [voteFreeEntry] };
+    rpc.results['search-api.find_text'] = fixtures.rankedPosts;
+
+    expect(await getByText(restSearch)).to.deep.equal(fixtures.rankedPosts);
+    expect(await getByText({ ...restSearch, pattern: 'hardfork' })).to.deep.equal([
+      { ...voteFreeEntry, observer_vote: null, _observer: 'bob' }
+    ]);
+    expect(rest.requests).to.deep.equal([
+      searchUrl,
+      `${searchPath}?q=hardfork&sort=relevance&observer=bob&page-size=20&${POST_SHAPE}`
+    ]);
   });
 
   describe('vote-free search reads', () => {
@@ -789,6 +821,29 @@ describe('hivemind REST reads', function () {
         ]);
       });
     });
+  });
+
+  // Last: the rejection keeps every later REST search in this process on the old request.
+  it('asks a REST node that rejects votes=none for a search as before, and then no more', async () => {
+    const pgrst202 = {
+      status: 404,
+      body: { code: 'PGRST202', message: 'Could not find the function hivemind_endpoints.search_posts(votes)' }
+    };
+    rest.routes[searchPath] = (url) => (url.includes('votes=') ? pgrst202 : { body: fixtures.rankedPosts });
+
+    expect(await getByText({ pattern: 'solar array', observer: 'bob' })).to.deep.equal(fixtures.rankedPosts);
+    expect(await getByText({ pattern: 'hardfork', observer: 'bob' })).to.deep.equal(fixtures.rankedPosts);
+    // Other kinds keep their own record: a post list is still asked vote-free.
+    rest.routes['/hivemind-api/posts'] = { body: [voteFreeEntry] };
+    await getPostsRanked('created', '', '', '', 'bob');
+
+    expect(rest.requests).to.deep.equal([
+      `${searchPath}?q=solar%20array&sort=relevance&observer=bob&page-size=20&${POST_SHAPE}`,
+      `${searchPath}?q=solar%20array&sort=relevance&observer=bob&page-size=20`,
+      `${searchPath}?q=hardfork&sort=relevance&observer=bob&page-size=20`,
+      `/hivemind-api/posts?sort=created&observer=bob&page-size=20&${LIST_SHAPE}`
+    ]);
+    expect(rpc.calls.filter(({ method }) => method.startsWith('search-api.'))).to.deep.equal([]);
   });
 
   // Last: the rejection keeps every later REST post list in this process on the old request.

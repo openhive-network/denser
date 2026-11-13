@@ -78,7 +78,7 @@ test.describe('anonymous', () => {
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);
     expect(servedRestRequests()).toContain(
-      '/hivemind-api/search/posts?q=hive&sort=relevance&observer=hive.blog&page-size=20'
+      '/hivemind-api/search/posts?q=hive&sort=relevance&observer=hive.blog&page-size=20&votes=none'
     );
   });
 

@@ -12,12 +12,23 @@ import {
   isRenderableSearchEntry,
   promiseWithTimeout
 } from './hivesense-search';
+import { listWithObserverVotes, withObserverVote } from './vote-free-posts';
 
 /**
  * Request timeout of the similar-posts call. A cold HiveSense similar-posts query took a healthy node
  * up to ~9 s before its cache warmed, well past the read chain's per-attempt timeout.
  */
 const SIMILAR_POSTS_TIMEOUT_MS = 15_000;
+
+const isFullPost = (post: Entry | PostStub): post is Entry => !isHiveSenseStub(post);
+
+/**
+ * HiveSense's posts as the rest of the app reads them: each full post through `withObserverVote`, so
+ * a vote-free one (`observer_vote`, no `active_votes`) and a full-vote one give the same viewer vote
+ * state; stubs as they came.
+ */
+const withObserverVotes = (posts: MixedPostsResponse, observer: string): MixedPostsResponse =>
+  posts.map((post) => (isFullPost(post) ? withObserverVote(post, observer) : post));
 
 const logStandarizedError = (methodName: string, error: unknown): null => {
   logger.error(error, `Error in ${methodName}`);
@@ -68,7 +79,7 @@ export const searchPosts = async ({
       AI_SEARCH_REQUEST_TIMEOUT_MS,
       'searchPosts'
     );
-    return response;
+    return response && withObserverVotes(response, observer);
   } catch (error) {
     return logStandarizedError('searchPosts', error);
   }
@@ -103,7 +114,7 @@ export const getSimilarPostsByPost = async ({
       full_posts,
       observer
     });
-    return response;
+    return response && withObserverVotes(response, observer);
   } catch (error) {
     if (isHiveSenseNoEmbeddingError(error)) return null;
     // Suggestions are optional: a failure only means there are none to show.
@@ -136,7 +147,10 @@ export const getPostsByIds = async ({
     if (Array.isArray(response)) {
       // Do not require post_id. Current HiveSense entries omit it; filtering
       // on it made every by-ids page look empty (#949).
-      return response.filter((post): post is Entry => isRenderableSearchEntry(post));
+      return listWithObserverVotes(
+        response.filter((post): post is Entry => isRenderableSearchEntry(post)),
+        observer
+      );
     }
     return response;
   } catch (error) {
