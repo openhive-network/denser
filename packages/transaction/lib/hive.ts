@@ -1,5 +1,5 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
-import { Entry, IListWitnessVotes } from '@hive/common-hiveio-packages/wax';
+import { IListWitnessVotes } from '@hive/common-hiveio-packages/wax';
 import { getChain, getReadChain } from './chain';
 
 export interface IDynamicProps {
@@ -16,14 +16,6 @@ export interface IDynamicProps {
   virtualSupply: number;
   vestingRewardPercent: number;
 }
-
-export const getPost = async (
-  username: string,
-  permlink: string,
-  observer: string = ''
-): Promise<Entry | null> => {
-  return getReadChain().api.bridge.get_post({ author: username, permlink, observer });
-};
 
 export const getListWitnessVotes = async (
   username: string,

@@ -96,7 +96,7 @@ export type TPostShape = Pick<HivemindRestPostPage, 'votes'>;
 const POST_SHAPE: TPostShape = { votes: 'none' };
 
 /** The REST reads asking for a shape, each with its own record: a node may take it on one and not another. */
-type TShapedRead = 'post lists' | 'posts';
+type TShapedRead = 'post lists' | 'posts' | 'searches';
 
 const shapeRejectedUntil = new Map<TShapedRead, number>();
 /** The kinds whose shaped request a node served (or answered itself) since their last rejection. */
@@ -225,3 +225,10 @@ export const readRestPostList = (read: (shape: TPostListShape) => Promise<Entry[
  */
 export const readRestPost = <T>(read: (shape: TPostShape) => Promise<T>): Promise<T> =>
   readWithShape('posts', POST_SHAPE, read);
+
+/**
+ * A REST post search (`/search/posts`) read by `read` with `votes=none`, its entries carrying
+ * `observer_vote` and no `active_votes`, on a node that rejects it without (see `readWithShape`).
+ */
+export const readRestSearch = (read: (shape: TPostShape) => Promise<Entry[]>): Promise<Entry[]> =>
+  readWithShape('searches', POST_SHAPE, read);

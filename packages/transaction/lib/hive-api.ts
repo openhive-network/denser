@@ -21,7 +21,7 @@ import {
   getSearchReadChain,
   type HivemindRestApi
 } from './chain';
-import { nonEmpty, readFromHivemind } from './hivemind-rest';
+import { nonEmpty, readFromHivemind, readRestSearch } from './hivemind-rest';
 import { ApiAccount } from '@hiveio/wax';
 import {
   calculateCurrentManabarValue,
@@ -518,15 +518,18 @@ export const getByText = async ({
       'searchPosts',
       {},
       (api) =>
-        api.searchPosts({
-          q: pattern,
-          sort,
-          author: nonEmpty(author),
-          observer,
-          'page-size': limit,
-          'start-author': nonEmpty(start_author),
-          'start-permlink': nonEmpty(start_permlink)
-        }),
+        readRestSearch((shape) =>
+          api.searchPosts({
+            q: pattern,
+            sort,
+            author: nonEmpty(author),
+            observer,
+            'page-size': limit,
+            'start-author': nonEmpty(start_author),
+            'start-permlink': nonEmpty(start_permlink),
+            ...shape
+          })
+        ),
       readFindText,
       getSearchHivemindRestApi()
     );
