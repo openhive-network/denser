@@ -110,6 +110,59 @@ describe('readVoteFree', () => {
     expect(support.lacks(NODE)).to.equal(false);
     expect(calls).to.deep.equal([`v2 ${NODE}`, `v2 ${NODE}`]);
   });
+
+  describe('concurrent reads of a node not yet probed', () => {
+    const READERS = 6;
+
+    const readConcurrently = async (voteFree: () => Promise<string>) => {
+      const { calls, read } = reader();
+      let release = () => {};
+      const held = new Promise<void>((resolve) => (release = resolve));
+      const reads = Array.from({ length: READERS }, (_, index) =>
+        read(NODE, async () => {
+          if (index === 0) await held;
+          return voteFree();
+        })
+      );
+      await new Promise((resolve) => setImmediate(resolve));
+      const askedWhilePending = [...calls];
+      release();
+      return { answers: await Promise.all(reads), askedWhilePending, calls };
+    };
+
+    it('asks a node without them once, and every read gets the stock form', async () => {
+      const { answers, askedWhilePending, calls } = await readConcurrently(() => Promise.reject(unknownMethod()));
+
+      expect(askedWhilePending).to.deep.equal([`v2 ${NODE}`]);
+      expect(calls.filter((call) => call.startsWith('v2'))).to.deep.equal([`v2 ${NODE}`]);
+      expect(answers).to.deep.equal(Array(READERS).fill('stock'));
+    });
+
+    it('asks a node with them once first, and then every read asks it vote-free', async () => {
+      const { answers, askedWhilePending, calls } = await readConcurrently(async () => 'vote-free');
+
+      expect(askedWhilePending).to.deep.equal([`v2 ${NODE}`]);
+      expect(calls).to.deep.equal(Array(READERS).fill(`v2 ${NODE}`));
+      expect(answers).to.deep.equal(Array(READERS).fill('vote-free'));
+    });
+
+    it('lets the reads waiting on a probe that failed otherwise ask the vote-free form themselves', async () => {
+      const { calls, support, read } = reader();
+      let asked = 0;
+      const voteFree = async () => {
+        asked += 1;
+        if (asked === 1) throw transportFailure;
+        return 'vote-free';
+      };
+
+      const answers = await Promise.allSettled(Array.from({ length: READERS }, () => read(NODE, voteFree)));
+
+      expect(answers[0]).to.deep.equal({ status: 'rejected', reason: transportFailure });
+      expect(answers.slice(1)).to.deep.equal(Array(READERS - 1).fill({ status: 'fulfilled', value: 'vote-free' }));
+      expect(calls).to.deep.equal(Array(READERS).fill(`v2 ${NODE}`));
+      expect(support.lacks(NODE)).to.equal(false);
+    });
+  });
 });
 
 describe('withObserverVote', () => {
