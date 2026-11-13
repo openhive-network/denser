@@ -28,11 +28,18 @@
 # own unit (systemd/denser-integration-lighthouse@.timer), so a deploy never waits
 # for a measurement.
 #
+# A run whose checkout sync brings in a different upgrade.sh execs the new one (same
+# arguments, once per run, the lock held) before it composes or applies anything, so
+# one run never pairs this script's compose set with the new caddy/ or varnish/.
+#
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
 # (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/;
 # 5 varnish refused the checkout's varnish/; 6 too little free disk to build (DISK-LOW).
 set -euo pipefail
 cd "$(dirname "$0")"
+self=./${0##*/}
+self_sum=$(sha256sum < "$self")
+self_args=("$@")
 
 quiet=false
 [ "${1:-}" = --quiet ] && quiet=true
@@ -73,8 +80,18 @@ apply_varnish() {
 
 # Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
 mkdir -p status releases
-exec 8>status/.upgrade.lock
+# A re-exec inherits fd 8, whose lock it still holds: reopening the file would drop it.
+[ "${DENSER_UPGRADE_REEXEC:-}" = 1 ] && [ /dev/fd/8 -ef status/.upgrade.lock ] \
+    || exec 8>status/.upgrade.lock
 flock -n 8 || { say "upgrade: another upgrade is running"; exit 0; }
+
+# Runs the checkout's upgrade.sh in place of this one when the sync changed it.
+reexec_if_changed() {
+    [ "${DENSER_UPGRADE_REEXEC:-}" != 1 ] || return 0
+    [ "$(sha256sum < "$self")" != "$self_sum" ] || return 0
+    echo "upgrade: the checkout brought a new upgrade.sh; running it"
+    DENSER_UPGRADE_REEXEC=1 exec "$self" "${self_args[@]}"
+}
 
 # --ff-only: a hand edit here stops the pull rather than being merged over.
 images_sync_checkout() {
@@ -91,6 +108,7 @@ images_sync_checkout() {
 images_upgrade() {
     export COMPOSE_FILE=compose.yml$gate_compose$cache_compose
     images_sync_checkout
+    reexec_if_changed
 
     ids() { docker compose images --format json 2>/dev/null | python3 -c '
 import json, sys
@@ -382,6 +400,7 @@ follow_upgrade() {
         follow_write_status REFUSED "$refused"
         exit 3
     fi
+    reexec_if_changed
 
     image=$(follow_image)
     export DENSER_FOLLOW_IMAGE=$image

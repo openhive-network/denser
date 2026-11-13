@@ -11,6 +11,8 @@
 #   - with enough free disk it goes past the guard (here to REFUSED: no checkout),
 #     and a run that brings every app to the tip records its image and prunes;
 #   - --quiet runs print nothing on stdout;
+#   - a sync that brings in a changed upgrade.sh execs it once, the lock still held,
+#     before anything is composed or applied; an unchanged one is not re-executed;
 #   - follow/serve.sh keeps its server running when serving.json can't be written,
 #     and writes it again on the next release once it can.
 #
@@ -47,7 +49,7 @@ mkdir -p "$site/follow" "$checkout/.aidev" "$t/bin" "$t/run"
 cp upgrade.sh "$site/"
 cp follow/deployed.py follow/environment-image.sh "$site/follow/"
 for apply in caddy-apply.sh varnish-apply.sh; do
-    printf '#!/usr/bin/env bash\nexit 0\n' > "$site/$apply"
+    printf '#!/usr/bin/env bash\necho "%s" >> "$FAKE_CALLS"\n' "$apply" > "$site/$apply"
     chmod +x "$site/$apply"
 done
 site_env() { # site_env [LINE...]: .env with the site's settings and LINEs
@@ -79,6 +81,8 @@ echo "Filesystem 1-blocks Used Available Capacity Mounted on"
 echo "/dev/fake 96000000000 0 $FAKE_FREE_BYTES 99% /"
 STUB
 # FAKE_GIT=ok: a clean checkout on its branch at the tip; otherwise no checkout.
+# FAKE_NEW_UPGRADE: a script each merge puts in place of upgrade.sh, every time a
+# different one.
 cat > "$t/bin/git" <<STUB
 #!/usr/bin/env bash
 echo "git \$*" >> "\$FAKE_CALLS"
@@ -90,6 +94,11 @@ esac
 case "\$*" in
     "symbolic-ref -q --short HEAD") echo aidev/integration ;;
     "rev-parse --short HEAD") echo 0123456 ;;
+    "merge -q --ff-only origin/"*)
+        [ -z "\${FAKE_NEW_UPGRADE:-}" ] && exit 0
+        { cat "\$FAKE_NEW_UPGRADE"; echo "# pulled by \$\$"; } > "$site/upgrade.sh.new"
+        chmod +x "$site/upgrade.sh.new"
+        mv -f "$site/upgrade.sh.new" "$site/upgrade.sh" ;;
 esac
 exit 0
 STUB
@@ -243,6 +252,23 @@ holds "new image: both images recorded, newest last" \
 holds "new image: the image before it removed" called "docker image rm sha256:old1"
 holds "new image: current and previous images kept" not_called_like 'image rm .*(cccc|dddd)'
 holds "new image: nothing on stdout" quiet_stdout
+
+holds "unchanged upgrade.sh: not re-executed" test "$(grep -c '^git merge ' "$t/calls")/$(grep -c "new upgrade.sh" "$t/upgrade.log")" = 1/0
+
+# --- a sync that brings in a changed upgrade.sh, which records that it ran and
+# whether another run could take the lock ---
+awk '{ print } /^flock -n 8 \|\|/ {
+    print "echo \"ran $(flock -n status/.upgrade.lock true && echo unlocked || echo locked)\" >> \"$FAKE_MARKER\"" }' \
+    upgrade.sh > "$t/new-upgrade.sh"
+: > "$t/marker"
+FAKE_GIT=ok FAKE_NEW_UPGRADE=$t/new-upgrade.sh FAKE_MARKER=$t/marker upgrade 10000000000
+holds "new upgrade.sh: exit 0" test "$rc" = 0
+holds "new upgrade.sh: ran once, in the same run, the lock held" test "$(paste -sd ' ' "$t/marker")" = "ran locked"
+holds "new upgrade.sh: one re-exec" test "$(grep -c "the checkout brought a new upgrade.sh; running it" "$t/upgrade.log")" = 1
+holds "new upgrade.sh: synced again by the new script only" test "$(grep -c '^git merge ' "$t/calls")" = 2
+holds "new upgrade.sh: composed and applied once" \
+    test "$(grep -cE '^docker compose up |^caddy-apply.sh$|^varnish-apply.sh$' "$t/calls")" = 3
+cp upgrade.sh "$site/"
 
 # --- serve.sh with an unwritable serving.json ---
 releases=$t/releases
