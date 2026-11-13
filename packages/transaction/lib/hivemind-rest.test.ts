@@ -24,6 +24,8 @@ import {
 import { getActiveVotes, getByText, getFollowers, getFollowing, getProfileInfo, getRebloggedBy } from './hive-api';
 import { getHiveChainService } from './hive-chain-service';
 import { getHivemindRestApi } from './chain';
+import { readRestPost, readRestPostList } from './hivemind-rest';
+import { ReadTransportError } from './read-transport';
 
 /**
  * The bridge / hive-api reads covered by hivemind's REST API, over real sockets between a JSON-RPC
@@ -835,5 +837,96 @@ describe('hivemind REST reads', function () {
     expect(stockCalls(rpc.calls).filter(({ method }) => method !== 'lite.get_info')).to.deep.equal([
       { method: 'bridge.get_post', params: { author: 'nobody', permlink: 'missing', observer: 'bob' } }
     ]);
+  });
+
+  // Last: each case first lets the kind's earlier record expire, so its reads find none.
+  describe('concurrent reads of a kind with no record', () => {
+    const READERS = 6;
+    const TTL_MS = 15 * 60 * 1000;
+    const realNow = Date.now;
+    let elapsed = 0;
+
+    beforeEach(() => {
+      elapsed += TTL_MS + 1;
+      Date.now = () => realNow() + elapsed;
+    });
+
+    after(() => {
+      Date.now = realNow;
+    });
+
+    const votesRejected = new ReadTransportError(
+      'HTTP 404',
+      { method: 'GET', endpoint: 'hivemind-api.posts', url: '', timeout: 1000, responseType: 'json' },
+      404,
+      undefined,
+      { code: 'PGRST202', message: 'Could not find the function hivemind_endpoints.get_ranked_posts(votes)' }
+    );
+    const serverError = new ReadTransportError(
+      'HTTP 502',
+      { method: 'GET', endpoint: 'hivemind-api.posts', url: '', timeout: 1000, responseType: 'json' },
+      502
+    );
+
+    /** A node the probe reaches: its first shaped request is answered when `release` is called. */
+    const stubNode = (answerShaped: () => Promise<string>) => {
+      const shapedAt: number[] = [];
+      let release = () => {};
+      const held = new Promise<void>((resolve) => (release = resolve));
+      const read = async (shape: { votes?: string }) => {
+        if (!shape.votes) return 'with votes';
+        shapedAt.push(shapedAt.length);
+        if (shapedAt.length === 1) await held;
+        return answerShaped();
+      };
+      return { shapedAt, read, release: () => release() };
+    };
+
+    const readConcurrently = async (node: ReturnType<typeof stubNode>) => {
+      const reads = Array.from({ length: READERS }, () => readRestPost(node.read));
+      await new Promise((resolve) => setImmediate(resolve));
+      const shapedWhilePending = node.shapedAt.length;
+      node.release();
+      return { answers: await Promise.all(reads), shapedWhilePending };
+    };
+
+    it('sends one votes=none request to a node that rejects it, and every read is answered with votes', async () => {
+      const node = stubNode(() => Promise.reject(votesRejected));
+
+      const { answers, shapedWhilePending } = await readConcurrently(node);
+
+      expect(shapedWhilePending).to.equal(1);
+      expect(node.shapedAt).to.have.length(1);
+      expect(answers).to.deep.equal(Array(READERS).fill('with votes'));
+    });
+
+    it('sends one votes=none probe to a node that serves it, and then every read asks it vote-free', async () => {
+      const node = stubNode(async () => 'vote-free');
+
+      const { answers, shapedWhilePending } = await readConcurrently(node);
+
+      expect(shapedWhilePending).to.equal(1);
+      expect(node.shapedAt).to.have.length(READERS);
+      expect(answers).to.deep.equal(Array(READERS).fill('vote-free'));
+    });
+
+    // A post list read: single posts are now on record as accepted, which no later read changes.
+    it('lets the reads waiting on a probe that failed otherwise ask with votes=none themselves, recording nothing', async () => {
+      let shaped = 0;
+      const read = async (shape: { votes?: string }) => {
+        if (!shape.votes) return null;
+        shaped += 1;
+        if (shaped === 1) throw serverError;
+        return [];
+      };
+
+      const answers = await Promise.allSettled(Array.from({ length: READERS }, () => readRestPostList(read)));
+
+      expect(answers[0]).to.deep.equal({ status: 'rejected', reason: serverError });
+      expect(answers.slice(1)).to.deep.equal(Array(READERS - 1).fill({ status: 'fulfilled', value: [] }));
+      expect(shaped).to.equal(READERS);
+      expect(await readRestPostList(read)).to.deep.equal([]);
+      expect(shaped).to.equal(READERS + 1);
+    });
   });
 });

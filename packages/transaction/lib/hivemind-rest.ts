@@ -99,6 +99,14 @@ const POST_SHAPE: TPostShape = { votes: 'none' };
 type TShapedRead = 'post lists' | 'posts';
 
 const shapeRejectedUntil = new Map<TShapedRead, number>();
+/** The kinds whose shaped request a node served (or answered itself) since their last rejection. */
+const shapeAccepted = new Set<TShapedRead>();
+
+/** What a probe, the shaped read sent while a kind has no record, found: `unknown` when it failed otherwise. */
+type TShapeVerdict = 'accepted' | 'rejected' | 'unknown';
+
+/** The probe of each kind in flight: while it is pending no other read of the kind asks with the shape. */
+const shapeProbes = new Map<TShapedRead, Promise<TShapeVerdict>>();
 
 /** PostgREST error codes a function raises itself: it was found and took the request's params. */
 const FUNCTION_OWN_ANSWERS = new Set(['P0001', 'PT404']);
@@ -111,29 +119,39 @@ const isShapeRejected = (error: unknown): boolean =>
   !isFunctionOwnAnswer(error) &&
   (isEndpointMissing(error) || (error.status !== undefined && isRequestRejected(error.status)));
 
+const isShapeRejectedNow = (kind: TShapedRead): boolean => Date.now() < (shapeRejectedUntil.get(kind) ?? 0);
+
 const rejectShape = (kind: TShapedRead): void => {
+  shapeAccepted.delete(kind);
   shapeRejectedUntil.set(kind, Date.now() + HIVEMIND_ENDPOINT_MISSING_TTL_MS);
   logger.info('hivemind REST rejects votes=none, reading %s with votes for %d ms', kind, HIVEMIND_ENDPOINT_MISSING_TTL_MS);
 };
 
+const shapeVerdict = (kind: TShapedRead): TShapeVerdict => {
+  if (isShapeRejectedNow(kind)) return 'rejected';
+  return shapeAccepted.has(kind) ? 'accepted' : 'unknown';
+};
+
 /**
- * `read` asked with `shape`, unless `kind` was rejected within HIVEMIND_ENDPOINT_MISSING_TTL_MS.
- * A node that rejects the shape (an older hivemind: a 4xx, or a function not found, but not the
- * function's own answer such as "Post … does not exist") is asked again without it, and once that
- * second request is served or gets the function's own answer, for HIVEMIND_ENDPOINT_MISSING_TTL_MS
- * no `kind` read is asked with it. `shaped` maps an answer to the shaped request. Every other error,
- * and any of the second request, is thrown.
+ * `read` asked with `shape`; a node that rejects the shape (an older hivemind: a 4xx, or a function
+ * not found, but not the function's own answer such as "Post … does not exist") is asked again
+ * without it, and once that second request is served or gets the function's own answer, `kind` is
+ * recorded as rejected for HIVEMIND_ENDPOINT_MISSING_TTL_MS. A served shaped request, or the
+ * function's own answer to it, records `kind` as accepted. Every other error, and any of the second
+ * request, is thrown.
  */
-async function readWithShape<T, S extends object>(
+async function askWithShape<T, S extends object>(
   kind: TShapedRead,
   shape: S,
   read: (shape: Partial<S>) => Promise<T>,
-  shaped: (answer: T) => T = (answer) => answer
+  shaped: (answer: T) => T
 ): Promise<T> {
-  if (Date.now() < (shapeRejectedUntil.get(kind) ?? 0)) return read({});
   try {
-    return shaped(await read(shape));
+    const answer = shaped(await read(shape));
+    shapeAccepted.add(kind);
+    return answer;
   } catch (error) {
+    if (error instanceof ReadTransportError && isFunctionOwnAnswer(error)) shapeAccepted.add(kind);
     if (!isShapeRejected(error)) throw error;
     try {
       const answer = await read({});
@@ -145,6 +163,48 @@ async function readWithShape<T, S extends object>(
       throw retryError;
     }
   }
+}
+
+/** `askWithShape` as the probe of `kind`: reads of the kind starting while it is pending await its verdict. */
+function probeShape<T, S extends object>(
+  kind: TShapedRead,
+  shape: S,
+  read: (shape: Partial<S>) => Promise<T>,
+  shaped: (answer: T) => T
+): Promise<T> {
+  const asked = askWithShape(kind, shape, read, shaped);
+  const verdict = asked.then(
+    () => shapeVerdict(kind),
+    () => shapeVerdict(kind)
+  );
+  shapeProbes.set(kind, verdict);
+  void verdict.then(() => {
+    if (shapeProbes.get(kind) === verdict) shapeProbes.delete(kind);
+  });
+  return asked;
+}
+
+/**
+ * `read` asked with `shape` (see `askWithShape`), unless `kind` was rejected within
+ * HIVEMIND_ENDPOINT_MISSING_TTL_MS. While `kind` has no record, one read at a time probes the node
+ * with the shape; reads starting meanwhile await its verdict and then ask without the shape after a
+ * rejection, and with it otherwise (a probe that failed for another reason records nothing).
+ * `shaped` maps an answer to the shaped request.
+ */
+async function readWithShape<T, S extends object>(
+  kind: TShapedRead,
+  shape: S,
+  read: (shape: Partial<S>) => Promise<T>,
+  shaped: (answer: T) => T = (answer) => answer
+): Promise<T> {
+  if (isShapeRejectedNow(kind)) return read({});
+  const probe = shapeProbes.get(kind);
+  if (probe) {
+    if ((await probe) === 'rejected') return read({});
+    return askWithShape(kind, shape, read, shaped);
+  }
+  if (shapeAccepted.has(kind)) return askWithShape(kind, shape, read, shaped);
+  return probeShape(kind, shape, read, shaped);
 }
 
 const markBodiesCut = (entries: Entry[] | null): Entry[] | null =>

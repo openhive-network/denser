@@ -44,11 +44,54 @@ export const createVoteFreeSupport = (): IVoteFreeSupport => {
   };
 };
 
+/** What each record knows of its nodes beyond `lacks`: the nodes that served a vote-free read, and the probes in flight. */
+interface IVoteFreeProbes {
+  serving: Set<string>;
+  pending: Map<string, Promise<void>>;
+}
+
+const probesOf = new WeakMap<IVoteFreeSupport, IVoteFreeProbes>();
+
+const getProbes = (support: IVoteFreeSupport): IVoteFreeProbes => {
+  const known = probesOf.get(support);
+  if (known) return known;
+  const probes: IVoteFreeProbes = { serving: new Set(), pending: new Map() };
+  probesOf.set(support, probes);
+  return probes;
+};
+
+/**
+ * `voteFree()`, else `stock()` when it is answered with "unknown method". That answer marks the node
+ * that gave it (the error's endpoint, else `node`) as lacking the vote-free reads; a served
+ * `voteFree()` marks `node` as serving them. Every other error of `voteFree()` is thrown.
+ */
+async function askVoteFree<T>(
+  support: IVoteFreeSupport,
+  node: string,
+  voteFree: () => Promise<T>,
+  stock: () => Promise<T>
+): Promise<T> {
+  try {
+    const answer = await voteFree();
+    getProbes(support).serving.add(node);
+    return answer;
+  } catch (error) {
+    if (!isUnknownMethodError(error)) throw error;
+    const answered = (error instanceof JsonRpcApiError && error.endpoint) || node;
+    logger.info('%s has no vote-free post reads, reading posts with their votes', answered);
+    support.markLacking(answered);
+    return stock();
+  }
+}
+
 /**
  * `voteFree()`, the vote-free read, unless `node` (where it would go) is known to lack it; then, and
  * when it is answered with "unknown method", `stock()`, the same read with votes. That answer marks
  * the node that gave it (the error's endpoint, else `node`) as lacking the vote-free reads, so later
  * reads skip them; no other failure does, and every other error of `voteFree()` is thrown.
+ *
+ * While `node` is neither known to lack nor to serve them, one read at a time probes it; reads to it
+ * starting meanwhile await the probe's outcome, so a node without them answers "unknown method" once.
  */
 export async function readVoteFree<T>(
   support: IVoteFreeSupport,
@@ -57,15 +100,24 @@ export async function readVoteFree<T>(
   stock: () => Promise<T>
 ): Promise<T> {
   if (support.lacks(node)) return stock();
-  try {
-    return await voteFree();
-  } catch (error) {
-    if (!isUnknownMethodError(error)) throw error;
-    const answered = (error instanceof JsonRpcApiError && error.endpoint) || node;
-    logger.info('%s has no vote-free post reads, reading posts with their votes', answered);
-    support.markLacking(answered);
-    return stock();
+  const probes = getProbes(support);
+  const probe = probes.pending.get(node);
+  if (probe) {
+    await probe;
+    if (support.lacks(node)) return stock();
+    return askVoteFree(support, node, voteFree, stock);
   }
+  if (probes.serving.has(node)) return askVoteFree(support, node, voteFree, stock);
+  const asked = askVoteFree(support, node, voteFree, stock);
+  const settled = asked.then(
+    () => undefined,
+    () => undefined
+  );
+  probes.pending.set(node, settled);
+  void settled.then(() => {
+    if (probes.pending.get(node) === settled) probes.pending.delete(node);
+  });
+  return asked;
 }
 
 /**
