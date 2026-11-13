@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 # Check the shared HTML cache (varnish/default.vcl, compose.cache.yml): which requests
 # are stored, bypassed and shared, from its X-Cache header and the bodies it returns.
+# Then the bot gate (varnish/bot-gate.vcl, caddy/Caddyfile.bot-gate): this client is
+# a LAN address, so it sees real pages, and with X-Gate-Test: 1 the challenge, the
+# fingerprint's 403 and, on the throwaway stack only, the rate limit's 429.
 #
-#   ./test-cache.sh              # a throwaway caddy (caddy/, Caddyfile.session) and
-#                                # varnish in front of a stub blog that marks every
-#                                # page public and echoes what it was sent
+#   ./test-cache.sh              # a throwaway caddy (caddy/, Caddyfile.session with
+#                                # the gate on), varnish and the gate in front of a
+#                                # stub blog and wallet that mark every page public
+#                                # and echo what they were sent
 #   ./test-cache.sh BASE_URL     # a running stack with the cache, e.g.
-#                                # https://denser.discuss.peerverity.info
+#                                # https://denser.discuss.peerverity.info; with
+#                                # DENSER_BOT_GATE=off in the environment, one
+#                                # without the gate
 #
 # Against a real blog a page's body is unique per render (its CSP nonce), so "same
 # body" means served from one cached object. Each run uses a fresh query value, so
@@ -34,7 +40,7 @@ holds() { # holds NAME TEST-ARGS...
     if test "$@"; then echo "ok   $name"; else echo "FAIL $name"; failed=1; fi
 }
 
-# fetch PATH [CURL ARGS...]: sets status, x_cache, age and body.
+# fetch PATH [CURL ARGS...]: sets status, x_cache, age, cache_control, retry_after and body.
 fetch() {
     local path=$1 response headers
     shift
@@ -44,17 +50,19 @@ fetch() {
     status=$(sed -n '1s/^HTTP\/[0-9.]* \([0-9]*\).*/\1/p' <<< "$headers")
     x_cache=$(sed -n 's/^[Xx]-[Cc]ache: //p' <<< "$headers" | tail -n 1)
     age=$(sed -n 's/^[Aa]ge: //p' <<< "$headers" | tail -n 1)
+    cache_control=$(sed -n 's/^[Cc]ache-[Cc]ontrol: //p' <<< "$headers" | tail -n 1)
+    retry_after=$(sed -n 's/^[Rr]etry-[Aa]fter: //p' <<< "$headers" | tail -n 1)
 }
 
 start_stub_stack() {
     local tag=denser-test-cache-$$ dir
     network=$tag
-    containers=("$tag-blog" "$tag-caddy" "$tag-varnish")
+    containers=("$tag-blog" "$tag-caddy" "$tag-varnish" "$tag-bot-gate")
     trap 'docker rm -f "${containers[@]}" > /dev/null 2>&1 || true; docker network rm "$network" > /dev/null 2>&1 || true' EXIT
     docker network create "$network" > /dev/null
 
-    # The stub blog: every page public, with the page's own s-maxage, and a body naming
-    # the render, the URL and the cookies it got. /blog/sets-cookie sets a cookie and
+    # The stub blog, and wallet: every page public, with the page's own s-maxage, and a
+    # body naming the render, the URL and the cookies it got. /blog/sets-cookie sets a cookie and
     # /blog/error is a 500; both still say public.
     dir=$(mktemp -d)
     cat > "$dir/Caddyfile" <<'STUB'
@@ -67,21 +75,24 @@ start_stub_stack() {
 	respond "render={http.request.uuid} uri={http.request.uri} cookie={http.request.header.Cookie}" 200
 }
 STUB
-    docker create --name "$tag-blog" --network "$network" --network-alias blog \
+    docker create --name "$tag-blog" --network "$network" --network-alias blog --network-alias wallet \
         caddy:2.10.0-alpine caddy run --config /etc/caddy/Caddyfile --adapter caddyfile > /dev/null
     docker cp "$dir/Caddyfile" "$tag-blog:/etc/caddy/Caddyfile"
     rm -rf "$dir"
 
     # Copied in rather than bind-mounted: the docker daemon may not see this directory.
     docker create --name "$tag-caddy" --network "$network" --network-alias caddy -p 127.0.0.1::80 \
-        -e DENSER_STATIC_FROM=next -e DENSER_BLOG_UPSTREAM=varnish:80 \
+        -e DENSER_STATIC_FROM=next -e DENSER_BLOG_UPSTREAM=varnish:80 -e DENSER_BOT_GATE=on \
         caddy:2.10.0-alpine caddy run --config /etc/caddy/Caddyfile.session --adapter caddyfile > /dev/null
     docker cp caddy/. "$tag-caddy:/etc/caddy/"
     docker create --name "$tag-varnish" --network "$network" --network-alias varnish \
         -e VARNISH_SIZE=64M varnish:7.7-alpine > /dev/null
     docker cp varnish/. "$tag-varnish:/etc/varnish/"
+    docker create --name "$tag-bot-gate" --network "$network" --network-alias bot-gate \
+        -e VARNISH_SIZE=16M -e VARNISH_VCL_FILE=/etc/varnish/bot-gate.vcl varnish:7.7-alpine > /dev/null
+    docker cp varnish/. "$tag-bot-gate:/etc/varnish/"
 
-    docker start "$tag-blog" "$tag-caddy" > /dev/null
+    docker start "$tag-blog" "$tag-caddy" "$tag-bot-gate" > /dev/null
     # varnish resolves "caddy" when it loads the VCL.
     docker start "$tag-varnish" > /dev/null
     base=http://127.0.0.1:$(docker port "$tag-caddy" 80/tcp | head -1 | sed 's/.*://')
@@ -137,6 +148,8 @@ fetch "/blog/trending?gclid=z&cachetest=$run&utm_medium=x"
 check "campaign parameters around the query: same object" "HIT $first" "$x_cache $body"
 fetch "$page" -H 'Cookie: theme=dark; NEXT_LOCALE=xx; nsfw=1'
 check "other cookies and an unknown locale: same object" "HIT $first" "$x_cache $body"
+fetch "$page" -H 'Cookie: denser_human=1'
+check "the gate's cookie: same object" "HIT $first" "$x_cache $body"
 
 fetch "$page" -H 'Cookie: NEXT_LOCALE=pl'
 holds "NEXT_LOCALE=pl: not the en object" "$body" != "$first"
@@ -171,5 +184,63 @@ if $stub; then
     check "API route" BYPASS "$x_cache"
     fetch "$page" -X POST
     check "POST" BYPASS "$x_cache"
+fi
+# The bot gate. Every X-Gate-Test request below that gets no 403 counts toward this
+# address's 60 page documents a minute.
+if [ "${DENSER_BOT_GATE:-on}" != off ]; then
+    gate=(-H 'X-Gate-Test: 1')
+    human=(-H 'Cookie: denser_human=1')
+    crawler=(-H 'Sec-Fetch-Site: none' -H "Referer: $base")
+    challenge_marker='document.cookie="denser_human=1'
+
+    fetch "$page"
+    holds "gate: a LAN address gets the page" "$status" = 200 -a "${body#*"$challenge_marker"}" = "$body"
+    fetch "$page" "${crawler[@]}"
+    check "gate: a LAN address with the crawler's headers gets the page" 200 "$status"
+    fetch "/wallet/@guest4test/transfers?gatetest=$run"
+    holds "gate: a LAN address gets a wallet page" "$status" = 200 -a "${body#*"$challenge_marker"}" = "$body"
+
+    fetch "$page" "${gate[@]}" "${crawler[@]}"
+    check "gate: the crawler's headers: 403 no-store" "403 no-store" "$status $cache_control"
+    fetch "$page" "${gate[@]}" "${human[@]}" -H 'Sec-Fetch-Site: none' -H "Referer: $base/blog/trending"
+    check "gate: typed navigation with a page Referer passes" 200 "$status"
+
+    fetch "$page" "${gate[@]}"
+    check "gate: anonymous, no cookie: challenge, no-store" "200 no-store" "$status $cache_control"
+    holds "gate: the challenge sets denser_human and is noindex" "${body#*"$challenge_marker"}" != "$body" \
+        -a "${body#*'content="noindex"'}" != "$body"
+    fetch "/wallet/@guest4test/transfers?gatetest=$run" "${gate[@]}"
+    holds "gate: a wallet page: challenge" "${body#*"$challenge_marker"}" != "$body"
+    fetch "$page" "${gate[@]}" "${human[@]}"
+    check "gate: denser_human=1: the cached page" "200 HIT $first" "$status $x_cache $body"
+    fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
+    check "gate: a session cookie passes" 200 "$status"
+    fetch "/blog/api/health" "${gate[@]}"
+    check "gate: API route not gated" "200 ok" "$status $body"
+    fetch "$page" "${gate[@]}" -H 'RSC: 1'
+    check "gate: RSC request not gated" "200 BYPASS" "$status $x_cache"
+    fetch "/blog/robots.txt" "${gate[@]}"
+    check "gate: robots.txt not gated" 200 "$status"
+    fetch "/blog/trending?_rsc=abc" "${gate[@]}"
+    check "gate: _rsc request not gated" 200 "$status"
+    fetch "/status" "${gate[@]}"
+    check "gate: /status not gated" 302 "$status"
+    fetch "$page" "${gate[@]}" -X POST
+    check "gate: POST not gated" 200 "$status"
+fi
+
+if $stub && [ "${DENSER_BOT_GATE:-on}" != off ]; then
+    # 5 counted above (2 challenges, 3 passed page documents); fill the minute's 60.
+    for _ in $(seq 55); do
+        fetch "$page" "${gate[@]}" "${human[@]}"
+        [ "$status" = 200 ] || break
+    done
+    check "gate: the 60th page document in a minute" 200 "$status"
+    fetch "$page" "${gate[@]}" "${human[@]}"
+    check "gate: the 61st: 429, Retry-After 300, no-store" "429 300 no-store" "$status $retry_after $cache_control"
+    fetch "/blog/api/health" "${gate[@]}"
+    check "gate: rate-limited, API routes still pass" 200 "$status"
+    fetch "$page" "${human[@]}"
+    check "gate: rate-limited, the LAN exemption still holds" 200 "$status"
 fi
 exit "$failed"

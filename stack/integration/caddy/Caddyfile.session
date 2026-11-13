@@ -8,8 +8,12 @@
 	}
 }
 
+# Off in a session stack, which is not public; test-cache.sh turns it on.
+import Caddyfile.bot-gate
+
 :80 {
 	encode zstd gzip
+	import bot-gate-{$DENSER_BOT_GATE:off}
 	import Caddyfile.routes
 }
 

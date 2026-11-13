@@ -21,7 +21,8 @@
 # Either way caddy then loads a changed caddy/ (caddy-apply.sh): validated first,
 # and a config it refuses leaves the previous one serving. DENSER_HTML_CACHE=varnish
 # in .env adds the shared HTML cache (compose.cache.yml), which loads a changed
-# varnish/ the same way (varnish-apply.sh).
+# varnish/ the same way (varnish-apply.sh). The bot gate (compose.bot-gate.yml, which
+# loads varnish/ that way too) runs unless .env says DENSER_BOT_GATE=off.
 #
 # The Lighthouse check of a deployed tip is not part of a run: lighthouse.sh has its
 # own unit (systemd/denser-integration-lighthouse@.timer), so a deploy never waits
@@ -58,9 +59,16 @@ case "${html_cache:-off}" in
     *) echo "upgrade: DENSER_HTML_CACHE=$html_cache is neither varnish nor off" >&2; exit 64 ;;
 esac
 
-# Loads a changed varnish/ when the cache runs.
+bot_gate=$(env_value DENSER_BOT_GATE)
+case "${bot_gate:-on}" in
+    on) gate_compose=:compose.bot-gate.yml ;;
+    off) gate_compose="" ;;
+    *) echo "upgrade: DENSER_BOT_GATE=$bot_gate is neither on nor off" >&2; exit 64 ;;
+esac
+
+# Loads a changed varnish/ when the cache or the gate runs.
 apply_varnish() {
-    [ -z "$cache_compose" ] || ./varnish-apply.sh "${quiet_args[@]}" || varnish_rc=5
+    [ -z "$gate_compose$cache_compose" ] || ./varnish-apply.sh "${quiet_args[@]}" || varnish_rc=5
 }
 
 # Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
@@ -81,7 +89,7 @@ images_sync_checkout() {
 }
 
 images_upgrade() {
-    export COMPOSE_FILE=compose.yml$cache_compose
+    export COMPOSE_FILE=compose.yml$gate_compose$cache_compose
     images_sync_checkout
 
     ids() { docker compose images --format json 2>/dev/null | python3 -c '
@@ -353,7 +361,7 @@ disk_low_notify() {
 
 follow_upgrade() {
     local image build_rc=0
-    export COMPOSE_FILE=compose.yml:compose.follow.yml$cache_compose
+    export COMPOSE_FILE=compose.yml:compose.follow.yml$gate_compose$cache_compose
     export DENSER_SOURCE_BRANCH=$branch DENSER_UID DENSER_GID
     DENSER_UID=$(id -u)
     DENSER_GID=$(id -g)
