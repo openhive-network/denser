@@ -3,7 +3,8 @@
 # are stored, bypassed and shared, from its X-Cache header and the bodies it returns.
 # Then the bot gate (varnish/bot-gate.vcl, caddy/Caddyfile.bot-gate): this client is
 # a LAN address, so it sees real pages, and with X-Gate-Test: 1 the challenge, the
-# fingerprint's 403 and, on the throwaway stack only, the rate limit's 429.
+# fingerprint's 403 and, on the throwaway stack only, the rate limit's 429 and the
+# pages still served while the gate is stopped.
 #
 #   ./test-cache.sh              # a throwaway caddy (caddy/, Caddyfile.session with
 #                                # the gate on), varnish and the gate in front of a
@@ -242,5 +243,38 @@ if $stub && [ "${DENSER_BOT_GATE:-on}" != off ]; then
     check "gate: rate-limited, API routes still pass" 200 "$status"
     fetch "$page" "${human[@]}"
     check "gate: rate-limited, the LAN exemption still holds" 200 "$status"
+
+    # The gate down: page documents go on to their routes (Caddyfile.bot-gate's
+    # fail-open upstream), and caddy's log names each.
+    docker stop "$network-bot-gate" > /dev/null
+    started=$(date +%s%N)
+    fetch "$page" "${gate[@]}"
+    elapsed_ms=$((($(date +%s%N) - started) / 1000000))
+    check "gate down: the cached page, not the challenge" "200 HIT $first" "$status $x_cache $body"
+    holds "gate down: answered within 1 s (${elapsed_ms} ms)" "$elapsed_ms" -lt 1000
+    fetch "/wallet/@guest4test/transfers?gatetest=$run" "${gate[@]}"
+    holds "gate down: a wallet page" "$status" = 200 -a "${body#*"$challenge_marker"}" = "$body"
+    fetch "/blog/error?cachetest=$run" "${gate[@]}"
+    check "gate down: the app's own 500 still reaches the client" 500 "$status"
+    holds "gate down: caddy logs the fail-open" \
+        "$(docker logs "$network-caddy" 2>&1 | grep -c 'http.log.access.bot-gate-fail-open')" -ge 3
+
+    # Back up, its rate counts gone: the challenge once fail_duration has run out.
+    docker start "$network-bot-gate" > /dev/null
+    for _ in $(seq 60); do
+        fetch "$page" "${gate[@]}"
+        [ "${body#*"$challenge_marker"}" != "$body" ] && break
+        sleep 0.5
+    done
+    holds "gate back: the challenge again" "${body#*"$challenge_marker"}" != "$body"
+
+    # The gate hung: after the 1 s response timeout, the page.
+    docker pause "$network-bot-gate" > /dev/null
+    started=$(date +%s%N)
+    fetch "$page" "${gate[@]}"
+    elapsed_ms=$((($(date +%s%N) - started) / 1000000))
+    docker unpause "$network-bot-gate" > /dev/null
+    check "gate hung: the cached page" "200 HIT $first" "$status $x_cache $body"
+    holds "gate hung: answered within 2 s (${elapsed_ms} ms)" "$elapsed_ms" -lt 2000
 fi
 exit "$failed"

@@ -279,9 +279,16 @@ crawl from reaching the apps' servers.
   5. Anything else passes.
 - **Caching:** the HTML cache drops `denser_human` with the other cookies it does not
   key on, so anonymous pages are still keyed on URL and language only.
-- **If the gate is down:** caddy waits up to 5 s for it, then answers a page document
-  `502`; API routes, Next's files and router requests still work. `restart:
-  unless-stopped` brings it back.
+- **If the gate is down:** the site stays up, ungated. The gate filters crawl load and is
+  no access control, so when it does not answer (stopped, not resolvable, refusing the
+  connection within 0.5 s, or no answer within 1 s) caddy's `reverse_proxy` to it moves
+  on to its second upstream, a loopback listener in caddy (`127.0.0.1:8082`) whose `204`
+  lets the request through like the gate's. The failed gate is set aside for 10 s
+  (`fail_duration`), so meanwhile pages go straight to their routes, and asked again
+  after that. Each request let through so is a line of caddy's log under
+  `http.log.access.bot-gate-fail-open` (`docker compose logs caddy | grep
+  bot-gate-fail-open`). The apps' own errors reach the client as before. `restart:
+  unless-stopped` brings the gate back.
 - **Turning it off:** `DENSER_BOT_GATE=off` in `.env`, then `./upgrade.sh`: compose drops
   `compose.bot-gate.yml`, recreates caddy without the gate (`DENSER_BOT_GATE` in its
   environment picks `bot-gate-on` or `bot-gate-off` in `Caddyfile.bot-gate`) and removes
@@ -296,8 +303,10 @@ crawl from reaching the apps' servers.
   with `X-Gate-Test: 1` the challenge on a blog and a wallet page, the 403, the real
   (cached) page with `denser_human=1` or a session cookie, the exempt paths and router
   requests, and the 429 on the 61st page document of a minute, while API routes and the
-  LAN exemption still pass. `./test-cache.sh https://$SITE_HOST` runs all but the 429
-  against the site. By hand, from a LAN host:
+  LAN exemption still pass; then, with the gate stopped and with it paused, the real
+  blog and wallet pages, the fail-open log lines, and the challenge again once it is
+  back. `./test-cache.sh https://$SITE_HOST` runs all but the 429 and the
+  gate-down cases against the site. By hand, from a LAN host:
 
   ```bash
   site=https://denser.discuss.peerverity.info

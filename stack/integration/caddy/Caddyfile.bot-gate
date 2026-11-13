@@ -8,6 +8,11 @@
 # a 204 lets the request carry on to its route, anything else (the challenge page, a
 # 403, a 429) is the answer. API routes, Next's files, the client router's requests,
 # robots.txt, /status and the redirects outside /blog and /wallet never reach it.
+#
+# The gate filters crawl load; it is no access control, so a gate that does not answer
+# (stopped, not resolvable, refusing, or silent) must not take the pages down: the
+# request then goes to the second upstream, bot-gate-fail-open below, whose 204 lets
+# it through like the gate's, and whose access log names each such request.
 
 (bot-gate-on) {
 	invoke bot-gate
@@ -28,13 +33,37 @@
 		not header Next-Router-Prefetch *
 		not header Next-Router-Segment-Prefetch *
 	}
-	reverse_proxy @page bot-gate:80 {
+	reverse_proxy @page bot-gate:80 127.0.0.1:8082 {
 		# The site's :443 server trusts no proxy, so this is the PROXY header's address.
 		header_up X-Gate-Client {client_ip}
-		lb_try_duration 5s
+		# The gate while it answers; a failed attempt sets it aside for fail_duration,
+		# so the retry, and the requests after it, go to the fail-open upstream.
+		lb_policy first
+		# Longer than the timeouts below, to leave the retry its time.
+		lb_try_duration 2s
+		lb_try_interval 100ms
+		fail_duration 10s
+		transport http {
+			dial_timeout 500ms
+			response_header_timeout 1s
+		}
 		@pass status 204
 		handle_response @pass {
 			vars bot_gate pass
 		}
 	}
 }
+
+# The fail-open upstream, on loopback, and only with the gate on.
+(bot-gate-listener-on) {
+	http://:8082 {
+		bind 127.0.0.1
+		log bot-gate-fail-open
+		respond 204
+	}
+}
+
+(bot-gate-listener-off) {
+}
+
+import bot-gate-listener-{$DENSER_BOT_GATE:off}
