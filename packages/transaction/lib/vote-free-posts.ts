@@ -1,6 +1,7 @@
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
 import { JsonRpcApiError } from './read-client';
+import { askEachNode } from './server-failover';
 
 const logger = getLogger('vote-free-posts');
 
@@ -60,55 +61,66 @@ const getProbes = (support: IVoteFreeSupport): IVoteFreeProbes => {
   return probes;
 };
 
+/** A read of `api` (an API namespace, e.g. `chain.api.bridge`), on whichever node failover asks. */
+export type TVoteFreeRead<A, T> = (api: A) => Promise<T>;
+
 /**
- * `voteFree()`, else `stock()` when it is answered with "unknown method". That answer marks the node
- * that gave it (the error's endpoint, else `node`) as lacking the vote-free reads; a served
- * `voteFree()` marks `node` as serving them. Every other error of `voteFree()` is thrown.
+ * `voteFree(api)`, asked of each node failover tries in the form that node serves: `stock` on a node
+ * known to lack the vote-free reads, `voteFree` elsewhere. When answered with "unknown method",
+ * `stock(api)`; that answer marks the node that gave it (the error's endpoint, else `node`) as
+ * lacking the vote-free reads. A vote-free answer marks `node` as serving them. Every other error is thrown.
  */
-async function askVoteFree<T>(
+async function askVoteFree<A extends object, T>(
   support: IVoteFreeSupport,
   node: string,
-  voteFree: () => Promise<T>,
-  stock: () => Promise<T>
+  api: A,
+  voteFree: TVoteFreeRead<A, T>,
+  stock: TVoteFreeRead<A, T>
 ): Promise<T> {
   try {
-    const answer = await voteFree();
-    getProbes(support).serving.add(node);
-    return answer;
+    const answer = await askEachNode(api, async (nodeApi, reached) =>
+      reached !== undefined && support.lacks(reached)
+        ? { voteFree: false, value: await stock(nodeApi) }
+        : { voteFree: true, value: await voteFree(nodeApi) }
+    );
+    if (answer.voteFree) getProbes(support).serving.add(node);
+    return answer.value;
   } catch (error) {
     if (!isUnknownMethodError(error)) throw error;
     const answered = (error instanceof JsonRpcApiError && error.endpoint) || node;
     logger.info('%s has no vote-free post reads, reading posts with their votes', answered);
     support.markLacking(answered);
-    return stock();
+    return stock(api);
   }
 }
 
 /**
- * `voteFree()`, the vote-free read, unless `node` (where it would go) is known to lack it; then, and
- * when it is answered with "unknown method", `stock()`, the same read with votes. That answer marks
- * the node that gave it (the error's endpoint, else `node`) as lacking the vote-free reads, so later
- * reads skip them; no other failure does, and every other error of `voteFree()` is thrown.
+ * `voteFree(api)`, the vote-free read, unless `node` (where it would go) is known to lack it; then,
+ * and when it is answered with "unknown method", `stock(api)`, the same read with votes. That answer
+ * marks the node that gave it (the error's endpoint, else `node`) as lacking the vote-free reads, so
+ * later reads skip them; no other failure does, and every other error of `voteFree` is thrown. A read
+ * that `api`'s failover carries to another node asks a node known to lack them `stock` directly.
  *
  * While `node` is neither known to lack nor to serve them, one read at a time probes it; reads to it
  * starting meanwhile await the probe's outcome, so a node without them answers "unknown method" once.
  */
-export async function readVoteFree<T>(
+export async function readVoteFree<A extends object, T>(
   support: IVoteFreeSupport,
   node: string,
-  voteFree: () => Promise<T>,
-  stock: () => Promise<T>
+  api: A,
+  voteFree: TVoteFreeRead<A, T>,
+  stock: TVoteFreeRead<A, T>
 ): Promise<T> {
-  if (support.lacks(node)) return stock();
+  if (support.lacks(node)) return stock(api);
   const probes = getProbes(support);
   const probe = probes.pending.get(node);
   if (probe) {
     await probe;
-    if (support.lacks(node)) return stock();
-    return askVoteFree(support, node, voteFree, stock);
+    if (support.lacks(node)) return stock(api);
+    return askVoteFree(support, node, api, voteFree, stock);
   }
-  if (probes.serving.has(node)) return askVoteFree(support, node, voteFree, stock);
-  const asked = askVoteFree(support, node, voteFree, stock);
+  if (probes.serving.has(node)) return askVoteFree(support, node, api, voteFree, stock);
+  const asked = askVoteFree(support, node, api, voteFree, stock);
   const settled = asked.then(
     () => undefined,
     () => undefined
