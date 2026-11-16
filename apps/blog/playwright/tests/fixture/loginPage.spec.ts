@@ -2,6 +2,7 @@ import { sealData } from 'iron-session';
 import { test, expect } from '../support/fixture-proxy-test';
 import { FIXTURE_COOKIE_NAME, FIXTURE_COOKIE_PASSWORD } from '../support/fixture-auth/constants';
 import { LoginType, KeyType, type IronSessionData, type User } from '@smart-signer/types/common';
+import enSmartSigner from '@smart-signer/locales/en/smart-signer.json';
 
 /**
  * The standalone /login page, where /api/oauth/authorize sends signed-out users
@@ -17,6 +18,7 @@ import { LoginType, KeyType, type IronSessionData, type User } from '@smart-sign
 test.use({ fixtureTestName: 'homeMainPage' });
 
 const LOGIN_PAGE_MARKER = 'data-testid="login-page"';
+const FORM_SHELL_MARKER = 'data-testid="sign-in-form-shell"';
 
 const OAUTH_STATE = {
   clientId: 'fixture-client',
@@ -93,5 +95,14 @@ test.describe('Login page', () => {
       expect(response.status(), label).toBe(200);
       expect(await response.text(), label).toContain(LOGIN_PAGE_MARKER);
     }
+  });
+
+  test('LOGIN-PAGE-05 — /login sends the first view of the sign-in form in its HTML', async ({ request }) => {
+    const response = await request.get('/login');
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    expect(html).toContain(FORM_SHELL_MARKER);
+    expect(html).toContain(enSmartSigner.login_form.signin_safe_storage.title);
+    expect(html).toContain(enSmartSigner.session_time.activity);
   });
 });

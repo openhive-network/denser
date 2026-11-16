@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -16,9 +16,6 @@ const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), {
 const LiteSignInDialog = dynamic(() => import('@/blog/features/lite-account/lite-sign-in-dialog'), {
   ssr: false
 });
-
-const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
-const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 interface DialogLoginProps {
   /** The trigger; omit it to open the dialog only through `open` */
@@ -59,33 +56,10 @@ function DialogLogin({
     }
   }
 
-  // Load Google Sign-In script on demand when dialog opens
-  const loadGoogleScript = useCallback(() => {
-    if (!siteConfig.googleDrive.clientId) return;
-    if (typeof document === 'undefined') return;
-    // Use instanceof to prevent DOM clobbering attacks where user content
-    // like `<a id="google-gsi-script">` could shadow a legitimate script element
-    const existingElement = document.getElementById(GOOGLE_GSI_SCRIPT_ID);
-    if (existingElement instanceof HTMLScriptElement) return;
-
-    const script = document.createElement('script');
-    script.id = GOOGLE_GSI_SCRIPT_ID;
-    script.src = GOOGLE_GSI_SCRIPT_SRC;
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
-  // Opening through `open` does not report to onOpenChange
-  useEffect(() => {
-    if (open) loadGoogleScript();
-  }, [open, loadGoogleScript]);
-
   const handleOpenChange = async (nextOpen: boolean) => {
     setOwnOpen(nextOpen);
     onOpenChange?.(nextOpen);
-    if (nextOpen) {
-      loadGoogleScript();
-    } else {
+    if (!nextOpen) {
       await signInFormRef?.current?.cancel();
     }
   };

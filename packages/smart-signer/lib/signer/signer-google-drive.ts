@@ -37,6 +37,7 @@ import {
   googleDriveCallbackUri
 } from '@smart-signer/lib/google-drive-urls';
 import { LoginType } from '@smart-signer/types/common';
+import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
 
 const logger = getLogger('app');
 
@@ -204,7 +205,9 @@ export class SignerGoogleDrive extends Signer {
    * - URL-safe base64 encoding for state
    * - Timestamp for TTL-based cleanup of stale data
    */
-  private initiateRedirectFlow(): Promise<string> {
+  private async initiateRedirectFlow(): Promise<string> {
+    await loadGoogleIdentityServices();
+
     // Generate CSRF nonce and store it for validation on callback
     const nonce = generateOAuthNonce();
     sessionStorage.setItem(GOOGLE_OAUTH_NONCE_KEY, nonce);
@@ -243,7 +246,13 @@ export class SignerGoogleDrive extends Signer {
    * Initiates OAuth via popup (for Chrome, Firefox, etc.).
    */
   private initiatePopupFlow(): Promise<string> {
-    this._accessToken = new Promise<string>((resolve, reject) => {
+    // Already loaded when the form offered Google: the popup has to open within the user's click
+    this._accessToken = loadGoogleIdentityServices().then(() => this.requestCodeInPopup());
+    return this._accessToken;
+  }
+
+  private requestCodeInPopup(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
       const tokenClient = window.google.accounts.oauth2.initCodeClient({
         client_id: siteConfig.googleDrive.clientId,
         scope: siteConfig.googleDrive.scopes,
@@ -271,8 +280,6 @@ export class SignerGoogleDrive extends Signer {
 
       tokenClient.requestCode({ prompt: 'consent' });
     });
-
-    return this._accessToken;
   }
 
   /**

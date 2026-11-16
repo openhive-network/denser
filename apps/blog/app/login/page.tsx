@@ -6,7 +6,10 @@ import { sessionOptions } from '@smart-signer/lib/session';
 import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
 import { siteConfig } from '@ui/config/site';
 import type { IronSessionData } from '@smart-signer/types/common';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import SignInFormShell from '@smart-signer/components/auth/sign-in-form-shell';
 import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
+import { getTranslation } from '@/blog/i18n/server';
 import LoginForm from './login-form';
 
 export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
@@ -39,5 +42,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     if (returnUrl) redirect(returnUrl);
   }
 
-  return <LoginForm oauthReturn={oauthReturn} />;
+  const { t } = await getTranslation(SMART_SIGNER_NAMESPACE);
+  return <LoginForm oauthReturn={oauthReturn} shell={<SignInFormShell t={t} />} />;
 }

@@ -1,11 +1,10 @@
 /* Component that manages all available sign-in options */
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, lazy, ReactNode, Suspense, useImperativeHandle, useRef, useState } from 'react';
 import SafeStorage, { SafeStorageRef } from './methods/safestorage';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from 'usehooks-ts';
-import Methods from './methods/methods';
-import SafeStorageKeyUpdate, { SafeStorageKeyUpdateRef } from './methods/safestorage-key-update';
+import type { SafeStorageKeyUpdateRef } from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
 import {
   cancelPendingSignIn,
@@ -27,8 +26,14 @@ const WALLET_EXTENSION_NAMES: ReadonlyMap<LoginType, string> = new Map([
   [LoginType.peakvault, 'PeakVault'],
   [LoginType.metamask, 'MetaMask']
 ]);
-import Passkey from './methods/passkey';
 import { configuredPasskeySigners } from '@ui/config/public-vars';
+import Step from './step';
+import { SignInFormFrame } from './sign-in-form-shell';
+
+// The first step is safe storage: the others, and the signers they offer, load when they are opened
+const Methods = lazy(() => import('./methods/methods'));
+const Passkey = lazy(() => import('./methods/passkey'));
+const SafeStorageKeyUpdate = lazy(() => import('./methods/safestorage-key-update'));
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
@@ -39,6 +44,8 @@ export interface SignInFormProps {
   username?: string;
   /** Opens on the "Passkey signer" sign-in instead of safe storage, when a signer is configured */
   passkey?: boolean;
+  /** Shown in place of the safe storage step until it is ready; a spinner when omitted */
+  placeholder?: ReactNode;
 }
 
 export type SignInFormRef = { cancel: () => Promise<void> };
@@ -58,7 +65,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       authenticateOnBackend = false,
       i18nNamespace = 'smart-signer',
       username: initialUsername,
-      passkey = false
+      passkey = false,
+      placeholder
     }: SignInFormProps,
     ref
   ) => {
@@ -170,7 +178,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     }
 
     return (
-      <div className="flex max-h-[calc(100dvh-10rem)] overflow-y-auto pb-4">
+      <SignInFormFrame>
         {step === Steps.SAFE_STORAGE_LOGIN && (
           <SafeStorage
             ref={safeStorageRef}
@@ -182,43 +190,46 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             username={username}
             onUsernameChange={(username) => setUsername(username)}
             initialError={safeStorageError}
+            placeholder={placeholder}
           />
         )}
 
-        {step === Steps.OTHER_LOGIN_OPTIONS && (
-          <Methods
-            onSetStep={changeStep}
-            i18nNamespace={i18nNamespace}
-            preferredKeyTypes={preferredKeyTypes}
-            username={username}
-            onUsernameChange={(username) => setUsername(username)}
-            signIn={signIn}
-          />
-        )}
+        <Suspense fallback={<Step loading={true} />}>
+          {step === Steps.OTHER_LOGIN_OPTIONS && (
+            <Methods
+              onSetStep={changeStep}
+              i18nNamespace={i18nNamespace}
+              preferredKeyTypes={preferredKeyTypes}
+              username={username}
+              onUsernameChange={(username) => setUsername(username)}
+              signIn={signIn}
+            />
+          )}
 
-        {step === Steps.PASSKEY_LOGIN && (
-          <Passkey
-            onSetStep={changeStep}
-            i18nNamespace={i18nNamespace}
-            username={username}
-            onUsernameChange={(username) => setUsername(username)}
-            signIn={signIn}
-          />
-        )}
+          {step === Steps.PASSKEY_LOGIN && (
+            <Passkey
+              onSetStep={changeStep}
+              i18nNamespace={i18nNamespace}
+              username={username}
+              onUsernameChange={(username) => setUsername(username)}
+              signIn={signIn}
+            />
+          )}
 
-        {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
-          <SafeStorageKeyUpdate
-            ref={safeStorageKeyUpdateRef}
-            onSetStep={changeStep}
-            i18nNamespace={i18nNamespace}
-            preferredKeyTypes={preferredKeyTypes}
-            username={username}
-            onUsernameChange={(username) => setUsername(username)}
-            signIn={signIn}
-            onSignInFailed={returnToSafeStorageLogin}
-          />
-        )}
-      </div>
+          {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
+            <SafeStorageKeyUpdate
+              ref={safeStorageKeyUpdateRef}
+              onSetStep={changeStep}
+              i18nNamespace={i18nNamespace}
+              preferredKeyTypes={preferredKeyTypes}
+              username={username}
+              onUsernameChange={(username) => setUsername(username)}
+              signIn={signIn}
+              onSignInFailed={returnToSafeStorageLogin}
+            />
+          )}
+        </Suspense>
+      </SignInFormFrame>
     );
   }
 );

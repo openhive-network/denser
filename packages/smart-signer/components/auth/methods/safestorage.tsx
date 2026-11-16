@@ -1,5 +1,5 @@
 /* Sign-in with safe storage (use beekeeper wallet through hb-auth) */
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
@@ -97,13 +97,25 @@ export interface SafeStorageProps {
   onUsernameChange: (username: string) => void;
   /** Shown on mount: why the step before this one sent the user back here */
   initialError?: string | null;
+  /** Shown until the stored accounts are read; a spinner when omitted */
+  placeholder?: ReactNode;
 }
 
 type SafeStorageForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
   (
-    { onSetStep, signIn, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange, initialError = null },
+    {
+      onSetStep,
+      signIn,
+      preferredKeyTypes,
+      i18nNamespace,
+      isSigned,
+      username,
+      onUsernameChange,
+      initialError = null,
+      placeholder
+    },
     ref
   ) => {
     useImperativeHandle(ref, () => ({
@@ -374,7 +386,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     const storedStrict = useStoredStrictMode(userFound?.username, form.watch('keyType'));
 
-    if (loading === undefined) return <Step loading={true}></Step>;
+    if (loading === undefined) return placeholder ?? <Step loading={true}></Step>;
 
     return (
       <Step

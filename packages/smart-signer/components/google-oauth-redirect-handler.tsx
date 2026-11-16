@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useProcessAuth, LoginFormSchema } from './auth/process';
 import { LoginType } from '@smart-signer/types/common';
-import { siteConfig } from '@ui/config/site';
 import { handleError } from '@ui/lib/handle-error';
 import { isUserCancelled } from '@ui/lib/user-cancelled';
 import { getLogger } from '@ui/lib/logging';
@@ -16,11 +15,9 @@ import {
   cleanupStaleOAuthData,
   clearOAuthData
 } from '@smart-signer/lib/google-oauth-constants';
+import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
 
 const logger = getLogger('app');
-
-const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
-const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
@@ -47,39 +44,6 @@ export function GoogleOAuthRedirectHandler({
   // Clean up stale OAuth data on mount
   useEffect(() => {
     cleanupStaleOAuthData();
-  }, []);
-
-  const loadGoogleScript = useCallback((): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (!siteConfig.googleDrive.clientId) {
-        resolve();
-        return;
-      }
-
-      // Check if script is already loaded
-      // Use instanceof to prevent DOM clobbering attacks where user content
-      // like `<a id="google-gsi-script">` could shadow a legitimate script element
-      const existingElement = document.getElementById(GOOGLE_GSI_SCRIPT_ID);
-      if (existingElement instanceof HTMLScriptElement) {
-        // Script exists, but might still be loading - check if google.accounts is available
-        if (window.google?.accounts?.oauth2) {
-          resolve();
-          return;
-        }
-        // Script exists but not loaded yet - wait for it
-        existingElement.addEventListener('load', () => resolve());
-        existingElement.addEventListener('error', () => reject(new Error('Failed to load Google script')));
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.id = GOOGLE_GSI_SCRIPT_ID;
-      script.src = GOOGLE_GSI_SCRIPT_SRC;
-      script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Google script'));
-      document.body.appendChild(script);
-    });
   }, []);
 
   const cleanupUrl = useCallback(() => {
@@ -131,7 +95,7 @@ export function GoogleOAuthRedirectHandler({
 
     try {
       // Load Google script if needed (required for the signer)
-      await loadGoogleScript();
+      await loadGoogleIdentityServices();
 
       // Continue the login flow using the stored credentials
       const schema: LoginFormSchema = {
@@ -154,7 +118,7 @@ export function GoogleOAuthRedirectHandler({
     } finally {
       setIsProcessing(false);
     }
-  }, [cleanupUrl, loadGoogleScript, signAuth, submitAuth, onComplete]);
+  }, [cleanupUrl, signAuth, submitAuth, onComplete]);
 
   useEffect(() => {
     handleOAuthRedirect();
