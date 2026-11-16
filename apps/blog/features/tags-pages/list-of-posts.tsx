@@ -18,7 +18,12 @@ import NoDataError from '@/blog/components/no-data-error';
 import LoadMoreError from '@/blog/components/load-more-error';
 import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
-import { useSSREffectiveObserver, useInitialPosts } from '@/blog/components/observer-provider';
+import {
+  useSSRObserver,
+  useSSREffectiveObserver,
+  useInitialPosts,
+  useInitialHiddenAuthors
+} from '@/blog/components/observer-provider';
 import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 import { useHiddenAuthors } from '@/blog/components/hooks/use-hidden-authors';
 import { withoutHiddenAuthors } from '@transaction/lib/hidden-authors';
@@ -38,6 +43,7 @@ function nextRankedPage(lastPage: CardEntry[]): PageParam {
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const ssrObserver = useSSREffectiveObserver();
+  const ssrViewer = useSSRObserver();
   const initialPosts = useInitialPosts();
   const { user, isHydrated } = useUserClient();
   const observers = useEffectiveObserver();
@@ -49,10 +55,17 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     observers.liteObserver ?? (tag === 'my' ? observers.observer : observers.effectiveObserver);
   const observer = isHydrated ? clientObserver : ssrObserver;
   const postsNamespace = usePostsNamespace();
-  // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
   const isForYou = sort === FOR_YOU_SORT;
-  // The server fetches no For You page, so there is nothing to seed it with
-  const seedPosts = observer === ssrObserver && !isForYou ? initialPosts : null;
+  // For You is personal: it is read for the signed-in account, and before hydration for the account
+  // the server read its first page for (the observer cookie's). Its feed takes no observer, so the
+  // observer's mutes and blacklists are applied here, as the page renders.
+  const signedInAccount = user.isLoggedIn ? user.username : '';
+  const forYouReader = isHydrated ? signedInAccount : initialPosts ? ssrViewer : '';
+  const forYouAccount = isForYou ? forYouReader : '';
+  // The server read its posts as ssrObserver (For You: for ssrViewer); another observer (e.g. after
+  // a list change) or account fetches its own
+  const isServerRead = observer === ssrObserver && (!isForYou || forYouAccount === ssrViewer);
+  const seedPosts = isServerRead ? initialPosts : null;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -69,10 +82,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     StorageTTL.PERMANENT
   );
 
-  // For You is personal: it is read after hydration, for the signed-in account only. Its feed takes
-  // no observer, so the observer's mutes and blacklists are applied here, as the page renders.
-  const forYouAccount = isForYou && isHydrated && user.isLoggedIn ? user.username : '';
-  const hiddenAuthors = useHiddenAuthors(observer, Boolean(forYouAccount));
+  const initialHiddenAuthors = useInitialHiddenAuthors(observer);
+  const hiddenAuthors = useHiddenAuthors(observer, Boolean(forYouAccount), initialHiddenAuthors);
 
   const {
     data,

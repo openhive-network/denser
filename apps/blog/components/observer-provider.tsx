@@ -52,6 +52,27 @@ export const InitialPostsProvider = ({ value, children }: { value: CardEntry[] |
 
 export const useInitialPosts = () => useContext(InitialPostsContext);
 
+const InitialHiddenAuthorsContext = createContext<string[] | null>(null);
+
+/**
+ * Provides the server-fetched hidden authors of the SSR effective observer to client components,
+ * for feeds that take no observer (For You) and drop those authors' posts as they render.
+ */
+export const InitialHiddenAuthorsProvider = ({
+  value,
+  children
+}: {
+  value: string[] | null;
+  children: ReactNode;
+}) => <InitialHiddenAuthorsContext.Provider value={value}>{children}</InitialHiddenAuthorsContext.Provider>;
+
+/** The server-fetched hidden authors, or null when `observer` is not the one they were fetched for. */
+export const useInitialHiddenAuthors = (observer: string) => {
+  const ssrObserver = useSSREffectiveObserver();
+  const initialHiddenAuthors = useContext(InitialHiddenAuthorsContext);
+  return observer === ssrObserver ? initialHiddenAuthors : null;
+};
+
 const InitialCommunitiesContext = createContext<Community[] | null>(null);
 
 /**
