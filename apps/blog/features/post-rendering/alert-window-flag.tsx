@@ -16,7 +16,13 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useFlagMutation } from '../../components/hooks/use-flag-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import DialogLogin from '@/blog/components/dialog-login';
 
+/**
+ * Flag dialog of a post or comment, opened by `children`. A signed-out reader's click opens the
+ * sign-in instead. The trigger is the same either way, so the signed-in user appearing after
+ * hydration does not remount it.
+ */
 export function AlertDialogFlag({
   children,
   community,
@@ -32,6 +38,10 @@ export function AlertDialogFlag({
 }) {
   const { user } = useUserClient();
   const [notes, setNotes] = useState('');
+  const [open, setOpen] = useState(false);
+  // Mounted on the first sign-in request and kept: closing it can hand off to the lite sign-in it holds.
+  const [signInMounted, setSignInMounted] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
   const { t } = useTranslation('common_blog');
   const flagMutation = useFlagMutation();
 
@@ -43,47 +53,59 @@ export function AlertDialogFlag({
     }
   };
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen && !user.isLoggedIn) {
+      setSignInMounted(true);
+      setSignInOpen(true);
+      return;
+    }
+    setOpen(nextOpen);
+  };
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl">
-        <AlertDialogHeader className="gap-2">
-          <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="flag-dialog-header">
-              {t('post_content.flag.flag_post')}
-            </AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:text-destructive" data-testid="flag-dialog-close">
-              X
+    <>
+      <AlertDialog open={open} onOpenChange={handleOpenChange}>
+        <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+        <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl">
+          <AlertDialogHeader className="gap-2">
+            <div className="flex items-center justify-between">
+              <AlertDialogTitle data-testid="flag-dialog-header">
+                {t('post_content.flag.flag_post')}
+              </AlertDialogTitle>
+              <AlertDialogCancel className="border-none hover:text-destructive" data-testid="flag-dialog-close">
+                X
+              </AlertDialogCancel>
+            </div>
+            <AlertDialogDescription className="flex flex-col gap-2" data-testid="flag-dialog-description">
+              <div>{t('post_content.flag.flag_description')}</div>
+
+              <Separator />
+              <h1 className="text-lg font-bold">{t('post_content.flag.community_rules')}</h1>
+              {ln2list(flagText).map((x, i) => (
+                <p key={i + 1}>{`${i + 1}. ${x}`}</p>
+              ))}
+              <Separator />
+
+              <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
+            <AlertDialogCancel className="hover:text-destructive" data-testid="flag-dialog-cancel">
+              {t('post_content.flag.cancel')}
             </AlertDialogCancel>
-          </div>
-          <AlertDialogDescription className="flex flex-col gap-2" data-testid="flag-dialog-description">
-            <div>{t('post_content.flag.flag_description')}</div>
-
-            <Separator />
-            <h1 className="text-lg font-bold">{t('post_content.flag.community_rules')}</h1>
-            {ln2list(flagText).map((x, i) => (
-              <p key={i + 1}>{`${i + 1}. ${x}`}</p>
-            ))}
-            <Separator />
-
-            <Input className="mt-2" value={notes} onChange={(e) => setNotes(e.target.value)} />
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
-          <AlertDialogCancel className="hover:text-destructive" data-testid="flag-dialog-cancel">
-            {t('post_content.flag.cancel')}
-          </AlertDialogCancel>
-          {user && user.isLoggedIn ? (
-            <AlertDialogAction
-              className="rounded-none bg-foreground text-secondary shadow-lg shadow-destructive hover:bg-destructive hover:shadow-foreground disabled:bg-gray-400 disabled:shadow-none"
-              data-testid="flag-dialog-ok"
-              onClick={flag}
-            >
-              {t('post_content.flag.ok')}
-            </AlertDialogAction>
-          ) : null}
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            {user && user.isLoggedIn ? (
+              <AlertDialogAction
+                className="rounded-none bg-foreground text-secondary shadow-lg shadow-destructive hover:bg-destructive hover:shadow-foreground disabled:bg-gray-400 disabled:shadow-none"
+                data-testid="flag-dialog-ok"
+                onClick={flag}
+              >
+                {t('post_content.flag.ok')}
+              </AlertDialogAction>
+            ) : null}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {signInMounted ? <DialogLogin open={signInOpen} onOpenChange={setSignInOpen} /> : null}
+    </>
   );
 }

@@ -16,7 +16,6 @@ import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import DialogLogin from '../../components/dialog-login';
 import LiteAuthorBadge from '../lite-account/lite-author-badge';
 import { isLiteDid } from '../lite-account/lite-did';
 import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
@@ -310,11 +309,7 @@ const CommentListItem = memo(function CommentListItem({
                           {comment._temporary && !comment._optimistic ? null : !hiddenComment ? (
                             <div className="flex items-center">
                               {/* Only show flag here for non-originally-hidden comments; originally hidden ones show flag in the reveal/hide section */}
-                              {!isOriginallyHidden && flagText && comment.community && !user.isLoggedIn ? (
-                                <DialogLogin>
-                                  <FlagTooltip onClick={() => {}} />
-                                </DialogLogin>
-                              ) : !isOriginallyHidden && flagText && comment.community && user.isLoggedIn ? (
+                              {!isOriginallyHidden && flagText && comment.community ? (
                                 <AlertDialogFlag
                                   community={comment.community}
                                   username={comment.author}
@@ -354,11 +349,7 @@ const CommentListItem = memo(function CommentListItem({
                             </AccordionTrigger>
                             {/* Flag icon stays in this section for originally hidden comments */}
                             <div className="flex items-center">
-                              {flagText && comment.community && !user.isLoggedIn ? (
-                                <DialogLogin>
-                                  <FlagTooltip onClick={() => {}} />
-                                </DialogLogin>
-                              ) : flagText && comment.community && user.isLoggedIn ? (
+                              {flagText && comment.community ? (
                                 <AlertDialogFlag
                                   community={comment.community}
                                   username={comment.author}
