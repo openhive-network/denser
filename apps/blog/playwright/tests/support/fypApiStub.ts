@@ -4,8 +4,9 @@ import type { Page, Request } from '@playwright/test';
 
 /**
  * The For You feed's API (haf_fyp) in the fixture suite. The main blog server serves with
- * FYP_API_URL set to FIXTURE_FYP_API_URL, an origin no network answers: the browser reads the feed
- * from it, so a spec answers it with page.route (`serveFypFeed`). The server reads nothing from it.
+ * FYP_API_URL set to FIXTURE_FYP_API_URL, an origin no network answers: the server's read of the
+ * first page fails, so the browser reads the feed from it, and a spec answers it with page.route
+ * (`serveFypFeed`).
  */
 export const FIXTURE_FYP_API_URL = 'https://fyp.fixture.test/haf-fyp-api';
 
