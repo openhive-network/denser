@@ -30,14 +30,38 @@ const TITLE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 // Hive API timestamps are UTC but carry no zone designator, which `new Date` would read as local time.
 const ZONELESS_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 
-/** `long` reads "49 minutes ago"; `narrow` reads "49m ago" for tight spaces. */
+/**
+ * `long` reads "49 minutes ago"; `narrow` reads "49m ago" for tight spaces: always numeric, so a
+ * one-unit difference stays as short as any other ("1mo ago", not "last month"). A locale whose narrow
+ * form marks the past only by a minus sign gets its short form ("47 мин. назад", not "-47 мин").
+ */
 export type TimeAgoStyle = 'long' | 'narrow';
+
+// Sign characters and bidi marks, which a format without direction words puts around the number.
+const SIGN_OR_BIDI = /[\s+\-\u2212\u061c\u200e\u200f]/g;
+
+const literalText = (rtf: Intl.RelativeTimeFormat, value: number): string =>
+  rtf
+    .formatToParts(value, 'minute')
+    .filter((part) => part.type === 'literal')
+    .map((part) => part.value.replace(SIGN_OR_BIDI, ''))
+    .join('');
+
+// CLDR's narrow pattern for some locales (ru, fr) tells past from future only by the number's sign:
+// "-47 мин" / "+5 мин".
+const hasDirectionWords = (rtf: Intl.RelativeTimeFormat): boolean =>
+  literalText(rtf, -5) !== literalText(rtf, 5);
+
+const createNarrowFormat = (lang: string): Intl.RelativeTimeFormat => {
+  const narrow = new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'always' });
+  return hasDirectionWords(narrow)
+    ? narrow
+    : new Intl.RelativeTimeFormat(lang, { style: 'short', numeric: 'always' });
+};
 
 const relativeFormats = {
   long: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })),
-  narrow: createLocaleFormatCache(
-    (lang) => new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'auto' })
-  )
+  narrow: createLocaleFormatCache(createNarrowFormat)
 };
 const titleFormats = createLocaleFormatCache((lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS));
 
@@ -79,27 +103,26 @@ export const getTimeAgoString = (
   }
 
   if (diff < 0) {
-    return formatFuture(-diff, rtf);
-  }
-  for (const [secondsInUnit, unit] of TIME_INTERVALS) {
-    const value = Math.floor(diff / secondsInUnit);
-    if (value > 0) {
-      return rtf.format(-value, unit);
+    if (-diff >= FUTURE_SKEW_TOLERANCE_SECONDS) {
+      return formatFuture(-diff, rtf);
+    }
+  } else {
+    for (const [secondsInUnit, unit] of TIME_INTERVALS) {
+      const value = Math.floor(diff / secondsInUnit);
+      if (value > 0) {
+        return rtf.format(-value, unit);
+      }
     }
   }
-  return rtf.format(0, 'second');
+  // The numeric narrow style would read "in 0s"; every style reads the present as "now".
+  return relativeFormats.long.get(lang).format(0, 'second');
 };
 
 // The time left is rounded rather than truncated: a wait of 2 days 23 hours reads "in 3 days".
 const formatFuture = (secondsLeft: number, rtf: Intl.RelativeTimeFormat): string => {
-  if (secondsLeft >= FUTURE_SKEW_TOLERANCE_SECONDS) {
-    for (const [secondsInUnit, unit] of TIME_INTERVALS) {
-      if (secondsLeft >= secondsInUnit) {
-        return rtf.format(Math.round(secondsLeft / secondsInUnit), unit);
-      }
-    }
-  }
-  return rtf.format(0, 'second');
+  const [secondsInUnit, unit] =
+    TIME_INTERVALS.find(([seconds]) => secondsLeft >= seconds) ?? TIME_INTERVALS[TIME_INTERVALS.length - 1];
+  return rtf.format(Math.round(secondsLeft / secondsInUnit), unit);
 };
 
 /**

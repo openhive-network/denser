@@ -73,14 +73,30 @@ describe('getTimeAgoString in the narrow style', () => {
   const cases: [string, string, string][] = [
     ['2026-10-06T11:11:00', 'en', '49m ago'],
     ['2026-10-06T07:00:00', 'en', '5h ago'],
-    ['2026-10-05T11:00:00', 'en', 'yesterday'],
+    ['2026-10-05T11:00:00', 'en', '1d ago'],
     ['2026-10-03T12:00:00', 'en', '3d ago'],
+    ['2026-09-05T12:00:00', 'en', '1mo ago'],
     ['2026-10-06T12:05:00', 'en', 'in 5m'],
+    ['2026-10-06T12:00:00', 'en', 'now'],
+    ['2026-10-06T12:00:30', 'en', 'now'],
     ['2026-10-06T11:11:00', 'pl', '49 min temu'],
     ['2026-10-06T07:00:00', 'pl', '5 g. temu'],
-    ['2026-10-04T12:00:00', 'pl', 'przedwczoraj'],
+    ['2026-10-04T12:00:00', 'pl', '2 dni temu'],
     ['2026-10-03T12:00:00', 'pl', '3 dni temu'],
-    ['2026-10-06T11:11:00', 'es', 'hace 49 min']
+    ['2026-09-05T12:00:00', 'pl', '1 mies. temu'],
+    ['2025-10-06T12:00:00', 'pl', '1 rok temu'],
+    ['2026-10-06T12:00:00', 'pl', 'teraz'],
+    ['2026-10-06T11:11:00', 'es', 'hace 49 min'],
+    ['2026-10-06T07:00:00', 'es', 'hace 5 h'],
+    ['2026-10-06T11:11:00', 'ja', '49分前'],
+    ['2026-10-06T07:00:00', 'ja', '5時間前'],
+    ['2026-10-06T11:11:00', 'ru', '49 мин. назад'],
+    ['2026-10-06T07:00:00', 'ru', '5 ч назад'],
+    ['2026-09-05T12:00:00', 'ru', '1 мес. назад'],
+    ['2025-10-06T12:00:00', 'ru', '1 г. назад'],
+    ['2026-10-06T12:05:00', 'ru', 'через 5 мин.'],
+    ['2026-10-06T12:00:00', 'ru', 'сейчас'],
+    ['2026-10-06T11:11:00', 'fr', 'il y a 49\u00a0min']
   ];
 
   for (const [date, lang, expected] of cases) {
@@ -88,6 +104,20 @@ describe('getTimeAgoString in the narrow style', () => {
       assert.equal(getTimeAgoString(date, lang, NOW, 'narrow'), expected);
     });
   }
+
+  it('never shows a bare signed number', () => {
+    for (const lang of ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh']) {
+      for (const date of [
+        '2026-10-06T11:11:00',
+        '2026-10-05T11:00:00',
+        '2025-10-06T12:00:00',
+        '2026-10-09T12:00:00'
+      ]) {
+        const text = getTimeAgoString(date, lang, NOW, 'narrow');
+        assert.doesNotMatch(text, /[-+\u2212]\s*\d/, `${lang} ${date}: ${text}`);
+      }
+    }
+  });
 
   it('leaves the default style long', () => {
     assert.equal(getTimeAgoString('2026-10-06T11:11:00', 'en', NOW), '49 minutes ago');
