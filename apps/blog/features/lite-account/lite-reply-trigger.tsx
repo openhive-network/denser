@@ -2,12 +2,12 @@
 
 import { useState, type ReactNode } from 'react';
 import { toast } from '@ui/components/hooks/use-toast';
-import { getLiteApiInfo } from '@transaction/lib/lite-api';
+import { getLiteApiInfo, peekLiteApiInfo } from '@transaction/lib/lite-api';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
-import { useLiteApiInfo } from './use-lite-api-info';
+import { useIsKnownNotLiteAware } from './use-lite-api-info';
 import { readiness, readinessText, useLiteGatewayHealth } from './use-lite-gateway-health';
-import { useLiteRelayInfo } from './use-lite-relay-info';
+import { useLiteRelaySelect } from './use-lite-relay-info';
 
 type Props = { open: boolean; onToggle: () => void; className: string; testId: string; children: ReactNode };
 
@@ -20,9 +20,9 @@ type Props = { open: boolean; onToggle: () => void; className: string; testId: s
  */
 export default function LiteReplyTrigger({ open, onToggle, className, testId, children }: Props) {
   const { t } = useTranslation('common_blog');
-  const relay = useLiteRelayInfo();
-  const liteApi = useLiteApiInfo();
-  const offered = !!relay.data?.enabled && liteApi !== null;
+  const relayEnabled = useLiteRelaySelect((info) => info.enabled);
+  const notLiteAware = useIsKnownNotLiteAware();
+  const offered = relayEnabled && !notLiteAware;
   const health = useLiteGatewayHealth(offered);
   const [checking, setChecking] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
@@ -33,7 +33,7 @@ export default function LiteReplyTrigger({ open, onToggle, className, testId, ch
       return;
     }
     setChecking(true);
-    if (!(liteApi ?? (await getLiteApiInfo()))) {
+    if (!(peekLiteApiInfo() ?? (await getLiteApiInfo()))) {
       setChecking(false);
       setSignInOpen(true);
       return;

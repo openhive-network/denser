@@ -3,13 +3,12 @@
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';
 import { liteAttribution } from './lite-attribution';
-import { relayAppIds, useLiteRelayInfo } from './use-lite-relay-info';
+import { relayAppIds, useLiteRelaySelect } from './use-lite-relay-info';
 
 /** "lite account <name>" next to a bridged comment's (gate) author. */
 export default function LiteAuthorBadge({ jsonMetadata }: { jsonMetadata: unknown }) {
   const { t } = useTranslation('common_blog');
-  const relay = useLiteRelayInfo();
-  const attribution = liteAttribution(jsonMetadata, relayAppIds(relay.data));
+  const attribution = useLiteRelaySelect((info) => liteAttribution(jsonMetadata, relayAppIds(info)));
   if (!attribution) return null;
   return (
     <Badge

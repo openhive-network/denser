@@ -16,6 +16,17 @@ export function useLiteApiInfo(): ILiteApiInfo | null | undefined {
   return useSyncExternalStore(subscribeLiteApiInfo, peekLiteApiInfo, getServerSnapshot);
 }
 
+const isKnownNotLiteAware = (): boolean => peekLiteApiInfo() === null;
+const isKnownNotLiteAwareOnServer = (): boolean => false;
+
+/**
+ * Whether the API node is known not to be lite-aware (`useLiteApiInfo` is null). Unlike that hook,
+ * a lite-aware answer arriving re-renders nothing: for components on every comment.
+ */
+export function useIsKnownNotLiteAware(): boolean {
+  return useSyncExternalStore(subscribeLiteApiInfo, isKnownNotLiteAware, isKnownNotLiteAwareOnServer);
+}
+
 /**
  * The namespace post reads of the current node go to, for their query keys: `bridge` until the
  * probe has answered, so a node without lite support keeps the keys and reads it always had.
