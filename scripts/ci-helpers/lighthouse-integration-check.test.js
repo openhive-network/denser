@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { loadRouteThresholds, routeModes, measureRoute } = require('./lighthouse-integration-check');
+const { loadRouteThresholds, routeModes, measureRoute, routeTtfb } = require('./lighthouse-integration-check');
 const { RUNS_PER_ROUTE } = require('./lighthouse-runner');
 
 // Lighthouse 13.5 mobile runs of /trending, cut down to the audits the checks read:
@@ -20,16 +20,37 @@ function tempOut(t) {
   return out;
 }
 
-test('every logged-out route is also measured logged in, and the observer\'s own pages logged in only', () => {
+const AI_SEARCH = '/blog/search?ai=hive%20hardfork%20changes';
+
+test('the logged-out routes are measured in their order, and the logged-in-only ones after them', () => {
   const thresholds = loadRouteThresholds('blocktrades');
   const routes = routeModes(thresholds);
   const loggedOut = Object.keys(thresholds.loggedOut);
-  assert.deepEqual(routes.slice(0, loggedOut.length), loggedOut.map((route) => ({ route, modes: ['loggedOut', 'loggedIn'] })));
+  const loggedOutOnly = ['/blog/search?q=hardfork', '/blog/login'];
+  assert.deepEqual(
+    routes.slice(0, loggedOut.length),
+    loggedOut.map((route) => ({ route, modes: loggedOutOnly.includes(route) ? ['loggedOut'] : ['loggedOut', 'loggedIn'] }))
+  );
+  assert.ok(loggedOut.includes(AI_SEARCH) && loggedOut.includes('/blog/communities'));
   assert.deepEqual(routes.slice(loggedOut.length), [
     { route: '/blog/@blocktrades', modes: ['loggedIn'] },
     { route: '/blog/@blocktrades/notifications', modes: ['loggedIn'] },
     { route: '/wallet/@blocktrades/transfers', modes: ['loggedIn'] },
+    { route: '/blog/for-you', modes: ['loggedIn'] },
   ]);
+});
+
+test('the TTFB baseline takes the logged-out routes but an AI search, whose TTFB is hivesense\'s cache', () => {
+  const route = (path, mode, ms) => ({ route: path, mode, median: { backend: { 'server-response-time': ms } } });
+  assert.deepEqual(
+    routeTtfb([
+      route('/blog/trending', 'loggedOut', 2),
+      route('/blog/trending', 'loggedIn', 68),
+      route(AI_SEARCH, 'loggedOut', 1890),
+      route('/blog/search?q=hardfork', 'loggedOut', 1170),
+    ]),
+    { '/blog/trending': 2, '/blog/search?q=hardfork': 1170 }
+  );
 });
 
 test('a route alternates its logged-out and logged-in runs, and keeps a result per mode', async (t) => {

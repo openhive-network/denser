@@ -562,7 +562,8 @@ held until an operator approves it.
 The integration site's Lighthouse check (`stack/integration/lighthouse.sh`) measures
 the live site against the live Hive API and `images.hive.blog`, whose latency and
 content change between runs. The `lighthouse_fixture` suite measures the same routes
-(`integration` in `scripts/ci-helpers/lighthouse-thresholds.json`), with the same
+(`integration` in `scripts/ci-helpers/lighthouse-thresholds.json`, those the recording
+covers: `routes` in its `_lighthouse.json`), with the same
 Lighthouse (13.5.0, mobile, median of 5 runs), on production builds of this tree served
 from recorded data, so two passes differ only by the code and the host's CPU.
 
@@ -742,6 +743,7 @@ and misses are both seen), then writes `_index.json` and `_lighthouse.json`. Ima
 no measured run's report lists (Lighthouse probes lazy images at full size after its
 trace) are kept as bodiless 404s (`image-server.mjs prune`), which keeps the set at
 about 7 MB. A recording replaces the set: after one, run `--update-baseline` and
-commit both. Do it when a route is added to `lighthouse-thresholds.json` (a route
-without a recording MISSes), or when the pages start making requests the recording
-lacks.
+commit both. Do it when a route is added to `lighthouse-thresholds.json`: until then
+the pass leaves the route out and reports it as a skipped case, `not in the recording`
+(`scripts/ci-helpers/lighthouse-fixture-routes.js`; replaying it would MISS). Do it
+too when the pages start making requests the recording lacks.

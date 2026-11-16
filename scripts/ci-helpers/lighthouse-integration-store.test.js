@@ -30,6 +30,15 @@ test('reports are saved gzip\'d per revision, and only the latest revision\'s ar
   assert.equal(report.lighthouseVersion, '13.5.0');
 });
 
+test('a route with a query string has a report name of its own, safe as a file name and a link', (t) => {
+  const out = tempOut(t);
+  const ai = store.saveReport(out, REV_A, '/blog/search?ai=hive%20hardfork%20changes', 0, {});
+  const classic = store.saveReport(out, REV_A, '/blog/search?q=hardfork', 0, {});
+  assert.equal(ai, `reports/${REV_A}/blog_search_ai_hive_20hardfork_20changes-run1.json.gz`);
+  assert.equal(classic, `reports/${REV_A}/blog_search_q_hardfork-run1.json.gz`);
+  assert.deepEqual(fs.readdirSync(path.join(out, 'reports', REV_A)).sort(), [path.basename(ai), path.basename(classic)]);
+});
+
 test('the baseline history round-trips, and starts empty', (t) => {
   const out = tempOut(t);
   assert.deepEqual(store.readHistory(out), []);

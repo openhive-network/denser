@@ -347,11 +347,14 @@ revision for blog and wallet, then runs Lighthouse (mobile, in the pinned
 and compares the median performance score, LCP, TBT, CLS, transferred JS and
 transferred WASM with the `integration` section of
 `scripts/ci-helpers/lighthouse-thresholds.json`. That section is also the list of
-routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
-`loading="lazy"` (Lighthouse's own LCP discovery check).
+routes, a route's query string included (`/blog/search?q=hardfork`; its reports are
+named after the route with every run of characters other than letters, digits, `.`,
+`_` and `-` turned into one `_`). `lcp-lazy-loaded: false` there flags a route whose
+LCP image is `loading="lazy"` (Lighthouse's own LCP discovery check).
 
-- **Logged in:** the routes of `integrationLoggedIn` (the six above, plus the
-  observer's own profile, notifications and wallet: `{observer}` in a route) are
+- **Logged in:** the routes of `integrationLoggedIn` (those above but the classic
+  search and the login page, plus `/blog/for-you`, whose real use is logged in, and
+  the observer's own profile, notifications and wallet: `{observer}` in a route) are
   measured a second time as a logged-in reader, with the same settings and runs,
   each logged-in run right after the route's logged-out one so both see the same
   backend. Logged in is the state denser's Keychain login leaves: the `observer`
@@ -397,12 +400,15 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
   `.after`). A pass is `environment.status: degraded` when a probe failed every
   sample, or a probe median or a route's median TTFB is at least 2× and 300 ms above
   its baseline: the median over the last 20 passes (`environment-baseline.json`,
-  which needs 3 of them first). A degraded pass's `verdict` reads
+  which needs 3 of them first). The AI search (`/blog/search?ai=…`) has no TTFB
+  there: its server render waits for hivesense on `api.syncad.com`, which caches a
+  query only after the first, uncached, answer, so its TTFB says whether the query
+  was cached rather than how the environment was. A degraded pass's `verdict` reads
   `breach (environment degraded)` (or `pass (…)`), apart from a code breach; the exit
   code does not change.
 - **Advisory:** a breach never fails or rolls back the upgrade.
-- **Bounded:** one check (75 Lighthouse runs, about 30 minutes: 30 logged-out runs,
-  about 12 minutes, and 45 logged-in ones, about 18 minutes more) per promoted revision
+- **Bounded:** one check (110 Lighthouse runs, about 45 minutes: 50 logged-out runs
+  and 60 logged-in ones, each about 18-24 s) per promoted revision
   whose builds have not been measured: a commit that rebuilt nothing (docs, tests)
   serves the builds an earlier revision was measured with, and is skipped. A
   revision that never deploys, or that a later promote overtakes before it is
@@ -430,8 +436,11 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
   The community feed's LCP limit is `/blog/trending`'s since 2026-10-07: both simulate
   about 5.0 s while painting in under 0.6 s. The logged-in limits start from the
   2026-10-07 comparison of the two modes (`docs/performance/logged-in-2026-10-07.md`),
-  described there. If the pass gets too long, take routes out of
-  `integrationLoggedIn` rather than runs per route.
+  described there. The searches, `/blog/login`, `/blog/communities` and
+  `/blog/for-you` were added from the 2026-11-16 measurement
+  (`docs/performance/integration-routes-2026-11-16.md`), with limits set the same way
+  and not to the targets of their own fix issues. If the pass gets too long, take
+  routes out of `integrationLoggedIn` rather than runs per route.
 
 ## One server session for blog and wallet
 
