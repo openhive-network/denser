@@ -701,23 +701,35 @@ hermetic and within thresholds. Its `revision` is the commit checked out when it
 measured: a baseline taken with uncommitted changes names their parent, so say here
 what the measured tree was.
 
-The current baseline (2026-10-31, `revision` 334cd985c) is that tree, after #1412 took
-two accidental additions back off the post pages (`react-spinners-kit` with its
-styled-components, and eager `@hiveio/lite-account` imports, about 37 KiB). The growth
-left since the 2026-10-25 baseline (a4382d977) was accepted as the cost of features:
-the lite header and feature UI (#1269, #1309), Next 16.4.1 (#1364) and the sign-out
-work (#1383-#1408). It is script only (image bytes are unchanged, the wallet's script
-is 1.6 KiB lighter), plus two requests on every route and three on `/blog/@gtg`.
-Script transfer bytes and requests, a4382d977 -> the current baseline:
+The current baseline (2026-11-16, `revision` 5b249dcaa) is that tree, with the
+lighthouse recording's images re-recorded by `--record-images`: #1631 asks for the
+post-card thumbnails as `format=webp`, which the set lacked, so every feed and profile
+missed them and their fallback added requests. The previous baseline (2026-11-06, #1585,
+`revision` 24d37684f with #1585's wallet changes uncommitted on it) failed since. Image
+bytes fell with WebP (`/blog/trending` 389,847 B -> 190,303 B, `/blog/@gtg` 433,342 B ->
+97,631 B, `/blog/trending/hive-160391` 128,623 B -> 18,306 B), and the post pages' TBT
+with #1627. The script growth, weighed by source map against 24d37684f (blog) and
+f2665d64e (wallet), is spread over features, none a stray import: the background
+settlement of unconfirmed broadcasts and its toasts (#1597, about 0.9 KiB on every route),
+the WIF signer's Beekeeper warm-up hook (#1598, 0.3 KiB; Beekeeper itself stays a dynamic
+import), the node probing and failover of #1616, #1618, #1620 and #1621 (about 0.6 KiB),
+the chain-error toasts of #1606 and #1610 (0.3 KiB), and on the blog the card-image
+fixes of #1613 (0.3 KiB) and the lite key-store record and menu of #1605 (0.4 KiB; its
+Safe Storage code loads when used). Script transfer bytes and requests, the previous
+baseline -> the current one:
 
-| route | a4382d977 | current baseline |
+| route | 2026-11-06 | current baseline |
 |---|---|---|
-| `/blog/trending` | 366,330 B, 85 req | 376,103 B, 87 req |
-| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 451,187 B, 46 req | 464,034 B, 48 req |
-| `/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature` | 451,187 B, 51 req | 464,034 B, 53 req |
-| `/blog/trending/hive-160391` | 380,177 B, 47 req | 391,490 B, 49 req |
-| `/blog/@gtg` | 373,330 B, 55 req | 386,754 B, 58 req |
-| `/wallet/@gtg/transfers` | 480,376 B, 49 req | 478,703 B, 51 req |
+| `/blog/trending` | 386,153 B, 87 req | 390,492 B, 87 req |
+| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 475,298 B, 47 req | 479,846 B, 47 req |
+| `/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature` | 475,298 B, 52 req | 479,846 B, 52 req |
+| `/blog/trending/hive-160391` | 401,574 B, 50 req | 406,620 B, 50 req |
+| `/blog/@gtg` | 397,104 B, 58 req | 401,821 B, 58 req |
+| `/wallet/@gtg/transfers` | 448,121 B, 51 req | 450,959 B, 52 req |
+
+The wallet's added request is a CORS preflight, not an API call: its fetches are the
+same, and one more of its first JSON-RPC posts leaves before the first preflight's
+answer is cached.
 
 To attribute a change in bytes to source files, build both trees with
 `productionBrowserSourceMaps: true` in each app's `next.config.js` (the chunks keep
@@ -746,4 +758,11 @@ about 7 MB. A recording replaces the set: after one, run `--update-baseline` and
 commit both. Do it when a route is added to `lighthouse-thresholds.json`: until then
 the pass leaves the route out and reports it as a skipped case, `not in the recording`
 (`scripts/ci-helpers/lighthouse-fixture-routes.js`; replaying it would MISS). Do it
-too when the pages start making requests the recording lacks.
+too when the pages start making API requests the recording lacks.
+
+When only images miss (`hermetic.missed` lists image paths, as when the cards ask for
+another format or size), `--record-images` in the same `docker run` keeps the API
+recording and its clock: it replays the API, records from `images.hive.blog` only the
+image paths the set lacks, and prunes as `--record` does, so images no route fetches
+any more become bodiless 404s. It measures every route and takes no other arguments.
+Then `--update-baseline`, and commit `images/` with the baseline.
