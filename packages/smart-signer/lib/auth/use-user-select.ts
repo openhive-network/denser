@@ -1,16 +1,51 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import { notifyManager, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import { hashKey, notifyManager, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { User } from '@smart-signer/types/common';
 import { userQueryOptions } from './user-query';
 
-// Builds the query from the stored user when no user hook has yet, as useQuery would.
-function userQuery(queryClient: QueryClient) {
-  return queryClient.getQueryCache().build(queryClient, userQueryOptions);
-}
+const USER_QUERY_HASH = hashKey(userQueryOptions.queryKey);
 
 function readUser(queryClient: QueryClient): User {
-  return userQuery(queryClient).state.data ?? defaultUser;
+  const query =
+    queryClient.getQueryCache().get<User>(USER_QUERY_HASH) ??
+    // Builds the query from the stored user when no user hook has yet, as useQuery would.
+    queryClient.getQueryCache().build(queryClient, userQueryOptions);
+  return query.state.data ?? defaultUser;
+}
+
+/** Subscribes a reader to user query changes; returns the unsubscribe function. */
+type UserSubscribe = (onChange: () => void) => () => void;
+
+const userSubscriptions = new WeakMap<QueryClient, UserSubscribe>();
+
+/**
+ * One query cache subscription per client, shared by every reader: the cache notifies its listeners
+ * of every event of every query, so a subscription per reader would be called per comment for each.
+ */
+function userSubscribe(queryClient: QueryClient): UserSubscribe {
+  const existing = userSubscriptions.get(queryClient);
+  if (existing) return existing;
+  const readers = new Set<() => void>();
+  let unsubscribeCache: (() => void) | undefined;
+  // Batched as useQuery's notifications are, so these and the useUserClient readers see a user
+  // change in the same render (a sign-out does not reach a vote button before its page).
+  const notify = notifyManager.batchCalls(() => readers.forEach((onChange) => onChange()));
+  const subscribe: UserSubscribe = (onChange) => {
+    readers.add(onChange);
+    unsubscribeCache ??= queryClient.getQueryCache().subscribe((event) => {
+      if (event.query.queryHash === USER_QUERY_HASH) notify();
+    });
+    return () => {
+      readers.delete(onChange);
+      if (readers.size === 0) {
+        unsubscribeCache?.();
+        unsubscribeCache = undefined;
+      }
+    };
+  };
+  userSubscriptions.set(queryClient, subscribe);
+  return subscribe;
 }
 
 /**
@@ -24,20 +59,8 @@ function readUser(queryClient: QueryClient): User {
  */
 export function useUserSelect<T>(select: (user: User) => T): T {
   const queryClient = useQueryClient();
-  const subscribe = useCallback(
-    (onChange: () => void) => {
-      const { queryHash } = userQuery(queryClient);
-      // Batched as useQuery's notifications are, so this and the useUserClient readers see a user
-      // change in the same render (a sign-out does not reach a vote button before its page).
-      const notify = notifyManager.batchCalls(onChange);
-      return queryClient.getQueryCache().subscribe((event) => {
-        if (event.query.queryHash === queryHash) notify();
-      });
-    },
-    [queryClient]
-  );
   return useSyncExternalStore(
-    subscribe,
+    userSubscribe(queryClient),
     () => select(readUser(queryClient)),
     () => select(defaultUser)
   );
