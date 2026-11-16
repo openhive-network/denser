@@ -9,17 +9,15 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter, getViewerVote } from '@transaction/lib/hive-api';
 import type { TrimmedEntry } from '@/blog/features/list-of-posts/lib/card-entry';
-import { useLoggedUserNetVests } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
 import { useVoteMutation } from './hooks/use-vote-mutation';
 import { viewerVoteOf } from './lib/viewer-vote';
 import { VoteRemovalDialog } from './vote-removal-dialog';
+import VoteRemovalButton from './vote-removal-button';
 import { TooltipContainer } from './vote-tooltip-container';
 import WeightedVoteButton from './weighted-vote-button';
 import VoteDialogButton from './vote-dialog-button';
-
-const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
 // Default votes values - defined outside component for stable reference
 const DEFAULT_VOTES_VALUES = {
@@ -82,7 +80,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
     refetchOnReconnect: false,
     refetchOnMount: false
   });
-  const enable_slider = useLoggedUserNetVests() > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === voter ? userVotes.votes[0] : undefined;
@@ -101,19 +98,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
 
   const upvoteSliderText = `${sliderUpvote[0]}%`;
   const downvoteSliderText = `-${sliderDownvote[0]}%`;
-  const upvoteRemovalLabel =
-    userVote && userVote.vote_percent === 10000 && !enable_slider
-      ? t('cards.post_card.undo_upvote')
-      : t('cards.post_card.undo_upvote_percent', {
-          votePercent: ((userVote?.vote_percent ?? 0) / 100).toFixed(2)
-        });
-  const downvoteRemovalLabel =
-    userVote && userVote.vote_percent === -10000 && !enable_slider
-      ? t('cards.post_card.undo_downvote')
-      : t('cards.post_card.undo_downvote_percent', {
-          votePercent: (-(userVote?.vote_percent ?? 0) / 100).toFixed(2)
-        });
-
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     try {
@@ -135,7 +119,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         />
       ) : user.isLoggedIn && !vote_upvoted ? (
         <WeightedVoteButton
-          sliderEnabled={enable_slider}
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.upvote')}
           popoverLabel={t('cards.post_card.upvote_weight')}
@@ -201,9 +184,9 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             submitVote(0);
           }}
         >
-          <VoteDialogButton label={upvoteRemovalLabel} dataTestId="upvote-button" afterPayout={false}>
+          <VoteRemovalButton voteType="upvote" votePercent={userVote?.vote_percent ?? 0}>
             <Icons.arrowUpCircle aria-hidden="true" className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white hover:bg-destructive-icon hover:text-white" />
-          </VoteDialogButton>
+          </VoteRemovalButton>
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>
@@ -228,7 +211,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         />
       ) : user.isLoggedIn && !vote_downvoted ? (
         <WeightedVoteButton
-          sliderEnabled={enable_slider}
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.downvote')}
           popoverLabel={t('cards.post_card.downvote_weight')}
@@ -303,9 +285,9 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             submitVote(0);
           }}
         >
-          <VoteDialogButton label={downvoteRemovalLabel} dataTestId="downvote-button" afterPayout={false}>
+          <VoteRemovalButton voteType="downvote" votePercent={userVote?.vote_percent ?? 0}>
             <Icons.arrowDownCircle aria-hidden="true" className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white opacity-80 hover:bg-gray-600 hover:text-white" />
-          </VoteDialogButton>
+          </VoteRemovalButton>
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>

@@ -63,7 +63,7 @@ export function LoggedUserContexts({
     () => ({ loggedUser, net_vests: netVests, reputation }),
     [loggedUser, netVests, reputation]
   );
-  // When the account loads, every vote button re-renders to enable its weight slider.
+  // When the account loads, every vote arrow re-renders to enable its weight slider.
   // At transition priority React renders that in slices instead of one long task.
   const deferredNetVests = useDeferredValue(netVests);
 
