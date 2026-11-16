@@ -16,10 +16,10 @@ import {
 /**
  * §10 — COM-05 — Leave a community from the /communities explorer card.
  *
- *   Wire — same custom_json shape as COM-03. The explorer card mounts the
- *          SAME `<SubscribeCommunity>` component as the community-page
- *          sidebar, so the unsubscribe payload and optimistic flip are
- *          byte-identical — only the entry route and locator path differ.
+ *   Wire — same custom_json shape as COM-03. The explorer's shared handler
+ *          calls the SAME `useUnsubscribeMutation` as the community-page
+ *          sidebar, so the unsubscribe payload is byte-identical — only the
+ *          entry route and locator path differ.
  *
  * Recorded against hive-167922 (LeoFinance), one of the 3 communities
  * guest4test is subscribed to on mainnet — so `context.subscribed: true`
@@ -63,8 +63,8 @@ test('COM-05 — Leave community via /communities explorer card', async ({ page 
   // The card flips back to Subscribe and the Joined/Leave button disappears.
   // This works because useUnsubscribeMutation.onSettled now patches the
   // ['communitiesList'] cache (context.subscribed=false), so the card's
-  // useEffect recomputes isSubscribed=false instead of snapping back to the
-  // stale subscribed=true. Asserted within the optimistic window (mirrors
+  // derived state is subscribed=false instead of the stale
+  // subscribed=true. Asserted within the optimistic window (mirrors
   // COM-04); the 5s list_communities refetch reverts it afterwards.
   await expect(explorer.subscribeButtonIn(card)).toBeVisible();
   await expect(explorer.joinedLeaveButtonIn(card)).toBeHidden();

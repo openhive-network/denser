@@ -5,12 +5,12 @@ export type SubscriptionParams = { community: string; username: string; communit
 
 /**
  * Reflect a subscribe/unsubscribe in the explorer's cached community lists so
- * `CommunitiesListItem` (which derives `isSubscribed` from
- * `community.context.subscribed`) flips. The list is cached per
- * `['communitiesList', sort, query, observer]`; without this its `useEffect`
- * recomputes `isSubscribed` from a stale `context.subscribed` and snaps the
- * card back to its pre-action state. Mirrors the per-community
- * `['community', X]` optimistic write the hooks already do.
+ * the card (`useCommunitiesSubscription` derives its state from
+ * `community.context.subscribed` and the `['subscriptions', username]` cache)
+ * flips. The list is cached per `['communitiesList', sort, query, observer]`;
+ * without this a stale `context.subscribed: true` keeps a left community
+ * showing Joined. Mirrors the per-community `['community', X]` optimistic
+ * write the hooks already do.
  */
 function patchCommunitiesListCache(queryClient: QueryClient, community: string, subscribed: boolean): void {
   queryClient.getQueriesData<Community[]>({ queryKey: ['communitiesList'] }).forEach(([key, list]) => {

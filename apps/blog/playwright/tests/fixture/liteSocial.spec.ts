@@ -18,6 +18,10 @@ import { test, expect } from '../support/fixture-proxy-test';
  *                    its Following list names the Hive account it follows
  *   LITE-SOCIAL-07 – a Hive profile's followers include a lite follower, with the lite badge
  *   LITE-SOCIAL-09 – `rate_limited` keeps the follow state, toasts and shows the wait
+ *   LITE-SOCIAL-10 – on /communities the lite account's card shows Joined
+ *   LITE-SOCIAL-11 – a guest's Subscribe on /communities sends one signed `subscribe` op and the
+ *                    card flips to Joined
+ *   LITE-SOCIAL-12 – without a lite identity, a /communities Subscribe opens the sign-in dialog
  *   LITE-NOTIF-06  – this recording's `lite.get_info` lists no `account_notifications`: the lite
  *                    identity's menu has no Notifications item nor unread count, and the browser
  *                    asks no `lite.*notifications` (liteNotifications.spec.ts has the node with them)
@@ -44,6 +48,7 @@ const MUTED_POST_URL = `/${MUTED_AUTHOR_COMMUNITY}/@${MUTED_AUTHOR}/swarm-post-2
 const REBLOGGED_TITLE = 'Denser guest root post check 2026-10-19T22:56';
 const OWN_ROOT_TITLE = 'lite gateway smoke test';
 const SUBSCRIBED_COMMUNITY = 'hive-13323';
+const SUBSCRIBED_COMMUNITY_TITLE = 'Splinterlands';
 const CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000000000000';
 
 const INFO = {
@@ -274,5 +279,50 @@ test.describe('Lite social for guests (fixture-based, node with lite_social)', (
     const sidebar = page.getByTestId('community-info-sidebar');
     await expect(sidebar.getByTestId('community-join-leave-button')).toContainText('Joined');
     await expect(sidebar.getByTestId('community-subscribe-button')).toHaveCount(0);
+  });
+
+  test('LITE-SOCIAL-10: the communities explorer shows the lite subscription as Joined', async ({ page }) => {
+    await holdLiteIdentity(page, LITE_NAME);
+    await mockGateway(page, ACCEPTED);
+    await page.goto('/communities', { waitUntil: 'domcontentloaded' });
+    const card = page.getByTestId('community-list-item').filter({ hasText: SUBSCRIBED_COMMUNITY_TITLE });
+    await expect(card.getByTestId('community-join-leave-button')).toContainText('Joined');
+    await expect(card.getByTestId('community-subscribe-button')).toHaveCount(0);
+  });
+
+  test('LITE-SOCIAL-11: a guest subscribes from the communities explorer as its lite account', async ({ page }) => {
+    await holdLiteIdentity(page, GUEST_NAME);
+    const sent = await mockGateway(page, ACCEPTED);
+    // The server renders the sign-in Subscribe; the card acts as the lite account once its relations are read.
+    const relations = page.waitForResponse((response) =>
+      (response.request().postData() ?? '').includes('"lite.list_all_subscriptions"')
+    );
+    await page.goto('/communities', { waitUntil: 'domcontentloaded' });
+    await relations;
+    const card = page.getByTestId('community-list-item').filter({ hasText: SUBSCRIBED_COMMUNITY_TITLE });
+    const subscribe = card.getByTestId('community-subscribe-button');
+    await expect(subscribe).toBeEnabled();
+    await subscribe.click();
+
+    await expect(card.getByTestId('community-join-leave-button')).toContainText('Joined');
+    await expect(page.getByTestId('login-dialog')).toHaveCount(0);
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toMatchObject({
+      app: SOCIAL_APP,
+      operations: [{ method: 'subscribe', args: { actor: `did:lite:${GUEST_NAME}`, community: SUBSCRIBED_COMMUNITY } }]
+    });
+  });
+
+  test('LITE-SOCIAL-12: without a lite identity the explorer Subscribe opens the sign-in dialog', async ({ page }) => {
+    const sent = await mockGateway(page, ACCEPTED);
+    await page.goto('/communities', { waitUntil: 'domcontentloaded' });
+    const card = page.getByTestId('community-list-item').filter({ hasText: SUBSCRIBED_COMMUNITY_TITLE });
+    const dialog = page.getByTestId('login-dialog');
+    // A click on the server-rendered button before hydration does nothing.
+    await expect(async () => {
+      await card.getByTestId('community-subscribe-button').click();
+      await expect(dialog).toBeVisible({ timeout: 1000 });
+    }).toPass();
+    expect(sent).toEqual([]);
   });
 });

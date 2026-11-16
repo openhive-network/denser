@@ -16,10 +16,10 @@ import {
 /**
  * §10 — COM-04 — Subscribe to community from the /communities explorer card.
  *
- *   Wire — same custom_json shape as COM-02. The explorer card mounts the
- *          SAME `<SubscribeCommunity>` component (subscribe-community.tsx)
- *          as the community page's sidebar, so the broadcast payload and
- *          optimistic UI flip are byte-identical.
+ *   Wire — same custom_json shape as COM-02. The explorer's shared handler
+ *          (use-communities-subscription.ts) calls the SAME
+ *          `useSubscribeMutation` as the community page's sidebar, so the
+ *          broadcast payload is byte-identical.
  *   Variant — entry point is `/communities`, click target lives inside a
  *             `community-list-item` card found by its title text.
  *
@@ -60,12 +60,9 @@ test('COM-04 — Subscribe to community via /communities explorer card', async (
     page.getByText(TOAST_SUBSCRIBED(COMMUNITY_NAME), { exact: true })
   ).toBeVisible();
 
-  // Optimistic flip on the SAME card. CommunitiesListItem holds its own
-  // `isSubscribed` useState and the subscribe handler calls
-  // onIsSubscribed(true) (subscribe-community.tsx) — so the card swaps to
-  // the join/leave button from local component state. The explorer reads
-  // ['communitiesList'], NOT the ['community', X] cache that
-  // useSubscribeMutation.onSettled rewrites, so that rewrite doesn't drive
-  // this flip.
+  // Flip on the SAME card. The card's state is derived from the
+  // ['communitiesList'] and ['subscriptions', user] caches, which
+  // useSubscribeMutation's onSuccess patches (subscription-cache.ts), so
+  // the card swaps to the join/leave button once the broadcast lands.
   await expect(explorer.joinedLeaveButtonIn(card)).toBeVisible();
 });
