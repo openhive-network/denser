@@ -8,6 +8,7 @@ import { Input } from '@hive/ui/components/input';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@hive/ui/components/button';
 import { getWitnessList, rankWitnesses, WITNESS_LIST_QUERY_KEY } from '@/wallet/lib/witness-list';
+import { majorityVersion as majorityVersionOf } from '@/wallet/lib/witness-row';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '@/wallet/components/dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -30,6 +31,8 @@ import { getAccount } from '@transaction/lib/hive-api';
 
 // User can vote only for 30 witnesses
 const MAX_VOTES = 30;
+// The top-ranked witnesses that produce blocks every round; their versions decide the majority one
+const CONSENSUS_WITNESSES = 20;
 
 export default function WitnessesPage() {
   const { user } = useUserClient();
@@ -65,6 +68,12 @@ export default function WitnessesPage() {
     queryFn: getWitnessList
   });
   const rankedWitnesses = useMemo(() => (witnessList ? rankWitnesses(witnessList) : undefined), [witnessList]);
+  const majorityVersion = useMemo(
+    () =>
+      rankedWitnesses &&
+      majorityVersionOf(rankedWitnesses.slice(0, CONSENSUS_WITNESSES).map((witness) => witness.running_version)),
+    [rankedWitnesses]
+  );
 
   // Mutation for handle voting witness
   const voteMutation = useWitnessVoteMutation();
@@ -116,26 +125,29 @@ export default function WitnessesPage() {
     <main>
       {!observerData || observerData.proxy === '' ? (
         <div className="mx-auto max-w-5xl">
-          <div className="mx-2 flex flex-col gap-4">
-            <h1 className="text-xl md:text-4xl" data-testid="witness-header">
-              {t('witnesses_page.title')}
-            </h1>
-            <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
-              <span className="font-semibold " data-testid="witness-header-vote-remaining">
-                {t('witnesses_page.you_have_votes_remaining.other', { value: votesLeft })}
-              </span>{' '}
-              {t('witnesses_page.you_can_vote_for_maximum_of_witnesses')}
-            </p>
-            <p className="text-xs sm:text-sm" data-testid="witness-header-description">
+          <div className="mx-2 flex flex-col gap-1">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+              <h1 className="text-xl md:text-4xl" data-testid="witness-header">
+                {t('witnesses_page.title')}
+              </h1>
+              <p className="text-xs sm:text-right sm:text-sm" data-testid="witness-header-vote">
+                <span className="font-semibold " data-testid="witness-header-vote-remaining">
+                  {t('witnesses_page.you_have_votes_remaining.other', { value: votesLeft })}
+                </span>{' '}
+                {t('witnesses_page.you_can_vote_for_maximum_of_witnesses')}
+              </p>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-400" data-testid="witness-header-description">
               {t('witnesses_page.witness_list_notes')}
             </p>
           </div>
-          <table className="mt-4 w-full table-fixed text-xs">
+          <table className="mt-2 w-full table-fixed text-xs">
             <colgroup>
-              <col className="w-12 sm:w-20" />
+              <col className="w-14 sm:w-16" />
               <col />
-              <col className="w-24 sm:w-40" />
-              <col className="w-20 sm:w-32" />
+              <col className="w-0 sm:w-16" />
+              <col className="w-0 sm:w-32" />
+              <col className="w-0 sm:w-40" />
             </colgroup>
             <thead
               className=" h-10 bg-zinc-100 text-left  dark:bg-slate-900"
@@ -144,27 +156,23 @@ export default function WitnessesPage() {
               <tr className="font-semibold sm:text-sm">
                 <th className="p-2">{t('witnesses_page.rank')}</th>
                 <th className="p-2">{t('witnesses_page.witness')}</th>
-                <th className="p-2">{t('witnesses_page.votes_received')}</th>
-                <th className="p-2">{t('witnesses_page.price_feed')}</th>
+                <th className="hidden py-2 pr-2 sm:table-cell">{t('witnesses_page.version')}</th>
+                <th className="hidden py-2 pr-2 sm:table-cell">{t('witnesses_page.votes_received')}</th>
+                <th className="hidden py-2 pr-2 sm:table-cell">{t('witnesses_page.price_feed')}</th>
               </tr>
             </thead>
             <tbody data-testid="witness-table-body">
               {witnessesLoading ? (
                 <tr>
-                  <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
-
-                  <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
-
-                  <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
-
-                  <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
+                  <td colSpan={5} className="animate-pulse p-2 text-xl">
+                    {t('global.loading')}
+                  </td>
                 </tr>
               ) : !witnessList || !rankedWitnesses ? (
                 <tr>
-                  <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
-                  <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
-                  <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
-                  <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
+                  <td colSpan={5} className="animate-pulse p-2 text-xl">
+                    {t('global.something_went_wrong')}
+                  </td>
                 </tr>
               ) : (
                 rankedWitnesses.map((element) => (
@@ -174,6 +182,7 @@ export default function WitnessesPage() {
                     witnessProfile={witnessList.profiles[element.owner]}
                     key={element.id}
                     headBlock={witnessList.headBlock}
+                    majorityVersion={majorityVersion}
                     highlighted={highlight === element.owner}
                     voteEnabled={user?.isLoggedIn}
                     isVoted={userWitnessVotes.includes(element.owner)}

@@ -1,6 +1,6 @@
 import type { Server } from 'node:http';
 import { test, expect } from '@playwright/test';
-import { WALLET_BASE_PATH } from '../support/basePath';
+import { FIXTURE_BLOG_URL, WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_WITNESSES, startWitnessApiStub } from '../support/witnessApiStub';
 
 /**
@@ -53,5 +53,20 @@ test.describe('Witnesses server HTML', () => {
     for (const { owner } of STUB_WITNESSES) {
       await expect(main.getByRole('link', { name: `Link to witness ${owner}`, exact: true })).toHaveCount(1);
     }
+  });
+
+  test('WALLET-WITNESSES-SSR-04 — a witness announcement post opens on the blog, and a producing witness shows no last block', async ({
+    page
+  }) => {
+    await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
+
+    const body = page.getByTestId('witness-table-body');
+    const [first] = STUB_WITNESSES;
+    const siteLink = body.locator('tr').first().getByTestId('witness-external-site-link').getByRole('link');
+    await expect(siteLink).toHaveText('Announcement');
+    await expect(siteLink).toHaveAttribute('href', `${FIXTURE_BLOG_URL}/@${first.owner}/witness-post`);
+    await expect(siteLink).not.toHaveAttribute('target', '_blank');
+    await expect(body.getByTestId('last-block-number')).toHaveCount(0);
+    await expect(body.getByTestId('witness-name-link').first()).toHaveAttribute('title', /Witness age: /);
   });
 });

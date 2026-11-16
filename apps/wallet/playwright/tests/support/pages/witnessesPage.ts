@@ -18,7 +18,6 @@ export class WitnessesPage {
   readonly witnessPriceFeed: Locator;
   readonly witnessVoteBox: Locator;
   readonly witnessSetProxyBox: Locator;
-  readonly witnessCreated: Locator;
   readonly witnessVoteIcon: Locator;
   readonly witnessHasNotProducedBlocksWarning: Locator;
 
@@ -40,7 +39,6 @@ export class WitnessesPage {
     this.witnessPriceFeed = page.locator('[data-testid="witness-price-feed"]');
     this.witnessVoteBox = page.locator('[data-testid="witnesses-vote-box"]');
     this.witnessSetProxyBox = page.locator('[data-testid="witnesses-set-proxy-box"]');
-    this.witnessCreated = page.locator('[data-testid="witness-created"]');
     this.witnessVoteIcon = page.locator('[data-testid="witness-vote"]');
     this.witnessHasNotProducedBlocksWarning = page.locator('[data-testid="witness-has-not-produced-blocks-warning"]');
   }

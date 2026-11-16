@@ -6,12 +6,12 @@ import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { memo, useEffect, useRef, useState } from 'react';
-import DialogLogin from './dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
-import { CircleSpinner } from '@ui/components/circle-spinner';
-import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
+import { isVersionBelow } from '@/wallet/lib/witness-row';
+import WitnessVoteButton from './witness-vote-button';
+import WitnessSiteLink from './witness-site-link';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -25,6 +25,8 @@ interface WitnessListItemProps {
   data: RankedWitness;
   witnessProfile?: WitnessProfile;
   headBlock: number;
+  /** The version most of the top witnesses run; a lower one is flagged on narrow screens */
+  majorityVersion?: string;
   /** Whether the row is the one the page's `highlight` parameter names */
   highlighted: boolean;
   onVote: (witness: string, approve: boolean) => void;
@@ -34,13 +36,14 @@ interface WitnessListItemProps {
 }
 
 const ONE_WEEK_IN_SEC = 604800;
-const VOTE_FOCUS_RING =
-  'rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2';
+const ONE_DAY_IN_SEC = 86400;
+const MUTED_TEXT = 'text-gray-600 dark:text-gray-400';
 
 function WitnessListItem({
   data,
   headBlock,
   witnessProfile,
+  majorityVersion,
   highlighted,
   onVote,
   voteEnabled,
@@ -51,71 +54,23 @@ function WitnessListItem({
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
   const witnessDescription = witnessProfile?.witnessDescription;
   const witnessOwner = witnessProfile?.witnessOwner;
+  const isStale = data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC;
+  const isOutdated = majorityVersion !== undefined && isVersionBelow(data.running_version, majorityVersion);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const toggleDescription = () => setDescriptionExpanded((expanded) => !expanded);
 
-  function witnessLink() {
-    if (disableUser)
-      return (
-        <span>
-          {t('witnesses_page.disabled')}
-          {blockGap(headBlock, data.last_confirmed_block_num, t)}
-        </span>
-      );
-
-    // Witness URLs come from the blockchain — attacker-controlled. Validate
-    // with an allowlist: parseable, scheme === https, no embedded credentials.
-    // A single witness publishing `url = "http://"` crashed this entire page.
-    // TODO: adopt a shared safe-external-url helper / audited library when the
-    //       broader sanitization audit lands (meta issue pending).
-    if (typeof data.url !== 'string' || !URL.canParse(data.url)) {
-      return <>({t('witnesses_page.no_url_provided')})</>;
-    }
-    const urlToWitnessPage = new URL(data.url);
-    if (urlToWitnessPage.protocol !== 'https:' || urlToWitnessPage.username || urlToWitnessPage.password) {
-      return <>({t('witnesses_page.no_url_provided')})</>;
-    }
-    if (['hive.blog', 'localhost'].includes(urlToWitnessPage.hostname))
-      return (
-        <Link
-          href={encodeURI(data.url)}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
-        >
-          <span>{t('witnesses_page.open_witness_announcement')}</span>
-          <Icons.forward className="text-red-600 dark:text-red-500" />
-        </Link>
-      );
-
-    return (
-      <Link
-        href={encodeURI(data.url)}
-        target="_blank"
-        rel="noreferrer noopener"
-        className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
-      >
-        <span>{t('witnesses_page.open_external_site')}</span>
-        <Icons.forward className="text-red-600 dark:text-red-500" />
-      </Link>
-    );
-  }
-
-  const onVoteForWitness = (approve: boolean) => onVote(data.owner, approve);
-
-  const [removeVoteOpen, setRemoveVoteOpen] = useState(false);
-  const onVoteClick = () => (isVoted ? setRemoveVoteOpen(true) : onVoteForWitness(true));
-  const voteLabel = t('witnesses_page.vote_for_witness', { witness: data.owner });
-  const unvotedIcon = (
-    <Icons.arrowUpCircle
-      viewBox="1.7 1.7 20.7 20.7"
-      className={clsx(
-        'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
-        {
-          'bg-slate-100 dark:bg-slate-900': !highlighted,
-          'bg-rose-200  dark:bg-rose-800': highlighted
-        }
-      )}
-    />
-  );
+  const nameTitle = [
+    t('witnesses_page.navigate_to_witness_profile'),
+    disableUser ? null : t('witnesses_page.witness_age') + dateToRelative(data.created, t).replace('ago', '').trim(),
+    `v${data.running_version}`
+  ]
+    .filter(Boolean)
+    .join('\n');
+  const hp = `${getRoundedAbbreveration(data.vestsToHp)} HP`;
+  const rankUp = data.requiredHpToRankUp ? getRoundedAbbreveration(data.requiredHpToRankUp) : null;
+  const priceFeed = `$${(
+    Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
+  ).toFixed(3)}`;
 
   const ref = useRef<HTMLTableRowElement>(null);
   useEffect(() => {
@@ -126,180 +81,152 @@ function WitnessListItem({
 
   return (
     <tr
-      className={clsx({
+      className={clsx('align-top', {
         'bg-rose-200  dark:bg-rose-800': highlighted,
         'even:bg-zinc-100 dark:even:bg-slate-900': !highlighted
       })}
       ref={ref}
     >
-      <td>
-        <div className="flex flex-col-reverse items-center gap-1 sm:flex-row sm:p-2">
-          <span className="sm:text-sm">{data.rank < 10 ? `0${data.rank}` : data.rank}</span>
-          {voteEnabled ? (
-            <div title={t('witnesses_page.vote')} className="group relative flex" data-testid="witness-vote">
-              <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-              <button
-                type="button"
-                aria-label={voteLabel}
-                aria-pressed={isVoted}
-                aria-busy={voteLoading}
-                className={clsx('relative flex', VOTE_FOCUS_RING)}
-                onClick={voteLoading ? undefined : onVoteClick}
-              >
-                {voteLoading ? (
-                  <span className="relative rounded-full bg-white dark:bg-slate-900">
-                    <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
-                  </span>
-                ) : isVoted ? (
-                  <Icons.arrowUpCircle className="relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-rose-600 stroke-1 text-white dark:bg-rose-600 dark:text-white" />
-                ) : (
-                  unvotedIcon
-                )}
-              </button>
-              <WitnessRemoveVote
-                open={removeVoteOpen}
-                onOpenChange={setRemoveVoteOpen}
-                onVote={onVoteForWitness}
-              />
-            </div>
-          ) : (
-            <DialogLogin>
-              <button
-                type="button"
-                title={t('witnesses_page.vote')}
-                aria-label={voteLabel}
-                className={clsx('group relative flex', VOTE_FOCUS_RING)}
-                data-testid="witness-vote"
-              >
-                <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-                {unvotedIcon}
-              </button>
-            </DialogLogin>
-          )}
+      <td className="py-1.5 pl-1 sm:pl-2">
+        <div className="flex items-center gap-1.5 sm:text-sm">
+          <span>{String(data.rank).padStart(2, '0')}</span>
+          <WitnessVoteButton
+            owner={data.owner}
+            highlighted={highlighted}
+            onVote={onVote}
+            voteEnabled={voteEnabled}
+            isVoted={isVoted}
+            voteLoading={voteLoading}
+          />
         </div>
       </td>
-      <td className="wrap-break-word font-light md:font-normal">
-        <div className="flex" data-testid="witness-list-item-info">
-          <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
-            <Link href={`/@${data.owner}`} target="_blank">
-              <UserAvatarImg
-                className={clsx('mr-1 h-[47px] min-w-[47px] rounded-full', {
-                  'opacity-50': disableUser
-                })}
-                height="40"
-                width="40"
-                src={getUserAvatarUrl(data.owner, 'medium')}
-                alt={`${data.owner} profile picture`}
-              />
-            </Link>
-          </div>
-          <div className="flex flex-col gap-1 py-1 sm:px-2">
-            <div className="flex flex-wrap items-center gap-2">
+      <td className="py-1.5 pr-2 font-light md:font-normal">
+        <div className="flex min-w-0 gap-2" data-testid="witness-list-item-info">
+          <Link
+            href={`/@${data.owner}`}
+            target="_blank"
+            className="hidden shrink-0 sm:block"
+            title={t('witnesses_page.navigate_to_witness_profile')}
+          >
+            <UserAvatarImg
+              className={clsx('h-8 w-8 min-w-8 rounded-full', { 'opacity-50': disableUser })}
+              height="32"
+              width="32"
+              src={getUserAvatarUrl(data.owner, 'small')}
+              alt={`${data.owner} profile picture`}
+            />
+          </Link>
+          <div className="min-w-0 flex-1 leading-5">
+            <div className="flex min-w-0 items-center gap-x-1.5 whitespace-nowrap">
               <Link
                 href={`/@${data.owner}`}
                 data-testid="witness-name-link"
                 target="_blank"
-                title={t('witnesses_page.navigate_to_witness_profile')}
+                title={nameTitle}
+                className="shrink-0"
               >
-                {
-                  <div
-                    className={clsx(
-                      'font-semibold sm:text-sm',
-                      {
-                        'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser
-                      },
-                      {
-                        'font-bold text-red-500': !disableUser
-                      }
-                    )}
-                  >
-                    {data.owner}
-                  </div>
-                }
+                <div
+                  className={clsx('font-semibold sm:text-sm', {
+                    'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser,
+                    'font-bold text-red-500': !disableUser
+                  })}
+                >
+                  {data.owner}
+                </div>
               </Link>
               {witnessOwner && (
-                <div className="text-xs  text-gray-600 sm:text-sm  ">
+                <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
                   {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
-                </div>
+                </span>
               )}
-
               <Link
-                href={
-                  !highlighted
-                    ? `/~witnesses?highlight=${data.owner}`
-                    : `/~witnesses`
-                }
+                href={!highlighted ? `/~witnesses?highlight=${data.owner}` : `/~witnesses`}
                 replace
                 scroll={false}
+                className="shrink-0"
                 data-testid="witness-highlight-link"
                 title={t('witnesses_page.use_this_for_linking_title')}
                 aria-label={t('witnesses_page.link_to_witness', { witness: data.owner })}
               >
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>
+              {isStale && !disableUser && (
+                <span
+                  className="shrink-0 rounded-sm bg-red-600 px-1 text-[11px] font-semibold leading-4 text-white"
+                  title={t('witnesses_page.has_not_produced_blocks')}
+                  data-testid="witness-has-not-produced-blocks-warning"
+                >
+                  <Link
+                    href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
+                    data-testid="last-block-number"
+                  >
+                    {t('witnesses_page.no_blocks_for_days', {
+                      count: Math.floor(data.witnessLastBlockAgeInSecs / ONE_DAY_IN_SEC)
+                    })}
+                  </Link>
+                </span>
+              )}
+              {isOutdated && (
+                <span className="shrink-0 rounded-sm bg-amber-200 px-1 text-[11px] leading-4 text-amber-900 sm:hidden dark:bg-amber-900 dark:text-amber-100">
+                  v{data.running_version}
+                </span>
+              )}
+              <span aria-hidden="true" className={MUTED_TEXT}>
+                ·
+              </span>
+              <span className="flex min-w-0" data-testid="witness-external-site-link">
+                {disableUser ? (
+                  <span className="truncate">
+                    {t('witnesses_page.disabled')}
+                    {blockGap(headBlock, data.last_confirmed_block_num, t)}
+                  </span>
+                ) : (
+                  <WitnessSiteLink url={data.url} />
+                )}
+              </span>
             </div>
             {!disableUser && witnessDescription && (
-              // Focusable so keyboard users can scroll a description that overflows
-              <div
-                tabIndex={0}
-                className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b border-dotted border-gray-400 p-1 italic sm:block"
+              <button
+                type="button"
+                title={witnessDescription}
+                aria-expanded={descriptionExpanded}
+                onClick={toggleDescription}
+                className={clsx('hidden w-full max-w-full cursor-pointer text-left sm:block', MUTED_TEXT, {
+                  truncate: !descriptionExpanded,
+                  'whitespace-pre-line wrap-break-word': descriptionExpanded
+                })}
               >
                 {witnessDescription}
-              </div>
+              </button>
             )}
-
-            {data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC && (
-              <span className="font-semibold" data-testid="witness-has-not-produced-blocks-warning">
-                {t('witnesses_page.has_not_produced_blocks')}
-              </span>
-            )}
-            <div>
-              {t('witnesses_page.last_block')}
-              <Link
-                href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
-                className="text-red-500"
-                data-testid="last-block-number"
-              >
-                <span className="font-semibold ">#{data.last_confirmed_block_num}</span>
-              </Link>{' '}
-              {blockGap(headBlock, data.last_confirmed_block_num, t)} v{data.running_version}
+            <div className={clsx('truncate sm:hidden', MUTED_TEXT)}>
+              {hp}
+              {rankUp && ` (+${rankUp})`} · {priceFeed} <TimeAgo date={data.last_hbd_exchange_update} />
             </div>
-            {disableUser ? (
-              <></>
-            ) : (
-              <div data-testid="witness-created">
-                {t('witnesses_page.witness_age')}
-                {dateToRelative(data.created, t).replace('ago', '')}
-              </div>
-            )}
-
-            <div data-testid="witness-external-site-link">{witnessLink()}</div>
           </div>
         </div>
       </td>
-      <td className="p-1 sm:p-2">
-        <div className="font-medium " data-testid="witness-votes-received">
-          {getRoundedAbbreveration(data.vestsToHp)}
-          {' HP'}
+      <td className={clsx('hidden py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm', { 'text-amber-700 dark:text-amber-400': isOutdated })}>
+        {data.running_version}
+      </td>
+      <td className="hidden py-1.5 pr-2 leading-5 sm:table-cell">
+        <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
+          {hp}
         </div>
-        {data.requiredHpToRankUp && (
-          <div className="font-light">
-            {t('witnesses_page.hp_required_to_rank_up', {
-              value: getRoundedAbbreveration(data.requiredHpToRankUp)
-            })}
+        {rankUp && (
+          <div className={clsx('truncate', MUTED_TEXT)}>
+            {t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })}
           </div>
         )}
       </td>
-      <td className=" sm:p-2">
-        <div className="font-medium" data-testid="witness-price-feed">
-          $
-          {(
-            Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
-          ).toFixed(3)}
-        </div>
-        <div className="font-light">
+      <td className="hidden truncate py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm">
+        <span className="font-medium" data-testid="witness-price-feed">
+          {priceFeed}
+        </span>
+        <span className={MUTED_TEXT}>
+          {' · '}
           <TimeAgo date={data.last_hbd_exchange_update} />
-        </div>
+        </span>
       </td>
     </tr>
   );

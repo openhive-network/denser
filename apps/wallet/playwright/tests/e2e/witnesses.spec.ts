@@ -142,27 +142,27 @@ test.describe('Witnesses page tests', () => {
 
     const resWitnessesByVoteAPI = await apiHelper.getListWitnessesByVoteAPI(250);
     const witnesses = resWitnessesByVoteAPI.result.witnesses;
-    const lastConfirmedBlockNum = witnesses[0].last_confirmed_block_num.toString();
-    // Validate last confirmed block number
-    await expect(await witnessesPage.witnessLastBlockNumber.first()).toBeVisible();
-    // Below assertion is too unstable
-    // expect(await witnessesPage.witnessLastBlockNumber.first().textContent()).toContain(await lastConfirmedBlockNum);
+    // The last block shows only for a witness that has not produced one for over a week
+    await expect(witnessesPage.witnessLastBlockNumber).toHaveCount(
+      await witnessesPage.witnessHasNotProducedBlocksWarning.count()
+    );
 
     const witnessCreatedAPI = witnesses[0].created;
-    // Validate Witness's age
-    expect(await witnessesPage.witnessCreated.first().textContent()).toContain(
+    // Validate Witness's age, in the name link's hover text
+    expect(await witnessesPage.witnessNameLink.first().getAttribute('title')).toContain(
       dayjs().from(dayjs(witnessCreatedAPI), true)
     );
 
     // Validate Witness external site
-    const firstWitnessUrl = witnesses[0].url;
-    if (firstWitnessUrl.startsWith('http')) {
+    const firstWitnessUrl = witnesses[0].url.replace('steemit.com', 'hive.blog');
+    if (firstWitnessUrl.startsWith('https://')) {
+      // Named by where it goes, with the witness's URL as its hover text
       await expect(witnessesPage.witnessExternalSiteLink.first().locator('a')).toHaveAttribute(
-        'href',
-        firstWitnessUrl.replace('steemit.com', 'hive.blog')
+        'title',
+        firstWitnessUrl
       );
     } else {
-      // When URL is empty or doesn't start with http, no link is rendered
+      // When URL is empty or isn't https, no link is rendered
       await expect(witnessesPage.witnessExternalSiteLink.first()).toContainText('No URL provided');
     }
 
@@ -378,7 +378,7 @@ test.describe('Witnesses page tests', () => {
     // Validate the witness name was typed into the input vote
     const firstWitnessName: any = await witnessesPage.witnessNameLink.first().textContent();
     await expect(voteBoxInput).toHaveAttribute('value', firstWitnessName);
-    // Find a witness with valid external site link (has 'a span' element)
+    // Find a witness with a valid site link (has 'a span' element)
     const witnessWithLink = witnessesPage.witnessExternalSiteLink.locator('a span').first();
     const hasLink = await witnessWithLink.count() > 0;
     if (hasLink) {
