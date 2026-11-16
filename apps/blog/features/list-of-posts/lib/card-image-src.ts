@@ -3,8 +3,7 @@ import { proxifyImageSrc } from '@ui/lib/proxify-images';
 // Match condenser's 256x512 to share image cache at images.hive.blog
 const UX_IMAGE_WIDTH = 256;
 const UX_IMAGE_HEIGHT = 512;
-// Resizing or re-encoding to WebP keeps only a GIF's first frame; WebP would rasterize an SVG.
-const GIF_IMAGE = /\.gif($|[?#\s])/i;
+// WebP would rasterize an SVG.
 const SVG_IMAGE = /\.svg($|[?#\s])/i;
 const PROXY_PATH_HASH = /\/p\/([1-9A-HJ-NP-Za-km-z]+)/;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -37,15 +36,14 @@ function proxiedOriginalUrl(url: string): string {
 }
 
 /**
- * The image-proxy URL of a post card thumbnail: WebP at card size, except a GIF source, kept
- * unresized in its own format so the animation survives, and an SVG one, kept in its format.
- * A source behind another proxy's `/p/` URL is judged by the original it encodes; a URL already
- * proxied by the configured image proxy is returned as is.
+ * The image-proxy URL of a post card thumbnail: WebP at card size (a GIF source's first frame,
+ * as a still), except an SVG source, kept in its format. A source behind another proxy's `/p/`
+ * URL is judged by the original it encodes; a URL already proxied by the configured image proxy
+ * is returned as is.
  */
 export function proxifyCardImage(url?: string): string {
   if (!url) return '';
   const sources = [url, proxiedOriginalUrl(url)];
-  if (sources.some((source) => GIF_IMAGE.test(source))) return proxifyImageSrc(url, 0, 0, 'match');
   const format = sources.some((source) => SVG_IMAGE.test(source)) ? 'match' : 'webp';
   return proxifyImageSrc(url, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT, format);
 }

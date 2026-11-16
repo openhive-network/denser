@@ -23,6 +23,7 @@ registerHooks({
 });
 
 const { proxifyCardImage } = await import('./card-image-src.ts');
+const { proxifyImageSrc } = await import('@ui/lib/proxify-images');
 
 const CARD_PROXY_URL = new RegExp(`^${PROXY}/p/([1-9A-HJ-NP-Za-km-z]+)\\?(.*)$`);
 
@@ -39,10 +40,14 @@ describe('proxifyCardImage', () => {
     }
   });
 
-  it('keeps a GIF at its own format and size so the animation survives', () => {
+  it('asks for a GIF as a WebP still at card size', () => {
     for (const source of ['https://example.com/anim.gif', 'https://example.com/anim.GIF?v=2']) {
-      assert.equal(parseProxied(proxifyCardImage(source)).query, 'format=match&mode=fit');
+      assert.equal(parseProxied(proxifyCardImage(source)).query, 'format=webp&mode=fit&width=256&height=512');
     }
+  });
+
+  it('leaves a GIF unresized in its own format for a post body image', () => {
+    assert.equal(parseProxied(proxifyImageSrc('https://example.com/anim.gif', 1536, 0)).query, 'format=match&mode=fit');
   });
 
   it('keeps an SVG at its own format', () => {
@@ -57,14 +62,21 @@ describe('proxifyCardImage', () => {
     assert.equal(proxifyCardImage(proxied), proxied);
   });
 
-  it("reads a GIF behind another proxy's /p/ URL and keeps its format", () => {
+  it("asks for a GIF behind another proxy's /p/ URL as a WebP still", () => {
     const { hash: gifHash } = parseProxied(proxifyCardImage('https://example.com/anim.gif'));
-    const { hash: pngHash } = parseProxied(proxifyCardImage('https://example.com/still.png'));
     const otherProxy = 'https://images.example.org/p';
-    assert.equal(parseProxied(proxifyCardImage(`${otherProxy}/${gifHash}?format=match`)).query, 'format=match&mode=fit');
     assert.equal(
-      parseProxied(proxifyCardImage(`${otherProxy}/${pngHash}?format=match`)).query,
+      parseProxied(proxifyCardImage(`${otherProxy}/${gifHash}?format=match`)).query,
       'format=webp&mode=fit&width=256&height=512'
+    );
+  });
+
+  it("reads an SVG behind another proxy's /p/ URL and keeps its format", () => {
+    const { hash: svgHash } = parseProxied(proxifyCardImage('https://example.com/logo.svg'));
+    const otherProxy = 'https://images.example.org/p';
+    assert.equal(
+      parseProxied(proxifyCardImage(`${otherProxy}/${svgHash}?format=match`)).query,
+      'format=match&mode=fit&width=256&height=512'
     );
   });
 
