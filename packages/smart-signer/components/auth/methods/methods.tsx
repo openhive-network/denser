@@ -26,6 +26,7 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 import { handleError } from '@ui/lib/handle-error';
 import { hasCompatibleGoogleDriveProvider } from '@smart-signer/lib/signer/signer-google-drive';
 import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
+import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
 import { logger } from '@ui/lib/logger';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { useInjectedExtensions } from './use-injected-extensions';
@@ -82,7 +83,14 @@ const Methods: FC<MethodsProps> = ({
   const [isGoogleSupported, setIsGoogleSupported] = useState(false);
 
   useEffect(() => {
-    setIsGoogleSupported(hasCompatibleGoogleDriveProvider());
+    const googleSupported = hasCompatibleGoogleDriveProvider();
+    setIsGoogleSupported(googleSupported);
+    // Loaded once Google is offered: its consent popup has to open within the click on its button
+    if (googleSupported) {
+      loadGoogleIdentityServices().catch((error) => {
+        logger.error('Error loading Google Identity Services: %s', error instanceof Error ? error.message : String(error));
+      });
+    }
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
     }).catch((error) => {

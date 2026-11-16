@@ -603,6 +603,12 @@ leaves Google out, so the spec sets `bypassCSP: true`. None of it reaches the
 Hive API, so the spec reuses the `accountSwitchLogout` recording. It is tagged
 @basepath, and GOOGLE-WNF-03 checks the token exchange is POSTed under
 FIXTURE_BASE_PATH (the route glob matches with or without it).
+The GSI script loads on demand (`lib/google-identity-script.ts`): when the form
+shows its Google option, or when the signer needs it. An init-script
+`window.google` makes the loader skip the request. `loginPageGoogleScript.spec.ts`
+leaves `window.google` unset and answers `accounts.google.com` with a stub that
+defines it. Counting those requests checks that /login asks for the script
+only after "Other sign in options" opens.
 
 ---
 

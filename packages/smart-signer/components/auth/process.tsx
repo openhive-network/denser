@@ -4,15 +4,23 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { fetchLoginChallenge } from '@smart-signer/lib/auth/login-challenge';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { SignerOptions } from '@smart-signer/lib/signer/signer';
+import type { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { getOperationForLogin } from '@smart-signer/lib/login-operation';
-import { getChain } from '@transaction/lib/chain';
-import { operation } from '@hiveio/wax';
+import type { operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
+
+/** The signers and the wax chain, loaded on the first sign-in: the form shows before they are needed */
+async function loadSigningStack() {
+  const [{ getSigner }, { getOperationForLogin }, { getChain }] = await Promise.all([
+    import('@smart-signer/lib/signer/get-signer'),
+    import('@smart-signer/lib/login-operation'),
+    import('@transaction/lib/chain')
+  ]);
+  return { getSigner, getOperationForLogin, hiveChain: await getChain() };
+}
+
 export interface LoginFormSchema {
   username: string;
   loginType: LoginType;
@@ -43,7 +51,10 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
     };
 
     try {
-      const [hiveChain, challenge] = await Promise.all([getChain(), fetchLoginChallenge()]);
+      const [{ getSigner, getOperationForLogin, hiveChain }, challenge] = await Promise.all([
+        loadSigningStack(),
+        fetchLoginChallenge()
+      ]);
       const operation: operation = await getOperationForLogin(username, keyType, challenge, loginType);
 
       const expr = new Date();
