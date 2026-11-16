@@ -5,26 +5,21 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@hive/ui/c
 import { Link } from '@hive/ui';
 import BasePathLink from '@/blog/components/base-path-link';
 import { Community } from '@hive/common-hiveio-packages/wax';
-import { useTranslation } from '@/blog/i18n/client';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import SubscribeCommunity from '../community-profile/subscribe-community';
-import { useEffect, useState } from 'react';
+import type { TFunction } from 'i18next';
+import CommunitySubscribeButton from '../community-profile/community-subscribe-button';
+import type { CommunitySubscriptionState } from './use-communities-subscription';
 
 const CommunitiesListItem = ({
   community,
-  subscribedFromList
+  t,
+  subscription,
+  onSubscribeClick
 }: {
   community: Community;
-  subscribedFromList?: boolean;
+  t: TFunction<'common_blog'>;
+  subscription: CommunitySubscriptionState;
+  onSubscribeClick: (community: Community, state: CommunitySubscriptionState) => void;
 }) => {
-  const { user } = useUserClient();
-  const { t } = useTranslation('common_blog');
-  const [isSubscribed, setIsSubscribed] = useState(
-    () => Boolean(community.context.subscribed) || Boolean(subscribedFromList)
-  );
-  useEffect(() => {
-    setIsSubscribed(Boolean(community.context.subscribed) || Boolean(subscribedFromList));
-  }, [community.context.subscribed, subscribedFromList]);
   return (
     <Card
       className={cn('hover my-4 flex justify-between bg-background text-primary')}
@@ -68,13 +63,13 @@ const CommunitiesListItem = ({
         </CardFooter>
       </div>
       <div className="mr-4 flex w-24 items-center">
-        <SubscribeCommunity
-          user={user}
-          community={community.name}
-          isSubscribed={isSubscribed}
-          onIsSubscribed={(e) => setIsSubscribed(e)}
-          communityTitle={community.title}
-          temprary={community.context._temporary}
+        <CommunitySubscribeButton
+          t={t}
+          subscribed={subscription.subscribed}
+          busy={subscription.busy}
+          disabled={subscription.disabled}
+          retrySecondsLeft={subscription.retrySecondsLeft}
+          onClick={() => onSubscribeClick(community, subscription)}
         />
       </div>
     </Card>
