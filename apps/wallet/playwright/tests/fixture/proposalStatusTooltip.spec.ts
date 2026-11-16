@@ -4,8 +4,8 @@ import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_PROPOSAL_SUBJECT, startWalletApiStub } from '../support/walletApiStub';
 
 /**
- * The status tooltip of a proposal on the proposals page reads in the wallet's language, with the
- * relative start and end times inside the sentence. The stub node's one proposal is active from
+ * The status tooltip of a proposal on the proposals page, on its days left, reads in the wallet's
+ * language, with the relative start and end times inside the sentence. The stub node's one proposal is active from
  * 2026-01-01 to 2027-01-01; the clock is fixed between the two so it has started and not finished.
  */
 
@@ -33,7 +33,7 @@ test.beforeEach(async ({ context, page }) => {
   await page.clock.setFixedTime(NOW);
 });
 
-/** Opens the proposals page in `locale` and hovers the proposal's status badge; resolves with the tooltip. */
+/** Opens the proposals page in `locale` and hovers the proposal's days left; resolves with the tooltip. */
 const openStatusTooltip = async (page: Page, baseURL: string | undefined, locale: string) => {
   await page.context().addCookies([{ name: 'NEXT_LOCALE', value: locale, url: baseURL }]);
   await page.goto(`${WALLET_BASE_PATH}/proposals`);
@@ -43,7 +43,7 @@ const openStatusTooltip = async (page: Page, baseURL: string | undefined, locale
   const tooltip = page.getByRole('tooltip');
   await expect(async () => {
     await page.mouse.move(0, 0);
-    await page.getByTestId('proposal-status-badge').hover();
+    await page.getByTestId('proposal-remaining-days').hover();
     await expect(tooltip).toBeAttached({ timeout: 2000 });
   }).toPass({ timeout: HYDRATION_TIMEOUT });
   return tooltip;
@@ -56,7 +56,8 @@ test.describe('Proposal status tooltip', () => {
   }) => {
     const tooltip = await openStatusTooltip(page, baseURL, 'en');
 
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('started');
+    // An active proposal shows no status badge
+    await expect(page.getByTestId('proposal-status-badge')).toHaveCount(0);
     await expect(tooltip).toHaveText(/^Started \d+ months? ago and finishes in \d+ months?$/);
   });
 
@@ -66,7 +67,7 @@ test.describe('Proposal status tooltip', () => {
   }) => {
     const tooltip = await openStatusTooltip(page, baseURL, 'pl');
 
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('rozpoczęta');
+    await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/^Pozosta\S+ \d+ dni\S*$/);
     await expect(tooltip).toHaveText(/^Rozpoczęta \d+ miesi\S+ temu, kończy się za \d+ miesi\S+$/);
   });
 
@@ -76,9 +77,9 @@ test.describe('Proposal status tooltip', () => {
   }) => {
     await openStatusTooltip(page, baseURL, 'pl');
     // A day with a month name takes the genitive in Polish
-    await expect(page.getByTestId('proposal-date')).toContainText('1 stycznia 2026 - 1 stycznia 2027 (365 dni)');
+    await expect(page.getByTestId('proposal-date')).toHaveText('1 stycznia 2026 – 1 stycznia 2027');
 
     await openStatusTooltip(page, baseURL, 'en');
-    await expect(page.getByTestId('proposal-date')).toContainText('January 1, 2026 - January 1, 2027 (365 days)');
+    await expect(page.getByTestId('proposal-date')).toHaveText('January 1, 2026 – January 1, 2027');
   });
 });

@@ -1,5 +1,11 @@
 import type { JsonRpcResults, RestResults } from './apiStub';
-import { PROPOSALS_PAYMENTS_PATH, STUB_ACCOUNT, fullAccount, stubProposalsPayments } from './walletApiStub';
+import {
+  PROPOSALS_PAYMENTS_PATH,
+  STUB_ACCOUNT,
+  fullAccount,
+  stubProposalsPayments,
+  type StubProposalPayments
+} from './walletApiStub';
 
 /**
  * A proposals page with a DHF to fund it, for `startWalletApiStub`'s `jsonRpc`: seven proposals,
@@ -181,10 +187,23 @@ export const SEARCH_PAGE_RESULTS: JsonRpcResults = proposalsPageResults([
   ...Array.from({ length: SEARCH_EXTRA_PROPOSALS }, (_, index) => extraProposal(index))
 ]);
 
-/** HBD satoshis paid so far to the proposals that have been paid; every other id has had nothing. */
-export const STUB_PROPOSALS_PAID: Record<number, string> = {
-  [STUB_PROPOSALS.funded]: '30200000',
-  [STUB_PROPOSALS.expired]: '1510000'
+/**
+ * The payments of the proposals that have been paid; every other id has had nothing. #11 was paid
+ * 20,200 HBD for 101 of its days and last on 2026-05-30, unfunded since; the expired #15 every hour.
+ */
+export const STUB_PROPOSALS_PAID: Record<number, StubProposalPayments> = {
+  [STUB_PROPOSALS.funded]: {
+    amount: '20200000',
+    hours: 101 * 24,
+    firstPaid: '2026-01-01T01:00:00',
+    lastPaid: '2026-05-30T12:00:00'
+  },
+  [STUB_PROPOSALS.expired]: {
+    amount: '1510000',
+    hours: 151 * 24,
+    firstPaid: '2025-01-01T01:00:00',
+    lastPaid: '2025-06-01T00:00:00'
+  }
 };
 
 /** The proposals page's REST reads, for `startWalletApiStub`'s `rest`. */

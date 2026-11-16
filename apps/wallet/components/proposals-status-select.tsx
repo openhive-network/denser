@@ -28,12 +28,14 @@ export function ProposalsStatusSelect({ value, onValueChange, className }: Propo
 
   return (
     <div className={className}>
-      <span id={labelId}>{t('select_sort.sort_proposals.status')}</span>
+      <span id={labelId} className="sr-only">
+        {t('select_sort.sort_proposals.status')}
+      </span>
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger
           id={triggerId}
           aria-labelledby={`${labelId} ${triggerId}`}
-          className="h-[35px] w-auto min-w-[120px] gap-2"
+          className="h-[35px] w-auto gap-1 sm:min-w-[120px] sm:gap-2"
           data-testid="proposals-status-select"
         >
           <SelectValue />

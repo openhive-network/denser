@@ -226,27 +226,38 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
 
 export const PROPOSALS_PAYMENTS_PATH = '/balance-api/proposals/payments';
 
+/** What the DHF paid one proposal: HBD satoshis, over how many hourly payments, first and last when. */
+export interface StubProposalPayments {
+  amount: string;
+  hours: number;
+  firstPaid: string;
+  lastPaid: string;
+}
+
 /**
  * balance-api's proposal payments as a node answers them: one entry per distinct requested id, in
- * ascending order, `paid` giving the HBD satoshis paid to an id and `receiverOf` its receiver;
- * every other id has had nothing.
+ * ascending order, `paid` giving the payments of an id and `receiverOf` its receiver; every other
+ * id has had nothing.
  */
 export const stubProposalsPayments =
-  (paid: Record<number, string> = {}, receiverOf: (id: number) => string | undefined = () => undefined) =>
+  (
+    paid: Record<number, StubProposalPayments> = {},
+    receiverOf: (id: number) => string | undefined = () => undefined
+  ) =>
   (query: URLSearchParams) =>
     [...new Set((query.get('proposal-ids') ?? '').split(',').filter(Boolean).map(Number))]
       .sort((a, b) => a - b)
       .map((id) => {
-        const amount = paid[id];
+        const payments = paid[id];
         return {
           proposal_id: id,
-          receiver: amount ? (receiverOf(id) ?? null) : null,
-          total_paid: hbd(amount ?? '0'),
-          payment_count: amount ? 151 : 0,
-          first_payment_block: amount ? 90_000_000 : null,
-          first_payment_time: amount ? '2026-01-01T00:00:00' : null,
-          last_payment_block: amount ? 95_000_000 : null,
-          last_payment_time: amount ? '2026-06-01T00:00:00' : null
+          receiver: payments ? (receiverOf(id) ?? null) : null,
+          total_paid: hbd(payments?.amount ?? '0'),
+          payment_count: payments?.hours ?? 0,
+          first_payment_block: payments ? 90_000_000 : null,
+          first_payment_time: payments?.firstPaid ?? null,
+          last_payment_block: payments ? 95_000_000 : null,
+          last_payment_time: payments?.lastPaid ?? null
         };
       });
 

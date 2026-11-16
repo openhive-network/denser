@@ -7,17 +7,19 @@ import { PROPOSALS_PAGE_REST_RESULTS, PROPOSALS_PAGE_RESULTS, STUB_PROPOSALS } f
 import { ProposalsPage } from '../support/pages/proposalsPage';
 
 /**
- * Each proposal card's Paid and To pay, from balance-api's proposal payments: one call for the
- * listed proposals, and on nodes without the endpoint (404) the cards as they are without it, after
- * one request that leaves the node's balance-api in use.
- * The stub node (support/proposalsApiStub.ts) has paid #11 30,200 HBD of its 72,800 HBD (200 HBD
- * over 364 days) and the expired #15 1,510 HBD; the upcoming #14 (10 HBD over 151 days) nothing yet.
+ * Each proposal's money line, from balance-api's proposal payments: one call for the listed
+ * proposals, and on nodes without the endpoint (404) the lines without what needs it, after one
+ * request that leaves the node's balance-api in use.
+ * The stub node (support/proposalsApiStub.ts) has paid #11 (200 HBD a day since 2026-01-01, 213
+ * days left) 20,200 HBD for 101 of its 151 days so far, last on May 30; #13 (50 HBD a day since
+ * 2026-01-01) nothing; the expired #15 all its 1,510 HBD; the upcoming #14 (10 HBD over 151 days)
+ * nothing yet.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
 const NOW = new Date('2026-06-01T00:00:00Z');
 const CORS = { 'access-control-allow-origin': '*' };
-const { funded, upcoming, expired } = STUB_PROPOSALS;
+const { funded, belowLine, upcoming, expired } = STUB_PROPOSALS;
 const FIXTURE_API_ORIGIN = `http://127.0.0.1:${FIXTURE_API_PORT}`;
 /** A REST node selected by the user; not an allowed node, hence `bypassCSP`. */
 const SELECTED_REST_NODE = 'http://127.0.0.1:8298';
@@ -76,20 +78,27 @@ const openProposals = async (page: Page) => {
 };
 
 test.describe('Proposals page payments', () => {
-  test('WALLET-PROPOSALS-PAID-01 — cards show Paid and, until a proposal expires, To pay, from one bulk call', async ({
+  test('WALLET-PROPOSALS-PAID-01 — rows show Paid, Unfunded and, until a proposal expires, Up to left, from one bulk call', async ({
     page
   }) => {
     const calls = recordPaymentsCalls(page);
     const proposalsPage = await openProposals(page);
 
     const card = proposalsPage.proposalCard(funded);
-    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 30.20K HBD');
-    await expect(card.getByTestId('proposal-paid').locator('[title]')).toHaveAttribute('title', '30,200.00 HBD');
-    await expect(card.getByTestId('proposal-to-pay')).toHaveText('To pay 42.60K HBD');
-    await expect(proposalsPage.proposalCard(upcoming).getByTestId('proposal-paid')).toHaveText('Paid 0.00 HBD');
-    await expect(proposalsPage.proposalCard(upcoming).getByTestId('proposal-to-pay')).toHaveText(
-      'To pay 1.51K HBD'
+    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 20.20K HBD');
+    await expect(card.getByTestId('proposal-paid').locator('[title]')).toHaveAttribute('title', '20,200.00 HBD');
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Unfunded 10.00K HBD (50 days)');
+    await expect(card.getByTestId('proposal-unfunded')).toHaveAttribute('title', /^What this proposal would have received/);
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.60K HBD left');
+    await expect(card.getByTestId('proposal-last-paid')).toHaveText('last paid May 30');
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
+      'Unfunded 7.55K HBD (never funded)'
     );
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-last-paid')).toHaveCount(0);
+    const upcomingCard = proposalsPage.proposalCard(upcoming);
+    await expect(upcomingCard.getByTestId('proposal-total')).toHaveText('Total 1.51K HBD over 151 days');
+    await expect(upcomingCard.getByTestId('proposal-paid')).toHaveCount(0);
+    await expect(upcomingCard.getByTestId('proposal-unfunded')).toHaveCount(0);
     expect(calls).toHaveLength(1);
     expect(calls[0].split(',').map(Number).sort((a, b) => a - b)).toEqual(
       [...(await proposalsPage.listedProposalIds())].sort((a, b) => a - b)
@@ -97,8 +106,9 @@ test.describe('Proposals page payments', () => {
 
     await proposalsPage.statusTab('Expired').click();
     const expiredCard = proposalsPage.proposalCard(expired);
-    await expect(expiredCard.getByTestId('proposal-paid')).toHaveText('Paid 1.51K HBD');
-    await expect(expiredCard.getByTestId('proposal-to-pay')).toHaveCount(0);
+    await expect(expiredCard.getByTestId('proposal-paid')).toHaveText('Paid 1.51K HBD of 1.51K HBD');
+    await expect(expiredCard.getByTestId('proposal-unfunded')).toHaveText('Unfunded 0.00 HBD');
+    await expect(expiredCard.getByTestId('proposal-up-to-left')).toHaveCount(0);
     // Only the expired proposal was not known yet.
     expect(calls).toEqual([calls[0], String(expired)]);
   });
@@ -106,7 +116,7 @@ test.describe('Proposals page payments', () => {
   test.describe('with a selected REST node', () => {
     test.use({ bypassCSP: true });
 
-    test('WALLET-PROPOSALS-PAID-02 — on nodes answering 404 the cards render without Paid and To pay, the endpoint is asked once, nothing is reported and balance-api keeps its node', async ({
+    test('WALLET-PROPOSALS-PAID-02 — on nodes answering 404 the rows render without Paid and Unfunded, the endpoint is asked once, nothing is reported and balance-api keeps its node', async ({
       context,
       page
     }) => {
@@ -157,13 +167,16 @@ test.describe('Proposals page payments', () => {
       const card = proposalsPage.proposalCard(funded);
       await expect(card.getByTestId('proposal-amount')).toBeVisible();
       await expect(card.getByTestId('proposal-remaining-days')).toHaveText('213 days left');
+      await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.60K HBD left');
       await expect(page.getByTestId('proposal-paid')).toHaveCount(0);
-      await expect(page.getByTestId('proposal-to-pay')).toHaveCount(0);
+      await expect(page.getByTestId('proposal-unfunded')).toHaveCount(0);
       await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
 
       // A proposal not listed before: the 404 is remembered rather than asked again.
       await proposalsPage.statusTab('Expired').click();
-      await expect(proposalsPage.proposalCard(expired).getByTestId('proposal-amount')).toBeVisible();
+      await expect(proposalsPage.proposalCard(expired).getByTestId('proposal-total')).toHaveText(
+        'Total 1.51K HBD over 151 days'
+      );
       await expect(page.getByTestId('proposal-paid')).toHaveCount(0);
 
       await page.evaluate((href) => {

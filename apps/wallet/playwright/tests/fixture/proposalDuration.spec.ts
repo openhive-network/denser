@@ -5,7 +5,8 @@ import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
 
 /**
  * A proposal's duration on the proposals page carries its number of days in every plural form:
- * the stub node's one proposal runs for a single day, from 2026-09-29 to 2026-09-30.
+ * the stub node's one proposal, upcoming, runs for a single day, from 2027-09-29 to 2027-09-30, and
+ * its money line gives its total over that day.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -16,13 +17,13 @@ const oneDayProposal = {
   proposal_id: 7,
   creator: STUB_ACCOUNT,
   receiver: STUB_ACCOUNT,
-  start_date: '2026-09-29T00:00:00',
-  end_date: '2026-09-30T00:00:00',
+  start_date: '2027-09-29T00:00:00',
+  end_date: '2027-09-30T00:00:00',
   daily_pay: { amount: '110000', precision: 3, nai: '@@000000013' },
   subject: ONE_DAY_PROPOSAL_SUBJECT,
   permlink: 'one-day-stub-proposal',
   total_votes: '50000000000000000',
-  status: 'active'
+  status: 'inactive'
 };
 
 let stub: Server;
@@ -60,8 +61,8 @@ test('WALLET-PROPOSAL-DURATION-01 — a one-day proposal shows its duration with
   baseURL
 }) => {
   await openProposalsPage(page, baseURL, 'pl');
-  await expect(page.getByTestId('proposal-date')).toContainText('(1 dzień)');
+  await expect(page.getByTestId('proposal-total')).toHaveText('Łącznie 110.00 HBD przez 1 dzień');
 
   await openProposalsPage(page, baseURL, 'en');
-  await expect(page.getByTestId('proposal-date')).toContainText('(1 day)');
+  await expect(page.getByTestId('proposal-total')).toHaveText('Total 110.00 HBD over 1 day');
 });

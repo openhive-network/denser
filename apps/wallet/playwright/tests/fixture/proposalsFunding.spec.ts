@@ -88,21 +88,26 @@ test.describe('Proposals page DHF funding', () => {
     ).toBeVisible();
   });
 
-  test('WALLET-PROPOSALS-DHF-03 — each card shows its post and an active proposal its remaining days', async ({
+  test('WALLET-PROPOSALS-DHF-03 — each title links its post and an active proposal shows its remaining days', async ({
     page
   }) => {
     const proposalsPage = await openProposals(page);
 
     const card = proposalsPage.proposalCard(funded);
     await expect(card.getByTestId('proposal-remaining-days')).toHaveText('213 days left');
-    await expect(card.getByTestId('proposal-post-link')).toHaveText(
-      `@${STUB_ACCOUNT}/stub-proposal-${funded}`
+    await expect(card.getByTestId('proposal-post-link')).toContainText('Core development');
+    await expect(card.getByTestId('proposal-post-link')).toHaveAttribute(
+      'title',
+      new RegExp(`^@${STUB_ACCOUNT}/stub-proposal-${funded}\n`)
     );
     await expect(card.getByTestId('proposal-post-link')).toHaveAttribute(
       'href',
       new RegExp(`/@${STUB_ACCOUNT}/stub-proposal-${funded}$`)
     );
     await expect(proposalsPage.proposalCard(upcoming).getByTestId('proposal-remaining-days')).toHaveCount(0);
+    await expect(proposalsPage.proposalCard(upcoming).getByTestId('proposal-starts-in')).toHaveText(
+      'starts in 214 days'
+    );
   });
 
   test('WALLET-PROPOSALS-DHF-04 — the vote total is a named button that shows the exact HP and opens the voters with Enter', async ({

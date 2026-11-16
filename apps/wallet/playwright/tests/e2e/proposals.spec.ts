@@ -25,7 +25,7 @@ test.describe('Proposals page tests', () => {
     let apiHelper: ApiHelper = new ApiHelper(page);
 
     await proposalsPage.goToProposalsPage();
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       const resListOfProposalsAPI = await apiHelper.getListOfProposalsDatabaseAPI(); // default parameters
       const amountListOfProposalsItemsAPI = resListOfProposalsAPI.result.proposals.length;
 
@@ -58,7 +58,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.statusTab('All')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -89,8 +89,9 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.statusTab('Active')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('started');
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
+      // An active proposal shows no status badge
+      await expect(proposalsPage.proposalStatusBadge).toHaveCount(0);
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -121,7 +122,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.statusTab('Upcoming')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -153,7 +154,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.statusTab('Expired')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
@@ -185,7 +186,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.statusTab('Votable')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -202,7 +203,7 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.goToProposalsPage();
 
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       const firstProposalVotesValueOnPageDescending = await proposalsPage.voteProposalsValue
         .first()
         .textContent();
@@ -261,7 +262,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Creator$/);
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -299,7 +300,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Start Date$/);
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -337,7 +338,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^End Date$/);
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -375,7 +376,7 @@ test.describe('Proposals page tests', () => {
     await expect(proposalsPage.proposalsFilterOrderBy.locator('span')).toHaveText(/^Total Votes$/);
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -417,15 +418,7 @@ test.describe('Proposals page tests', () => {
       resListOfProposalsStatusAllAPI.result.proposals[0].daily_pay.amount
     ).div(1000);
 
-    const totalDays = dayjs(firstProposalEndDateAPI).diff(dayjs(firstProposalStartDateAPI), 'day');
-
-    const totalHBD = firstProposalDailyPayAmountAPI.times(
-      dayjs(firstProposalEndDateAPI).diff(dayjs(firstProposalStartDateAPI), 'day')
-    );
-
-    let totalDaysBrackets: string;
-
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
 
       // Validate proposal subject and id
       await expect(proposalsPage.proposalTitle.first()).toContainText(firstProposalSubjectAPI);
@@ -438,12 +431,6 @@ test.describe('Proposals page tests', () => {
         dayjs(firstProposalEndDateAPI).format('MMMM D, YYYY')
       );
 
-      // Validate amount of days in date
-      if (totalDays !== 1) totalDaysBrackets = '(' + totalDays + ' days)';
-      else totalDaysBrackets = '(' + totalDays + ' day)';
-      // console.log("totalDays: ", totalDaysBrackets);
-      await expect(proposalsPage.proposalDates.first()).toContainText(totalDaysBrackets);
-
       // If creator and receiver are different then both should be visile in the proposal list
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         await expect(proposalsPage.proposalCreator.first()).toHaveText(firstProposalCreatorAPI);
@@ -454,12 +441,6 @@ test.describe('Proposals page tests', () => {
       expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
         getRoundedAbbreveration(firstProposalDailyPayAmountAPI)
       );
-      // Proposal amount contains total pay amount
-      expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
-        getRoundedAbbreveration(totalHBD)
-      );
-      // Validate that badge is visible
-      await expect(proposalsPage.proposalStatusBadge.first()).toBeVisible();
     } else {
       await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(
         "Sorry, I can't show you any proposals right now."
@@ -482,36 +463,23 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
         'rgb(220, 38, 38)'
       );
       // Proposal Id color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
-        'rgb(100, 116, 139)'
+        'rgb(71, 85, 105)'
       );
       // Dates color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
-        'rgb(100, 116, 139)'
+        'rgb(71, 85, 105)'
       );
       // Proposal Daily Amount color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
-      ).toBe('rgb(100, 116, 139)');
-      // Proposal Total Amount color
-      expect(
-        await proposalsPage.getElementCssPropertyValue(
-          proposalsPage.proposalAmountHBD.locator('span').first(),
-          'color'
-        )
-      ).toBe('rgb(220, 38, 38)');
-      // Proposal Status Badge color
-      expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-      ).toBe('rgb(220, 38, 38)');
-      // Proposal Status tooltip
-      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
+      ).toBe('rgb(71, 85, 105)');
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(
@@ -561,7 +529,7 @@ test.describe('Proposals page tests', () => {
     const firstProposalCreatorAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].creator;
     const firstProposalReceiverAPI = await resListOfProposalsStatusAllAPI.result.proposals[0].receiver;
 
-    if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
+    if (await proposalsPage.proposalListItem.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
         'rgb(248, 113, 113)'
@@ -578,19 +546,6 @@ test.describe('Proposals page tests', () => {
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
       ).toBe('rgb(148, 163, 184)');
-      // Proposal Total Amount color
-      expect(
-        await proposalsPage.getElementCssPropertyValue(
-          proposalsPage.proposalAmountHBD.locator('span').first(),
-          'color'
-        )
-      ).toBe('rgb(254, 202, 202)');
-      // Proposal Status Badge color
-      expect(
-        await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-      ).toBe('rgb(248, 113, 113)');
-      // Proposal Status tooltip
-      await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(

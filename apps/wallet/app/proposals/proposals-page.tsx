@@ -94,7 +94,7 @@ export default function ProposalsPage() {
     <Tabs
       value={filterStatus}
       onValueChange={handleStatusChange}
-      className="mx-auto flex max-w-5xl flex-col gap-5 p-5"
+      className="mx-auto flex max-w-5xl flex-col gap-3 p-3 sm:p-5"
       data-testid="proposals-body"
     >
       <ProposalsFilter
@@ -109,14 +109,14 @@ export default function ProposalsPage() {
       />
       <ProposalsDhfSummary funding={funding} isPending={fundingLoading} />
 
-      <TabsContent value={filterStatus} className="mt-0 flex flex-col gap-5">
+      <TabsContent value={filterStatus} className="mt-0 flex flex-col">
         {proposalsData.isPending || dynamicLoading ? (
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          <div className="flex w-full flex-col gap-3 py-2">
+            <Skeleton className="h-16 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-16 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-16 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-16 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-16 w-full bg-slate-300 dark:bg-slate-900" />
           </div>
         ) : proposalsData.data?.length === 0 || !dynamicData ? (
           <main>
