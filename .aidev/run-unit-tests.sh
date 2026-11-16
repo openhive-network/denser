@@ -259,6 +259,7 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/dhf-faq.test.ts \
     apps/wallet/lib/proposals-list.test.ts \
     apps/wallet/lib/proposal-payments.test.ts \
+    apps/wallet/lib/witness-row.test.ts \
     apps/wallet/playwright/tests/support/contrast.test.ts < /dev/null || status=1
 echo "== stack/integration/test-upkeep.sh" >&2
 # One junit case per "ok   NAME" / "FAIL NAME" line it prints.

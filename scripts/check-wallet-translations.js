@@ -70,6 +70,7 @@ const POLICY = {
       'resource_credits.minutes_many',
       'resource_credits.minutes_other',
       'page_titles.permissions',
+      'witnesses_page.version',
       // Hive operation names the French texts keep in English
       'profile.power_up',
       'profile.power_down',
