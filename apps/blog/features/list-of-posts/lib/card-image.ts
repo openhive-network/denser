@@ -1,5 +1,4 @@
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
@@ -13,13 +12,10 @@ import {
 } from '@/blog/lib/utils';
 import { findImgTagSrc } from '@/blog/lib/body-image-url';
 import type { TrimmedEntry, CardEntry } from './card-entry';
+import { proxifyCardImage } from './card-image-src';
 
 // The first feed images are the LCP candidates, so they must not wait for lazy-loading.
 export const PRIORITY_IMAGE_COUNT = 2;
-
-// Match condenser's 256x512 to share image cache at images.hive.blog
-const UX_IMAGE_WIDTH = 256;
-const UX_IMAGE_HEIGHT = 512;
 
 export function find_first_img(post: Entry) {
   try {
@@ -33,58 +29,50 @@ export function find_first_img(post: Entry) {
         'jpg'
       ])
     ) {
-      return proxifyImageSrc(
-        post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1),
-        UX_IMAGE_WIDTH,
-        UX_IMAGE_HEIGHT
-      );
+      return proxifyCardImage(post.json_metadata.links[0].slice(0, post.json_metadata.links[0].length - 1));
     }
     if (post.original_entry && post.original_entry.json_metadata.images) {
-      return proxifyImageSrc(post.original_entry.json_metadata.images[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(post.original_entry.json_metadata.images[0]);
     }
     if (post.original_entry && post.original_entry.json_metadata.image) {
-      return proxifyImageSrc(post.original_entry.json_metadata.image[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(post.original_entry.json_metadata.image[0]);
     }
     if (post.json_metadata.image && post.json_metadata.image[0]) {
       if (post.json_metadata.image[0].includes('youtu-')) {
-        return proxifyImageSrc(
-          `https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`,
-          UX_IMAGE_WIDTH,
-          UX_IMAGE_HEIGHT
-        );
+        return proxifyCardImage(`https://img.youtube.com/vi/${post.json_metadata.image[0].slice(6)}/0.jpg`);
       }
-      return proxifyImageSrc(post.json_metadata.image[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(post.json_metadata.image[0]);
     }
     const regex_any_img = /!\[.*?\]\((.*?)\)/;
     const match = post.body.match(regex_any_img);
     if (match && match[1]) {
-      return proxifyImageSrc(match[1], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(match[1]);
     }
     if (post.json_metadata.images && post.json_metadata.images[0]) {
-      return proxifyImageSrc(post.json_metadata.images[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(post.json_metadata.images[0]);
     }
     if (post.json_metadata.flow?.pictures && post.json_metadata.flow?.pictures[0]) {
-      return proxifyImageSrc(post.json_metadata.flow?.pictures[0].url, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(post.json_metadata.flow?.pictures[0].url);
     }
     const youtube_id = extractYouTubeVideoIds(extractUrlsFromJsonString(post.body));
     if (youtube_id[0]) {
-      return proxifyImageSrc(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(`https://img.youtube.com/vi/${youtube_id[0]}/0.jpg`);
     }
     if (Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw')) {
-      return proxifyImageSrc(getUserAvatarUrl(post.author, 'small'), UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(getUserAvatarUrl(post.author, 'small'));
     }
     const pictures_extracted = extractPictureFromPostBody(extractUrlsFromJsonString(post.body));
     if (pictures_extracted[0]) {
-      return proxifyImageSrc(pictures_extracted[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(pictures_extracted[0]);
     }
     const regex_for_peakd = /https:\/\/files\.peakd\.com\/[^\s]+\.jpg/;
     const peakd_img = post.body.match(regex_for_peakd);
     if (peakd_img !== null) {
-      return proxifyImageSrc(peakd_img[0], UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(peakd_img[0]);
     }
     const imgTagSrc = findImgTagSrc(post.body);
     if (imgTagSrc) {
-      return proxifyImageSrc(imgTagSrc, UX_IMAGE_WIDTH, UX_IMAGE_HEIGHT);
+      return proxifyCardImage(imgTagSrc);
     }
     // Last fallback: use user profile image if available, otherwise use avatar
     if (!post.title.includes('RE: ') && post.depth === 0) {

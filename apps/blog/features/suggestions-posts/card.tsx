@@ -1,7 +1,7 @@
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { find_first_img } from '../list-of-posts/lib/card-image';
+import { proxifyCardImage } from '../list-of-posts/lib/card-image-src';
 import { Link } from '@hive/ui';
-import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
@@ -29,7 +29,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
           {image ? (
             <div className="h-24 overflow-hidden bg-transparent">
               <img
-                src={proxifyImageSrc(image, 256, 512)}
+                src={proxifyCardImage(image)}
                 alt={t('cards.post_image')}
                 loading="lazy"
                 className="h-full w-full object-cover"
@@ -57,7 +57,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
           <div className="flex h-24 items-center overflow-hidden bg-transparent">
             <picture className="articles__feature-img h-full w-full">
               <source
-                srcSet={proxifyImageSrc(image, 256, 512)}
+                srcSet={proxifyCardImage(image)}
                 media="(min-width: 600px)"
                 onError={() => setImage(getDefaultImageUrl())}
               />
