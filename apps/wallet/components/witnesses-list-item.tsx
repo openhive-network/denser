@@ -201,7 +201,8 @@ function WitnessListItem({
             )}
             <div className={clsx('truncate sm:hidden', MUTED_TEXT)}>
               {hp}
-              {rankUp && ` (+${rankUp})`} · {priceFeed} <TimeAgo date={data.last_hbd_exchange_update} />
+              {rankUp && ` (+${rankUp})`} · {priceFeed}{' '}
+              <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
             </div>
           </div>
         </div>
@@ -225,7 +226,7 @@ function WitnessListItem({
         </span>
         <span className={MUTED_TEXT}>
           {' · '}
-          <TimeAgo date={data.last_hbd_exchange_update} />
+          <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
         </span>
       </td>
     </tr>

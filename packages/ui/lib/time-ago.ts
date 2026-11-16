@@ -30,14 +30,21 @@ const TITLE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 // Hive API timestamps are UTC but carry no zone designator, which `new Date` would read as local time.
 const ZONELESS_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 
-const relativeFormats = createLocaleFormatCache(
-  (lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-);
+/** `long` reads "49 minutes ago"; `narrow` reads "49m ago" for tight spaces. */
+export type TimeAgoStyle = 'long' | 'narrow';
+
+const relativeFormats = {
+  long: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })),
+  narrow: createLocaleFormatCache(
+    (lang) => new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'auto' })
+  )
+};
 const titleFormats = createLocaleFormatCache((lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS));
 
 /** Number of formatters each of this module's caches holds. */
-export const getTimeAgoFormatCacheSizes = (): { relative: number; title: number } => ({
-  relative: relativeFormats.size(),
+export const getTimeAgoFormatCacheSizes = (): { relative: number; narrow: number; title: number } => ({
+  relative: relativeFormats.long.size(),
+  narrow: relativeFormats.narrow.size(),
   title: titleFormats.size()
 });
 
@@ -50,9 +57,14 @@ export const parseUtcTimestamp = (date: string | number | Date): number => {
 
 /**
  * Relative time of `date` at `now` (epoch ms): "2 hours ago" for a past date, "in 3 days" for a future
- * one; "Invalid date" for an unparsable date or locale.
+ * one ("2h ago", "in 3d" in the narrow style); "Invalid date" for an unparsable date or locale.
  */
-export const getTimeAgoString = (date: string | number | Date, lang: string, now: number): string => {
+export const getTimeAgoString = (
+  date: string | number | Date,
+  lang: string,
+  now: number,
+  style: TimeAgoStyle = 'long'
+): string => {
   const diff = Math.floor((now - parseUtcTimestamp(date)) / 1000);
   if (isNaN(diff)) {
     return INVALID_TIME_AGO;
@@ -60,7 +72,7 @@ export const getTimeAgoString = (date: string | number | Date, lang: string, now
 
   let rtf: Intl.RelativeTimeFormat;
   try {
-    rtf = relativeFormats.get(lang);
+    rtf = relativeFormats[style].get(lang);
   } catch (error) {
     if (error instanceof RangeError) return INVALID_TIME_AGO;
     throw error;

@@ -145,7 +145,7 @@ export default function WitnessesPage() {
             <colgroup>
               <col className="w-14 sm:w-16" />
               <col />
-              <col className="w-0 sm:w-16" />
+              <col className="w-0 sm:w-20" />
               <col className="w-0 sm:w-32" />
               <col className="w-0 sm:w-40" />
             </colgroup>

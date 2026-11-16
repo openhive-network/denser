@@ -69,6 +69,36 @@ describe('getTimeAgoString', () => {
   });
 });
 
+describe('getTimeAgoString in the narrow style', () => {
+  const cases: [string, string, string][] = [
+    ['2026-10-06T11:11:00', 'en', '49m ago'],
+    ['2026-10-06T07:00:00', 'en', '5h ago'],
+    ['2026-10-05T11:00:00', 'en', 'yesterday'],
+    ['2026-10-03T12:00:00', 'en', '3d ago'],
+    ['2026-10-06T12:05:00', 'en', 'in 5m'],
+    ['2026-10-06T11:11:00', 'pl', '49 min temu'],
+    ['2026-10-06T07:00:00', 'pl', '5 g. temu'],
+    ['2026-10-04T12:00:00', 'pl', 'przedwczoraj'],
+    ['2026-10-03T12:00:00', 'pl', '3 dni temu'],
+    ['2026-10-06T11:11:00', 'es', 'hace 49 min']
+  ];
+
+  for (const [date, lang, expected] of cases) {
+    it(`formats ${date} in ${lang} as "${expected}"`, () => {
+      assert.equal(getTimeAgoString(date, lang, NOW, 'narrow'), expected);
+    });
+  }
+
+  it('leaves the default style long', () => {
+    assert.equal(getTimeAgoString('2026-10-06T11:11:00', 'en', NOW), '49 minutes ago');
+    assert.equal(getTimeAgoString('2026-10-06T11:11:00', 'en', NOW, 'long'), '49 minutes ago');
+  });
+
+  it('reports an unparsable locale as "Invalid date"', () => {
+    assert.equal(getTimeAgoString('2026-10-06T09:15:00', 'not_a_locale!', NOW, 'narrow'), 'Invalid date');
+  });
+});
+
 describe('getTimeAgoTitle', () => {
   it('matches Date.prototype.toLocaleString of the UTC instant for each locale', () => {
     for (const lang of ['en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh', 'ar']) {
@@ -105,6 +135,7 @@ describe('getTimeAgoTitle', () => {
 describe('time-ago formatter caches', () => {
   const formatIn = (lang: string) => {
     getTimeAgoString('2026-10-06T09:15:00', lang, NOW);
+    getTimeAgoString('2026-10-06T09:15:00', lang, NOW, 'narrow');
     getTimeAgoTitle('2026-10-06T09:15:00', lang);
   };
 
@@ -129,8 +160,9 @@ describe('time-ago formatter caches', () => {
       }
     }
 
-    const { relative, title } = getTimeAgoFormatCacheSizes();
+    const { relative, narrow, title } = getTimeAgoFormatCacheSizes();
     assert.ok(relative <= 32, `relative cache holds ${relative}`);
+    assert.ok(narrow <= 32, `narrow cache holds ${narrow}`);
     assert.ok(title <= 32, `title cache holds ${title}`);
   });
 });

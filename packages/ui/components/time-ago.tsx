@@ -3,7 +3,8 @@ import {
   getTimeAgoDateTime,
   getTimeAgoString,
   getTimeAgoTitle,
-  subscribeMinuteClock
+  subscribeMinuteClock,
+  TimeAgoStyle
 } from '@ui/lib/time-ago';
 import { FC, useSyncExternalStore } from 'react';
 import { useLocale } from './locale-context';
@@ -17,6 +18,8 @@ interface TimeAgoProps {
    * switched in another tab
    */
   lang?: string;
+  /** `narrow` shortens the units ("49m ago"); the hover title keeps the full date. Defaults to `long`. */
+  timeStyle?: TimeAgoStyle;
 }
 
 const isServer = typeof window === 'undefined';
@@ -26,7 +29,7 @@ const isServer = typeof window === 'undefined';
 // that hydration kept (mismatch suppressed).
 const getServerClockNow = (): number | null => (isServer ? Date.now() : null);
 
-const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
+const TimeAgo: FC<TimeAgoProps> = ({ date, lang, timeStyle }) => {
   const { locale } = useLocale();
   // Re-renders on a language change; the server's i18next instance is shared by every request
   const { i18n } = useSharedTranslation(undefined, { useSuspense: false });
@@ -39,7 +42,7 @@ const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
   return (
     <span title={isHydrating ? undefined : getTimeAgoTitle(date, userLang)} suppressHydrationWarning>
       <time dateTime={getTimeAgoDateTime(date)} suppressHydrationWarning>
-        {isHydrating ? '' : getTimeAgoString(date, userLang, now)}
+        {isHydrating ? '' : getTimeAgoString(date, userLang, now, timeStyle)}
       </time>
     </span>
   );
