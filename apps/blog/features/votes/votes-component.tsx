@@ -4,7 +4,7 @@ import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import { Icons } from '@ui/components/icons';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { selectIsLoggedIn, selectUsername, useUserSelect } from '@smart-signer/lib/auth/use-user-select';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter, getViewerVote } from '@transaction/lib/hive-api';
@@ -41,7 +41,8 @@ const getVoteValue = (
 };
 
 const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 'post' }) => {
-  const { user } = useUserClient();
+  const isLoggedIn = useUserSelect(selectIsLoggedIn);
+  const voter = useUserSelect(selectUsername);
   const { t } = useTranslation('common_blog');
   const [clickedVoteButton, setClickedVoteButton] = useState('');
   const [storedVotesValues, storeVotesValues] = useStorageWithTTL(
@@ -55,7 +56,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
   const [sliderDownvote, setSliderDownvote] = useState(() =>
     getVoteValue(storedVotesValues, type, 'downvote')
   );
-  const voter = user.username;
   const pastPayout = new Date(`${post.payout_at}Z`) < new Date();
   useEffect(() => {
     setSliderUpvote(getVoteValue(storedVotesValues, type, 'upvote'));
@@ -72,7 +72,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
 
   // A vote the entry carries seeds the query: it is looked up only after the user votes.
   const { data: userVotes } = useQuery({
-    queryKey: ['votes', post.author, post.permlink, user?.username],
+    queryKey: ['votes', post.author, post.permlink, voter],
     queryFn: lookUpViewerVote,
     enabled: (!viewerVote.known && viewerVote.lookUp) || !!clickedVoteButton,
     initialData: viewerVote.known ? viewerVote.votes : undefined,
@@ -117,7 +117,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           size={20}
           color="#dc2626"
         />
-      ) : user.isLoggedIn && !vote_upvoted ? (
+      ) : isLoggedIn && !vote_upvoted ? (
         <WeightedVoteButton
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.upvote')}
@@ -176,7 +176,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             </div>
           </div>
         </WeightedVoteButton>
-      ) : user.isLoggedIn && vote_upvoted ? (
+      ) : isLoggedIn && vote_upvoted ? (
         <VoteRemovalDialog
           voteType="upvote"
           onConfirm={() => {
@@ -209,7 +209,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           size={20}
           color="#dc2626"
         />
-      ) : user.isLoggedIn && !vote_downvoted ? (
+      ) : isLoggedIn && !vote_downvoted ? (
         <WeightedVoteButton
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.downvote')}
@@ -277,7 +277,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             </ul>
           </div>
         </WeightedVoteButton>
-      ) : user.isLoggedIn && vote_downvoted ? (
+      ) : isLoggedIn && vote_downvoted ? (
         <VoteRemovalDialog
           voteType="downvote"
           onConfirm={() => {

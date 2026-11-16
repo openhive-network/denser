@@ -2,16 +2,15 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
-import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
-import { appApiPath } from '@ui/lib/app-api-path';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
 import { notifyOtherTabLogout, notifyOwnLogout } from '@smart-signer/lib/auth/logout-notice';
+import { userQueryOptions } from './user-query';
 
 const logger = getLogger('app');
 
@@ -24,10 +23,6 @@ export interface IUseUser {
 export interface UseUserOptions {
   redirectTo?: string;
   redirectIfFound?: boolean;
-}
-
-async function getUser(): Promise<User> {
-  return await fetchJson(appApiPath('/api/users/me'));
 }
 
 // Every hook instance would write the same user on mount; write it once per change.
@@ -70,15 +65,7 @@ export function useUserCore(
 ): IUseUser {
   const queryClient = useQueryClient();
   const isPastHydration = useIsPastHydration();
-  const userQuery = useQuery<User>({
-    queryKey: [QUERY_KEY.user],
-    queryFn: async (): Promise<User> => getUser(),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    // Read once, when the query is created, not by every hook instance
-    initialData: () => userLocalStorage.getUser()
-  });
+  const userQuery = useQuery(userQueryOptions);
   const user = userQuery.data;
   useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 

@@ -15,8 +15,23 @@ import ln2list from '../../lib/ln2list';
 import { useTranslation } from '@/blog/i18n/client';
 import { useFlagMutation } from '../../components/hooks/use-flag-mutation';
 import { handleError } from '@ui/lib/handle-error';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { selectIsLoggedIn, useUserReader, useUserSelect } from '@smart-signer/lib/auth/use-user-select';
 import DialogLogin from '@/blog/components/dialog-login';
+
+// Mounted only while the dialog is open, so the comment's flag does not re-render when the user changes.
+function FlagConfirmButton({ onClick, label }: { onClick: () => void; label: string }) {
+  const isLoggedIn = useUserSelect(selectIsLoggedIn);
+  if (!isLoggedIn) return null;
+  return (
+    <AlertDialogAction
+      className="rounded-none bg-foreground text-secondary shadow-lg shadow-destructive hover:bg-destructive hover:shadow-foreground disabled:bg-gray-400 disabled:shadow-none"
+      data-testid="flag-dialog-ok"
+      onClick={onClick}
+    >
+      {label}
+    </AlertDialogAction>
+  );
+}
 
 /**
  * Flag dialog of a post or comment, opened by `children`. A signed-out reader's click opens the
@@ -36,7 +51,7 @@ export function AlertDialogFlag({
   flagText: string;
   permlink: string;
 }) {
-  const { user } = useUserClient();
+  const readUser = useUserReader();
   const [notes, setNotes] = useState('');
   const [open, setOpen] = useState(false);
   // Mounted on the first sign-in request and kept: closing it can hand off to the lite sign-in it holds.
@@ -54,7 +69,7 @@ export function AlertDialogFlag({
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen && !user.isLoggedIn) {
+    if (nextOpen && !readUser().isLoggedIn) {
       setSignInMounted(true);
       setSignInOpen(true);
       return;
@@ -93,15 +108,7 @@ export function AlertDialogFlag({
             <AlertDialogCancel className="hover:text-destructive" data-testid="flag-dialog-cancel">
               {t('post_content.flag.cancel')}
             </AlertDialogCancel>
-            {user && user.isLoggedIn ? (
-              <AlertDialogAction
-                className="rounded-none bg-foreground text-secondary shadow-lg shadow-destructive hover:bg-destructive hover:shadow-foreground disabled:bg-gray-400 disabled:shadow-none"
-                data-testid="flag-dialog-ok"
-                onClick={flag}
-              >
-                {t('post_content.flag.ok')}
-              </AlertDialogAction>
-            ) : null}
+            <FlagConfirmButton onClick={flag} label={t('post_content.flag.ok')} />
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
