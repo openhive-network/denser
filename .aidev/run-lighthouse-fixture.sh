@@ -19,6 +19,7 @@
 #   .aidev/run-lighthouse-fixture.sh                    # measure, compare with the baseline
 #   .aidev/run-lighthouse-fixture.sh --update-baseline  # measure, write the baseline
 #   .aidev/run-lighthouse-fixture.sh --record           # re-record (needs egress)
+#   .aidev/run-lighthouse-fixture.sh --record-images    # add the images the recording lacks (needs egress)
 #   .aidev/run-lighthouse-fixture.sh --route /blog/trending --runs 1
 #
 # Other arguments go to lighthouse-fixture-check.js. Results, reports and logs:
@@ -33,12 +34,17 @@ check_args=()
 for arg in "$@"; do
     case "$arg" in
         --record) mode=record ;;
+        --record-images) mode=record-images ;;
         --update-baseline) update_baseline=true ;;
         *) check_args+=("$arg") ;;
     esac
 done
 if $update_baseline && [ "${#check_args[@]}" -gt 0 ]; then
     echo "--update-baseline measures every route as the suite does; it takes no other arguments" >&2
+    exit 64
+fi
+if [ "$mode" = record-images ] && [ "${#check_args[@]}" -gt 0 ]; then
+    echo "--record-images prunes the images no measured run fetched, so it measures every route; it takes no other arguments" >&2
     exit 64
 fi
 
@@ -167,7 +173,10 @@ start_site() {
         FIXTURE_SET=$set_name node .aidev/fixture-proxy-serve.mjs serve --port "$api_port" > "$out/logs/fixture-proxy.log" 2>&1 < /dev/null &
         pids+=($!)
     fi
-    node "$here/image-server.mjs" "$mode" "$set_dir/images" --port "$images_port" > "$out/logs/image-server.log" 2>&1 < /dev/null &
+    # record-images replays the API and records only the image paths the set lacks.
+    local image_mode=replay
+    [ "$mode" = replay ] || image_mode=record
+    node "$here/image-server.mjs" "$image_mode" "$set_dir/images" --port "$images_port" > "$out/logs/image-server.log" 2>&1 < /dev/null &
     pids+=($!)
     serve_app blog "$blog_port"
     serve_app wallet "$wallet_port"
@@ -227,7 +236,9 @@ step "start the site ($mode, clock $clock)" "$out/logs/start.log" start_site
 args=(--site "$site" --out "$out" --fixture-set "$set_name" --clock "$clock" --cases "$cases"
     --revision "$(git rev-parse HEAD 2> /dev/null || echo worktree)"
     --allowed-host "127.0.0.1:$site_port" --allowed-host "127.0.0.1:$api_port" --allowed-host "127.0.0.1:$images_port")
-if [ "$mode" = replay ]; then
+if [ "$mode" = record-images ]; then
+    args+=(--miss-counter "http://127.0.0.1:$api_port/__aidev/status" --recording "$recording")
+elif [ "$mode" = replay ]; then
     args+=(--miss-counter "http://127.0.0.1:$api_port/__aidev/status" --miss-counter "http://127.0.0.1:$images_port/__aidev/status"
         --recording "$recording")
     if ! $update_baseline && [ -f "$baseline" ]; then args+=(--baseline "$baseline"); fi
@@ -266,6 +277,9 @@ const routes = Object.keys(require("./scripts/ci-helpers/lighthouse-thresholds.j
 fs.writeFileSync(process.argv[1], JSON.stringify({ clock: process.env.CLOCK, routes }, null, 2) + "\n");' \
         "$set_dir/_lighthouse.json" < /dev/null
     echo "Recorded $set_dir (clock $clock); measure it with $0 --update-baseline" >&2
+elif [ "$mode" = record-images ]; then
+    node "$here/image-server.mjs" prune "$set_dir/images" "http://127.0.0.1:$images_port" "$out"/reports/*/*.json.gz
+    echo "Recorded the missing images of $set_dir; measure it with $0 --update-baseline" >&2
 elif $update_baseline && [ "$status" -eq 0 ]; then
     node -e '
 const fs = require("fs");
