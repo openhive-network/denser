@@ -3,12 +3,14 @@
 // (.aidev/run-lighthouse-fixture.sh): server renders must not stay reachable after
 // their response.
 //
-//   node heap-check.mjs --origin http://127.0.0.1:3000 [--warmup 300] [--requests 1000]
+//   node heap-check.mjs --origin http://127.0.0.1:3000 [--recording <_lighthouse.json>]
+//                       [--warmup 300] [--requests 1000]
 //                       [--concurrency 16] [--max-growth-mb 50] [--max-timer-growth 50]
 //
 // The blog server runs with --expose-gc and DENSER_DEBUG_MEM=true, so
 // /blog/api/debug/mem forces a full GC and reports process.memoryUsage() and the
-// pending Timeouts. The blog routes of the Lighthouse set are rendered --warmup
+// pending Timeouts. The blog routes of the Lighthouse set (those --recording covers,
+// lighthouse-fixture-routes.js) are rendered --warmup
 // times, memory is read, they are rendered --requests more times, memory is read
 // again. The check fails when heapUsed or the pending Timeouts grew past the bounds:
 // anything a render leaves reachable (a request-scoped timer keeps the whole request
@@ -22,6 +24,7 @@ const GC_PASSES = 3;
 const { values } = parseArgs({
   options: {
     origin: { type: 'string' },
+    recording: { type: 'string' },
     warmup: { type: 'string', default: '300' },
     requests: { type: 'string', default: '1000' },
     concurrency: { type: 'string', default: '16' },
@@ -34,9 +37,10 @@ if (!values.origin) {
   process.exit(64);
 }
 
-const routes = Object.keys(require('../../scripts/ci-helpers/lighthouse-thresholds.json').integration).filter(
-  (route) => route.startsWith('/blog/')
-);
+const { fixtureRoutes } = require('../../scripts/ci-helpers/lighthouse-fixture-routes.js');
+const routes = fixtureRoutes(values.recording)
+  .routes.map(([route]) => route)
+  .filter((route) => route.startsWith('/blog/'));
 
 async function render(route) {
   const response = await fetch(values.origin + route, { redirect: 'manual' });

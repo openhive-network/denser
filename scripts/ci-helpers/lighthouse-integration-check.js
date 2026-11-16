@@ -11,7 +11,8 @@
  * and logged-in runs, so both modes see the same backend. Each run keeps its vitals (the
  * simulated ones judged, the observed paints alongside) and its backend timing (lighthouse-backend.js); the backend is probed just before and
  * just after the routes (lighthouse-probe.js), and the pass is classified against the
- * environment of the passes before it (lighthouse-environment.js). Writes
+ * environment of the passes before it (lighthouse-environment.js); an AI search's TTFB
+ * is left out of that baseline (routeTtfb). A route may carry a query string. Writes
  * <out>/<revision>.json, <out>/latest.json, the full reports, the baseline and the
  * status page (lighthouse-integration-store.js).
  *
@@ -182,11 +183,21 @@ function printSummary(result) {
   console.log(result.status === 'pass' ? '\n✅ All medians meet thresholds.' : `\n❌ Thresholds breached: ${result.verdict} (advisory: nothing is rolled back).`);
 }
 
+// An AI search's server render waits for hivesense (api.syncad.com), which no probe
+// covers and which caches a query only after its first, uncached, answer: its TTFB
+// says whether that query was cached, not how the environment was.
+function ttfbFollowsHivesense(route) {
+  const url = new URL(route, 'http://route');
+  return url.pathname.endsWith('/search') && url.searchParams.has('ai');
+}
+
 // Logged out only: the baseline compares like with like, and the observer's own
 // pages render differently on the server.
 function routeTtfb(routes) {
   return Object.fromEntries(
-    routes.filter((r) => r.mode === LOGGED_OUT).map((r) => [r.route, r.median.backend?.['server-response-time']])
+    routes
+      .filter((r) => r.mode === LOGGED_OUT && !ttfbFollowsHivesense(r.route))
+      .map((r) => [r.route, r.median.backend?.['server-response-time']])
   );
 }
 
@@ -242,7 +253,7 @@ async function main() {
   return result.status === 'pass' ? 0 : 2;
 }
 
-module.exports = { loadRouteThresholds, routeModes, measureRoute };
+module.exports = { loadRouteThresholds, routeModes, measureRoute, routeTtfb };
 
 if (require.main === module) {
   main().then(

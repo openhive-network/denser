@@ -4,7 +4,8 @@
  * median logic, run against a site served from recorded data with no network
  * (.aidev/run-lighthouse-fixture.sh brings that site up).
  *
- * Per route (the `integration` section of lighthouse-thresholds.json) it runs
+ * Per route (the `integration` section of lighthouse-thresholds.json; with --recording,
+ * those the recording covers, lighthouse-fixture-routes.js) it runs
  * Lighthouse RUNS_PER_ROUTE times, keeps each run's vitals, transfer totals and
  * every request that left the allowed hosts, and takes the medians. After the
  * routes it reads the replay servers' MISS counters. Lighthouse runs as the integration
@@ -24,10 +25,11 @@
  * Usage: node lighthouse-fixture-check.js --site http://127.0.0.1:PORT --out <dir>
  *        --allowed-host <host:port>... [--miss-counter <url>...] [--baseline <result.json>]
  *        [--revision <label>] [--fixture-set <name>] [--clock <iso>] [--runs N]
- *        [--route <path>...] [--cases <file>]
+ *        [--route <path>...] [--recording <_lighthouse.json>] [--cases <file>]
  * --miss-counter URLs answer JSON with a numeric `misses` and, optionally, `missed`,
  * the paths that missed; --cases appends
- * junit_write_cases lines (.aidev/junit-helpers.sh), one case per route.
+ * junit_write_cases lines (.aidev/junit-helpers.sh), one case per route, a skipped one
+ * per integration route the recording lacks.
  */
 
 const fs = require('fs');
@@ -39,6 +41,7 @@ const { evaluateBudgets } = require('./lighthouse-host-budget');
 const { extractResourceTotals, offHostRequests } = require('./lighthouse-resources');
 const { compareResults, formatComparison } = require('./lighthouse-compare');
 const store = require('./lighthouse-integration-store');
+const { fixtureRoutes } = require('./lighthouse-fixture-routes');
 
 // The full-page screenshot is taken after the trace, by growing the viewport to the
 // whole page, which loads every lazy image: no metric reads it, and replaying it would
@@ -58,24 +61,25 @@ function parseOptions() {
       clock: { type: 'string' },
       runs: { type: 'string', default: String(RUNS_PER_ROUTE) },
       route: { type: 'string', multiple: true, default: [] },
+      recording: { type: 'string' },
       cases: { type: 'string' },
     },
   });
   const site = values.site?.replace(/\/+$/, '');
   const runs = Number(values.runs);
   if (!/^https?:\/\/[^/]/.test(site || '') || !values.out || !values['allowed-host'].length) {
-    throw new Error('usage: --site http://host:port --out <dir> --allowed-host <host:port>... [--miss-counter <url>...] [--baseline <file>] [--runs N] [--route <path>...] [--cases <file>]');
+    throw new Error('usage: --site http://host:port --out <dir> --allowed-host <host:port>... [--miss-counter <url>...] [--baseline <file>] [--runs N] [--route <path>...] [--recording <file>] [--cases <file>]');
   }
   if (!Number.isInteger(runs) || runs < 1) throw new Error(`--runs must be a positive integer, got ${values.runs}`);
   if (values.baseline && !fs.existsSync(values.baseline)) throw new Error(`--baseline ${values.baseline} does not exist`);
   return { ...values, site, runs, allowedHosts: values['allowed-host'], missCounters: values['miss-counter'] };
 }
 
-function selectRoutes(only) {
-  const all = JSON.parse(fs.readFileSync(path.join(__dirname, 'lighthouse-thresholds.json'), 'utf8')).integration;
-  const unknown = only.filter((route) => !(route in all));
-  if (unknown.length) throw new Error(`not an integration route: ${unknown.join(', ')}`);
-  return Object.entries(all).filter(([route]) => !only.length || only.includes(route));
+function selectRoutes(only, recording) {
+  const { routes, unrecorded } = fixtureRoutes(recording);
+  const unknown = only.filter((route) => !routes.some(([known]) => known === route));
+  if (unknown.length) throw new Error(`not a recorded integration route: ${unknown.join(', ')}`);
+  return { routes: routes.filter(([route]) => !only.length || only.includes(route)), unrecorded };
 }
 
 function runMetrics(report, error, allowedHosts) {
@@ -150,7 +154,7 @@ function scaleNote(breach, hostSpeed) {
 }
 
 function routeCaseLines(result) {
-  const lines = [];
+  const lines = result.unrecorded.map((route) => ['case', route, 'skip', 0, 'not in the recording; record the set again'].join('\t'));
   for (const r of result.routes) {
     const problems = [
       ...r.breaches.map((b) => `${b.metric} ${b.value} breaches ${b.threshold}${scaleNote(b, r.hostSpeed)}`),
@@ -200,7 +204,8 @@ function printSummary(result) {
 
 async function main() {
   const options = parseOptions();
-  const routes = selectRoutes(options.route);
+  const { routes, unrecorded } = selectRoutes(options.route, options.recording);
+  for (const route of unrecorded) console.log(`  not measured, not in the recording: ${route}`);
   fs.mkdirSync(options.out, { recursive: true });
 
   const baseline = options.baseline ? JSON.parse(fs.readFileSync(options.baseline, 'utf8')) : undefined;
@@ -218,6 +223,7 @@ async function main() {
     lighthouseVersion: measured.find((r) => r.lighthouseVersion)?.lighthouseVersion,
     environment: { mode: 'fixture', fixtureSet: options['fixture-set'], clock: options.clock },
     hermetic,
+    unrecorded,
     routes: measured.map(({ lighthouseVersion: _version, ...route }) => route),
   };
   if (baseline) result.comparison = compareResults(result, baseline);

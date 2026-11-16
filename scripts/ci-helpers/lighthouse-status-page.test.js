@@ -130,6 +130,18 @@ test('a route of a result written before the logged-in mode is logged out', () =
   assert.doesNotMatch(html, /logged in as/);
 });
 
+test('a route with a query string is shown as written, with its reports', () => {
+  const route = '/blog/search?ai=hive%20hardfork%20changes&s=newest';
+  const report = `reports/${REV_NEW}/blog_search_ai_hive_20hardfork_20changes_s_newest-run1.json.gz`;
+  const result = {
+    revision: REV_NEW,
+    status: 'pass',
+    routes: [{ route, mode: 'loggedOut', median: { measuredRuns: 1 }, breaches: [], runs: [{ report }] }],
+  };
+  const html = renderStatusPage([result], REV_NEW);
+  assert.ok(html.includes(`<td>/blog/search?ai=hive%20hardfork%20changes&#38;s=newest<br>reports: <a href="${report}">run 1</a>`));
+});
+
 test('only the revision whose reports are kept links them', () => {
   assert.doesNotMatch(renderStatusPage([newResult], REV_OLD), /run1\.json\.gz/);
   assert.match(renderStatusPage([], REV_NEW), /No passes measured yet/);

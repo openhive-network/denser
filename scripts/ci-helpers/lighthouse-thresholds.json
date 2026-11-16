@@ -64,6 +64,40 @@
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 970000,
       "lcp-lazy-loaded": false
+    },
+    "/blog/search?ai=hive%20hardfork%20changes": {
+      "performance": 45,
+      "largest-contentful-paint": 8000,
+      "total-blocking-time": 1250,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 410000,
+      "wasm-transfer-bytes": 0
+    },
+    "/blog/search?q=hardfork": {
+      "performance": 50,
+      "largest-contentful-paint": 6500,
+      "total-blocking-time": 1250,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 410000,
+      "wasm-transfer-bytes": 0
+    },
+    "/blog/login": {
+      "performance": 45,
+      "largest-contentful-paint": 12000,
+      "total-blocking-time": 1250,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 720000,
+      "wasm-transfer-bytes": 830000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/communities": {
+      "performance": 50,
+      "largest-contentful-paint": 5000,
+      "total-blocking-time": 2500,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 400000,
+      "wasm-transfer-bytes": 0,
+      "lcp-lazy-loaded": false
     }
   },
   "integrationLoggedIn": {
@@ -136,6 +170,29 @@
       "total-blocking-time": 4750,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 900000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/search?ai=hive%20hardfork%20changes": {
+      "largest-contentful-paint": 8000,
+      "total-blocking-time": 1250,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 420000,
+      "wasm-transfer-bytes": 1070000
+    },
+    "/blog/communities": {
+      "largest-contentful-paint": 5000,
+      "total-blocking-time": 2500,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 400000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/for-you": {
+      "largest-contentful-paint": 10000,
+      "total-blocking-time": 4000,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 500000,
       "wasm-transfer-bytes": 1070000,
       "lcp-lazy-loaded": false
     }

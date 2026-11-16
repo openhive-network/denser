@@ -183,7 +183,8 @@ start_site() {
     # One plain request per route first, as on a site that has been serving: the
     # servers' own caches are warm before the first measured run.
     node -e '
-const routes = Object.keys(require("./scripts/ci-helpers/lighthouse-thresholds.json").integration);
+const { fixtureRoutes } = require("./scripts/ci-helpers/lighthouse-fixture-routes.js");
+const routes = fixtureRoutes(process.argv[2]).routes.map(([route]) => route);
 (async () => {
   for (const route of routes) {
     const r = await fetch(process.argv[1] + route);
@@ -191,13 +192,16 @@ const routes = Object.keys(require("./scripts/ci-helpers/lighthouse-thresholds.j
     await r.arrayBuffer();
     if (r.status >= 500) process.exitCode = 1;
   }
-})().catch((e) => { console.error(e.message); process.exit(1); });' "$site" < /dev/null
+})().catch((e) => { console.error(e.message); process.exit(1); });' "$site" "$recording" < /dev/null
 }
 
+# Replay measures the integration routes the recording covers; a recording takes them all.
+recording=
 if [ "$mode" = record ]; then
     clock=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 else
-    clock=$(node -p 'require(process.argv[1]).clock' "$PWD/$set_dir/_lighthouse.json" 2> /dev/null) \
+    recording=$PWD/$set_dir/_lighthouse.json
+    clock=$(node -p 'require(process.argv[1]).clock' "$recording" 2> /dev/null) \
         || { echo "no recording at $set_dir (run with --record)" >&2; exit 1; }
 fi
 
@@ -224,7 +228,8 @@ args=(--site "$site" --out "$out" --fixture-set "$set_name" --clock "$clock" --c
     --revision "$(git rev-parse HEAD 2> /dev/null || echo worktree)"
     --allowed-host "127.0.0.1:$site_port" --allowed-host "127.0.0.1:$api_port" --allowed-host "127.0.0.1:$images_port")
 if [ "$mode" = replay ]; then
-    args+=(--miss-counter "http://127.0.0.1:$api_port/__aidev/status" --miss-counter "http://127.0.0.1:$images_port/__aidev/status")
+    args+=(--miss-counter "http://127.0.0.1:$api_port/__aidev/status" --miss-counter "http://127.0.0.1:$images_port/__aidev/status"
+        --recording "$recording")
     if ! $update_baseline && [ -f "$baseline" ]; then args+=(--baseline "$baseline"); fi
 fi
 status=0
@@ -233,7 +238,7 @@ node scripts/ci-helpers/lighthouse-fixture-check.js "${args[@]}" "${check_args[@
 if [ "$mode" = replay ]; then
     heap_case="the blog server's heap stays bounded over 1000 renders"
     heap_start=$SECONDS
-    if node "$here/heap-check.mjs" --origin "http://127.0.0.1:$blog_port" > "$out/logs/heap-check.log" 2>&1 < /dev/null; then
+    if node "$here/heap-check.mjs" --origin "http://127.0.0.1:$blog_port" --recording "$recording" > "$out/logs/heap-check.log" 2>&1 < /dev/null; then
         printf 'case\t%s\tpass\t%s\t\n' "$heap_case" $((SECONDS - heap_start)) >> "$cases"
     else
         printf 'case\t%s\tfail\t%s\t%s\t%s\n' "$heap_case" $((SECONDS - heap_start)) \
