@@ -23,7 +23,7 @@ import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/ut
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import RendererContainer from '../post-rendering/rendererContainer';
 import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/hooks/use-comment-mutations';
-import { commentClassName } from '../post-rendering/comment-list-item';
+import { commentClassName } from '../post-rendering/comment-class-name';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
