@@ -1,7 +1,6 @@
 import { Entry, FullAccount } from '@hive/common-hiveio-packages/wax';
 import dayjs from 'dayjs';
 import { TFunction } from 'i18next';
-import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { Symbol } from '@ui/lib/asset-constants';
 import { accountReputation } from '@ui/lib/reputation';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
@@ -146,12 +145,13 @@ export function extractLinks(text: string): string[] {
   return matches;
 }
 
+/** The images.hive.blog image URLs among `urls`, unproxied. */
 export function extractPictureFromPostBody(urls: string[]): string[] {
   const picturesFromPostBody: string[] = [];
   for (const url of urls) {
     const picture = matchHiveBlogImageUrl(url);
     if (picture) {
-      picturesFromPostBody.push(proxifyImageSrc(picture));
+      picturesFromPostBody.push(picture);
     }
   }
 
