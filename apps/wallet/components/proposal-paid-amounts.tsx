@@ -10,6 +10,7 @@ import {
   type ProposalPaid,
   type ProposalTerms
 } from '@/wallet/lib/proposal-payments';
+import { PhoneOrDesktopText } from './phone-or-desktop-text';
 
 interface ProposalPaidAmountsProps {
   proposal: ProposalTerms;
@@ -93,7 +94,8 @@ export function ProposalPaidAmounts({ proposal, total, totalDays, paid }: Propos
               />
             ) : (
               <>
-                {t('proposals_page.paid')} <HbdAmount amount={paid.paid} />
+                <PhoneOrDesktopText phone={t('proposals_page.paid_short')} desktop={t('proposals_page.paid')} />{' '}
+                <HbdAmount amount={paid.paid} />
               </>
             )}
           </span>
@@ -105,7 +107,10 @@ export function ProposalPaidAmounts({ proposal, total, totalDays, paid }: Propos
             className={cn({ [UNFUNDED_COLOR]: unfunded.amount.gt(0) })}
             data-testid="proposal-unfunded"
           >
-            {t('proposals_page.unfunded')}{' '}
+            <PhoneOrDesktopText
+              phone={t('proposals_page.unfunded_short')}
+              desktop={t('proposals_page.unfunded')}
+            />{' '}
             <HbdAmount amount={unfunded.amount} className={unfunded.amount.gt(0) ? UNFUNDED_COLOR : undefined} />
             {/* Like the unit, left out of a phone's narrow line */}
             <span className="hidden sm:inline">

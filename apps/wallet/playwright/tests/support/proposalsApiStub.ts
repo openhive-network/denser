@@ -144,11 +144,11 @@ const listProposalsOf =
     return { proposals: listing.slice(0, numberParam(params, 'limit') ?? listing.length) };
   };
 
-const proposalsPageResults = (all: readonly StubProposal[]): JsonRpcResults => ({
+const proposalsPageResults = (all: readonly StubProposal[], dhfHbd = DHF_STUB_HBD): JsonRpcResults => ({
   'database_api.list_proposals': listProposalsOf(all),
   'database_api.find_accounts': ({ accounts = [] }) => ({
     accounts: accounts.map((name) =>
-      fullAccount(name === 'hive.fund' ? { name, hbd_balance: hbd(DHF_STUB_HBD) } : { name })
+      fullAccount(name === 'hive.fund' ? { name, hbd_balance: hbd(dhfHbd) } : { name })
     )
   }),
   'database_api.list_proposal_votes': listProposalVotes
@@ -211,5 +211,83 @@ export const PROPOSALS_PAGE_REST_RESULTS: RestResults = {
   [PROPOSALS_PAYMENTS_PATH]: stubProposalsPayments(
     STUB_PROPOSALS_PAID,
     (id) => PROPOSALS.find((item) => item.proposal_id === id)?.receiver
+  )
+};
+
+/**
+ * Proposals the size of the live list's, ranked above the seven and paid every hour up to the hour
+ * before 2026-06-01: titles longer than a phone's line and money lines with six-character amounts,
+ * #392 "651.70K", "41.80K" and "693.50K".
+ */
+export const REAL_SIZE_PROPOSALS = {
+  longest: 392,
+  hiveSql: 329,
+  development: 373,
+  keychain: 348
+} as const;
+
+const REAL_SIZE_LAST_PAID = '2026-05-31T23:00:00';
+
+const realSize = (
+  id: number,
+  totalVotes: string,
+  dailyPay: number,
+  fields: { subject: string; creator: string; start: string; end: string; paidDays: number }
+) => ({
+  proposal: proposal(id, totalVotes, String(dailyPay * 1000), fields),
+  paid: {
+    amount: String(dailyPay * fields.paidDays * 1000),
+    hours: fields.paidDays * 24,
+    firstPaid: `${fields.start.slice(0, 11)}01:00:00`,
+    lastPaid: REAL_SIZE_LAST_PAID
+  }
+});
+
+const REAL_SIZE = [
+  realSize(REAL_SIZE_PROPOSALS.longest, '99000000000000000', 1900, {
+    subject: 'Worldmapping 2.0 - Travel Guide, Hive Maps and Rewards for Travel Bloggers',
+    creator: 'stub-mapper',
+    start: '2025-06-01T00:00:00',
+    end: '2027-06-01T00:00:00',
+    paidDays: 343
+  }),
+  realSize(REAL_SIZE_PROPOSALS.hiveSql, '98000000000000000', 1000, {
+    subject: 'HiveSQL Proposal - Keep It Free To Use For Everyone Building On Hive',
+    creator: 'stub-sql',
+    start: '2025-07-01T00:00:00',
+    end: '2027-07-01T00:00:00',
+    paidDays: 320
+  }),
+  realSize(REAL_SIZE_PROPOSALS.development, '97000000000000000', 950, {
+    subject: 'Hive open source development',
+    creator: 'stub-developer',
+    start: '2025-12-01T00:00:00',
+    end: '2026-11-30T00:00:00',
+    paidDays: 170
+  }),
+  realSize(REAL_SIZE_PROPOSALS.keychain, '96000000000000000', 600, {
+    subject: "Keychain - Hive's browser extension and mobile wallet, maintenance",
+    creator: 'stub-keychain',
+    start: '2025-03-01T00:00:00',
+    end: '2027-02-28T00:00:00',
+    paidDays: 450
+  })
+];
+
+/** With a DHF of 1,000,000 HBD, a daily budget of 10,000 HBD, the real-size proposals are all funded. */
+const REAL_SIZE_DHF_HBD = '1000000000';
+const REAL_SIZE_LISTING = [...REAL_SIZE.map((item) => item.proposal), ...PROPOSALS];
+
+/** PROPOSALS_PAGE_RESULTS with the REAL_SIZE_PROPOSALS ranked above the seven. */
+export const REAL_SIZE_PAGE_RESULTS: JsonRpcResults = proposalsPageResults(
+  REAL_SIZE_LISTING,
+  REAL_SIZE_DHF_HBD
+);
+
+/** PROPOSALS_PAGE_REST_RESULTS with the REAL_SIZE_PROPOSALS' payments. */
+export const REAL_SIZE_PAGE_REST_RESULTS: RestResults = {
+  [PROPOSALS_PAYMENTS_PATH]: stubProposalsPayments(
+    { ...STUB_PROPOSALS_PAID, ...Object.fromEntries(REAL_SIZE.map((item) => [item.proposal.id, item.paid])) },
+    (id) => REAL_SIZE_LISTING.find((item) => item.proposal_id === id)?.receiver
   )
 };

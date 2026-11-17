@@ -387,6 +387,8 @@
     "duration_days_other": "{{count}}日",
     "remaining_days_short": "残り{{days}}日",
     "duration_days_short": "{{days}}日",
+    "paid_short": "支払済",
+    "unfunded_short": "未資金",
     "funded": "資金提供あり",
     "not_funded": "資金提供なし",
     "return_proposal_note": "これは基本の返還提案です。これより得票の少ない提案には資金が支払われません。",
