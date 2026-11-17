@@ -32,8 +32,9 @@ export interface FilterProposalsProps {
 }
 /**
  * The proposals page's header: its title, status tabs, search and order in one row from `sm` up,
- * the search below on phones. Its status tabs are the triggers of the page's `Tabs`, whose
- * value is the status filter, so the bar renders inside them. Below `md` a select bound to the same
+ * the search below on phones. The search is never narrower than its placeholder needs, so where the
+ * row has no room for that it wraps below the tabs. Its status tabs are the triggers of the page's
+ * `Tabs`, whose value is the status filter, so the bar renders inside them. Below `md` a select bound to the same
  * status replaces the tabs, which wrap there; `display: none` keeps the hidden one out of the
  * accessibility tree.
  */
@@ -82,7 +83,7 @@ export function ProposalsFilter({
         onChange={handleSearchChange}
         placeholder={t('proposals_page.search_placeholder')}
         aria-label={t('proposals_page.search_label')}
-        className="order-last h-[35px] w-full placeholder:text-slate-600 dark:placeholder:text-muted-foreground sm:order-none sm:w-56"
+        className="order-last h-[35px] w-full placeholder:text-slate-600 dark:placeholder:text-muted-foreground sm:order-none sm:w-auto sm:min-w-80 sm:max-w-md sm:flex-1"
         data-testid="proposals-search"
       />
       <div className="flex items-center gap-1.5 text-xs font-medium" data-testid="proposals-sort-filter">

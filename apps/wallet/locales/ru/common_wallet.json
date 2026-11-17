@@ -406,6 +406,8 @@
     "duration_days_few": "{{count}} дня",
     "duration_days_many": "{{count}} дней",
     "duration_days_other": "{{count}} дня",
+    "remaining_days_short": "Ещё {{days}} дн.",
+    "duration_days_short": "{{days}} дн.",
     "funded": "финансируется",
     "not_funded": "не финансируется",
     "return_proposal_note": "Это базовое возвратное предложение: предложения с меньшим числом голосов не финансируются.",
