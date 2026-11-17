@@ -241,7 +241,8 @@
     "account_not_found_title": "No se encontraron claves",
     "account_not_found_description": "Tu monedero de Google Drive no tiene claves de @{{username}}. Añádelas con Hive Bridge o usa otro método de inicio de sesión.",
     "bridge_info": "Hive Bridge te permite guardar de forma segura tus claves de Hive en Google Drive.",
-    "go_to_bridge": "Ir a Hive Bridge"
+    "go_to_bridge": "Ir a Hive Bridge",
+    "wrong_password": "Contraseña de la billetera incorrecta. Inténtalo de nuevo."
   },
   "session_time": {
     "choose_label": "Bloquear tras inactividad de",

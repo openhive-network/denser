@@ -63,10 +63,13 @@ export async function loginAndOpenEditor(page: Page) {
   await loginForm.saveSignInButton.click();
 
   // Sign-in stores the user in the query cache, which swaps the pencil's
-  // DialogLogin for a plain link (closing the dialog), and the dialog's
-  // onComplete pushes /submit.html. The editor form renders only once the
-  // submit page reads a logged-in user, so each stage fails on its own.
+  // DialogLogin for a link to /submit.html (closing the dialog) and leaves the
+  // reader on the page. The editor form renders only once the submit page
+  // reads a logged-in user, so each stage fails on its own.
   await expect(loginForm.loginDialog).toBeHidden();
+  const pencilLink = page.locator('a[href="/submit.html"][data-testid="nav-pencil"]');
+  await expect(pencilLink).toBeVisible();
+  await pencilLink.click();
   await expect(page).toHaveURL(/\/submit\.html(?:$|\?)/);
   await postEditorPage.validateDefaultPostEditorIsLoaded();
 

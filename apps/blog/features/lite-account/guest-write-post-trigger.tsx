@@ -10,8 +10,8 @@ const SUBMIT_PATH = '/submit.html';
 
 /**
  * The "Write post" control of a reader who is not logged in: opens the editor when this deployment
- * runs a lite gateway (guest posting), the sign-in dialog otherwise. The gateway is asked on the
- * click, not on every page load.
+ * runs a lite gateway (guest posting), the sign-in dialog otherwise. Signing in leaves the reader on
+ * the page they were on. The gateway is asked on the click, not on every page load.
  */
 export default function GuestWritePostTrigger({ children }: { children: (onClick: () => void) => ReactNode }) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function GuestWritePostTrigger({ children }: { children: (onClick
   return (
     <>
       {children(() => void onClick())}
-      <DialogLogin open={loginOpen} onOpenChange={setLoginOpen} redirectTo={SUBMIT_PATH} />
+      <DialogLogin open={loginOpen} onOpenChange={setLoginOpen} />
     </>
   );
 }
