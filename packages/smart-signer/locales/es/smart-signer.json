@@ -198,7 +198,10 @@
     "store_key_label": "Guardar clave",
     "store_password_label": "Guardar contraseña",
     "google_drive_password_placeholder": "Contraseña para desbloquear la billetera de Google Drive",
-    "safe_storage_recovery_description": "Otra pestaña modificó el almacenamiento seguro mientras se guardaba una clave de @{{username}}. Introduce la contraseña del almacenamiento seguro de @{{username}} para terminar de guardarla."
+    "safe_storage_recovery_description": "Otra pestaña modificó el almacenamiento seguro mientras se guardaba una clave de @{{username}}. Introduce la contraseña del almacenamiento seguro de @{{username}} para terminar de guardarla.",
+    "fresh_check_title": "Confirma con tu contraseña",
+    "fresh_check_description": "Esta operación necesita tu clave {{keyType}}. Introduce la contraseña de tu billetera para firmarla. La contraseña se vuelve a pedir antes de cada operación que necesite esta clave.",
+    "fresh_check_sign_button": "Firmar"
   },
   "broadcast_error": {
     "too_many_decimal_places": "La cantidad de {{token}} puede tener como máximo {{precision}} decimales.",

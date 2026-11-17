@@ -1,6 +1,6 @@
 import '@smart-signer/lib/signer/zod-jitless';
 import { SignChallenge, Signer, SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
-import { THiveRoles, TTransactionPackType } from '@hiveio/wax';
+import { type ITransaction, THiveRoles, TTransactionPackType } from '@hiveio/wax';
 import { siteConfig } from "@hive/ui/config/site";
 import { hasOAuthPopupIssues } from '@hive/ui/lib/browser-detect';
 
@@ -18,6 +18,7 @@ import {
   needsGoogleSignInAgain,
   WRONG_WALLET_PASSWORD_KEY
 } from '@smart-signer/lib/signer/google-drive-wallet-errors';
+import { needsFreshPasswordCheck, signAfterFreshPassword } from '@smart-signer/lib/signer/google-drive-fresh-check';
 import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
@@ -43,6 +44,8 @@ import {
 } from '@smart-signer/lib/google-drive-urls';
 import { LoginType } from '@smart-signer/types/common';
 import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
+import { SignedOutError } from '@transaction/lib/signed-out';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 const logger = getLogger('app');
 
@@ -555,19 +558,96 @@ export class SignerGoogleDrive extends Signer {
     }
   }
 
+  /**
+   * Asks for the wallet password for one operation needing the `keyType` key, in a field the browser
+   * does not fill in, and checks it against the wallet before the prompt closes.
+   *
+   * @throws {Error} "No password from user" when the prompt is closed
+   */
+  private async askFreshPassword(keyType: keyof THiveRoles): Promise<string> {
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      showInputStorePassword: false,
+      autoComplete: 'one-time-code',
+      validatePassword: (password) => this.checkWalletPassword(password),
+      i18nKeysForCaptions: {
+        title: 'password_form.fresh_check_title',
+        description: 'password_form.fresh_check_description',
+        inputPasswordPlaceholder: 'password_form.google_drive_password_placeholder',
+        submitButtonName: 'password_form.fresh_check_sign_button',
+        submitButtonNameWhenWorking: 'login_form.working'
+      },
+      i18nValues: { keyType }
+    };
+    try {
+      const { password } = await PasswordDialogModalPromise({ isOpen: true, passwordFormOptions });
+      return password;
+    } catch (error) {
+      if (error instanceof SignedOutError) throw error;
+      throw new Error('No password from user');
+    }
+  }
+
+  /** Signs `authTx` with the `keyType` key of the wallet opened by `password`, closing that wallet after */
+  private async signWithWalletPassword(authTx: ITransaction, keyType: keyof THiveRoles, password: string): Promise<void> {
+    const wallet = await createExternalWallet(
+      await getChain(),
+      () => this.getAccessToken(),
+      async (missingStorageFile) => {
+        if (missingStorageFile) {
+          throw await waitForGoogleDriveErrorDialog({ errorType: 'wallet_not_found' });
+        }
+        return { password };
+      },
+      siteConfig.googleDrive.walletFileName
+    );
+    try {
+      let provider: IExternalWalletContent;
+      try {
+        provider = await wallet.loadForHiveKey(this.username, keyType);
+      } catch (loadError) {
+        const dialogProps = missingKeyDialogProps(loadError, this.username, keyType);
+        if (!dialogProps) throw loadError;
+        throw await waitForGoogleDriveErrorDialog(dialogProps);
+      }
+      await provider.signTransaction(authTx);
+    } finally {
+      await wallet.close();
+    }
+  }
+
+  /**
+   * Signs `authTx` with a wallet opened for it alone by a password asked for it alone: an earlier
+   * sign-in or cached encryption key does not sign an operation needing the active or owner key.
+   */
+  private signWithFreshPassword(authTx: ITransaction, keyType: keyof THiveRoles): Promise<void> {
+    return signAfterFreshPassword(
+      () => this.askFreshPassword(keyType),
+      (password) => this.signWithWalletPassword(authTx, keyType, password),
+      (error) => {
+        logger.error('Error opening Google Drive wallet: %s Signing in to Google again', error instanceof Error ? error.message : String(error));
+        this._accessToken = undefined;
+      }
+    );
+  }
+
   async signTransaction({ transaction, requiredKeyType }: SignTransaction): Promise<string> {
     try {
       const authTx = (await getChain()).createTransactionFromProto(transaction);
+      const keyType = requiredKeyType ?? this.keyType;
 
-      const provider = await this.getWalletOrSignInAgain(this.username, requiredKeyType ?? this.keyType);
-
-      await provider.signTransaction(authTx);
+      if (needsFreshPasswordCheck(keyType)) {
+        await this.signWithFreshPassword(authTx, keyType);
+      } else {
+        const provider = await this.getWalletOrSignInAgain(this.username, keyType);
+        await provider.signTransaction(authTx);
+      }
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'Google Drive');
       logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      if (!(error instanceof GoogleDriveSignInCancelledError)) {
+      if (!(error instanceof GoogleDriveSignInCancelledError) && !isUserCancelled(error)) {
         logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       }
       throw error;

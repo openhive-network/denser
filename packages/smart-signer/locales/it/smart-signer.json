@@ -198,7 +198,10 @@
     "store_key_label": "Conserva chiave",
     "store_password_label": "Conserva password",
     "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive",
-    "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio."
+    "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio.",
+    "fresh_check_title": "Conferma con la tua password",
+    "fresh_check_description": "Questa operazione richiede la tua chiave {{keyType}}. Inserisci la password del tuo portafoglio per firmarla. La password viene richiesta di nuovo prima di ogni operazione che necessita di questa chiave.",
+    "fresh_check_sign_button": "Firma"
   },
   "broadcast_error": {
     "too_many_decimal_places": "L'importo in {{token}} può avere al massimo {{precision}} cifre decimali.",

@@ -198,7 +198,10 @@
     "store_key_label": "キーを保存",
     "store_password_label": "パスワードを保存",
     "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード",
-    "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。"
+    "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。",
+    "fresh_check_title": "パスワードで確認",
+    "fresh_check_description": "この操作には{{keyType}}キーが必要です。署名するにはウォレットのパスワードを入力してください。このキーが必要な操作のたびにパスワードを再度お尋ねします。",
+    "fresh_check_sign_button": "署名"
   },
   "broadcast_error": {
     "too_many_decimal_places": "{{token}} の金額は小数点以下 {{precision}} 桁までです。",

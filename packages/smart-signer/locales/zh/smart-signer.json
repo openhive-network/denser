@@ -198,7 +198,10 @@
     "store_key_label": "存储密钥",
     "store_password_label": "存储密码",
     "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码",
-    "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。"
+    "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。",
+    "fresh_check_title": "使用密码确认",
+    "fresh_check_description": "此操作需要您的 {{keyType}} 密钥。请输入钱包密码以签名。每次需要此密钥的操作前都会再次询问密码。",
+    "fresh_check_sign_button": "签名"
   },
   "broadcast_error": {
     "too_many_decimal_places": "{{token}} 金额最多只能有 {{precision}} 位小数。",
