@@ -231,6 +231,7 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
     check "gate: anonymous, no cookie: challenge, no-store" "200 no-store" "$status $cache_control"
     holds "gate: the challenge sets denser_human and is noindex" "${body#*"$challenge_marker"}" != "$body" \
         -a "${body#*'content="noindex"'}" != "$body"
+    holds "gate: the challenge fits phones" "${body#*'<meta name="viewport" content="width=device-width,initial-scale=1">'}" != "$body"
     holds "gate: the challenge explains refused cookies" "${body#*"$cookies_message"}" != "$body"
     if command -v node > /dev/null; then
         script=${body#*<script>}

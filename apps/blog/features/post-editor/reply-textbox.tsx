@@ -358,7 +358,7 @@ export function ReplyTextbox({
           )}
         </div>
 
-        <div className="flex select-none items-center justify-between gap-4">
+        <div className="flex select-none flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <div className="flex items-center gap-3">
             <Button
               ref={btnRef}
@@ -389,13 +389,13 @@ export function ReplyTextbox({
             </Button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <Progress
               value={manabarsData?.rc.percentageValue ?? 0}
-              className="h-2 w-20"
+              className="h-2 w-20 shrink-0"
               indicatorClassName="bg-[#0088FE]"
             />
-            <span className="text-muted-foreground text-xs tabular-nums">
+            <span className="text-muted-foreground min-w-0 text-xs tabular-nums">
               {manabarsData?.rc.percentageValue ?? 0}% RC
               {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
                 <span className="text-muted-foreground/60 ml-1">
