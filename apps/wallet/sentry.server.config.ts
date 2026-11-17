@@ -4,9 +4,11 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
+import { sentryDeploymentOptions } from "@ui/lib/sentry-deployment";
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
+  ...sentryDeploymentOptions(process.env.REACT_APP_SENTRY_ENVIRONMENT, process.env.REACT_APP_GIT_COMMIT_SHA),
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,

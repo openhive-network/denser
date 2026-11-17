@@ -3,6 +3,7 @@ import env from "@beam-australia/react-env";
 import { captureException, captureRouterTransitionStart, init } from "@sentry/nextjs";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
 import { parseTracesSampleRate } from "@ui/lib/sentry-sample-rate";
+import { sentryDeploymentOptions } from "@ui/lib/sentry-deployment";
 
 // The replay sample rates in initSentry apply once the integration is added; replays only start after that point.
 // Only the dynamic import() may reference the replay module: a static import would put rrweb back in the initial chunks.
@@ -26,6 +27,7 @@ const scheduleReplayIntegration = () => {
 export const initSentry = (earlyErrors: unknown[]) => {
   init({
     dsn: env('SENTRY_DSN'),
+    ...sentryDeploymentOptions(env('SENTRY_ENVIRONMENT'), env('GIT_COMMIT_SHA')),
 
     // Replay is added once the page has loaded and gone idle (see scheduleReplayIntegration), to keep it out of the initial JS.
 

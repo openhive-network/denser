@@ -111,8 +111,8 @@ function buildConnectSrcHosts(): Set<string> {
         hosts.add('https://*.ingest.sentry.io');
         hosts.add('https://*.ingest.us.sentry.io');
       } else {
-        // Self-hosted Sentry
-        hosts.add(`https://${sentryHost}`);
+        // Self-hosted Sentry, or a local stand-in: the DSN's own scheme and port
+        hosts.add(dsnUrl.origin);
       }
     } catch {
       // Fallback to SaaS domains if DSN parsing fails

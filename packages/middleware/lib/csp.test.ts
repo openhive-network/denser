@@ -268,6 +268,40 @@ test('connect-src admits every hivemind REST node of HIVEMIND_REST_NODES, skippi
   }
 });
 
+const withSentryDsn = (value: string | undefined, run: () => void) => {
+  const saved = process.env.REACT_APP_SENTRY_DSN;
+  if (value === undefined) delete process.env.REACT_APP_SENTRY_DSN;
+  else process.env.REACT_APP_SENTRY_DSN = value;
+  try {
+    run();
+  } finally {
+    if (saved === undefined) delete process.env.REACT_APP_SENTRY_DSN;
+    else process.env.REACT_APP_SENTRY_DSN = saved;
+  }
+};
+
+test("connect-src admits a self-hosted Sentry DSN's origin, scheme and port included", () => {
+  withSentryDsn('https://key@sentry.example.org/3', () => {
+    assert.ok(connectSrcOf(buildCsp({}, 'bm9uY2U=')).includes('https://sentry.example.org'));
+  });
+  withSentryDsn('http://key@127.0.0.1:9000/1', () => {
+    assert.ok(connectSrcOf(buildCsp({}, 'bm9uY2U=')).includes('http://127.0.0.1:9000'));
+  });
+});
+
+test("connect-src admits Sentry SaaS's ingest hosts for a sentry.io DSN, and no Sentry host without a DSN", () => {
+  withSentryDsn('https://key@o1.ingest.us.sentry.io/2', () => {
+    const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+    assert.ok(connectSrc.includes('https://*.ingest.us.sentry.io'), connectSrc.join(' '));
+  });
+  for (const value of [undefined, '']) {
+    withSentryDsn(value, () => {
+      const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+      assert.ok(!connectSrc.some((source) => source.includes('sentry')), connectSrc.join(' '));
+    });
+  }
+});
+
 test('the baseline headers of every path agree with what the middleware sets', () => {
   const policy = buildCsp({}, 'bm9uY2U=');
   const directives = policy.split(';').map((directive) => directive.trim());

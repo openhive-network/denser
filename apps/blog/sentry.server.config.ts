@@ -4,9 +4,11 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
+import { sentryDeploymentOptions } from "@ui/lib/sentry-deployment";
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
+  ...sentryDeploymentOptions(process.env.REACT_APP_SENTRY_ENVIRONMENT, process.env.REACT_APP_GIT_COMMIT_SHA),
 
   // Only trace authenticated requests (those with account_info cookie).
   // Unauthenticated traffic (bots, crawlers, casual visitors) generates

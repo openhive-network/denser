@@ -19,6 +19,8 @@
 #   DENSER_SESSION_PROJECT  the compose project (default: one per checkout)
 #   DENSER_HTML_CACHE    varnish: put the shared HTML cache in front of the blog
 #                        (compose.cache.yml); off (default) leaves it out
+#   REACT_APP_SENTRY_DSN, REACT_APP_SENTRY_TRACES_SAMPLE_RATE, REACT_APP_SENTRY_ENVIRONMENT
+#                        Sentry error reporting, as in .env (README.md, "Error reporting")
 set -euo pipefail
 cd "$(dirname "$0")"
 
