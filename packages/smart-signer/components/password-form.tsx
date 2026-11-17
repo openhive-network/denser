@@ -86,6 +86,11 @@ export interface PasswordFormOptions {
   titleId?: string;
   /** Shows how long the safe-storage session the password unlocks stays unlocked while idle */
   showSessionTime?: boolean;
+  /**
+   * The password field's `autoComplete`. `one-time-code` keeps the browser from filling in a saved
+   * password, for a check that the user types in every time.
+   */
+  autoComplete?: 'current-password' | 'one-time-code';
 }
 
 export function PasswordForm({
@@ -98,7 +103,8 @@ export function PasswordForm({
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nValues,
   titleId,
-  showSessionTime = false
+  showSessionTime = false,
+  autoComplete = 'current-password'
 }: PasswordFormOptions) {
   // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
@@ -168,7 +174,7 @@ export function PasswordForm({
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-hidden focus:ring-red-500 dark:text-slate-300"
               placeholder={caption(captionKey.inputPasswordPlaceholder)}
-              autoComplete="current-password"
+              autoComplete={autoComplete}
               {...register('password')}
               data-testid="posting-private-key-input"
             />

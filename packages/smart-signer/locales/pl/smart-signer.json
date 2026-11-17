@@ -198,7 +198,10 @@
     "store_key_label": "Zapisz klucz",
     "store_password_label": "Zapisz hasło",
     "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive",
-    "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie."
+    "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie.",
+    "fresh_check_title": "Potwierdź hasłem",
+    "fresh_check_description": "Ta operacja wymaga klucza {{keyType}}. Wpisz hasło portfela, aby ją podpisać. Hasło jest wymagane ponownie przed każdą operacją, która potrzebuje tego klucza.",
+    "fresh_check_sign_button": "Podpisz"
   },
   "broadcast_error": {
     "too_many_decimal_places": "Maksymalna liczba miejsc po przecinku w kwocie {{token}}: {{precision}}.",
