@@ -1,7 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-const { castVoteCount, isRemovedVote, keepCastVotes } = await import('./removed-votes.ts');
+const { castVoteCount, isRemovedVote, keepCastVotes, needsRemovedVoteTime } = await import(
+  './removed-votes.ts'
+);
 
 const stats = (totalVotes: number) => ({ total_votes: totalVotes, flag_weight: 0, gray: false, hide: false });
 
@@ -79,10 +81,45 @@ describe('castVoteCount', () => {
     assert.equal(castVoteCount(entry), 588);
   });
 
-  it("keeps the total of a paid-out vote-free entry whose observer removed a vote cast after payout", () => {
+  it("keeps the total of a paid-out vote-free entry while its observer's removed vote is not read or the read failed", () => {
     const entry = { stats: stats(589), is_paidout: true, observer_vote: { rshares: 0, percent: 0 } };
     assert.equal(castVoteCount(entry), 589);
     assert.equal(castVoteCount({ ...entry, observer_vote: null }), 589);
+  });
+
+  const paidOut = {
+    stats: stats(1),
+    is_paidout: true,
+    payout_at: '2026-10-28T06:44:39',
+    observer_vote: { rshares: 0, percent: 0 }
+  };
+
+  it("takes the observer's vote removed before payout off the total of a paid-out vote-free entry", () => {
+    assert.equal(castVoteCount(paidOut, '2026-10-21T06:52:45'), 0);
+  });
+
+  it('keeps the total of a paid-out vote-free entry whose observer removed a vote cast after payout', () => {
+    assert.equal(castVoteCount({ ...paidOut, stats: stats(589) }, '2026-11-02T10:00:00'), 589);
+  });
+
+  it('keeps the total when the removed vote time or the payout time is unreadable', () => {
+    assert.equal(castVoteCount(paidOut, ''), 1);
+    assert.equal(castVoteCount(paidOut, 'not a time'), 1);
+    assert.equal(castVoteCount({ ...paidOut, payout_at: undefined }, '2026-10-21T06:52:45'), 1);
+  });
+
+  it('ignores a removed vote time on a pending entry and on one that lists its votes', () => {
+    const pending = { ...paidOut, stats: stats(589), is_paidout: false };
+    assert.equal(castVoteCount(pending, '2026-11-02T10:00:00'), 588);
+    const listed = {
+      ...paidOut,
+      stats: stats(2),
+      active_votes: [
+        { voter: 'a', rshares: 1 },
+        { voter: 'b', rshares: 0 }
+      ]
+    };
+    assert.equal(castVoteCount(listed, '2026-11-02T10:00:00'), 1);
   });
 
   it('keeps the counted votes of a paid-out entry that lists a vote cast after payout', () => {
@@ -112,5 +149,17 @@ describe('castVoteCount', () => {
   it('gives 0 without stats and never below 0', () => {
     assert.equal(castVoteCount({}), 0);
     assert.equal(castVoteCount({ stats: stats(1), active_votes: [{ voter: 'a', rshares: 0 }] }), 0);
+  });
+});
+
+describe('needsRemovedVoteTime', () => {
+  const entry = { stats: stats(1), is_paidout: true, observer_vote: { rshares: 0, percent: 0 } };
+
+  it("asks for the time of the observer's removed vote on a paid-out vote-free entry only", () => {
+    assert.equal(needsRemovedVoteTime(entry), true);
+    assert.equal(needsRemovedVoteTime({ ...entry, is_paidout: false }), false);
+    assert.equal(needsRemovedVoteTime({ ...entry, observer_vote: { rshares: 900, percent: 10000 } }), false);
+    assert.equal(needsRemovedVoteTime({ ...entry, observer_vote: null }), false);
+    assert.equal(needsRemovedVoteTime({ ...entry, active_votes: [] }), false);
   });
 });
