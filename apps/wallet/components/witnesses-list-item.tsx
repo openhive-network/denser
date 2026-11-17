@@ -207,7 +207,10 @@ function WitnessListItem({
           </div>
         </div>
       </td>
-      <td className={clsx('hidden py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm', { 'text-amber-700 dark:text-amber-400': isOutdated })}>
+      <td
+        className={clsx('hidden py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm', { 'text-amber-700 dark:text-amber-400': isOutdated })}
+        data-testid="witness-version"
+      >
         {data.running_version}
       </td>
       <td className="hidden py-1.5 pr-2 leading-5 sm:table-cell">
@@ -220,7 +223,7 @@ function WitnessListItem({
           </div>
         )}
       </td>
-      <td className="hidden truncate py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm">
+      <td className="hidden truncate py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm" data-testid="witness-price-feed-cell">
         <span className="font-medium" data-testid="witness-price-feed">
           {priceFeed}
         </span>
