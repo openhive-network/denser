@@ -4,9 +4,9 @@ import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
 
 /**
- * A proposal's date range, written with the full month names, fits the proposal card on a phone:
- * the stub node's one proposal runs from September to September, the longest month name in
- * Spanish and English, and the page does not scroll sideways.
+ * On a phone a proposal's row leaves its date range, written with the full month names, to its
+ * title's tooltip text, and nothing in it makes the page scroll sideways: the stub node's one
+ * proposal runs from September to September, the longest month name in Spanish and English.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -58,7 +58,7 @@ test.describe('Proposal date range on phones', () => {
       test.describe(`${width}px, ${locale}`, () => {
         test.use({ viewport: { width, height: 800 } });
 
-        test(`WALLET-PROPOSAL-DATE-02 — at ${width}px in ${locale} the date range stays inside the card`, async ({
+        test(`WALLET-PROPOSAL-DATE-02 — at ${width}px in ${locale} the date range is in the title text and the row stays inside the page`, async ({
           page,
           baseURL
         }) => {
@@ -66,17 +66,17 @@ test.describe('Proposal date range on phones', () => {
           await page.goto(`${WALLET_BASE_PATH}/proposals`);
           await expect(page.getByTestId('proposal-title')).toContainText(SUBJECT, { timeout: HYDRATION_TIMEOUT });
 
-          const date = page.getByTestId('proposal-date');
+          await expect(page.getByTestId('proposal-date')).toBeHidden();
           // The long, genitive-capable month form stays
-          await expect(date).toContainText(locale === 'es' ? 'septiembre' : 'September');
+          await expect(page.getByTestId('proposal-post-link')).toHaveAttribute(
+            'title',
+            new RegExp(locale === 'es' ? '29 de septiembre de 2026' : 'September 29, 2026')
+          );
 
-          const card = page.getByTestId('proposal-list-item');
-          const dateBox = await date.boundingBox();
-          const cardBox = await card.boundingBox();
-          expect(dateBox).not.toBeNull();
+          const cardBox = await page.getByTestId('proposal-list-item').boundingBox();
           expect(cardBox).not.toBeNull();
-          if (!dateBox || !cardBox) return;
-          expect(dateBox.x + dateBox.width).toBeLessThanOrEqual(cardBox.x + cardBox.width);
+          if (!cardBox) return;
+          expect(cardBox.x + cardBox.width).toBeLessThanOrEqual(width);
 
           const { scrollWidth, innerWidth } = await page.evaluate(() => ({
             scrollWidth: document.documentElement.scrollWidth,

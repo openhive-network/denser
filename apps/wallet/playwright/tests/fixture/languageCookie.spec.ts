@@ -61,7 +61,7 @@ test.describe('Language cookie', () => {
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'pl');
     await expect(page.getByTestId('toggle-language').first()).toHaveText('🇵🇱');
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('rozpoczęta');
+    await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/^Pozosta/);
     await expect.poll(() => localeCookies(context)).toEqual([{ value: 'pl', path: '/' }]);
   });
 
@@ -72,13 +72,13 @@ test.describe('Language cookie', () => {
   }) => {
     await context.addCookies([{ name: LOCALE_COOKIE, value: 'pl', url: baseURL }]);
     await openProposals(page);
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('rozpoczęta');
+    await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/^Pozosta/);
 
     await page.getByTestId('toggle-language').first().click();
     await page.getByTestId('en').click();
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'en', { timeout: HYDRATION_TIMEOUT });
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('started', { timeout: HYDRATION_TIMEOUT });
+    await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/ left$/, { timeout: HYDRATION_TIMEOUT });
     await expect(page.getByTestId('toggle-language').first()).toHaveText('🇬🇧');
     expect(await localeCookies(context)).toEqual([{ value: 'en', path: '/' }]);
   });

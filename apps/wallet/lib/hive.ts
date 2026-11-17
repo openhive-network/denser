@@ -29,6 +29,7 @@ import { retryReadOnce } from '@transaction/lib/read-retry';
 import { ReadTransportError } from '@transaction/lib/read-transport';
 import { FINANCIAL_REPORT_OP_TYPES } from '@/wallet/lib/financial-report';
 import type { ProposalFundingBadge } from '@/wallet/lib/proposals-list';
+import type { ProposalPaid } from '@/wallet/lib/proposal-payments';
 
 const logger = getLogger('app');
 
@@ -162,8 +163,8 @@ export interface IListItemProps {
   /** The proposal's badge in the next round of DHF payouts; none where the list shows the funding line instead. */
   funding?: ProposalFundingBadge;
   isReturnProposal?: boolean;
-  /** HBD the DHF has paid the proposal so far; unknown while loading or on a node without the figure. */
-  paid?: Big;
+  /** What the DHF has paid the proposal so far; unknown while loading or on a node without the figure. */
+  paid?: ProposalPaid;
 }
 
 /**

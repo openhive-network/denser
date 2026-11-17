@@ -19,7 +19,7 @@ const hbdText = (satoshis: bigint) => {
 
 function SummaryStat({ label, satoshis, testId }: { label: string; satoshis: bigint; testId: string }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-1.5">
       <dt className="text-xs uppercase text-slate-600 dark:text-slate-300">{label}</dt>
       <dd className="font-semibold" data-testid={testId}>
         {hbdText(satoshis)}
@@ -33,14 +33,17 @@ interface ProposalsDhfSummaryProps {
   isPending: boolean;
 }
 
-/** The DHF's budget and what it pays out a day, above the list of proposals. */
+/**
+ * The DHF's budget and what it pays out a day, above the list of proposals: its four figures as a
+ * 2x2 grid on phones, from `sm` up as label-value pairs in a row.
+ */
 export function ProposalsDhfSummary({ funding, isPending }: ProposalsDhfSummaryProps) {
   const { t } = useTranslation('common_wallet');
   const titleId = useId();
 
   return (
     <section
-      className="flex flex-col gap-3 bg-white p-3 text-sm drop-shadow-xl dark:bg-slate-800"
+      className="flex flex-col gap-2 rounded-md border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-800"
       aria-labelledby={titleId}
       data-testid="dhf-summary"
     >
@@ -48,9 +51,9 @@ export function ProposalsDhfSummary({ funding, isPending }: ProposalsDhfSummaryP
         {t('proposals_page.dhf_title')}
       </h2>
       {isPending ? (
-        <Skeleton className="h-10 w-full bg-slate-300 dark:bg-slate-900" />
+        <Skeleton className="h-10 w-full bg-slate-300 dark:bg-slate-900 sm:h-5" />
       ) : funding ? (
-        <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-6 sm:gap-y-1">
           <SummaryStat
             label={t('proposals_page.dhf_daily_funded')}
             satoshis={funding.dailyFunded}
