@@ -8,7 +8,7 @@ import { PostPage } from '../support/pages/postPage';
  * opens them.
  *
  * The voters list ends with a line counting the votes cast after payout, which hivemind leaves out
- * of the vote count: the chain's votes minus `stats.total_votes`.
+ * of the vote count: the chain's votes timed after `payout_at`, removed (0%) votes left out.
  *
  * Fixture set: `postDetail_footerPopovers` overlays `postDetail_popover` with the feed history
  * the payout breakdown reads and the `list_votes` of three comments (see its `_index.json`).
@@ -96,12 +96,17 @@ test.describe('Post footer payout and voters popovers', () => {
     );
   });
 
-  test('FOOTER-POPOVER-05: two votes cast after payout use the plural form', async ({ page }) => {
+  test('FOOTER-POPOVER-05: two votes cast after payout use the plural form, a removed one left out', async ({
+    page
+  }) => {
     await openCommentVoters(page, '@steevc/re-gtg-quwy4z', '3 votes');
 
     await expect(postPage.postVoterList.getByTestId('votes-after-payout')).toHaveText(
       '+2 votes after payout (not counted)'
     );
+    await expect(postPage.postVoterList).not.toContainText('themarkymark');
+    const footer = page.locator('[id="@steevc/re-gtg-quwy4z"]').getByTestId('comment-card-footer').first();
+    await expect(footer.getByRole('button', { name: '3 votes, show voters' })).toBeVisible();
   });
 
   test('FOOTER-POPOVER-06: no after-payout line when the chain has as many votes as the count', async ({ page }) => {

@@ -6,14 +6,14 @@ import { Separator } from '@ui/components/separator';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
-import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
 import DetailsCardVoters from './details-card-voters';
+import { useVoteCount } from './hooks/use-vote-count';
 
 /** A comment footer's votes, payout and voters, which do not depend on the signed-in user. */
 export const CommentFooterStats = memo(function CommentFooterStats({ comment }: { comment: Entry }) {
   const { t } = useTranslation('common_blog');
-  const voteCount = castVoteCount(comment);
+  const voteCount = useVoteCount(comment);
 
   return (
     <>

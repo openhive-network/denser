@@ -3,16 +3,15 @@ import { Entry, IVote } from '@hive/common-hiveio-packages/wax';
 import BasePathLink from '../../components/base-path-link';
 import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
 import { useTranslation } from '@/blog/i18n/client';
-import { keepVotesBeforePayout } from './lib/votes-before-payout';
+import { keepCountedVotes } from './lib/counted-votes';
 import { countVotesAfterPayout } from './lib/votes-after-payout';
-import { keepCastVotes } from '../votes/lib/removed-votes';
 
 const VotersDetailsData = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const { data } = useActiveVotesQuery(post.author, post.permlink);
 
-  const votes = data && prepareVotes(post, keepCastVotes(keepVotesBeforePayout(data, post.payout_at)));
-  const votesAfterPayout = data && post.stats ? countVotesAfterPayout(data, post.stats.total_votes) : 0;
+  const votes = data && prepareVotes(post, keepCountedVotes(data, post.payout_at));
+  const votesAfterPayout = data ? countVotesAfterPayout(data, post.payout_at) : 0;
 
   const sliced =
     votes &&
