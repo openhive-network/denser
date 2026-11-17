@@ -274,8 +274,9 @@ crawl from reaching the apps' servers.
      recognises (`*_session`, `observer`, `observer-no-own-lists`, `account_info`): a
      tiny `200` page, `no-store` and `noindex`, whose script sets `denser_human=1` (30
      days, `Path=/`, `SameSite=Lax`, `Secure` on https) and reloads once the cookie is
-     there. A browser pays one reload on its first page; a client without JavaScript
-     never gets further.
+     there, showing "Loading…" meanwhile. A browser pays one reload on its first page; one
+     refusing the cookie gets no reload but "This site needs cookies to continue…" in
+     the page, and a client without JavaScript never gets further.
   5. Anything else passes.
 - **Caching:** the HTML cache drops `denser_human` with the other cookies it does not
   key on, so anonymous pages are still keyed on URL and language only.
@@ -300,7 +301,8 @@ crawl from reaching the apps' servers.
   by `caddy-apply.sh`.
 - **Checking it:** `./test-cache.sh` runs the gate in its throwaway stack and checks,
   besides the cache: real pages for this (LAN) client, with the crawler's headers too;
-  with `X-Gate-Test: 1` the challenge on a blog and a wallet page, the 403, the real
+  with `X-Gate-Test: 1` the challenge on a blog and a wallet page (and, with node, its
+  script's message and lack of reload when the cookie is refused), the 403, the real
   (cached) page with `denser_human=1` or a session cookie, the exempt paths and router
   requests, and the 429 on the 61st page document of a minute, while API routes and the
   LAN exemption still pass; then, with the gate stopped and with it paused, the real

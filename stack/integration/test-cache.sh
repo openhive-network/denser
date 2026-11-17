@@ -55,6 +55,26 @@ fetch() {
     retry_after=$(sed -n 's/^[Rr]etry-[Aa]fter: //p' <<< "$headers" | tail -n 1)
 }
 
+# run_challenge SCRIPT refuse|keep: runs the challenge page's script against a browser
+# whose cookie jar refuses or keeps denser_human; prints its reloads and the page's text.
+run_challenge() {
+    node -e '
+        const vm = require("vm");
+        const [script, mode] = process.argv.slice(1);
+        const message = { textContent: "" };
+        let jar = "", reloads = 0;
+        vm.runInNewContext(script, {
+            document: {
+                get cookie() { return jar; },
+                set cookie(value) { if (mode === "keep") jar = value.split(";")[0]; },
+                getElementById: (id) => (id === "gate" ? message : null),
+            },
+            location: { protocol: "https:", reload: () => reloads++ },
+        });
+        console.log(`${reloads} ${message.textContent}`);
+    ' "$1" "$2"
+}
+
 start_stub_stack() {
     local tag=denser-test-cache-$$ dir
     network=$tag
@@ -193,6 +213,7 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
     human=(-H 'Cookie: denser_human=1')
     crawler=(-H 'Sec-Fetch-Site: none' -H "Referer: $base")
     challenge_marker='document.cookie="denser_human=1'
+    cookies_message='This site needs cookies to continue. Please allow cookies for this site and reload.'
 
     fetch "$page"
     holds "gate: a LAN address gets the page" "$status" = 200 -a "${body#*"$challenge_marker"}" = "$body"
@@ -210,8 +231,19 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
     check "gate: anonymous, no cookie: challenge, no-store" "200 no-store" "$status $cache_control"
     holds "gate: the challenge sets denser_human and is noindex" "${body#*"$challenge_marker"}" != "$body" \
         -a "${body#*'content="noindex"'}" != "$body"
+    holds "gate: the challenge explains refused cookies" "${body#*"$cookies_message"}" != "$body"
+    if command -v node > /dev/null; then
+        script=${body#*<script>}
+        script=${script%%</script>*}
+        check "gate: cookie refused: the message, no reload" "0 $cookies_message" \
+            "$(run_challenge "$script" refuse)"
+        check "gate: cookie stored: Loading…, one reload" "1 Loading…" "$(run_challenge "$script" keep)"
+    else
+        echo "skip gate: the challenge's script (no node)"
+    fi
     fetch "/wallet/@guest4test/transfers?gatetest=$run" "${gate[@]}"
-    holds "gate: a wallet page: challenge" "${body#*"$challenge_marker"}" != "$body"
+    holds "gate: a wallet page: challenge" "${body#*"$challenge_marker"}" != "$body" \
+        -a "${body#*"$cookies_message"}" != "$body"
     fetch "$page" "${gate[@]}" "${human[@]}"
     check "gate: denser_human=1: the cached page" "200 HIT $first" "$status $x_cache $body"
     fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
