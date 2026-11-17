@@ -31,6 +31,8 @@ const MISSING_ENDPOINT = {
   hint: null,
   message: 'Invalid path specified in request URL'
 };
+/** A figure's text as shown, the desktop label without the phone's short one (hidden from `sm`). */
+const DESKTOP_TEXT = { useInnerText: true };
 const INCOMING = { delegator: 'stub-delegator', amount: '1650000000000', operation_id: '1', block_num: 100_000_000 };
 
 let stub: Server;
@@ -85,14 +87,15 @@ test.describe('Proposals page payments', () => {
     const proposalsPage = await openProposals(page);
 
     const card = proposalsPage.proposalCard(funded);
-    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 20.20K HBD');
+    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 20.20K HBD', DESKTOP_TEXT);
     await expect(card.getByTestId('proposal-paid').locator('[title]')).toHaveAttribute('title', '20,200.00 HBD');
-    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Unfunded 10.00K HBD (50 days)');
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Unfunded 10.00K HBD (50 days)', DESKTOP_TEXT);
     await expect(card.getByTestId('proposal-unfunded')).toHaveAttribute('title', /^What this proposal would have received/);
     await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.60K HBD left');
     await expect(card.getByTestId('proposal-last-paid')).toHaveText('last paid May 30');
     await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
-      'Unfunded 7.55K HBD (never funded)'
+      'Unfunded 7.55K HBD (never funded)',
+      DESKTOP_TEXT
     );
     await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-last-paid')).toHaveCount(0);
     const upcomingCard = proposalsPage.proposalCard(upcoming);
@@ -107,7 +110,7 @@ test.describe('Proposals page payments', () => {
     await proposalsPage.statusTab('Expired').click();
     const expiredCard = proposalsPage.proposalCard(expired);
     await expect(expiredCard.getByTestId('proposal-paid')).toHaveText('Paid 1.51K HBD of 1.51K HBD');
-    await expect(expiredCard.getByTestId('proposal-unfunded')).toHaveText('Unfunded 0.00 HBD');
+    await expect(expiredCard.getByTestId('proposal-unfunded')).toHaveText('Unfunded 0.00 HBD', DESKTOP_TEXT);
     await expect(expiredCard.getByTestId('proposal-up-to-left')).toHaveCount(0);
     // Only the expired proposal was not known yet.
     expect(calls).toEqual([calls[0], String(expired)]);

@@ -11,6 +11,7 @@ import { ProposalVotesButton } from './proposal-votes-button';
 import { ProposalVoteControl } from './proposal-vote-control';
 import { ProposalFundingBadge } from './proposal-funding-badge';
 import { ProposalPaidAmounts } from './proposal-paid-amounts';
+import { PhoneOrDesktopText } from './phone-or-desktop-text';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import env from '@beam-australia/react-env';
 import TimeAgo from '@ui/components/time-ago';
@@ -66,19 +67,6 @@ const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month
 
 /** The daily pay without a zero fraction, "540" rather than "540.00", for a phone's narrow line. */
 const compactAmount = (amount: Big) => getRoundedAbbreveration(amount).replace(/\.00(?=\D*$)/, '');
-
-/**
- * `phone` below `sm` and `desktop` from it, so a phone's line fits short forms while the desktop
- * keeps its wording. Only the desktop text carries `testId`, keeping that element's text one form.
- */
-const PhoneOrDesktopText = ({ phone, desktop, testId }: { phone: string; desktop: string; testId: string }) => (
-  <>
-    <span className="whitespace-nowrap sm:hidden">{phone}</span>
-    <span className="hidden whitespace-nowrap sm:inline" data-testid={testId}>
-      {desktop}
-    </span>
-  </>
-);
 
 const Dot = ({ className }: { className?: string }) => (
   <span aria-hidden="true" className={className}>
@@ -153,12 +141,20 @@ export function ProposalListItem({
           href={`${env('BLOG_DOMAIN')}/${postPath}`}
           target="_blank"
           rel="noopener noreferrer"
-          title={`${postPath}\n${dateRange}`}
+          title={`${postPath}\n${proposalData.subject}\n${dateRange}`}
+          className="flex min-w-0 sm:inline"
           data-testid="proposal-post-link"
         >
-          <span className={`${LINK_CLASS} font-medium sm:text-base`} data-testid="proposal-title">
-            {proposalData.subject}
-            <span className="text-slate-600 dark:text-slate-400" data-testid="proposal-id">
+          {/* On a phone the title takes one line, cut short before its id; the link's title has it whole */}
+          <span
+            className={`${LINK_CLASS} flex min-w-0 font-medium sm:inline sm:text-base`}
+            data-testid="proposal-title"
+          >
+            <span className="truncate sm:whitespace-normal">{proposalData.subject}</span>
+            <span
+              className="shrink-0 whitespace-pre text-slate-600 dark:text-slate-400 sm:whitespace-normal"
+              data-testid="proposal-id"
+            >
               {' #'}
               {proposalData.proposal_id}
             </span>

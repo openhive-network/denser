@@ -400,6 +400,8 @@
     "duration_days_other": "{{count}} días",
     "remaining_days_short": "Quedan {{days}} d",
     "duration_days_short": "{{days}} d",
+    "paid_short": "Pagado",
+    "unfunded_short": "Sin financ.",
     "funded": "financiada",
     "not_funded": "no financiada",
     "return_proposal_note": "Esta es la propuesta de retorno base: las propuestas con menos votos no reciben fondos.",

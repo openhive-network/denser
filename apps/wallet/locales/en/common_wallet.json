@@ -393,6 +393,8 @@
     "duration_days_other": "{{count}} days",
     "remaining_days_short": "{{days}}d left",
     "duration_days_short": "{{days}}d",
+    "paid_short": "Paid",
+    "unfunded_short": "Unfunded",
     "funded": "funded",
     "not_funded": "not funded",
     "return_proposal_note": "This is the base return proposal: proposals with fewer votes are not funded.",

@@ -387,6 +387,8 @@
     "duration_days_other": "{{count}} 天",
     "remaining_days_short": "剩余{{days}}天",
     "duration_days_short": "{{days}}天",
+    "paid_short": "已付",
+    "unfunded_short": "未资助",
     "funded": "已资助",
     "not_funded": "未资助",
     "return_proposal_note": "这是基础返还提案：票数低于它的提案不会获得资助。",
