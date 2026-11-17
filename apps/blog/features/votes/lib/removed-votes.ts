@@ -27,9 +27,19 @@ export const keepCastVotes = <T extends IListedVote>(votes: T[]): T[] =>
 export function castVoteCount(entry: TCountedEntry): number {
   const totalVotes = entry.stats?.total_votes ?? 0;
   const removedVotes = entry.active_votes
-    ? entry.active_votes.filter(isRemovedVote).length
+    ? countListedRemovedVotes(entry.active_votes, totalVotes)
     : entry.observer_vote && isRemovedVote(entry.observer_vote)
       ? 1
       : 0;
   return Math.max(0, totalVotes - removedVotes);
+}
+
+/**
+ * The removed votes of `activeVotes` that `totalVotes` counts. A vote cast after payout is listed
+ * with 0 rshares too, but `total_votes` leaves it out, so the votes listed beyond the total are
+ * taken as such late votes rather than as removed ones.
+ */
+function countListedRemovedVotes(activeVotes: IListedVote[], totalVotes: number): number {
+  const votesAfterPayout = Math.max(0, activeVotes.length - totalVotes);
+  return Math.max(0, activeVotes.filter(isRemovedVote).length - votesAfterPayout);
 }

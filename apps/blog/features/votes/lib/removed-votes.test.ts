@@ -74,8 +74,32 @@ describe('castVoteCount', () => {
     assert.equal(castVoteCount({ stats: stats(2), observer_vote: { rshares: 0, percent: 0 } }), 1);
   });
 
+  it('keeps the counted votes of a paid-out entry that lists a vote cast after payout', () => {
+    const entry = {
+      stats: stats(1),
+      active_votes: [
+        { voter: 'gtg', rshares: 223_504_766_152 },
+        { voter: 'ordosjc', rshares: 0 }
+      ]
+    };
+    assert.equal(castVoteCount(entry), 1);
+  });
+
+  it('takes off the removed votes beyond the votes cast after payout', () => {
+    const entry = {
+      stats: stats(3),
+      active_votes: [
+        { voter: 'upvoter', rshares: 5_000_000 },
+        { voter: 'downvoter', rshares: -3_000_000 },
+        { voter: 'unvoter', rshares: 0 },
+        { voter: 'late', rshares: 0 }
+      ]
+    };
+    assert.equal(castVoteCount(entry), 2);
+  });
+
   it('gives 0 without stats and never below 0', () => {
     assert.equal(castVoteCount({}), 0);
-    assert.equal(castVoteCount({ stats: stats(0), active_votes: [{ voter: 'a', rshares: 0 }] }), 0);
+    assert.equal(castVoteCount({ stats: stats(1), active_votes: [{ voter: 'a', rshares: 0 }] }), 0);
   });
 });
