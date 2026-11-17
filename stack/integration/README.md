@@ -442,6 +442,35 @@ LCP image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   and not to the targets of their own fix issues. If the pass gets too long, take
   routes out of `integrationLoggedIn` rather than runs per route.
 
+## Error reporting (Sentry, optional)
+
+Off unless `.env` sets a DSN. Blog and wallet then report client errors (hydration
+failures included) and server render errors to Sentry; with no DSN they load no Sentry
+code and send nothing to any Sentry host. compose.yml passes the settings to both apps
+in both modes (images and follow), from `.env`:
+
+- `REACT_APP_SENTRY_DSN`: the Sentry project's DSN (empty: off).
+- `REACT_APP_SENTRY_ENVIRONMENT`: the events' environment (default `integration`), which
+  tells this site's events apart from production's and develop's in a shared project.
+- `REACT_APP_SENTRY_TRACES_SAMPLE_RATE`: the browser's traces sample rate (default 0.1).
+  Server traces are sampled only for signed-in requests (#886), whatever it says.
+
+Each event's release is the revision served: `REACT_APP_GIT_COMMIT_SHA`, which
+`follow/serve.sh` sets from the release's `release.json` (the image sets it in images
+mode), the same full commit hash the sidebar's "Version" shortens.
+
+- **Turning it on:** add `REACT_APP_SENTRY_DSN=https://<key>@<host>/<project>` (and
+  `REACT_APP_SENTRY_ENVIRONMENT` if `integration` is not the name you want) to `.env`,
+  then `./upgrade.sh`. It is a restart, not a rebuild: the DSN is read at runtime, and
+  each app's CSP admits the DSN's origin (or Sentry SaaS's ingest hosts) in `connect-src`.
+  Removing the DSN and running `./upgrade.sh` turns it off again.
+- **Stack traces stay minified:** follow mode has no Sentry auth token, and the apps'
+  builds upload no source maps (`sourcemaps.disable` in `next.config.js`), so frames show
+  the served chunk names and positions. Tie them to the code through the release.
+- **A session's stack:** `session-stack.sh` takes the same three variables from its
+  environment, e.g. `REACT_APP_SENTRY_DSN=http://key@<host>:<port>/1 stack/integration/session-stack.sh up`
+  with a stand-in that answers `POST /api/1/envelope/` to see the events locally.
+
 ## One server session for blog and wallet
 
 Blog and wallet share the browser's stored user and accounts list, since they share the
