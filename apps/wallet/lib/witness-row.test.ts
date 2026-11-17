@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { isVersionBelow, majorityVersion, parseWitnessSite } from './witness-row.ts';
+import { hasPublishedFeed, isVersionBelow, majorityVersion, parseWitnessSite } from './witness-row.ts';
 
 describe('parseWitnessSite', () => {
   it('opens a post on a Hive front end on our blog as an announcement', () => {
@@ -20,6 +20,26 @@ describe('parseWitnessSite', () => {
       kind: 'announcement',
       postPath: '/@khaleelkazi/x'
     });
+    assert.deepEqual(parseWitnessSite('https://hivesuite.app/@stresskiller/and-then-you-decide-to'), {
+      kind: 'announcement',
+      postPath: '/@stresskiller/and-then-you-decide-to'
+    });
+    assert.deepEqual(parseWitnessSite('https://ureka.social/@ura-soul/vote-ura-soul-as-your-hive-witness'), {
+      kind: 'announcement',
+      postPath: '/@ura-soul/vote-ura-soul-as-your-hive-witness'
+    });
+  });
+
+  it("labels a tab of an account's page as an external site, not an announcement", () => {
+    assert.deepEqual(parseWitnessSite('https://peakd.com/@dalz/posts'), {
+      kind: 'external',
+      href: 'https://peakd.com/@dalz/posts',
+      label: 'peakd.com/@dalz/posts'
+    });
+    for (const tab of ['blog', 'comments', 'replies', 'wallet', 'followers', 'following']) {
+      assert.equal(parseWitnessSite(`https://hive.blog/@alice/${tab}`)?.kind, 'external', tab);
+    }
+    assert.equal(parseWitnessSite('https://ecency.com/hive-1/@alice/posts')?.kind, 'external');
   });
 
   it('labels any other URL by its host without www and its path', () => {
@@ -55,6 +75,20 @@ describe('parseWitnessSite', () => {
     }
     assert.equal(parseWitnessSite('https://user:pass@hive.blog/@a/b'), null);
     assert.equal(parseWitnessSite(undefined), null);
+  });
+});
+
+describe('hasPublishedFeed', () => {
+  it('is true for a feed update after the epoch', () => {
+    assert.equal(hasPublishedFeed('2026-11-17T16:26:18'), true);
+    assert.equal(hasPublishedFeed('2026-11-17T16:26:18.000Z'), true);
+  });
+
+  it('is false for the epoch the chain gives a witness that never published, or no date', () => {
+    assert.equal(hasPublishedFeed('1970-01-01T00:00:00'), false);
+    assert.equal(hasPublishedFeed(''), false);
+    assert.equal(hasPublishedFeed(undefined), false);
+    assert.equal(hasPublishedFeed('not a date'), false);
   });
 });
 

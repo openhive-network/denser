@@ -32,7 +32,9 @@ export default function WitnessVoteButton({
 
   const [removeVoteOpen, setRemoveVoteOpen] = useState(false);
   const onVoteClick = () => (isVoted ? setRemoveVoteOpen(true) : onVoteForWitness(true));
-  const voteLabel = t('witnesses_page.vote_for_witness', { witness: owner });
+  const voteLabel = t(isVoted ? 'witnesses_page.remove_vote_for_witness' : 'witnesses_page.vote_for_witness', {
+    witness: owner
+  });
   const unvotedIcon = (
     <Icons.arrowUpCircle
       viewBox="1.7 1.7 20.7 20.7"
@@ -83,7 +85,12 @@ export default function WitnessVoteButton({
           unvotedIcon
         )}
       </button>
-      <WitnessRemoveVote open={removeVoteOpen} onOpenChange={setRemoveVoteOpen} onVote={onVoteForWitness} />
+      <WitnessRemoveVote
+        witness={owner}
+        open={removeVoteOpen}
+        onOpenChange={setRemoveVoteOpen}
+        onVote={onVoteForWitness}
+      />
     </div>
   );
 }

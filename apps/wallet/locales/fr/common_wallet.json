@@ -318,7 +318,7 @@
       "other": "Il vous reste {{value}} votes disponibles."
     },
     "confirm_account_witness_vote": "Confirmer le vote pour le témoin",
-    "you_are_about_remove_vote": "Vous êtes sur le point de retirer votre vote pour ce témoin",
+    "you_are_about_remove_vote": "Retirer votre vote pour @{{witness}} ?",
     "cancel_button": "Annuler",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "Vous pouvez voter pour un maximum de 30 témoins",
@@ -327,6 +327,7 @@
     "witness": "Témoin",
     "votes_received": "Votes reçus",
     "price_feed": "Flux de prix",
+    "no_price_feed": "Aucun prix publié",
     "version": "Version",
     "vote": "Voter",
     "navigate_to_witness_profile": "Aller au profil de cet utilisateur",
@@ -356,15 +357,10 @@
     },
     "bock_gap": {
       "just_now": " à l'instant",
-      "recently": " récemment",
-      "mins_ago": " min auparavant",
-      "hrs_ago": " h auparavant",
-      "days_ago": " jours auparavant",
-      "weeks_ago": " semaines auparavant",
-      "months_ago": " mois auparavant",
-      "years_ago": " ans auparavant"
+      "recently": " récemment"
     },
     "vote_for_witness": "Voter pour le témoin {{witness}}",
+    "remove_vote_for_witness": "Retirer le vote pour le témoin {{witness}}",
     "link_to_witness": "Lien vers le témoin {{witness}}"
   },
   "proposals_page": {

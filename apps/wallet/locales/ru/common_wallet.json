@@ -323,7 +323,7 @@
       "other": "У Вас осталось {{value}} голосов."
     },
     "confirm_account_witness_vote": "Подтвердите голос за делегата",
-    "you_are_about_remove_vote": "Вы собираетесь отозвать свой голос за этого делегата",
+    "you_are_about_remove_vote": "Отозвать свой голос за @{{witness}}?",
     "cancel_button": "Отмена",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "Вы можете голосовать максимум за 30 делегатов",
@@ -332,6 +332,7 @@
     "witness": "Делегат",
     "votes_received": "Получено голосов",
     "price_feed": "Ценовой фид",
+    "no_price_feed": "Курс не опубликован",
     "version": "Версия",
     "vote": "голос",
     "navigate_to_witness_profile": "Перейти в профиль этого пользователя",
@@ -362,15 +363,10 @@
     },
     "bock_gap": {
       "just_now": " только что",
-      "recently": " недавно",
-      "mins_ago": " мин. назад",
-      "hrs_ago": " ч. назад",
-      "days_ago": " дн. назад",
-      "weeks_ago": " нед. назад",
-      "months_ago": " мес. назад",
-      "years_ago": " г. назад"
+      "recently": " недавно"
     },
     "vote_for_witness": "Голосовать за делегата {{witness}}",
+    "remove_vote_for_witness": "Отозвать голос за делегата {{witness}}",
     "link_to_witness": "Ссылка на делегата {{witness}}"
   },
   "proposals_page": {

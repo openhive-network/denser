@@ -318,7 +318,7 @@
       "other": "Te quedan {{value}} votos disponibles."
     },
     "confirm_account_witness_vote": "Confirmar voto de testigo",
-    "you_are_about_remove_vote": "Estás a punto de retirar tu voto a este testigo",
+    "you_are_about_remove_vote": "¿Retirar tu voto a @{{witness}}?",
     "cancel_button": "Cancelar",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "Puedes votar como máximo a 30 testigos",
@@ -327,6 +327,7 @@
     "witness": "Testigos",
     "votes_received": "Votos recibidos",
     "price_feed": "Precio publicado",
+    "no_price_feed": "Sin precio publicado",
     "version": "Versión",
     "vote": "Voto",
     "navigate_to_witness_profile": "Ir al perfil de este usuario",
@@ -356,15 +357,10 @@
     },
     "bock_gap": {
       "just_now": " justo ahora",
-      "recently": " recientemente",
-      "mins_ago": " min atrás",
-      "hrs_ago": " h atrás",
-      "days_ago": " días atrás",
-      "weeks_ago": " semanas atrás",
-      "months_ago": " meses atrás",
-      "years_ago": " años atrás"
+      "recently": " recientemente"
     },
     "vote_for_witness": "Votar por el testigo {{witness}}",
+    "remove_vote_for_witness": "Retirar el voto al testigo {{witness}}",
     "link_to_witness": "Enlace al testigo {{witness}}"
   },
   "proposals_page": {

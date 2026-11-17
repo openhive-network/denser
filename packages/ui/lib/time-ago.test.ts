@@ -16,6 +16,7 @@ const {
   getTimeAgoFormatCacheSizes,
   getTimeAgoString,
   getTimeAgoTitle,
+  getUnitsAgoString,
   subscribeMinuteClock
 } = await import('./time-ago.ts');
 
@@ -80,7 +81,10 @@ describe('getTimeAgoString in the narrow style', () => {
     ['2026-10-06T12:00:00', 'en', 'now'],
     ['2026-10-06T12:00:30', 'en', 'now'],
     ['2026-10-06T11:11:00', 'pl', '49 min temu'],
-    ['2026-10-06T07:00:00', 'pl', '5 g. temu'],
+    ['2026-10-06T07:00:00', 'pl', '5 godz. temu'],
+    ['2026-10-06T10:00:00', 'pl', '2 godz. temu'],
+    ['2026-10-06T12:05:00', 'pl', 'za 5 min'],
+    ['2026-10-06T17:00:00', 'pl', 'za 5 godz.'],
     ['2026-10-04T12:00:00', 'pl', '2 dni temu'],
     ['2026-10-03T12:00:00', 'pl', '3 dni temu'],
     ['2026-09-05T12:00:00', 'pl', '1 mies. temu'],
@@ -129,6 +133,33 @@ describe('getTimeAgoString in the narrow style', () => {
   });
 });
 
+describe('getUnitsAgoString', () => {
+  const cases: [number, Intl.RelativeTimeFormatUnit, string, string][] = [
+    [2, 'year', 'pl', '2 lata temu'],
+    [3, 'year', 'pl', '3 lata temu'],
+    [5, 'year', 'pl', '5 lat temu'],
+    [22, 'year', 'pl', '22 lata temu'],
+    [2, 'month', 'pl', '2 miesiące temu'],
+    [12, 'month', 'pl', '12 miesięcy temu'],
+    [1, 'month', 'pl', '1 miesiąc temu'],
+    [3, 'hour', 'pl', '3 godziny temu'],
+    [1, 'year', 'en', '1 year ago'],
+    [3, 'week', 'en', '3 weeks ago'],
+    [2, 'day', 'ru', '2 дня назад'],
+    [5, 'day', 'ru', '5 дней назад']
+  ];
+
+  for (const [count, unit, lang, expected] of cases) {
+    it(`formats ${count} ${unit} in ${lang} as "${expected}"`, () => {
+      assert.equal(getUnitsAgoString(count, unit, lang), expected);
+    });
+  }
+
+  it('throws RangeError for a locale the runtime rejects', () => {
+    assert.throws(() => getUnitsAgoString(2, 'year', 'not_a_locale!'), RangeError);
+  });
+});
+
 describe('getTimeAgoTitle', () => {
   it('matches Date.prototype.toLocaleString of the UTC instant for each locale', () => {
     for (const lang of ['en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh', 'ar']) {
@@ -166,6 +197,7 @@ describe('time-ago formatter caches', () => {
   const formatIn = (lang: string) => {
     getTimeAgoString('2026-10-06T09:15:00', lang, NOW);
     getTimeAgoString('2026-10-06T09:15:00', lang, NOW, 'narrow');
+    getUnitsAgoString(2, 'year', lang);
     getTimeAgoTitle('2026-10-06T09:15:00', lang);
   };
 
@@ -190,9 +222,10 @@ describe('time-ago formatter caches', () => {
       }
     }
 
-    const { relative, narrow, title } = getTimeAgoFormatCacheSizes();
+    const { relative, narrow, numeric, title } = getTimeAgoFormatCacheSizes();
     assert.ok(relative <= 32, `relative cache holds ${relative}`);
     assert.ok(narrow <= 32, `narrow cache holds ${narrow}`);
+    assert.ok(numeric <= 32, `numeric cache holds ${numeric}`);
     assert.ok(title <= 32, `title cache holds ${title}`);
   });
 });

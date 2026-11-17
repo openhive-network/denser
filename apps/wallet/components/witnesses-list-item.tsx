@@ -9,7 +9,8 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
-import { isVersionBelow } from '@/wallet/lib/witness-row';
+import { useLocale } from '@ui/components/locale-context';
+import { hasPublishedFeed, isVersionBelow } from '@/wallet/lib/witness-row';
 import WitnessVoteButton from './witness-vote-button';
 import WitnessSiteLink from './witness-site-link';
 
@@ -38,6 +39,7 @@ interface WitnessListItemProps {
 const ONE_WEEK_IN_SEC = 604800;
 const ONE_DAY_IN_SEC = 86400;
 const MUTED_TEXT = 'text-gray-600 dark:text-gray-400';
+const NO_FEED = '—';
 
 function WitnessListItem({
   data,
@@ -51,6 +53,7 @@ function WitnessListItem({
   voteLoading
 }: WitnessListItemProps) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
   const witnessDescription = witnessProfile?.witnessDescription;
   const witnessOwner = witnessProfile?.witnessOwner;
@@ -68,9 +71,13 @@ function WitnessListItem({
     .join('\n');
   const hp = `${getRoundedAbbreveration(data.vestsToHp)} HP`;
   const rankUp = data.requiredHpToRankUp ? getRoundedAbbreveration(data.requiredHpToRankUp) : null;
+  const rankUpText = rankUp
+    ? t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })
+    : null;
   const priceFeed = `$${(
     Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
   ).toFixed(3)}`;
+  const feedPublished = hasPublishedFeed(data.last_hbd_exchange_update);
 
   const ref = useRef<HTMLTableRowElement>(null);
   useEffect(() => {
@@ -117,7 +124,7 @@ function WitnessListItem({
             />
           </Link>
           <div className="min-w-0 flex-1 leading-5">
-            <div className="flex min-w-0 items-center gap-x-1.5 whitespace-nowrap">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 whitespace-nowrap sm:flex-nowrap">
               <Link
                 href={`/@${data.owner}`}
                 data-testid="witness-name-link"
@@ -171,18 +178,20 @@ function WitnessListItem({
                   v{data.running_version}
                 </span>
               )}
-              <span aria-hidden="true" className={MUTED_TEXT}>
-                ·
-              </span>
-              <span className="flex min-w-0" data-testid="witness-external-site-link">
-                {disableUser ? (
-                  <span className="truncate">
-                    {t('witnesses_page.disabled')}
-                    {blockGap(headBlock, data.last_confirmed_block_num, t)}
-                  </span>
-                ) : (
-                  <WitnessSiteLink url={data.url} />
-                )}
+              <span className="flex min-w-0 items-center gap-x-1.5">
+                <span aria-hidden="true" className={MUTED_TEXT}>
+                  ·
+                </span>
+                <span className="flex min-w-0" data-testid="witness-external-site-link">
+                  {disableUser ? (
+                    <span className="truncate">
+                      {t('witnesses_page.disabled')}
+                      {blockGap(headBlock, data.last_confirmed_block_num, t, locale)}
+                    </span>
+                  ) : (
+                    <WitnessSiteLink url={data.url} />
+                  )}
+                </span>
               </span>
             </div>
             {!disableUser && witnessDescription && (
@@ -201,8 +210,14 @@ function WitnessListItem({
             )}
             <div className={clsx('truncate sm:hidden', MUTED_TEXT)}>
               {hp}
-              {rankUp && ` (+${rankUp})`} · {priceFeed}{' '}
-              <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
+              {rankUp && ` (+${rankUp})`} ·{' '}
+              {feedPublished ? (
+                <>
+                  {priceFeed} <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
+                </>
+              ) : (
+                <span title={t('witnesses_page.no_price_feed')}>{NO_FEED}</span>
+              )}
             </div>
           </div>
         </div>
@@ -217,20 +232,32 @@ function WitnessListItem({
         <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
           {hp}
         </div>
-        {rankUp && (
-          <div className={clsx('truncate', MUTED_TEXT)}>
-            {t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })}
+        {rankUpText && (
+          <div className={clsx('truncate', MUTED_TEXT)} title={rankUpText} data-testid="witness-rank-up">
+            {rankUpText}
           </div>
         )}
       </td>
       <td className="hidden truncate py-1.5 pr-2 leading-5 sm:table-cell sm:text-sm" data-testid="witness-price-feed-cell">
-        <span className="font-medium" data-testid="witness-price-feed">
-          {priceFeed}
-        </span>
-        <span className={MUTED_TEXT}>
-          {' · '}
-          <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
-        </span>
+        {feedPublished ? (
+          <>
+            <span className="font-medium" data-testid="witness-price-feed">
+              {priceFeed}
+            </span>
+            <span className={MUTED_TEXT}>
+              {' · '}
+              <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
+            </span>
+          </>
+        ) : (
+          <span
+            className={MUTED_TEXT}
+            title={t('witnesses_page.no_price_feed')}
+            data-testid="witness-price-feed"
+          >
+            {NO_FEED}
+          </span>
+        )}
       </td>
     </tr>
   );

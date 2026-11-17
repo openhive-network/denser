@@ -323,7 +323,7 @@
       "other": "Pozostało ci {{value}} głosów."
     },
     "confirm_account_witness_vote": "Potwierdź głos na świadka",
-    "you_are_about_remove_vote": "Zamierzasz wycofać swój głos na tego świadka",
+    "you_are_about_remove_vote": "Wycofać swój głos na @{{witness}}?",
     "cancel_button": "Anuluj",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "Możesz głosować maksymalnie na 30 świadków",
@@ -332,6 +332,7 @@
     "witness": "Świadek",
     "votes_received": "Otrzymane głosy",
     "price_feed": "Kurs ceny",
+    "no_price_feed": "Brak opublikowanego kursu",
     "version": "Wersja",
     "vote": "Zagłosuj",
     "navigate_to_witness_profile": "Przejdź do profilu tego użytkownika",
@@ -362,15 +363,10 @@
     },
     "bock_gap": {
       "just_now": " przed chwilą",
-      "recently": " ostatnio",
-      "mins_ago": " minuty temu",
-      "hrs_ago": " godziny temu",
-      "days_ago": " dni temu",
-      "weeks_ago": " tygodni temu",
-      "months_ago": " miesięcy temu",
-      "years_ago": " lat temu"
+      "recently": " ostatnio"
     },
     "vote_for_witness": "Głosuj na świadka {{witness}}",
+    "remove_vote_for_witness": "Wycofaj głos na świadka {{witness}}",
     "link_to_witness": "Link do świadka {{witness}}"
   },
   "proposals_page": {

@@ -146,7 +146,7 @@ export default function WitnessesPage() {
               <col className="w-14 sm:w-16" />
               <col />
               <col className="w-0 sm:w-18" />
-              <col className="w-0 sm:w-32" />
+              <col className="w-0 sm:w-32 md:w-44" />
               <col className="w-0 sm:w-52" />
             </colgroup>
             <thead
@@ -239,6 +239,7 @@ export default function WitnessesPage() {
                         )}
                       </Button>
                       <WitnessRemoveVote
+                        witness={voteInput}
                         open={removeVoteOpen}
                         onOpenChange={setRemoveVoteOpen}
                         onVote={() => onVote(voteInput, false)}

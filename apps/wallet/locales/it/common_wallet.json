@@ -318,7 +318,7 @@
       "other": "Hai {{value}} voti residui."
     },
     "confirm_account_witness_vote": "Conferma voto al Witness",
-    "you_are_about_remove_vote": "Stai per rimuovere il tuo voto per questo witness",
+    "you_are_about_remove_vote": "Rimuovere il tuo voto per @{{witness}}?",
     "cancel_button": "Annulla",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "Puoi votare un massimo di 30 witness",
@@ -327,6 +327,7 @@
     "witness": "Witness",
     "votes_received": "Voti ricevuti",
     "price_feed": "Feed del prezzo",
+    "no_price_feed": "Nessun prezzo pubblicato",
     "version": "Versione",
     "vote": "Vota",
     "navigate_to_witness_profile": "Vai al profilo di questo utente",
@@ -356,15 +357,10 @@
     },
     "bock_gap": {
       "just_now": " proprio ora",
-      "recently": " di recente",
-      "mins_ago": " min fa",
-      "hrs_ago": " ore fa",
-      "days_ago": " giorni fa",
-      "weeks_ago": " settimane fa",
-      "months_ago": " mesi fa",
-      "years_ago": " anni fa"
+      "recently": " di recente"
     },
     "vote_for_witness": "Vota il witness {{witness}}",
+    "remove_vote_for_witness": "Rimuovi il voto al witness {{witness}}",
     "link_to_witness": "Link al witness {{witness}}"
   },
   "proposals_page": {

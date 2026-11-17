@@ -311,7 +311,7 @@
       "other": "あと{{value}}人に投票できます."
     },
     "confirm_account_witness_vote": "証人への投票を確認",
-    "you_are_about_remove_vote": "この証人への投票を取り消そうとしています",
+    "you_are_about_remove_vote": "@{{witness}} への投票を取り消しますか？",
     "cancel_button": "キャンセル",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "最大30人の証人に投票できます",
@@ -320,6 +320,7 @@
     "witness": "証人",
     "votes_received": "獲得票数",
     "price_feed": "価格フィード",
+    "no_price_feed": "価格フィード未公開",
     "version": "バージョン",
     "vote": "投票",
     "navigate_to_witness_profile": "このユーザーのプロフィールへ移動",
@@ -347,15 +348,10 @@
     },
     "bock_gap": {
       "just_now": " たった今",
-      "recently": " 最近",
-      "mins_ago": " 分前",
-      "hrs_ago": " 時間前",
-      "days_ago": " 日前",
-      "weeks_ago": " 週間前",
-      "months_ago": " か月前",
-      "years_ago": " 年前"
+      "recently": " 最近"
     },
     "vote_for_witness": "証人 {{witness}} に投票",
+    "remove_vote_for_witness": "証人 {{witness}} への投票を取り消す",
     "link_to_witness": "証人 {{witness}} へのリンク"
   },
   "proposals_page": {
