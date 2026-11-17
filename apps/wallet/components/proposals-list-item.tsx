@@ -175,7 +175,7 @@ export function ProposalListItem({
       </div>
 
       <div
-        className="flex min-w-0 items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400 sm:flex-wrap sm:text-sm"
+        className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
         data-testid="proposal-details"
       >
         <Link
@@ -192,8 +192,8 @@ export function ProposalListItem({
             alt={`${proposalData.creator} profile picture`}
           />
         </Link>
-        {/* On a phone the line does not wrap: long account names give way instead */}
-        <span className="min-w-0 truncate sm:min-w-max">
+        {/* The author is never cut short: the figures after it wrap onto another line instead */}
+        <span className="min-w-0 break-words" data-testid="proposal-author">
           {t('proposals_page.by')}{' '}
           <Link href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`} target="_blank" rel="noopener noreferrer">
             <span className={LINK_CLASS} data-testid="proposal-creator">
@@ -215,8 +215,11 @@ export function ProposalListItem({
             </>
           ) : null}
         </span>
-        <Dot />
-        <span title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}>
+        <span
+          className="flex items-center gap-x-1.5"
+          title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}
+        >
+          <Dot />
           <PhoneOrDesktopText
             phone={t('proposals_page.per_day', { amount: compactAmount(proposalData.daily_pay.amount) })}
             desktop={t('proposals_page.per_day', {
@@ -225,12 +228,12 @@ export function ProposalListItem({
             testId="proposal-amount"
           />
         </span>
-        <Dot className="hidden sm:inline" />
-        <span className="hidden whitespace-nowrap sm:inline" data-testid="proposal-date">
-          {dateRange}
+        <span className="hidden items-center gap-x-1.5 whitespace-nowrap sm:flex">
+          <Dot />
+          <span data-testid="proposal-date">{dateRange}</span>
         </span>
         {timing ? (
-          <>
+          <span className="flex items-center gap-x-1.5">
             <Dot />
             <StatusTooltip
               proposal={proposalData}
@@ -242,7 +245,7 @@ export function ProposalListItem({
                 />
               }
             />
-          </>
+          </span>
         ) : null}
       </div>
 

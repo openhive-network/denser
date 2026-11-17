@@ -11,10 +11,11 @@ import {
 import { ProposalsPage } from '../support/pages/proposalsPage';
 
 /**
- * How the proposals page fits its space: on a phone each proposal's title, details and money lines
- * take one line each, in the short forms ("200 HBD/day", "213d left", "Wypł."), a long title cut short,
- * so a row stays about 85 px tall; only a proposal not paid at the moment, whose money line adds its
- * last payment, may take another. On a desktop titles show whole, the labels in full, and the search
+ * How the proposals page fits its space: on a phone each proposal's title and money lines take one
+ * line each, in the short forms ("200 HBD/day", "213d left", "Wypł.", "(22 d.)"), a long title cut
+ * short; only a proposal not paid at the moment, whose money line adds its last payment, may take
+ * another. The details line shows its author whole, its figures wrapping onto a second line when
+ * they do not fit beside it. On a desktop titles show whole, the labels in full, and the search
  * box is wide enough for its whole placeholder. The stub node is support/proposalsApiStub.ts: its
  * REAL_SIZE_PROPOSALS, titles and amounts the size of the live list's, above the seven, with #11's
  * payments as in proposalsPaid.spec.ts.
@@ -24,10 +25,11 @@ const HYDRATION_TIMEOUT = 30_000;
 const NOW = new Date('2026-06-01T00:00:00Z');
 const PHONE_VIEWPORT = { width: 390, height: 844 };
 const DESKTOP_VIEWPORT = { width: 1280, height: 900 };
-const MAX_MEDIAN_ROW_HEIGHT = 90;
+const MAX_MEDIAN_ROW_HEIGHT = 95;
+const MAX_DETAILS_LINES = 2;
 const MIN_ROWS_BELOW_SUMMARY = 4;
 const LOCALES = ['en', 'pl'] as const;
-const { funded, upcoming } = STUB_PROPOSALS;
+const { funded, upcoming, belowLine } = STUB_PROPOSALS;
 const { longest } = REAL_SIZE_PROPOSALS;
 
 let stub: Server;
@@ -66,45 +68,65 @@ const openProposals = async (page: Page, locale: string, baseURL: string | undef
 };
 
 /**
- * Each row's height, the titles and the details and money lines that wrapped, and how many rows show
- * whole below the summary.
+ * Each row's height, the titles and money lines that wrapped, the details lines taking more than
+ * MAX_DETAILS_LINES, the authors not shown whole, and how many rows show whole below the summary.
  */
-const measureRows = (page: Page) =>
-  page.evaluate(() => {
-    // A line's figures wrap onto another line when one of them starts below the first
-    const isOneLine = (line: Element) => {
+const measureRows = (page: Page, maxDetailsLines: number) =>
+  page.evaluate((maxLines) => {
+    // How many lines a line's figures take: one more for each that starts below the one before
+    const lineCount = (line: Element) => {
+      const lineHeight = parseFloat(getComputedStyle(line).lineHeight);
       const tops = [...line.children]
         .filter((child) => child.checkVisibility())
-        .map((child) => child.getBoundingClientRect().top);
-      return Math.max(...tops) - Math.min(...tops) < parseFloat(getComputedStyle(line).lineHeight) / 2;
+        .map((child) => child.getBoundingClientRect().top)
+        .sort((a, b) => a - b);
+      return 1 + tops.filter((top, index) => index > 0 && top - tops[index - 1] >= lineHeight / 2).length;
     };
+    const label = (row: Element, element: Element) =>
+      `#${row.getAttribute('data-proposal-id')} "${element.textContent}"`;
     const summaryBottom =
       document.querySelector('[data-testid="dhf-summary"]')?.getBoundingClientRect().bottom ?? 0;
     const rows = [...document.querySelectorAll('[data-testid="proposal-list-item"]')];
     const wrapped = rows.flatMap((row) =>
-      [...row.querySelectorAll('[data-testid="proposal-details"], [data-testid="proposal-payments"]')]
+      [...row.querySelectorAll('[data-testid="proposal-payments"]')]
         // A proposal not paid at the moment adds its last payment, a fourth figure that may wrap
-        .filter((line) => !line.querySelector('[data-testid="proposal-last-paid"]') && !isOneLine(line))
-        .map((line) => `#${row.getAttribute('data-proposal-id')} "${line.textContent}"`)
+        .filter((line) => !line.querySelector('[data-testid="proposal-last-paid"]') && lineCount(line) > 1)
+        .map((line) => label(row, line))
     );
+    const tallDetails = rows.flatMap((row) =>
+      [...row.querySelectorAll('[data-testid="proposal-details"]')]
+        .filter((line) => lineCount(line) > maxLines)
+        .map((line) => label(row, line))
+    );
+    // Shown whole: not empty, not cut short with an ellipsis and not past the screen's edge
+    const clippedAuthors = rows
+      .map((row) => [row, row.querySelector('[data-testid="proposal-author"]')] as const)
+      .filter(([, author]) => {
+        if (!author?.textContent?.trim()) return true;
+        const box = author.getBoundingClientRect();
+        return author.scrollWidth > author.clientWidth || box.left < 0 || box.right > window.innerWidth;
+      })
+      .map(([row, author]) => `#${row.getAttribute('data-proposal-id')} "${author?.textContent ?? ''}"`);
     const wrappedTitles = rows.flatMap((row) =>
       [...row.querySelectorAll('[data-testid="proposal-title"]')]
         .filter(
           (title) =>
             title.getBoundingClientRect().height > parseFloat(getComputedStyle(title).lineHeight) * 1.5
         )
-        .map((title) => `#${row.getAttribute('data-proposal-id')} "${title.textContent}"`)
+        .map((title) => label(row, title))
     );
     return {
       heights: rows.map((row) => row.getBoundingClientRect().height),
       wrapped,
+      tallDetails,
+      clippedAuthors,
       wrappedTitles,
       wholeBelowSummary: rows.filter((row) => {
         const box = row.getBoundingClientRect();
         return box.top >= summaryBottom && box.bottom <= window.innerHeight;
       }).length
     };
-  });
+  }, maxDetailsLines);
 
 const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
 
@@ -112,13 +134,16 @@ test.describe('Proposal rows on a phone', () => {
   test.use({ viewport: PHONE_VIEWPORT });
 
   for (const locale of LOCALES) {
-    test(`WALLET-PROPOSALS-FIT-01 — in ${locale} the title, details and money lines take one line each`, async ({
+    test(`WALLET-PROPOSALS-FIT-01 — in ${locale} every author shows whole, the title and money lines take one line each`, async ({
       page,
       baseURL
     }) => {
       await openProposals(page, locale, baseURL);
 
-      const { heights, wrapped, wrappedTitles, wholeBelowSummary } = await measureRows(page);
+      const { heights, wrapped, tallDetails, clippedAuthors, wrappedTitles, wholeBelowSummary } =
+        await measureRows(page, MAX_DETAILS_LINES);
+      expect(clippedAuthors).toEqual([]);
+      expect(tallDetails).toEqual([]);
       expect(wrapped).toEqual([]);
       expect(wrappedTitles).toEqual([]);
       expect(median(heights), `row heights ${heights.join(', ')}`).toBeLessThanOrEqual(MAX_MEDIAN_ROW_HEIGHT);
@@ -142,7 +167,7 @@ test.describe('Proposal rows on a phone', () => {
     ).toBeVisible();
   });
 
-  test('WALLET-PROPOSALS-FIT-04 — in pl a long title is cut short before its id and the labels are short', async ({
+  test('WALLET-PROPOSALS-FIT-04 — in pl a long title is cut short before its id and the labels and unfunded days are short', async ({
     page,
     baseURL
   }) => {
@@ -155,7 +180,26 @@ test.describe('Proposal rows on a phone', () => {
     const linkTitle = await card.getByTestId('proposal-post-link').getAttribute('title');
     expect(linkTitle?.split('\n')).toContain(await subject.textContent());
     await expect(card.getByTestId('proposal-paid')).toHaveText('Wypł. 651.70K', { useInnerText: true });
-    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfin. 41.80K', { useInnerText: true });
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfin. 41.80K (22 d.)', {
+      useInnerText: true
+    });
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693.50K', {
+      useInnerText: true
+    });
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
+      'Niesfin. 7.55K (nigdy)',
+      { useInnerText: true }
+    );
+  });
+
+  test('WALLET-PROPOSALS-FIT-06 — in en a proposal never paid says so in short', async ({ page, baseURL }) => {
+    const proposalsPage = await openProposals(page, 'en', baseURL);
+
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
+      'Unfunded 7.55K (never)',
+      { useInnerText: true }
+    );
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-author')).toHaveText('by stub-bob');
   });
 });
 
@@ -182,7 +226,11 @@ test.describe('Proposal rows on a desktop', () => {
     await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfinansowane 41.80K HBD (22 dni)', {
       useInnerText: true
     });
-    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Pozostało do 693.50K HBD');
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693.50K HBD');
+    await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
+      'Niesfinansowane 7.55K HBD (nigdy nie finansowana)',
+      { useInnerText: true }
+    );
   });
 });
 
