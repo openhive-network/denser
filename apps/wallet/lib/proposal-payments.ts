@@ -128,9 +128,15 @@ export interface ProposalTerms {
 export interface ProposalUnfunded {
   /** HBD the proposal would have had if funded every hour since it started, less what it was paid */
   amount: Big;
-  /** Days it was not paid for, rounded; 0 when it never was (see `neverFunded`) */
-  days: number;
+  /** Whole hours it was not paid for */
+  hours: number;
   neverFunded: boolean;
+}
+
+/** A span of unpaid time as a reader takes it in: whole days, or hours when under a day. */
+export interface UnfundedDuration {
+  unit: 'days' | 'hours';
+  count: number;
 }
 
 const hiveTime = (timestamp: string): number => Date.parse(`${timestamp}Z`);
@@ -140,7 +146,7 @@ const STATUSES_RUN = new Set(['active', 'expired']);
 /**
  * What an active or expired proposal was not paid: its daily pay for each whole hour from its start to
  * `now` (ms since the epoch) or its end, whichever is first, less `paid`, never below 0; and those
- * hours less the `paymentCount` it was paid for, in days. The amount also counts the part of an hour
+ * hours less the `paymentCount` it was paid for. The amount also counts the part of an hour
  * a proposal gets when the DHF runs out of its daily budget on it. Undefined for a proposal that
  * has not started.
  */
@@ -155,9 +161,19 @@ export const proposalUnfunded = (
   const owed = terms.daily_pay.amount.times(elapsedHours).div(HOURS_PER_DAY).minus(paid);
   return {
     amount: owed.gt(0) ? owed : new Big(0),
-    days: Math.max(0, Math.round((elapsedHours - paymentCount) / HOURS_PER_DAY)),
+    hours: Math.max(0, elapsedHours - paymentCount),
     neverFunded: paymentCount === 0
   };
+};
+
+/**
+ * `hours` of unpaid time in days, rounded, from a day up and in hours below it, so half a day does
+ * not read as a whole one. Undefined for none.
+ */
+export const unfundedDuration = (hours: number): UnfundedDuration | undefined => {
+  if (hours <= 0) return undefined;
+  if (hours < HOURS_PER_DAY) return { unit: 'hours', count: hours };
+  return { unit: 'days', count: Math.round(hours / HOURS_PER_DAY) };
 };
 
 /**

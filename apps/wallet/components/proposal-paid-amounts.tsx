@@ -7,8 +7,10 @@ import {
   proposalLastPaidWhileUnfunded,
   proposalUnfunded,
   proposalUpToLeft,
+  unfundedDuration,
   type ProposalPaid,
-  type ProposalTerms
+  type ProposalTerms,
+  type ProposalUnfunded
 } from '@/wallet/lib/proposal-payments';
 import { PhoneOrDesktopText } from './phone-or-desktop-text';
 
@@ -34,6 +36,29 @@ const HbdAmount = ({ amount, className }: { amount: Big; className?: string }) =
     <span className="hidden sm:inline"> HBD</span>
   </span>
 );
+
+/** Why a proposal was not paid: how long, or that it never was; nothing for no unpaid time. */
+const UnfundedNote = ({ unfunded }: { unfunded: ProposalUnfunded }) => {
+  const { t } = useTranslation('common_wallet');
+  const note = (phone: string, desktop: string) => (
+    <PhoneOrDesktopText phone={` (${phone})`} desktop={` (${desktop})`} />
+  );
+  if (unfunded.neverFunded) {
+    return note(t('proposals_page.never_funded_short'), t('proposals_page.never_funded'));
+  }
+  const duration = unfundedDuration(unfunded.hours);
+  if (!duration) return null;
+  if (duration.unit === 'hours') {
+    return note(
+      t('proposals_page.duration_hours_short', { hours: duration.count }),
+      t('proposals_page.duration_hours', { count: duration.count })
+    );
+  }
+  return note(
+    t('proposals_page.duration_days_short', { days: duration.count }),
+    t('proposals_page.duration_days', { count: duration.count })
+  );
+};
 
 /** The figures of a line, separated by middle dots. */
 const DottedLine = ({ children }: { children: ReactNode[] }) => (
@@ -112,14 +137,7 @@ export function ProposalPaidAmounts({ proposal, total, totalDays, paid }: Propos
               desktop={t('proposals_page.unfunded')}
             />{' '}
             <HbdAmount amount={unfunded.amount} className={unfunded.amount.gt(0) ? UNFUNDED_COLOR : undefined} />
-            {/* Like the unit, left out of a phone's narrow line */}
-            <span className="hidden sm:inline">
-              {unfunded.neverFunded
-                ? ` (${t('proposals_page.never_funded')})`
-                : unfunded.days > 0
-                  ? ` (${t('proposals_page.duration_days', { count: unfunded.days })})`
-                  : null}
-            </span>
+            <UnfundedNote unfunded={unfunded} />
           </span>
         ) : null,
         upToLeft ? (

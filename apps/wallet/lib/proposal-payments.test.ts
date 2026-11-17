@@ -10,6 +10,7 @@ import {
   proposalPaidQuery,
   proposalUnfunded,
   proposalUpToLeft,
+  unfundedDuration,
   type FetchProposalPayments,
   type ProposalTerms
 } from './proposal-payments.ts';
@@ -53,11 +54,11 @@ const unfundedOf = (proposalTerms: ProposalTerms, paid: string, paymentCount: nu
 };
 
 describe('proposalUnfunded', () => {
-  it('is the daily pay of the hours since the start less what is paid, and those hours not paid in days, for an active proposal', () => {
+  it('is the daily pay of the hours since the start less what is paid, and those hours not paid, for an active proposal', () => {
     // Funded 20 of its 30 days so far
     assert.deepEqual(unfundedOf(terms('active'), '2000', 20 * 24), {
       amount: '1000.000',
-      days: 10,
+      hours: 240,
       neverFunded: false
     });
   });
@@ -65,7 +66,7 @@ describe('proposalUnfunded', () => {
   it('counts only whole hours elapsed', () => {
     assert.deepEqual(unfundedOf(terms('active'), '0', 0, NOW + 59 * 60 * 1000), {
       amount: '3000.000',
-      days: 30,
+      hours: 720,
       neverFunded: true
     });
   });
@@ -73,31 +74,50 @@ describe('proposalUnfunded', () => {
   it('counts up to the end, not now, for an expired proposal', () => {
     assert.deepEqual(unfundedOf(terms('expired'), '9000', 90 * 24, NOW + 365 * DAY_MS), {
       amount: '1000.000',
-      days: 10,
+      hours: 240,
       neverFunded: false
     });
   });
 
   it('is the whole elapsed pay for a proposal never funded', () => {
-    assert.deepEqual(unfundedOf(terms('active'), '0', 0), { amount: '3000.000', days: 30, neverFunded: true });
+    assert.deepEqual(unfundedOf(terms('active'), '0', 0), { amount: '3000.000', hours: 720, neverFunded: true });
   });
 
-  it('keeps the HBD short of a partly paid hour while counting no unpaid day for it', () => {
+  it('keeps the HBD short of a partly paid hour while counting no unpaid hour for it', () => {
     // Paid every hour, the last one only half
     assert.deepEqual(unfundedOf(terms('active'), '2997.917', 30 * 24), {
       amount: '2.083',
-      days: 0,
+      hours: 0,
       neverFunded: false
     });
   });
 
   it('is never below 0', () => {
-    assert.deepEqual(unfundedOf(terms('active'), '3500', 30 * 24), { amount: '0.000', days: 0, neverFunded: false });
+    assert.deepEqual(unfundedOf(terms('active'), '3500', 30 * 24), { amount: '0.000', hours: 0, neverFunded: false });
   });
 
   it('is undefined for a proposal that has not started', () => {
     assert.equal(unfundedOf(terms('inactive', { start_date: '2026-03-01T00:00:00' }), '0', 0), undefined);
     assert.equal(unfundedOf(terms('active', { start_date: '2026-03-01T00:00:00' }), '0', 0), undefined);
+  });
+});
+
+describe('unfundedDuration', () => {
+  it('is undefined for no unpaid hours', () => {
+    assert.equal(unfundedDuration(0), undefined);
+  });
+
+  it('is in hours below a day, so half a day does not read as a whole one', () => {
+    assert.deepEqual(unfundedDuration(1), { unit: 'hours', count: 1 });
+    assert.deepEqual(unfundedDuration(12), { unit: 'hours', count: 12 });
+    assert.deepEqual(unfundedDuration(23), { unit: 'hours', count: 23 });
+  });
+
+  it('is in rounded days from a day up', () => {
+    assert.deepEqual(unfundedDuration(24), { unit: 'days', count: 1 });
+    assert.deepEqual(unfundedDuration(35), { unit: 'days', count: 1 });
+    assert.deepEqual(unfundedDuration(36), { unit: 'days', count: 2 });
+    assert.deepEqual(unfundedDuration(39 * 24), { unit: 'days', count: 39 });
   });
 });
 
