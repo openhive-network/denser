@@ -74,6 +74,17 @@ describe('castVoteCount', () => {
     assert.equal(castVoteCount({ stats: stats(2), observer_vote: { rshares: 0, percent: 0 } }), 1);
   });
 
+  it("takes the observer's vote removed before payout off the total of a pending vote-free entry", () => {
+    const entry = { stats: stats(589), is_paidout: false, observer_vote: { rshares: 0, percent: 0 } };
+    assert.equal(castVoteCount(entry), 588);
+  });
+
+  it("keeps the total of a paid-out vote-free entry whose observer removed a vote cast after payout", () => {
+    const entry = { stats: stats(589), is_paidout: true, observer_vote: { rshares: 0, percent: 0 } };
+    assert.equal(castVoteCount(entry), 589);
+    assert.equal(castVoteCount({ ...entry, observer_vote: null }), 589);
+  });
+
   it('keeps the counted votes of a paid-out entry that lists a vote cast after payout', () => {
     const entry = {
       stats: stats(1),
