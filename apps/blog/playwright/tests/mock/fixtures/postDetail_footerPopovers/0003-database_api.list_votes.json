@@ -60,7 +60,7 @@
           "num_changes": 0,
           "permlink": "re-gtg-quwy4z",
           "rshares": 0,
-          "vote_percent": 0,
+          "vote_percent": 10000,
           "voter": "roelandp",
           "weight": 0
         },
@@ -71,8 +71,19 @@
           "num_changes": 0,
           "permlink": "re-gtg-quwy4z",
           "rshares": 0,
-          "vote_percent": 0,
+          "vote_percent": 10000,
           "voter": "sicarius",
+          "weight": 0
+        },
+        {
+          "author": "steevc",
+          "id": 671100006,
+          "last_update": "2021-07-04T09:15:00",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 0,
+          "vote_percent": 0,
+          "voter": "themarkymark",
           "weight": 0
         },
         {

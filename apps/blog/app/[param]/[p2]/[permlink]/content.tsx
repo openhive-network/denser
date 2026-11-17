@@ -77,7 +77,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
-import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
+import { useVoteCount } from '@/blog/features/post-rendering/hooks/use-vote-count';
 import { isCommunity } from '@ui/lib/utils';
 import {
   useSSRObserver,
@@ -215,7 +215,7 @@ const PostContent = () => {
   });
   // A listed post is seeded without its body; an editor opened on it fetches the post for the body
   const bodyWithheld = !!postData?._bodyWithheld;
-  const postVoteCount = postData ? castVoteCount(postData) : 0;
+  const postVoteCount = useVoteCount(postData);
   const editorOpen = edit || liteEdit;
   const { refetch: refetchPost } = postQuery;
   useEffect(() => {

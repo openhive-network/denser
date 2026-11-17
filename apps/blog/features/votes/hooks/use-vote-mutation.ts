@@ -4,6 +4,7 @@ import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { CONFIRM_IN_BACKGROUND, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { useBackgroundConfirmation } from '@/blog/components/hooks/use-background-confirmation';
 import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { activeVotesQueryKey } from '@/blog/components/hooks/use-active-votes';
 import { optimisticUpdateTotalVotes } from '../lib/optimistic-total-votes';
 
 type VoteParams = { voter: string; author: string; permlink: string; weight: number };
@@ -50,6 +51,8 @@ export function useVoteMutation() {
       const hadPreviousVote = hasActiveVote(prevVoteData);
       const voteDelta = weight !== 0 && !hadPreviousVote ? 1 : weight === 0 && hadPreviousVote ? -1 : 0;
       const prevCacheSnapshots = optimisticUpdateTotalVotes(queryClient, author, permlink, voteDelta);
+      // A loaded vote list lacks this vote and would hold the label to it; without one it follows total_votes
+      void queryClient.resetQueries({ queryKey: activeVotesQueryKey(author, permlink) });
       return { prevVoteData, queryKey, prevCacheSnapshots };
     },
     // Not awaited: the vote shows at once, a warning follows if no block includes it

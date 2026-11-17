@@ -13,5 +13,6 @@
     "database_api.list_votes": 9,
     "GET /hivesense-api/posts/gtg/hive-hardfork-25-jump-starter-kit/similar": 5,
     "GET /hivesense-api/posts/gtg/does-not-exist-pending-test/similar": 4
-  }
+  },
+  "note": "0006 database_api.list_votes holds the post's full chain vote list (596 votes, 8 listed after payout_at, 7 of them cast after it), refreshed from api.hive.blog so the voters popover and the vote label agree with stats.total_votes 589."
 }
