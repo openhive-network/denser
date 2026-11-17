@@ -35,6 +35,7 @@ import {
 } from '@smart-signer/lib/wrong-safe-storage-password';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import { findChunkLoadError } from '@ui/lib/chunk-load-error';
+import { bufferHandledError } from '@ui/lib/sentry-early-errors';
 import { BrowserOfflineError } from '@hive/transaction/lib/connectivity';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -56,7 +57,9 @@ function isAuthStorageDesync(error: unknown): boolean {
 }
 
 // A dynamic import() keeps the Sentry SDK out of the initial chunks of every page that can show an error toast.
+// Before the deferred SDK load (instrumentation-client.ts) the error waits with the early errors.
 function reportToSentry(error: unknown): void {
+  if (bufferHandledError(error)) return;
   import('@sentry/nextjs')
     .then(({ captureException }) => captureException(error))
     .catch(importError => logger.error('Loading Sentry to report an error failed: %o', importError));
