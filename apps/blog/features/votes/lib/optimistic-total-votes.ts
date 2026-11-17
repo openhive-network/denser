@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import type { Entry } from '@hive/common-hiveio-packages/wax';
 
 export type CacheSnapshot = { queryKey: readonly unknown[]; data: unknown };
 

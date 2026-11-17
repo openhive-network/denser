@@ -5,7 +5,7 @@ interface IListedVote {
   percent?: number;
 }
 
-type TCountedEntry = Pick<Entry, 'stats' | 'active_votes' | 'observer_vote'>;
+type TCountedEntry = Pick<Entry, 'stats' | 'active_votes' | 'observer_vote'> & Partial<Pick<Entry, 'is_paidout'>>;
 
 /**
  * Whether `vote` is a removed vote: the chain keeps an unvote as a vote of 0%, and every API still
@@ -22,16 +22,26 @@ export const keepCastVotes = <T extends IListedVote>(votes: T[]): T[] =>
 /**
  * The votes of `entry` to show as its count: `stats.total_votes` less the removed votes the entry
  * lists. A full `active_votes` list makes it exact. A vote-free entry lists none but the observer's
- * own (`observer_vote`), so only that one is taken off; the rest of the count stays as the node gives it.
+ * own (`observer_vote`), so only that one can be taken off (see `countObserverRemovedVote`); the rest
+ * of the count stays as the node gives it.
  */
 export function castVoteCount(entry: TCountedEntry): number {
   const totalVotes = entry.stats?.total_votes ?? 0;
   const removedVotes = entry.active_votes
     ? countListedRemovedVotes(entry.active_votes, totalVotes)
-    : entry.observer_vote && isRemovedVote(entry.observer_vote)
-      ? 1
-      : 0;
+    : countObserverRemovedVote(entry);
   return Math.max(0, totalVotes - removedVotes);
+}
+
+/**
+ * 1 when the observer's removed vote is one `total_votes` counts, else 0. Only a vote cast before
+ * the payout is counted. `observer_vote` carries no time, and a vote cast after payout is 0/0 too,
+ * so on a paid-out entry the two cannot be told apart and the vote is left in the count, which is
+ * then the one every other reader of the entry sees. On an entry not yet paid out every vote was
+ * cast before the payout.
+ */
+function countObserverRemovedVote({ observer_vote: observerVote, is_paidout: isPaidOut }: TCountedEntry): number {
+  return observerVote && isRemovedVote(observerVote) && !isPaidOut ? 1 : 0;
 }
 
 /**
