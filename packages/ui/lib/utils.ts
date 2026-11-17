@@ -6,6 +6,7 @@ import { TFunction } from 'i18next';
 import type { FullAccount, Entry, IVote } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
+import { getUnitsAgoString } from './time-ago';
 import { Symbol, createNaiAsset, getNaiToSymbol } from './asset-constants';
 import { vestsToHiveSatoshis } from './asset-math';
 
@@ -66,28 +67,40 @@ export const prepareVotes = (entry: Entry, votes: IVote[]) => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-export const blockGap = (
-  head_block: number,
-  last_block: number,
-  t: TFunction<'common_wallet', undefined>
-) => {
-  if (!last_block || last_block < 1) return 'forever';
-  const secs = (head_block - last_block) * 3;
+
+// The unit a block gap of `secs` is counted in, with the count.
+const blockGapCount = (secs: number): [number, Intl.RelativeTimeFormatUnit] => {
   const mins = Math.floor(secs / 60);
   const hrs = Math.floor(mins / 60);
   const days = Math.floor(hrs / 24);
   const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30);
-  const years = Math.floor(days / 365);
+  const months = Math.max(1, Math.floor(days / 30));
+
+  if (mins < 120) return [mins, 'minute'];
+  if (hrs < 48) return [hrs, 'hour'];
+  if (days < 14) return [days, 'day'];
+  if (weeks < 4) return [weeks, 'week'];
+  if (months < 24) return [months, 'month'];
+  return [Math.floor(days / 365), 'year'];
+};
+
+/**
+ * How long ago `last_block` was produced at `head_block`, for "Disabled …": " just now", " recently",
+ * or minutes up to years in the plural form `lang` needs ("3 lata temu", "5 lat temu").
+ */
+export const blockGap = (
+  head_block: number,
+  last_block: number,
+  t: TFunction<'common_wallet', undefined>,
+  lang: string
+) => {
+  if (!last_block || last_block < 1) return 'forever';
+  const secs = (head_block - last_block) * 3;
 
   if (secs < 60) return t('witnesses_page.bock_gap.just_now');
   if (secs < 120) return t('witnesses_page.bock_gap.recently');
-  if (mins < 120) return mins + t('witnesses_page.bock_gap.mins_ago');
-  if (hrs < 48) return hrs + t('witnesses_page.bock_gap.hrs_ago');
-  if (days < 14) return days + t('witnesses_page.bock_gap.days_ago');
-  if (weeks < 4) return weeks + t('witnesses_page.bock_gap.weeks_ago');
-  if (months < 24) return months + t('witnesses_page.bock_gap.months_ago');
-  return years + t('witnesses_page.bock_gap.years_ago');
+  const [count, unit] = blockGapCount(secs);
+  return getUnitsAgoString(count, unit, lang);
 };
 
 export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');

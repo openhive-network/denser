@@ -1,5 +1,34 @@
 /** Hive front ends whose post URLs a witness announcement can be opened from on our own blog. */
-const HIVE_FRONT_ENDS = ['hive.blog', 'peakd.com', 'ecency.com', 'inleo.io', 'leofinance.io'];
+const HIVE_FRONT_ENDS = [
+  'hive.blog',
+  'peakd.com',
+  'ecency.com',
+  'inleo.io',
+  'leofinance.io',
+  'hivesuite.app',
+  'ureka.social'
+];
+
+// Tabs of an account's page, which share the post path's shape: `/@author/posts` is not a post.
+const PROFILE_TABS = new Set([
+  'activities',
+  'author-rewards',
+  'blog',
+  'comments',
+  'communities',
+  'curation-rewards',
+  'feed',
+  'followers',
+  'following',
+  'muted',
+  'notifications',
+  'payout',
+  'permissions',
+  'posts',
+  'replies',
+  'settings',
+  'wallet'
+]);
 
 // `/@author/permlink` or `/<category>/@author/permlink`, with Hive's account name and permlink characters
 const POST_PATH = /^\/(?:[^/@]+\/)?@([a-z0-9.-]{3,16})\/([a-z0-9-]+)\/?$/;
@@ -19,7 +48,8 @@ const truncate = (text: string, length: number) => (text.length > length ? `${te
  * Reads a witness's URL. Witness URLs come from the blockchain and are attacker-controlled, so only
  * a parseable `https:` URL without embedded credentials is accepted; anything else gives `null`.
  * A post on a known Hive front end is an announcement, opened on our blog at `postPath`
- * (`/@author/permlink`); any other URL is an external site labelled by its host and path.
+ * (`/@author/permlink`); any other URL, an account page's tab (`/@author/posts`) among them, is an
+ * external site labelled by its host and path.
  */
 export const parseWitnessSite = (url: unknown): WitnessSite | null => {
   if (typeof url !== 'string' || !URL.canParse(url)) return null;
@@ -28,10 +58,20 @@ export const parseWitnessSite = (url: unknown): WitnessSite | null => {
 
   const hostname = withoutWww(parsed.hostname);
   const post = HIVE_FRONT_ENDS.includes(hostname) ? POST_PATH.exec(parsed.pathname) : null;
-  if (post) return { kind: 'announcement', postPath: `/@${post[1]}/${post[2]}` };
+  if (post && !PROFILE_TABS.has(post[2])) return { kind: 'announcement', postPath: `/@${post[1]}/${post[2]}` };
 
   const path = parsed.pathname.replace(/\/+$/, '');
   return { kind: 'external', href: encodeURI(url), label: truncate(hostname + path, MAX_LABEL_LENGTH) };
+};
+
+/**
+ * Whether a witness has published a price feed: `lastUpdate`, a Hive timestamp (UTC, usually without a
+ * zone designator), is set and later than the epoch the chain gives a witness that never published.
+ */
+export const hasPublishedFeed = (lastUpdate: string | undefined): boolean => {
+  if (!lastUpdate) return false;
+  const time = Date.parse(lastUpdate.replace(/Z?$/, 'Z'));
+  return Number.isFinite(time) && time > 0;
 };
 
 const versionParts = (version: string) => version.split('.').map((part) => Number.parseInt(part, 10) || 0);

@@ -314,7 +314,7 @@
       "other": "You have {{value}} votes remaining."
     },
     "confirm_account_witness_vote": "Confirm Account Witness Vote",
-    "you_are_about_remove_vote": "You are about to remove your vote for this witness",
+    "you_are_about_remove_vote": "Remove your vote for @{{witness}}?",
     "cancel_button": "Cancel",
     "ok": "OK",
     "you_can_vote_for_maximum_of_witnesses": "You can vote for a maximum of 30 witnesses",
@@ -323,6 +323,7 @@
     "witness": "Witness",
     "votes_received": "Votes received",
     "price_feed": "Price feed",
+    "no_price_feed": "No price feed published",
     "version": "Version",
     "vote": "vote",
     "navigate_to_witness_profile": "Navigate to this user's profile",
@@ -351,15 +352,10 @@
     },
     "bock_gap": {
       "just_now": " just now",
-      "recently": " recently",
-      "mins_ago": " mins ago",
-      "hrs_ago": " hrs ago",
-      "days_ago": " days ago",
-      "weeks_ago": " weeks ago",
-      "months_ago": " months ago",
-      "years_ago": " years ago"
+      "recently": " recently"
     },
     "vote_for_witness": "Vote for witness {{witness}}",
+    "remove_vote_for_witness": "Remove vote for witness {{witness}}",
     "link_to_witness": "Link to witness {{witness}}"
   },
   "proposals_page": {

@@ -311,7 +311,7 @@
       "other": "남은 투표가 {{value}}개 있습니다."
     },
     "confirm_account_witness_vote": "계정 증인 투표 확인",
-    "you_are_about_remove_vote": "이 증인에 대한 투표를 철회하려고 합니다",
+    "you_are_about_remove_vote": "@{{witness}}에 대한 투표를 철회하시겠습니까?",
     "cancel_button": "취소",
     "ok": "확인",
     "you_can_vote_for_maximum_of_witnesses": "최대 30명의 증인에게 투표할 수 있습니다",
@@ -320,6 +320,7 @@
     "witness": "증인",
     "votes_received": "받은 투표",
     "price_feed": "가격 피드",
+    "no_price_feed": "가격 피드 미게시",
     "version": "버전",
     "vote": "투표",
     "navigate_to_witness_profile": "이 사용자의 프로필로 이동",
@@ -347,15 +348,10 @@
     },
     "bock_gap": {
       "just_now": " 방금 전",
-      "recently": " 최근",
-      "mins_ago": " 분 전",
-      "hrs_ago": " 시간 전",
-      "days_ago": " 일 전",
-      "weeks_ago": " 주 전",
-      "months_ago": " 개월 전",
-      "years_ago": " 년 전"
+      "recently": " 최근"
     },
     "vote_for_witness": "증인 {{witness}}에게 투표",
+    "remove_vote_for_witness": "증인 {{witness}}에 대한 투표 철회",
     "link_to_witness": "증인 {{witness}} 링크"
   },
   "proposals_page": {

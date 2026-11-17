@@ -33,7 +33,8 @@ const ZONELESS_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 /**
  * `long` reads "49 minutes ago"; `narrow` reads "49m ago" for tight spaces: always numeric, so a
  * one-unit difference stays as short as any other ("1mo ago", not "last month"). A locale whose narrow
- * form marks the past only by a minus sign gets its short form ("47 мин. назад", not "-47 мин").
+ * form marks the past only by a minus sign gets its short form ("47 мин. назад", not "-47 мин"), and
+ * Polish hours read "5 godz. temu", not CLDR's narrow "5 g. temu".
  */
 export type TimeAgoStyle = 'long' | 'narrow';
 
@@ -52,23 +53,42 @@ const literalText = (rtf: Intl.RelativeTimeFormat, value: number): string =>
 const hasDirectionWords = (rtf: Intl.RelativeTimeFormat): boolean =>
   literalText(rtf, -5) !== literalText(rtf, 5);
 
-const createNarrowFormat = (lang: string): Intl.RelativeTimeFormat => {
+type RelativeFormat = Pick<Intl.RelativeTimeFormat, 'format' | 'resolvedOptions'>;
+
+// Units whose narrow form reads as an unfamiliar abbreviation, by language, shown in the short form
+// instead: CLDR's narrow Polish hour is "g.", where "godz." is the usual abbreviation.
+const SHORT_STYLE_UNITS: Record<string, readonly Intl.RelativeTimeFormatUnit[]> = { pl: ['hour'] };
+
+const createNarrowFormat = (lang: string): RelativeFormat => {
   const narrow = new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'always' });
-  return hasDirectionWords(narrow)
-    ? narrow
-    : new Intl.RelativeTimeFormat(lang, { style: 'short', numeric: 'always' });
+  const short = new Intl.RelativeTimeFormat(lang, { style: 'short', numeric: 'always' });
+  if (!hasDirectionWords(narrow)) return short;
+
+  const shortUnits = SHORT_STYLE_UNITS[new Intl.Locale(narrow.resolvedOptions().locale).language];
+  if (!shortUnits) return narrow;
+  return {
+    format: (value, unit) => (shortUnits.includes(unit) ? short : narrow).format(value, unit),
+    resolvedOptions: () => narrow.resolvedOptions()
+  };
 };
 
 const relativeFormats = {
   long: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })),
-  narrow: createLocaleFormatCache(createNarrowFormat)
+  narrow: createLocaleFormatCache(createNarrowFormat),
+  numeric: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'always' }))
 };
 const titleFormats = createLocaleFormatCache((lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS));
 
 /** Number of formatters each of this module's caches holds. */
-export const getTimeAgoFormatCacheSizes = (): { relative: number; narrow: number; title: number } => ({
+export const getTimeAgoFormatCacheSizes = (): {
+  relative: number;
+  narrow: number;
+  numeric: number;
+  title: number;
+} => ({
   relative: relativeFormats.long.size(),
   narrow: relativeFormats.narrow.size(),
+  numeric: relativeFormats.numeric.size(),
   title: titleFormats.size()
 });
 
@@ -94,7 +114,7 @@ export const getTimeAgoString = (
     return INVALID_TIME_AGO;
   }
 
-  let rtf: Intl.RelativeTimeFormat;
+  let rtf: RelativeFormat;
   try {
     rtf = relativeFormats[style].get(lang);
   } catch (error) {
@@ -119,11 +139,18 @@ export const getTimeAgoString = (
 };
 
 // The time left is rounded rather than truncated: a wait of 2 days 23 hours reads "in 3 days".
-const formatFuture = (secondsLeft: number, rtf: Intl.RelativeTimeFormat): string => {
+const formatFuture = (secondsLeft: number, rtf: RelativeFormat): string => {
   const [secondsInUnit, unit] =
     TIME_INTERVALS.find(([seconds]) => secondsLeft >= seconds) ?? TIME_INTERVALS[TIME_INTERVALS.length - 1];
   return rtf.format(Math.round(secondsLeft / secondsInUnit), unit);
 };
+
+/**
+ * `count` `unit`s ago in the long style, always numeric and with the locale's plural form: "2 years
+ * ago", "2 lata temu", "5 lat temu". Throws `RangeError` for a locale the runtime rejects.
+ */
+export const getUnitsAgoString = (count: number, unit: Intl.RelativeTimeFormatUnit, lang: string): string =>
+  relativeFormats.numeric.get(lang).format(-count, unit);
 
 /**
  * `date` in the runtime's local timezone, as `Date.prototype.toLocaleString(lang)` prints it;

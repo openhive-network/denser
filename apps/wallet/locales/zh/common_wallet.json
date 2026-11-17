@@ -311,7 +311,7 @@
       "other": "你还剩{{value}}张选票."
     },
     "confirm_account_witness_vote": "确认见证人投票",
-    "you_are_about_remove_vote": "你即将撤销对该见证人的投票",
+    "you_are_about_remove_vote": "撤销对 @{{witness}} 的投票？",
     "cancel_button": "取消",
     "ok": "确定",
     "you_can_vote_for_maximum_of_witnesses": "你最多可以投票30位见证人",
@@ -320,6 +320,7 @@
     "witness": "Делегаты",
     "votes_received": "获得票数",
     "price_feed": "喂价",
+    "no_price_feed": "未发布喂价",
     "version": "版本",
     "vote": "投票",
     "navigate_to_witness_profile": "前往该用户的个人资料",
@@ -347,15 +348,10 @@
     },
     "bock_gap": {
       "just_now": " 刚刚",
-      "recently": " 最近",
-      "mins_ago": " 分钟前",
-      "hrs_ago": " 小时前",
-      "days_ago": " 天前",
-      "weeks_ago": " 周前",
-      "months_ago": " 个月前",
-      "years_ago": " 年前"
+      "recently": " 最近"
     },
     "vote_for_witness": "为见证人 {{witness}} 投票",
+    "remove_vote_for_witness": "撤销对见证人 {{witness}} 的投票",
     "link_to_witness": "见证人 {{witness}} 的链接"
   },
   "proposals_page": {

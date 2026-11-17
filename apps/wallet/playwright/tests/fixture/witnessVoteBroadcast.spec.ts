@@ -80,10 +80,16 @@ const voteUntilPending = (control: Locator, vote: () => Promise<void>) =>
     await expect(control.locator('.animate-spin')).toBeVisible({ timeout: ATTEMPT_TIMEOUT });
   }).toPass({ timeout: HYDRATION_TIMEOUT });
 
-/** Removes the vote for VOTED_WITNESS through its confirmation dialog; resolves once it is pending. */
+/**
+ * Removes the vote for VOTED_WITNESS through its confirmation dialog, which names the witness;
+ * resolves once it is pending.
+ */
 const removeVote = (page: Page) => {
   const control = witnessVote(page, VOTED_WITNESS);
-  const confirm = page.getByRole('dialog').filter({ hasText: 'Confirm Account Witness Vote' });
+  const confirm = page
+    .getByRole('dialog')
+    .filter({ hasText: 'Confirm Account Witness Vote' })
+    .filter({ hasText: `Remove your vote for @${VOTED_WITNESS}?` });
   return voteUntilPending(control, async () => {
     await control.locator('svg').click({ timeout: ATTEMPT_TIMEOUT });
     await confirm.getByRole('button', { name: 'OK', exact: true }).click({ timeout: ATTEMPT_TIMEOUT });
@@ -116,7 +122,7 @@ test.describe('Witness vote broadcast', () => {
     const button = page.getByRole('button', { name: `Vote for witness ${UNVOTED_WITNESS}`, exact: true });
     await expect(button).toHaveAttribute('aria-pressed', 'false');
     await expect(
-      page.getByRole('button', { name: `Vote for witness ${VOTED_WITNESS}`, exact: true })
+      page.getByRole('button', { name: `Remove vote for witness ${VOTED_WITNESS}`, exact: true })
     ).toHaveAttribute('aria-pressed', 'true');
     await voteUntilPending(witnessVote(page, UNVOTED_WITNESS), async () => {
       await button.focus();

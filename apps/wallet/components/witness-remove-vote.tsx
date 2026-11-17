@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogDescription, DialogFooter, B
 import { useTranslation } from '@/wallet/i18n/client';
 
 interface WitnessRemoveVoteProps {
+  /** The witness whose vote is removed, named in the question */
+  witness: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onVote: (approve: boolean) => void;
@@ -13,14 +15,14 @@ interface WitnessRemoveVoteProps {
  * Confirmation for removing a witness vote. It has no trigger of its own: the caller opens it, and
  * on close focus returns to the element that had it, so the vote control keeps keyboard focus.
  */
-const WitnessRemoveVote = ({ open, onOpenChange, onVote }: WitnessRemoveVoteProps) => {
+const WitnessRemoveVote = ({ witness, open, onOpenChange, onVote }: WitnessRemoveVoteProps) => {
   const { t } = useTranslation('common_wallet');
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>{t('witnesses_page.confirm_account_witness_vote')}</DialogHeader>
-        <DialogDescription>{t('witnesses_page.you_are_about_remove_vote')}</DialogDescription>
+        <DialogDescription>{t('witnesses_page.you_are_about_remove_vote', { witness })}</DialogDescription>
         <DialogFooter className="flex flex-row justify-between pt-4">
           <Button
             variant="redHover"

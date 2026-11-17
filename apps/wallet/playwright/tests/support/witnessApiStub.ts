@@ -6,7 +6,7 @@ import { FIXTURE_API_PORT, startApiStub, type JsonRpcResults } from './apiStub';
  * wallet specs can check what the server renders from it (served by apiStub.ts).
  */
 
-const HEAD_BLOCK = 100_000_000;
+export const HEAD_BLOCK = 100_000_000;
 
 export const STUB_WITNESSES = [
   { owner: 'stub-alpha', votes: '300000000000000000', description: 'Alpha runs a stub witness node' },
