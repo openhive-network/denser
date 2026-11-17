@@ -58,7 +58,7 @@ sub vcl_synth {
 	# only once it is, so a browser refusing it doesn't reload forever; it says why
 	# instead. The script follows the message's element, so it can fill it at once.
 	if (resp.status == 200) {
-		synthetic({"<!doctype html><html><head><meta name="robots" content="noindex"><title>Loading…</title></head><body><p id="gate"></p><noscript>This site needs JavaScript.</noscript><script>document.cookie="denser_human=1; Max-Age=2592000; Path=/; SameSite=Lax"+(location.protocol=="https:"?"; Secure":"");var stored=/(^|;)\s*denser_human=1/.test(document.cookie);document.getElementById("gate").textContent=stored?"Loading…":"This site needs cookies to continue. Please allow cookies for this site and reload.";if(stored)location.reload();</script></body></html>"});
+		synthetic({"<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Loading…</title></head><body><p id="gate"></p><noscript>This site needs JavaScript.</noscript><script>document.cookie="denser_human=1; Max-Age=2592000; Path=/; SameSite=Lax"+(location.protocol=="https:"?"; Secure":"");var stored=/(^|;)\s*denser_human=1/.test(document.cookie);document.getElementById("gate").textContent=stored?"Loading…":"This site needs cookies to continue. Please allow cookies for this site and reload.";if(stored)location.reload();</script></body></html>"});
 	} else {
 		synthetic(resp.reason);
 	}
