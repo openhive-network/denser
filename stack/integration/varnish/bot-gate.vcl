@@ -55,9 +55,10 @@ sub vcl_synth {
 		set resp.http.Retry-After = "300";
 	}
 	# The cookie is set only where it can be (Secure needs https), and the page reloads
-	# only once it is, so a browser refusing it doesn't reload forever.
+	# only once it is, so a browser refusing it doesn't reload forever; it says why
+	# instead. The script follows the message's element, so it can fill it at once.
 	if (resp.status == 200) {
-		synthetic({"<!doctype html><html><head><meta name="robots" content="noindex"><title>Loading…</title><script>document.cookie="denser_human=1; Max-Age=2592000; Path=/; SameSite=Lax"+(location.protocol=="https:"?"; Secure":"");if(/(^|;)\s*denser_human=1/.test(document.cookie))location.reload();</script></head><body><noscript>This site needs JavaScript.</noscript></body></html>"});
+		synthetic({"<!doctype html><html><head><meta name="robots" content="noindex"><title>Loading…</title></head><body><p id="gate"></p><noscript>This site needs JavaScript.</noscript><script>document.cookie="denser_human=1; Max-Age=2592000; Path=/; SameSite=Lax"+(location.protocol=="https:"?"; Secure":"");var stored=/(^|;)\s*denser_human=1/.test(document.cookie);document.getElementById("gate").textContent=stored?"Loading…":"This site needs cookies to continue. Please allow cookies for this site and reload.";if(stored)location.reload();</script></body></html>"});
 	} else {
 		synthetic(resp.reason);
 	}
