@@ -241,7 +241,8 @@
     "account_not_found_title": "未找到任何密钥",
     "account_not_found_description": "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
     "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
-    "go_to_bridge": "前往 Hive Bridge"
+    "go_to_bridge": "前往 Hive Bridge",
+    "wrong_password": "钱包密码错误，请重试。"
   },
   "session_time": {
     "choose_label": "闲置多久后锁定",

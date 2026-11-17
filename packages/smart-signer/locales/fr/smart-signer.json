@@ -241,7 +241,8 @@
     "account_not_found_title": "Aucune clé trouvée",
     "account_not_found_description": "Votre portefeuille Google Drive ne contient aucune clé pour @{{username}}. Ajoutez-les avec Hive Bridge ou utilisez une autre méthode de connexion.",
     "bridge_info": "Hive Bridge vous permet de stocker vos clés Hive en toute sécurité dans Google Drive.",
-    "go_to_bridge": "Aller sur Hive Bridge"
+    "go_to_bridge": "Aller sur Hive Bridge",
+    "wrong_password": "Mot de passe du portefeuille incorrect. Réessayez."
   },
   "session_time": {
     "choose_label": "Verrouiller après une inactivité de",

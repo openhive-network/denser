@@ -241,7 +241,8 @@
     "account_not_found_title": "Ключи не найдены",
     "account_not_found_description": "В кошельке на Google Диске нет ключей для @{{username}}. Добавьте их с помощью Hive Bridge или используйте другой способ входа.",
     "bridge_info": "Hive Bridge позволяет безопасно хранить ключи Hive в Google Диске.",
-    "go_to_bridge": "Перейти в Hive Bridge"
+    "go_to_bridge": "Перейти в Hive Bridge",
+    "wrong_password": "Неверный пароль кошелька. Попробуйте ещё раз."
   },
   "session_time": {
     "choose_label": "Блокировать при бездействии",

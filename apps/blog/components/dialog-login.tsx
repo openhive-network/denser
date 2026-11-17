@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import dynamic from 'next/dynamic';
@@ -20,7 +19,6 @@ const LiteSignInDialog = dynamic(() => import('@/blog/features/lite-account/lite
 interface DialogLoginProps {
   /** The trigger; omit it to open the dialog only through `open` */
   children?: ReactNode;
-  redirectTo?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   /** The key to sign in with */
@@ -33,7 +31,6 @@ interface DialogLoginProps {
 
 function DialogLogin({
   children,
-  redirectTo,
   open,
   onOpenChange,
   keyType = KeyType.posting,
@@ -42,7 +39,6 @@ function DialogLogin({
 }: DialogLoginProps) {
   const { t } = useTranslation('common_blog');
   const signInFormRef = useRef<SignInFormRef>(null);
-  const router = useRouter();
   // Uncontrolled (trigger only) the dialog keeps its own state, so it can close itself for the lite sign-in.
   const [ownOpen, setOwnOpen] = useState(false);
   const isOpen = open ?? ownOpen;
@@ -51,9 +47,6 @@ function DialogLogin({
 
   async function onComplete(_username: string) {
     onOpenChange?.(false);
-    if (redirectTo) {
-      router.push(redirectTo);
-    }
   }
 
   const handleOpenChange = async (nextOpen: boolean) => {

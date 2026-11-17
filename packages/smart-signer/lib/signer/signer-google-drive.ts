@@ -14,6 +14,11 @@ import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/googl
 import { missingKeyDialogProps } from '@smart-signer/lib/signer/google-drive-missing-key';
 import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import {
+  isWalletDecryptionFailure,
+  needsGoogleSignInAgain,
+  WRONG_WALLET_PASSWORD_KEY
+} from '@smart-signer/lib/signer/google-drive-wallet-errors';
+import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
   GOOGLE_OAUTH_USERNAME_KEY,
@@ -333,6 +338,7 @@ export class SignerGoogleDrive extends Signer {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
+      validatePassword: (password) => this.checkWalletPassword(password),
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'password_form.google_drive_password_placeholder'
       }
@@ -352,7 +358,34 @@ export class SignerGoogleDrive extends Signer {
       return { password };
     } catch (error) {
       logger.error('Error in getEncryptionCredentials: %s', error instanceof Error ? error.message : String(error));
+      // A closed prompt ends this sign-in only: the next one asks again
+      this.passwordPromise = undefined;
       throw new Error('No password from user');
+    }
+  }
+
+  /**
+   * The password prompt's `validatePassword`: resolves with the wrong-password message key when
+   * `password` does not decrypt the wallet file, keeping the prompt open for another one, else with
+   * null, closing it. Any other failure is left to the wallet load that follows the prompt.
+   */
+  private async checkWalletPassword(password: string): Promise<string | null> {
+    let probe: IExternalWallet | undefined;
+    try {
+      probe = await createExternalWallet(
+        await getChain(),
+        () => this.getAccessToken(),
+        async () => ({ password }),
+        siteConfig.googleDrive.walletFileName
+      );
+      await probe.enumStoredAccounts();
+      return null;
+    } catch (error) {
+      if (isWalletDecryptionFailure(error)) return WRONG_WALLET_PASSWORD_KEY;
+      logger.debug('Google Drive wallet password not checked: %s', error instanceof Error ? error.message : String(error));
+      return null;
+    } finally {
+      await probe?.close();
     }
   }
 
@@ -478,14 +511,14 @@ export class SignerGoogleDrive extends Signer {
   }
 
   /**
-   * Gets the wallet, signing in to Google again (`forceLogin`) if that fails, unless the user
-   * cancelled the sign-in: then rejects with `GoogleDriveSignInCancelledError`.
+   * Gets the wallet, signing in to Google again (`forceLogin`) if the Google token or Drive access
+   * failed. A cancel, a wrong password or a missing key rejects without a new Google sign-in.
    */
   private async getWalletOrSignInAgain(username: string, keyType: keyof THiveRoles): Promise<IExternalWalletContent> {
     try {
       return await this.getWallet(username, keyType);
     } catch (error) {
-      if (error instanceof GoogleDriveSignInCancelledError) throw error;
+      if (!needsGoogleSignInAgain(error)) throw error;
       logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
 
       return this.getWallet(username, keyType, true);

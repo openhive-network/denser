@@ -241,7 +241,8 @@
     "account_not_found_title": "키 없음",
     "account_not_found_description": "Google Drive 지갑에 @{{username}}의 키가 없습니다. Hive Bridge로 키를 추가하거나 다른 로그인 방법을 사용하세요.",
     "bridge_info": "Hive Bridge를 사용하면 Hive 키를 Google Drive에 안전하게 보관할 수 있습니다.",
-    "go_to_bridge": "Hive Bridge로 이동"
+    "go_to_bridge": "Hive Bridge로 이동",
+    "wrong_password": "지갑 비밀번호가 올바르지 않습니다. 다시 시도하세요."
   },
   "session_time": {
     "choose_label": "다음 시간 동안 활동이 없으면 잠금",
