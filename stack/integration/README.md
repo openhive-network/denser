@@ -466,6 +466,9 @@ mode), the same full commit hash the sidebar's "Version" shortens.
   then `./upgrade.sh`. It is a restart, not a rebuild: the DSN is read at runtime, and
   each app's CSP admits the DSN's origin (or Sentry SaaS's ingest hosts) in `connect-src`.
   Removing the DSN and running `./upgrade.sh` turns it off again.
+- **When the browser loads it:** 5 s after the page's `load`, once the page is idle, so the
+  SDK is not part of the page load. Errors raised before then are kept and sent at that point.
+  A page closed before then sends nothing (`docs/performance/sentry-deferred-load-2026-11-17.md`).
 - **Stack traces stay minified:** follow mode has no Sentry auth token, and the apps'
   builds upload no source maps (`sourcemaps.disable` in `next.config.js`), so frames show
   the served chunk names and positions. Tie them to the code through the release.
