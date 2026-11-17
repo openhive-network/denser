@@ -7,6 +7,7 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import PeakVaultProvider from '@hiveio/wax-signers-peakvault';
 import { requireEncryptedMemo } from '@smart-signer/lib/memo-layout';
 import { decryptMemoWithPeakVault } from '@smart-signer/lib/signer/peakvault-memo-crypto';
+import { forPeakVault } from '@smart-signer/lib/signer/peakvault-transaction';
 const logger = getLogger('app');
 
 declare global {
@@ -55,7 +56,7 @@ export class SignerPeakvault extends Signer {
         this.username,
         requiredKeyType ?? this.keyType
       );
-      await provider.signTransaction(authTx);
+      await provider.signTransaction(forPeakVault(authTx));
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.LEGACY, this.keyType, 'Peakvault');
       logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);

@@ -3,6 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor, type BroadcastInterceptor } from '../support/broadcastInterceptor';
 import { expectUpdateProposalVotesOperation } from '../support/walletOperations';
+import { installPeakVaultStub, peakVaultCalls } from '../support/peakVaultStub';
 import {
   STUB_ACCOUNT,
   logInAsStubAccount,
@@ -59,10 +60,15 @@ const useStubWithVote = (voted: boolean, status = 'active') => {
 /**
  * Opens the proposals page logged in as STUB_ACCOUNT, with its active key stored unless
  * `storeKey` is false (then signing asks for it), once the vote icon shows whether it `voted`.
+ * `loginType` 'peakvault' signs with the Peak Vault stub, installed here.
  */
-const openProposalsPage = async (page: Page, { storeKey, voted }: { storeKey: boolean; voted: boolean }) => {
+const openProposalsPage = async (
+  page: Page,
+  { storeKey, voted, loginType = 'wif' }: { storeKey: boolean; voted: boolean; loginType?: 'wif' | 'peakvault' }
+) => {
   const broadcasts = await installBroadcastInterceptor(page);
-  await logInAsStubAccount(page, 'active');
+  if (loginType === 'peakvault') await installPeakVaultStub(page);
+  await logInAsStubAccount(page, { loginType, keyType: 'active' });
   if (storeKey) await storeStubAccountKey(page, 'active', ACTIVE_WIF);
   await page.goto(`${WALLET_BASE_PATH}/proposals`);
   // Until then the vote icon is the logged-out one, which opens the login dialog.
@@ -106,6 +112,23 @@ const expectEndedVoteControl = async (page: Page, broadcasts: BroadcastIntercept
   await expect(page.getByTestId('proposal-list-item').locator('.animate-spin')).toHaveCount(0);
   await expect(activeKeyPrompt(page)).toBeHidden();
   expect(broadcasts.calls).toHaveLength(0);
+};
+
+/**
+ * Checks Peak Vault was asked once to sign the vote with the active key, given the proposal id as
+ * a string: its schema rejects the number wax's legacy JSON writes for an int64.
+ */
+const expectPeakVaultSignedVote = async (page: Page, approve: boolean) => {
+  const signTxCalls = (await peakVaultCalls(page)).filter(({ method }) => method === 'requestSignTx');
+  expect(signTxCalls).toHaveLength(1);
+  const [account, transaction, role] = signTxCalls[0].args;
+  expect(account).toBe(STUB_ACCOUNT);
+  expect(role).toBe('active');
+  expect(transaction).toMatchObject({
+    operations: [
+      ['update_proposal_votes', { voter: STUB_ACCOUNT, proposal_ids: [STUB_PROPOSAL_ID], approve, extensions: [] }]
+    ]
+  });
 };
 
 /** Dismisses the prompt for the active key that signing opens; resolves once the vote has given up. */
@@ -163,6 +186,23 @@ test.describe('Proposal vote broadcast: voting', () => {
     await expect(button).toBeFocused();
   });
 
+  test('WALLET-TX-PROPOSAL-VOTE-04 — Peak Vault signs a vote with the proposal id as a string, and the vote broadcasts', async ({
+    page
+  }) => {
+    const broadcasts = await openProposalsPage(page, { storeKey: false, voted: false, loginType: 'peakvault' });
+
+    await toggleVote(page);
+
+    await broadcasts.waitForCount(1);
+    await expectPeakVaultSignedVote(page, true);
+    expectUpdateProposalVotesOperation(broadcasts.calls[0], {
+      voter: STUB_ACCOUNT,
+      proposal_ids: [STUB_PROPOSAL_ID],
+      approve: true,
+      extensions: []
+    });
+  });
+
   test('WALLET-TX-PROPOSAL-VOTE-02 — declining to give the active key for a vote broadcasts nothing', async ({
     page
   }) => {
@@ -188,6 +228,23 @@ test.describe('Proposal vote broadcast: removing the vote', () => {
 
     await broadcasts.waitForCount(1);
     expect(broadcasts.calls).toHaveLength(1);
+    expectUpdateProposalVotesOperation(broadcasts.calls[0], {
+      voter: STUB_ACCOUNT,
+      proposal_ids: [STUB_PROPOSAL_ID],
+      approve: false,
+      extensions: []
+    });
+  });
+
+  test('WALLET-TX-PROPOSAL-UNVOTE-04 — Peak Vault signs a vote removal with the proposal id as a string, and it broadcasts', async ({
+    page
+  }) => {
+    const broadcasts = await openProposalsPage(page, { storeKey: false, voted: true, loginType: 'peakvault' });
+
+    await toggleVote(page);
+
+    await broadcasts.waitForCount(1);
+    await expectPeakVaultSignedVote(page, false);
     expectUpdateProposalVotesOperation(broadcasts.calls[0], {
       voter: STUB_ACCOUNT,
       proposal_ids: [STUB_PROPOSAL_ID],
