@@ -6,12 +6,14 @@ import { Separator } from '@ui/components/separator';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
 import DetailsCardVoters from './details-card-voters';
 
 /** A comment footer's votes, payout and voters, which do not depend on the signed-in user. */
 export const CommentFooterStats = memo(function CommentFooterStats({ comment }: { comment: Entry }) {
   const { t } = useTranslation('common_blog');
+  const voteCount = castVoteCount(comment);
 
   return (
     <>
@@ -35,15 +37,15 @@ export const CommentFooterStats = memo(function CommentFooterStats({ comment }: 
         </span>
       </DetailsCardHover>
       <Separator orientation="vertical" className="h-5" />
-      {!!comment.stats && comment.stats.total_votes > 0 ? (
+      {voteCount > 0 ? (
         <>
           <div className="flex items-center">
             <DetailsCardVoters
               post={comment}
               className="hover:text-destructive"
               label={
-                comment.stats.total_votes > 1
-                  ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
+                voteCount > 1
+                  ? t('cards.post_card.votes', { votes: voteCount })
                   : t('cards.post_card.vote')
               }
             />

@@ -31,6 +31,7 @@ import PostSummary from './summary';
 import { Preferences } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import AuthorProfileLink from '@/blog/features/lite-account/author-profile-link';
 import LiteDidBadge from '@/blog/features/lite-account/lite-did-badge';
 import { authorDisplayName, isLiteDid } from '@/blog/features/lite-account/lite-did';
@@ -61,7 +62,7 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
     prevPost.payout === nextPost.payout &&
     prevPost.children === nextPost.children &&
     prevPost.reblogs === nextPost.reblogs &&
-    prevPost.stats?.total_votes === nextPost.stats?.total_votes &&
+    castVoteCount(prevPost) === castVoteCount(nextPost) &&
     prevPost.stats?.gray === nextPost.stats?.gray &&
     prevPost.stats?.is_pinned === nextPost.stats?.is_pinned &&
     prevPost.blacklists === nextPost.blacklists &&
@@ -290,7 +291,7 @@ const PostListItem = memo(
                   </DetailsCardHover>
 
                   <Separator orientation="vertical" />
-                  {post.stats ? <PostCardUpvotesTooltip votes={post.stats.total_votes} /> : null}
+                  {post.stats ? <PostCardUpvotesTooltip votes={castVoteCount(post)} /> : null}
                   <Separator orientation="vertical" />
                   <PostCardCommentTooltip
                     comments={post.children}

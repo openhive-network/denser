@@ -77,6 +77,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import { isCommunity } from '@ui/lib/utils';
 import {
   useSSRObserver,
@@ -214,6 +215,7 @@ const PostContent = () => {
   });
   // A listed post is seeded without its body; an editor opened on it fetches the post for the body
   const bodyWithheld = !!postData?._bodyWithheld;
+  const postVoteCount = postData ? castVoteCount(postData) : 0;
   const editorOpen = edit || liteEdit;
   const { refetch: refetchPost } = postQuery;
   useEffect(() => {
@@ -747,15 +749,15 @@ const PostContent = () => {
                           ${postData.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
-                      {postData.stats?.total_votes ? (
+                      {postVoteCount ? (
                         <>
                           <span className="h-4 w-px bg-border" />
                           <DetailsCardVoters
                             post={postData}
                             className="font-medium text-destructive"
                             label={
-                              postData.stats.total_votes > 1
-                                ? t('post_content.footer.votes', { votes: postData.stats.total_votes })
+                              postVoteCount > 1
+                                ? t('post_content.footer.votes', { votes: postVoteCount })
                                 : t('post_content.footer.vote')
                             }
                           />
