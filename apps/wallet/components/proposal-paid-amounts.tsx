@@ -107,11 +107,14 @@ export function ProposalPaidAmounts({ proposal, total, totalDays, paid }: Propos
           >
             {t('proposals_page.unfunded')}{' '}
             <HbdAmount amount={unfunded.amount} className={unfunded.amount.gt(0) ? UNFUNDED_COLOR : undefined} />
-            {unfunded.neverFunded
-              ? ` (${t('proposals_page.never_funded')})`
-              : unfunded.days > 0
-                ? ` (${t('proposals_page.duration_days', { count: unfunded.days })})`
-                : null}
+            {/* Like the unit, left out of a phone's narrow line */}
+            <span className="hidden sm:inline">
+              {unfunded.neverFunded
+                ? ` (${t('proposals_page.never_funded')})`
+                : unfunded.days > 0
+                  ? ` (${t('proposals_page.duration_days', { count: unfunded.days })})`
+                  : null}
+            </span>
           </span>
         ) : null,
         upToLeft ? (

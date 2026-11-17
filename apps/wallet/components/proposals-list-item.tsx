@@ -1,3 +1,4 @@
+import type Big from 'big.js';
 import type { ReactNode } from 'react';
 import { Link } from '@hive/ui';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
@@ -63,6 +64,22 @@ const StatusTooltip = ({
 // abbreviation does not always give ("15 maj")
 const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
 
+/** The daily pay without a zero fraction, "540" rather than "540.00", for a phone's narrow line. */
+const compactAmount = (amount: Big) => getRoundedAbbreveration(amount).replace(/\.00(?=\D*$)/, '');
+
+/**
+ * `phone` below `sm` and `desktop` from it, so a phone's line fits short forms while the desktop
+ * keeps its wording. Only the desktop text carries `testId`, keeping that element's text one form.
+ */
+const PhoneOrDesktopText = ({ phone, desktop, testId }: { phone: string; desktop: string; testId: string }) => (
+  <>
+    <span className="whitespace-nowrap sm:hidden">{phone}</span>
+    <span className="hidden whitespace-nowrap sm:inline" data-testid={testId}>
+      {desktop}
+    </span>
+  </>
+);
+
 const Dot = ({ className }: { className?: string }) => (
   <span aria-hidden="true" className={className}>
     ·
@@ -100,11 +117,19 @@ export function ProposalListItem({
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
   const timing =
     daysLeft !== null
-      ? t('proposals_page.remaining_days', { count: daysLeft })
+      ? {
+          phone: t('proposals_page.remaining_days_short', { days: daysLeft }),
+          desktop: t('proposals_page.remaining_days', { count: daysLeft })
+        }
       : daysToStart !== null
-        ? t('proposals_page.starts_in', {
-            duration: t('proposals_page.duration_days', { count: daysToStart })
-          })
+        ? {
+            phone: t('proposals_page.starts_in', {
+              duration: t('proposals_page.duration_days_short', { days: daysToStart })
+            }),
+            desktop: t('proposals_page.starts_in', {
+              duration: t('proposals_page.duration_days', { count: daysToStart })
+            })
+          }
         : null;
 
   function getFundingType() {
@@ -153,7 +178,10 @@ export function ProposalListItem({
         {funding ? <ProposalFundingBadge funding={funding} /> : null}
       </div>
 
-      <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400 sm:text-sm">
+      <div
+        className="flex min-w-0 items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400 sm:flex-wrap sm:text-sm"
+        data-testid="proposal-details"
+      >
         <Link
           href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`}
           target="_blank"
@@ -168,7 +196,8 @@ export function ProposalListItem({
             alt={`${proposalData.creator} profile picture`}
           />
         </Link>
-        <span className="whitespace-nowrap">
+        {/* On a phone the line does not wrap: long account names give way instead */}
+        <span className="min-w-0 truncate sm:min-w-max">
           {t('proposals_page.by')}{' '}
           <Link href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`} target="_blank" rel="noopener noreferrer">
             <span className={LINK_CLASS} data-testid="proposal-creator">
@@ -191,12 +220,14 @@ export function ProposalListItem({
           ) : null}
         </span>
         <Dot />
-        <span
-          className="whitespace-nowrap"
-          title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}
-          data-testid="proposal-amount"
-        >
-          {t('proposals_page.per_day', { amount: getRoundedAbbreveration(proposalData.daily_pay.amount) })}
+        <span title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}>
+          <PhoneOrDesktopText
+            phone={t('proposals_page.per_day', { amount: compactAmount(proposalData.daily_pay.amount) })}
+            desktop={t('proposals_page.per_day', {
+              amount: getRoundedAbbreveration(proposalData.daily_pay.amount)
+            })}
+            testId="proposal-amount"
+          />
         </span>
         <Dot className="hidden sm:inline" />
         <span className="hidden whitespace-nowrap sm:inline" data-testid="proposal-date">
@@ -208,12 +239,11 @@ export function ProposalListItem({
             <StatusTooltip
               proposal={proposalData}
               trigger={
-                <span
-                  className="whitespace-nowrap"
-                  data-testid={daysLeft !== null ? 'proposal-remaining-days' : 'proposal-starts-in'}
-                >
-                  {timing}
-                </span>
+                <PhoneOrDesktopText
+                  phone={timing.phone}
+                  desktop={timing.desktop}
+                  testId={daysLeft !== null ? 'proposal-remaining-days' : 'proposal-starts-in'}
+                />
               }
             />
           </>

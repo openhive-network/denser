@@ -406,6 +406,8 @@
     "duration_days_few": "{{count}} dni",
     "duration_days_many": "{{count}} dni",
     "duration_days_other": "{{count}} dnia",
+    "remaining_days_short": "Zostało {{days}} d.",
+    "duration_days_short": "{{days}} d.",
     "funded": "finansowana",
     "not_funded": "niefinansowana",
     "return_proposal_note": "To podstawowa propozycja zwrotna: propozycje z mniejszą liczbą głosów nie są finansowane.",
