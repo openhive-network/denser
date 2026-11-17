@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { APIResponse, Page } from "@playwright/test";
 
 // Market API Response Types
 export interface MarketTickerResult {
@@ -52,6 +52,25 @@ export interface RecentTradesResponse {
   id: number;
   jsonrpc: string;
   result: RecentTradesResult;
+}
+
+// api.hive.blog answers a burst of requests with 429 and an HTML body; the waits before each retry
+// (15 s in all) stay inside a test's 30 s timeout
+const RATE_LIMIT_RETRY_DELAYS_MS = [1000, 2000, 4000, 8000];
+const HTTP_TOO_MANY_REQUESTS = 429;
+
+/** The response of `send`, sent again after each delay while the API answers 429. */
+async function retryWhileRateLimited(send: () => Promise<APIResponse>): Promise<APIResponse> {
+  let response = await send();
+  for (const delayMs of RATE_LIMIT_RETRY_DELAYS_MS) {
+    if (response.status() !== HTTP_TOO_MANY_REQUESTS) break;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    response = await send();
+  }
+  if (!response.ok()) {
+    throw new Error(`${response.url()} answered ${response.status()} ${response.statusText()}`);
+  }
+  return response;
 }
 
 export class ApiHelper {
@@ -274,24 +293,26 @@ export class ApiHelper {
   ) {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
-    const responseGetListOfProposals = await this.page.request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: "2.0",
-        method: "database_api.list_proposals",
-        params: {
-          start: start,
-          limit: limit,
-          order: order,
-          order_direction: order_direction,
-          status: status,
-          last_id: last_id,
+    const responseGetListOfProposals = await retryWhileRateLimited(() =>
+      this.page.request.post(`${url}/`, {
+        data: {
+          id: 0,
+          jsonrpc: "2.0",
+          method: "database_api.list_proposals",
+          params: {
+            start: start,
+            limit: limit,
+            order: order,
+            order_direction: order_direction,
+            status: status,
+            last_id: last_id,
+          },
         },
-      },
-      headers: {
-        Accept: "application/json, text/plain, */*",
-      },
-    });
+        headers: {
+          Accept: "application/json, text/plain, */*",
+        },
+      })
+    );
 
     return responseGetListOfProposals.json();
   }
