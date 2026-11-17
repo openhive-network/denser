@@ -14,7 +14,8 @@ export const STUB_WITNESSES = [
   { owner: 'stub-gamma', votes: '100000000000000000', description: 'Gamma completes the list' }
 ] as const;
 
-const witness = ({ owner, votes }: (typeof STUB_WITNESSES)[number], id: number) => ({
+/** The node's witness object for a stub witness, `id` its index. */
+export const stubWitness = ({ owner, votes }: (typeof STUB_WITNESSES)[number], id: number) => ({
   id,
   owner,
   created: '2020-03-20T14:00:00',
@@ -52,7 +53,7 @@ export const WITNESS_RESULTS: JsonRpcResults = {
     total_vesting_fund_hive: { amount: '180000000000', precision: 3, nai: '@@000000021' },
     total_vesting_shares: { amount: '330000000000000000', precision: 6, nai: '@@000000037' }
   }),
-  'database_api.list_witnesses': () => ({ witnesses: STUB_WITNESSES.map(witness) }),
+  'database_api.list_witnesses': () => ({ witnesses: STUB_WITNESSES.map(stubWitness) }),
   'database_api.find_accounts': (params) => ({ accounts: (params.accounts ?? []).map(account) })
 };
 
