@@ -17,6 +17,7 @@ import {
   sortByWeight,
   totalHpOf,
   vestsToHp,
+  type GovernanceAccount,
   type Voter,
   type WitnessVotersReads
 } from './voters.ts';
@@ -234,7 +235,9 @@ describe('fetchProposalVoters', () => {
           return batch.map((name) => ({
             name,
             ownVests: name === names.at(-1) ? '9000000' : '2000000',
-            proxiedVests: '0'
+            delayedVests: '0',
+            proxiedVests: '0',
+            proxy: ''
           }));
         },
         vestsToHp: toHp
@@ -247,5 +250,66 @@ describe('fetchProposalVoters', () => {
     assert.equal(voters.length, voterCount);
     assert.deepEqual(voters[0], { name: names.at(-1), weight: { ownHp: 4.5, proxyHp: 0 } });
     assert.equal(voters[1]?.name, names[0]);
+  });
+
+  /** Reads of a proposal whose voters are `accounts`, all in one batch. */
+  const proposalReads = (accounts: GovernanceAccount[]) => ({
+    voterNamesFrom: async () => accounts.map((account) => account.name),
+    weightsOf: async (names: string[]) => accounts.filter((account) => names.includes(account.name)),
+    vestsToHp: toHp
+  });
+  const account = (name: string, vests: Partial<GovernanceAccount>): GovernanceAccount => ({
+    name,
+    ownVests: '0',
+    delayedVests: '0',
+    proxiedVests: '0',
+    proxy: '',
+    ...vests
+  });
+
+  it('gives a voter who set a proxy no weight and lists them last, with their proxy', async () => {
+    const voters = await fetchProposalVoters(
+      proposalReads([
+        account('alice', { ownVests: '8000000', proxy: 'bob' }),
+        account('bob', { ownVests: '2000000', proxiedVests: '8000000' }),
+        account('carol', { ownVests: '1000000' })
+      ]),
+      373
+    );
+
+    assert.deepEqual(voters, [
+      { name: 'bob', weight: { ownHp: 1, proxyHp: 4 } },
+      { name: 'carol', weight: { ownHp: 0.5, proxyHp: 0 } },
+      { name: 'alice', weight: null, proxy: 'bob' }
+    ]);
+    // Alice's VESTS count once, through bob.
+    assert.equal(totalHpOf(voters), 5.5);
+  });
+
+  it("leaves a voter's VESTS powered up too recently out of their weight", async () => {
+    const [dave] = await fetchProposalVoters(
+      proposalReads([account('dave', { ownVests: '10000000', delayedVests: '4000000', proxiedVests: '2000000' })]),
+      0
+    );
+    assert.deepEqual(dave, { name: 'dave', weight: { ownHp: 3, proxyHp: 1 } });
+  });
+
+  it("totals the listed weights to the proposal's total_votes", async () => {
+    // A stubbed proposal as the chain counts it: total_votes sums each voter without a proxy,
+    // their VESTS not delayed and every VESTS proxied to them.
+    const accounts = [
+      account('whale', { ownVests: '50000000000', delayedVests: '1000000000', proxiedVests: '7000000000' }),
+      account('dolphin', { ownVests: '3000000000', proxy: 'whale' }),
+      account('fish', { ownVests: '20000000', delayedVests: '20000000' }),
+      account('minnow', { ownVests: '1234567' })
+    ];
+    const totalVotes = '56001234567';
+
+    const voters = await fetchProposalVoters(proposalReads(accounts), 373);
+    assert.ok(Math.abs(totalHpOf(voters) - toHp(totalVotes)) < 1e-9);
+    assert.deepEqual(
+      voters.map((item) => item.name),
+      ['whale', 'minnow', 'fish', 'dolphin']
+    );
   });
 });

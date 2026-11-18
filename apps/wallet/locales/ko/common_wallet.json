@@ -416,6 +416,7 @@
     "others_share_other": "기타 {{count}}명 · {{share}}",
     "weight_with_proxy": "{{own}} HP + 프록시 {{proxy}}",
     "weight_exact_with_proxy": "본인 {{own}} HP + 프록시 {{proxy}} HP",
+    "votes_via_proxy": "@{{proxy}} 통해 투표",
     "breakdown_label": "투표자별 투표 비중",
     "weights_unavailable": "이 API 노드는 투표 비중을 제공하지 않아 투표자를 이름으로만 표시합니다.",
     "search_placeholder": "투표자 검색",

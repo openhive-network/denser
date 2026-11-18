@@ -31,6 +31,7 @@ import { ReadTransportError } from '@transaction/lib/read-transport';
 import { FINANCIAL_REPORT_OP_TYPES } from '@/wallet/lib/financial-report';
 import type { ProposalFundingBadge } from '@/wallet/lib/proposals-list';
 import type { ProposalPaid } from '@/wallet/lib/proposal-payments';
+import type { GovernanceAccount } from '@/wallet/lib/voters';
 
 const logger = getLogger('app');
 
@@ -406,18 +407,21 @@ export const getHafbeWitnessVoters = (
     ...(voterName ? { 'voter-name': voterName } : {})
   });
 
-/** The governance vote weight of each account: its own VESTS and the VESTS proxied to it, in satoshis. */
-export const getGovernanceWeights = async (
-  names: string[]
-): Promise<{ name: string; ownVests: string; proxiedVests: string }[]> => {
+/**
+ * What each account's governance vote weight is made of, in VESTS satoshis: its own VESTS, the part
+ * of them still delayed after a power-up, the VESTS proxied to it, and the proxy it set ('' for none).
+ */
+export const getGovernanceWeights = async (names: string[]): Promise<GovernanceAccount[]> => {
   const { accounts } = await getReadChain().api.database_api.find_accounts({
     accounts: names,
-    delayed_votes_active: false
+    delayed_votes_active: true
   });
   return accounts.map((account) => ({
     name: account.name,
     ownVests: account.vesting_shares.amount,
-    proxiedVests: account.proxied_vsf_votes.reduce((sum, vests) => sum + BigInt(vests), BigInt(0)).toString()
+    delayedVests: account.delayed_votes.reduce((sum, vote) => sum + BigInt(vote.val), BigInt(0)).toString(),
+    proxiedVests: account.proxied_vsf_votes.reduce((sum, vests) => sum + BigInt(vests), BigInt(0)).toString(),
+    proxy: account.proxy
   }));
 };
 

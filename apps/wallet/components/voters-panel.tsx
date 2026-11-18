@@ -129,6 +129,8 @@ function VotersPanel({
 
   const count = voterCount ?? voters.length;
   const weighted = totalHp !== null;
+  // Voters via a proxy hold no share, so the bar's rest leaves them out.
+  const viaProxyCount = voters.filter((voter) => voter.proxy).length;
   const summary = weighted
     ? t('voters_dialog.summary', { count, total: getRoundedAbbreveration(Big(totalHp)) })
     : hasMore
@@ -141,7 +143,7 @@ function VotersPanel({
         {summary}
       </p>
       {weighted && totalHp > 0 && voters.length > 0 && (
-        <VotersBreakdownBar breakdown={breakdownOf(voters, totalHp, count)} />
+        <VotersBreakdownBar breakdown={breakdownOf(voters, totalHp, count - viaProxyCount)} />
       )}
       {!weighted && (
         <p

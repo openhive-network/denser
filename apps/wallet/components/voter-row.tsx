@@ -31,6 +31,18 @@ function VoterWeight({ weight }: { weight: NonNullable<Voter['weight']> }) {
   );
 }
 
+/** The column after a voter's name: their weight, the proxy they vote through, or nothing for a name only. */
+function VoterDetail({ voter }: { voter: Voter }) {
+  const { t } = useTranslation('common_wallet');
+  if (voter.weight) return <VoterWeight weight={voter.weight} />;
+  if (!voter.proxy) return <span className="flex-1" />;
+  return (
+    <span className="min-w-0 flex-1 truncate text-xs text-slate-500 dark:text-slate-400" data-testid="voter-via-proxy">
+      {t('voters_dialog.votes_via_proxy', { proxy: voter.proxy })}
+    </span>
+  );
+}
+
 interface VoterRowProps {
   voter: Voter;
   /** The total the voter's share is of; null when the voters carry no weights. */
@@ -70,7 +82,7 @@ function VoterRow({ voter, totalHp, isOwn, tabIndex, onFocus }: VoterRowProps) {
         {voter.name}
         {isOwn && <span className="sr-only"> ({t('voters_dialog.your_vote')})</span>}
       </Link>
-      {voter.weight ? <VoterWeight weight={voter.weight} /> : <span className="flex-1" />}
+      <VoterDetail voter={voter} />
       {voter.weight && totalHp !== null && (
         <span className="shrink-0 text-right text-xs tabular-nums" data-testid="voter-share">
           {formatShare(shareOf(voterHp(voter), totalHp))}

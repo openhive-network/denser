@@ -427,6 +427,7 @@
     "others_share_other": "{{count}} others · {{share}}",
     "weight_with_proxy": "{{own}} HP + {{proxy}} proxy",
     "weight_exact_with_proxy": "{{own}} HP own + {{proxy}} HP proxied",
+    "votes_via_proxy": "votes via @{{proxy}}",
     "breakdown_label": "Share of the vote weight by voter",
     "weights_unavailable": "This API node does not serve vote weights, so the voters are listed by name only.",
     "search_placeholder": "Search voters",

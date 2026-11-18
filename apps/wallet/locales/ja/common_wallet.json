@@ -416,6 +416,7 @@
     "others_share_other": "その他 {{count}}人 · {{share}}",
     "weight_with_proxy": "{{own}} HP + プロキシ {{proxy}}",
     "weight_exact_with_proxy": "自身 {{own}} HP + プロキシ経由 {{proxy}} HP",
+    "votes_via_proxy": "@{{proxy}} 経由で投票",
     "breakdown_label": "投票者ごとの投票力の割合",
     "weights_unavailable": "このAPIノードは投票の重みを提供していないため、投票者は名前のみ表示されます。",
     "search_placeholder": "投票者を検索",

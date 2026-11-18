@@ -17,10 +17,14 @@ const MIN_BAR_SEGMENT_SHARE = 0.01;
 
 const VESTS_PRECISION = 6;
 
-/** One voter: own and proxied weight in HP, or no weight when the source lists names only. */
+/**
+ * One voter: own and proxied weight in HP, or no weight when the source lists names only or when
+ * the voter set a proxy (`proxy`), which the chain counts the vote of instead.
+ */
 export interface Voter {
   name: string;
   weight: { ownHp: number; proxyHp: number } | null;
+  proxy?: string;
 }
 
 /** The chain's totals a VESTS amount is valued at: HIVE in the vesting fund and VESTS issued, as decimal amounts. */
@@ -40,9 +44,11 @@ export const vestsToHp = (vests: string | number, totals: VestingTotals): number
 /** A voter's whole weight in HP, own and proxied; 0 for one without a weight. */
 export const voterHp = (voter: Voter): number => (voter.weight ? voter.weight.ownHp + voter.weight.proxyHp : 0);
 
-/** `voters` by whole weight, largest first, then by name. */
+/** `voters` by whole weight, largest first, voters via a proxy last, then by name. */
 export const sortByWeight = (voters: readonly Voter[]): Voter[] =>
-  [...voters].sort((a, b) => voterHp(b) - voterHp(a) || a.name.localeCompare(b.name));
+  [...voters].sort(
+    (a, b) => Number(!!a.proxy) - Number(!!b.proxy) || voterHp(b) - voterHp(a) || a.name.localeCompare(b.name)
+  );
 
 /** The sum of the voters' whole weights in HP. */
 export const totalHpOf = (voters: readonly Voter[]): number => voters.reduce((sum, voter) => sum + voterHp(voter), 0);
@@ -186,12 +192,21 @@ export const findWitnessVoter = async (
   return page.voters.map((voter) => fromHafbe(voter, reads));
 };
 
+/** What an account's governance vote weight is made of, in VESTS satoshis; `proxy` is '' for none. */
+export interface GovernanceAccount {
+  name: string;
+  ownVests: string;
+  /** The part of `ownVests` powered up too recently to count for governance yet. */
+  delayedVests: string;
+  proxiedVests: string;
+  proxy: string;
+}
+
 /** The reads a proposal's voters come from. */
 export interface ProposalVotersReads {
   /** Names of the voters of `proposalId` in name order from `from` on, `from` included, at most `limit`. */
   voterNamesFrom: (proposalId: number, from: string, limit: number) => Promise<string[]>;
-  /** The governance weight of each account: own VESTS and the VESTS proxied to it, in satoshis. */
-  weightsOf: (names: string[]) => Promise<{ name: string; ownVests: string; proxiedVests: string }[]>;
+  weightsOf: (names: string[]) => Promise<GovernanceAccount[]>;
   vestsToHp: (vests: string) => number;
 }
 
@@ -199,9 +214,26 @@ export interface ProposalVotersReads {
 export const PROPOSAL_VOTES_BATCH_SIZE = 1000;
 
 /**
- * Every voter of `proposalId` with their weight, by weight, largest first. The node lists a
- * proposal's votes by voter name only, without weights, so ranking them needs them all: the votes
- * are read in batches of PROPOSAL_VOTES_BATCH_SIZE, then the voters' accounts.
+ * A proposal voter weighed as the chain counts a proposal's `total_votes`: a voter who set a proxy
+ * counts nothing (the proxy carries the weight), anyone else their own VESTS not delayed after a
+ * power-up and every level of VESTS proxied to them.
+ */
+const proposalVoterOf = (account: GovernanceAccount, toHp: (vests: string) => number): Voter => {
+  if (account.proxy) return { name: account.name, weight: null, proxy: account.proxy };
+  const directVests = BigInt(account.ownVests) - BigInt(account.delayedVests);
+  return {
+    name: account.name,
+    weight: {
+      ownHp: toHp((directVests > BigInt(0) ? directVests : BigInt(0)).toString()),
+      proxyHp: toHp(account.proxiedVests)
+    }
+  };
+};
+
+/**
+ * Every voter of `proposalId` with their weight, by weight, largest first, voters via a proxy last.
+ * The node lists a proposal's votes by voter name only, without weights, so ranking them needs them
+ * all: the votes are read in batches of PROPOSAL_VOTES_BATCH_SIZE, then the voters' accounts.
  */
 export const fetchProposalVoters = async (reads: ProposalVotersReads, proposalId: number): Promise<Voter[]> => {
   const names: string[] = [];
@@ -217,11 +249,6 @@ export const fetchProposalVoters = async (reads: ProposalVotersReads, proposalId
   for (let i = 0; i < names.length; i += PROPOSAL_VOTES_BATCH_SIZE) {
     batches.push(names.slice(i, i + PROPOSAL_VOTES_BATCH_SIZE));
   }
-  const weights = (await Promise.all(batches.map((batch) => reads.weightsOf(batch)))).flat();
-  return sortByWeight(
-    weights.map((account) => ({
-      name: account.name,
-      weight: { ownHp: reads.vestsToHp(account.ownVests), proxyHp: reads.vestsToHp(account.proxiedVests) }
-    }))
-  );
+  const accounts = (await Promise.all(batches.map((batch) => reads.weightsOf(batch)))).flat();
+  return sortByWeight(accounts.map((account) => proposalVoterOf(account, reads.vestsToHp)));
 };

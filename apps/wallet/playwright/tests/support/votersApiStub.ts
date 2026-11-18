@@ -24,6 +24,8 @@ export const PROPOSAL_WHALE = 'stub-proposal-whale';
 const pad = (index: number) => String(index).padStart(3, '0');
 export const witnessVoterName = (index: number) => `stub-voter-${pad(index)}`;
 export const proposalVoterName = (index: number) => `stub-pvoter-${pad(index)}`;
+/** The proposal's smallest voter, who set PROPOSAL_WHALE as their proxy, so the chain counts no vote of theirs. */
+export const PROPOSAL_VIA_PROXY_VOTER = proposalVoterName(VOTER_COUNT - 3);
 
 const param = (params: object, name: string): unknown => Object.entries(params).find(([key]) => key === name)?.[1];
 
@@ -77,7 +79,7 @@ const NAMES_ONLY_VOTERS = Array.from({ length: VOTER_COUNT }, (_, index) => `stu
 
 /**
  * The proposal's voters: the whale (own and proxied VESTS), STUB_ACCOUNT (fullAccount's VESTS, the
- * second largest) and the rest, smaller by number.
+ * second largest) and the rest, smaller by number; PROPOSAL_VIA_PROXY_VOTER votes through a proxy.
  */
 const PROPOSAL_VOTERS = [
   PROPOSAL_WHALE,
@@ -117,7 +119,8 @@ export const VOTERS_JSON_RPC_RESULTS: JsonRpcResults = {
         return fullAccount({
           name: account.name,
           vesting_shares: vests(weight.vesting_shares),
-          proxied_vsf_votes: [weight.proxied, 0, 0, 0]
+          proxied_vsf_votes: [weight.proxied, 0, 0, 0],
+          proxy: account.name === PROPOSAL_VIA_PROXY_VOTER ? PROPOSAL_WHALE : ''
         });
       })
     };

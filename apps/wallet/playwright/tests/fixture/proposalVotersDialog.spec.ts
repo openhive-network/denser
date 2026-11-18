@@ -4,6 +4,7 @@ import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub } from '../support/walletApiStub';
 import { PROPOSALS_PAGE_REST_RESULTS, PROPOSALS_PAGE_RESULTS } from '../support/proposalsApiStub';
 import {
+  PROPOSAL_VIA_PROXY_VOTER,
   PROPOSAL_WHALE,
   VOTED_PROPOSAL,
   VOTERS_JSON_RPC_RESULTS,
@@ -105,6 +106,11 @@ test.describe('Proposal voters dialog', () => {
     await dialog.getByTestId('voters-load-more').scrollIntoViewIfNeeded();
     await expect(rows).toHaveCount(VOTER_COUNT);
     await expect(dialog.getByTestId('voters-load-more')).toHaveCount(0);
+    // A voter who set a proxy comes last, with the proxy in place of a weight and no share.
+    const viaProxy = rows.last();
+    await expect(viaProxy.getByTestId('proposal-voter-link-dialog')).toHaveText(PROPOSAL_VIA_PROXY_VOTER);
+    await expect(viaProxy.getByTestId('voter-via-proxy')).toHaveText(`votes via @${PROPOSAL_WHALE}`);
+    await expect(viaProxy.getByTestId('voter-share')).toHaveCount(0);
 
     await dialog.getByTestId('voters-search').fill('PVOTER-24');
     await expect(dialog.getByTestId('proposal-voter-link-dialog')).toHaveText(
