@@ -3,9 +3,18 @@ import type { Entry } from '@hive/common-hiveio-packages/wax';
 
 export type CacheSnapshot = { queryKey: readonly unknown[]; data: unknown };
 
+type TPayoutState = Partial<Pick<Entry, 'is_paidout' | 'payout_at'>>;
+
 /**
- * Optimistically update total_votes in postData, discussionData, and entriesInfinite caches.
- * Returns snapshots for rollback.
+ * Whether a vote on `entry` now still changes its `stats.total_votes`: not once the entry is paid out
+ * or past its payout time, since a vote cast after payout is never counted.
+ */
+const countsNewVotes = ({ is_paidout: isPaidOut, payout_at: payoutAt }: TPayoutState): boolean =>
+  !isPaidOut && !(Date.parse(`${payoutAt}Z`) <= Date.now());
+
+/**
+ * Optimistically update total_votes in postData, discussionData, and entriesInfinite caches, on the
+ * entries a vote still counts on (see `countsNewVotes`). Returns snapshots for rollback.
  */
 export function optimisticUpdateTotalVotes(
   queryClient: QueryClient,
@@ -20,7 +29,7 @@ export function optimisticUpdateTotalVotes(
   // Update postData queries (single Entry objects)
   const postQueries = queryClient.getQueriesData<Entry>({ queryKey: ['postData', author, permlink] });
   for (const [key, data] of postQueries) {
-    if (!data?.stats) continue;
+    if (!data?.stats || !countsNewVotes(data)) continue;
     snapshots.push({ queryKey: key, data: structuredClone(data) });
     queryClient.setQueryData(key, {
       ...data,
@@ -38,7 +47,7 @@ export function optimisticUpdateTotalVotes(
       const entry = data[k];
       return entry?.author === author && entry?.permlink === permlink;
     });
-    if (!entryKey || !data[entryKey]?.stats) continue;
+    if (!entryKey || !data[entryKey]?.stats || !countsNewVotes(data[entryKey])) continue;
     snapshots.push({ queryKey: key, data: structuredClone(data) });
     const entry = data[entryKey];
     queryClient.setQueryData(key, {
@@ -59,7 +68,7 @@ export function optimisticUpdateTotalVotes(
     let found = false;
     const updatedPages = data.pages.map((page) =>
       page.map((entry) => {
-        if (entry.author === author && entry.permlink === permlink && entry.stats) {
+        if (entry.author === author && entry.permlink === permlink && entry.stats && countsNewVotes(entry)) {
           found = true;
           return {
             ...entry,
