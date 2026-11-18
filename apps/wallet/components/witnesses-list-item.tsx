@@ -50,6 +50,7 @@ const ONE_DAY_IN_SEC = 86400;
 const MUTED_TEXT = 'text-gray-600 dark:text-gray-400';
 const MUTED_DOT = 'before:text-gray-600 dark:before:text-gray-400';
 const NO_FEED = '—';
+const VOTERS_TRIGGER_CLASS = 'flex items-center gap-1 text-xs text-red-500 hover:underline dark:text-red-400';
 
 function WitnessListItem({
   data,
@@ -223,15 +224,7 @@ function WitnessListItem({
               </button>
             )}
             <div className={clsx('truncate sm:hidden', MUTED_TEXT)} data-testid="witness-phone-summary">
-              <button
-                type="button"
-                onClick={votersDialog.openFrom}
-                aria-label={showVotersLabel}
-                className="underline decoration-dotted underline-offset-2"
-                data-testid="witness-voters-trigger-phone"
-              >
-                {hp}
-              </button>
+              {hp}
               {rankUp && ` (+${rankUp})`} ·{' '}
               {feedPublished ? (
                 <>
@@ -241,6 +234,16 @@ function WitnessListItem({
                 <span title={t('witnesses_page.no_price_feed')}>{NO_FEED}</span>
               )}
             </div>
+            <button
+              type="button"
+              onClick={votersDialog.openFrom}
+              aria-label={showVotersLabel}
+              className={clsx(VOTERS_TRIGGER_CLASS, 'sm:hidden')}
+              data-testid="witness-voters-trigger-phone"
+            >
+              <Icons.list className="h-3 w-3" aria-hidden="true" />
+              {t('witnesses_page.voters')}
+            </button>
           </div>
         </div>
       </td>
@@ -258,7 +261,7 @@ function WitnessListItem({
           type="button"
           onClick={votersDialog.openFrom}
           aria-label={showVotersLabel}
-          className="flex items-center gap-1 text-xs text-red-500 hover:underline dark:text-red-400"
+          className={VOTERS_TRIGGER_CLASS}
           data-testid="witness-voters-trigger"
         >
           <Icons.list className="h-3 w-3" aria-hidden="true" />

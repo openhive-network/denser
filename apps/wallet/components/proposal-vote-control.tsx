@@ -29,6 +29,7 @@ export function ProposalVoteControl({ proposalId, status, voted }: ProposalVoteC
   const [loading, setLoading] = useState(false);
   const [voteSuccess, setVotesSuccess] = useState(voted);
   const voteLabel = t('proposals_page.vote_for_proposal', { id: proposalId });
+  const removeVoteLabel = t('proposals_page.remove_vote_for_proposal', { id: proposalId });
   const votable = isProposalVotable({ status });
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export function ProposalVoteControl({ proposalId, status, voted }: ProposalVoteC
       <button
         type="button"
         className={cn('group relative flex', VOTE_FOCUS_RING)}
-        aria-label={voteLabel}
+        aria-label={voteSuccess ? removeVoteLabel : voteLabel}
         aria-pressed={voteSuccess}
         aria-busy={loading}
         onClick={loading ? undefined : updateProposalVotes}

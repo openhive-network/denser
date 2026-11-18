@@ -253,14 +253,15 @@ test.describe('Proposal vote broadcast: removing the vote', () => {
     });
   });
 
-  test('WALLET-TX-PROPOSAL-UNVOTE-03 — the vote control of a voted proposal reports its pressed state', async ({
+  test('WALLET-TX-PROPOSAL-UNVOTE-03 — the vote control of a voted proposal is named for removing the vote and reports its pressed state', async ({
     page
   }) => {
     await openProposalsPage(page, { storeKey: true, voted: true });
 
     await expect(
-      page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })
+      page.getByRole('button', { name: `Remove your vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })
     ).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })).toHaveCount(0);
   });
 
   test('WALLET-TX-PROPOSAL-UNVOTE-02 — declining to give the active key for a vote removal broadcasts nothing', async ({

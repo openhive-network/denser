@@ -378,6 +378,7 @@
     "by": "by",
     "for": " for ",
     "vote_for_proposal": "Vote for proposal #{{id}}",
+    "remove_vote_for_proposal": "Remove your vote for proposal #{{id}}",
     "vote_ended": "Proposal ended",
     "votes_on_proposal": "Votes on proposal",
     "voters_list": "Voters",

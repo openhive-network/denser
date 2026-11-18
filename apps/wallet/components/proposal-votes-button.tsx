@@ -32,14 +32,15 @@ export function ProposalVotesButton({
       <button
         type="button"
         aria-label={t('proposals_page.show_voters_label', { amount, id: proposalId })}
-        className="group flex flex-col items-center gap-0.5 self-center rounded-md px-1 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:ring-offset-slate-800"
+        className="group flex flex-col items-center gap-0.5 self-center max-sm:gap-0 rounded-md px-1 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:ring-offset-slate-800"
         data-testid="vote-proposals-dialog-trigger"
       >
-        <span className="whitespace-nowrap text-sm sm:text-base md:text-xl" data-testid="vote-proposal-value">
+        <span className="whitespace-nowrap text-sm max-sm:leading-4 sm:text-base md:text-xl" data-testid="vote-proposal-value">
           {amount}
         </span>
-        <span className="hidden items-center gap-1 text-xs text-slate-600 dark:text-slate-300 sm:flex">
-          <Icons.list className="h-3.5 w-3.5" aria-hidden="true" />
+        {/* On a phone the label stacks under the total within the height of the row's details line */}
+        <span className="flex items-center gap-1 text-xs text-slate-600 max-sm:leading-3 dark:text-slate-300">
+          <Icons.list className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           {t('proposals_page.voters_list')}
         </span>
       </button>

@@ -391,6 +391,7 @@
     "by": "przez",
     "for": " dla ",
     "vote_for_proposal": "Głosuj na propozycję #{{id}}",
+    "remove_vote_for_proposal": "Wycofaj głos na propozycję #{{id}}",
     "vote_ended": "Propozycja zakończona",
     "votes_on_proposal": "Głosy na propozycję",
     "voters_list": "Głosujący",
