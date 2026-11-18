@@ -38,7 +38,7 @@ export function ProposalVotesButton({
         <span className="whitespace-nowrap text-sm sm:text-base md:text-xl" data-testid="vote-proposal-value">
           {amount}
         </span>
-        <span className="hidden items-center gap-1 text-xs text-slate-600 dark:text-slate-300 sm:flex">
+        <span className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-300">
           <Icons.list className="h-3.5 w-3.5" aria-hidden="true" />
           {t('proposals_page.voters_list')}
         </span>

@@ -373,6 +373,7 @@
     "by": "由",
     "for": " 用于 ",
     "vote_for_proposal": "为提案 #{{id}} 投票",
+    "remove_vote_for_proposal": "撤销对提案 #{{id}} 的投票",
     "vote_ended": "提案已结束",
     "votes_on_proposal": "提案投票",
     "voters_list": "投票者",

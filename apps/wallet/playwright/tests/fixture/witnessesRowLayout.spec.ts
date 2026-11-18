@@ -64,12 +64,14 @@ const EXPECTED = {
   pl: {
     lastRankUp: '+999.99K do miejsca 100',
     disabled: 'Wyłączony 3 lata temu',
-    disabledForAYear: 'Wyłączony 1 rok temu'
+    disabledForAYear: 'Wyłączony 1 rok temu',
+    voters: 'Głosujący'
   },
   en: {
     lastRankUp: '+999.99K to #100',
     disabled: 'Disabled 3 years ago',
-    disabledForAYear: 'Disabled 1 year ago'
+    disabledForAYear: 'Disabled 1 year ago',
+    voters: 'Voters'
   }
 } as const;
 
@@ -191,6 +193,9 @@ for (const lang of ['pl', 'en'] as const) {
       await expect(witnessRow(page, TAGGED_WITNESS).getByTestId('witness-phone-summary')).toContainText(
         /\$\d+\.\d{3} · \S/
       );
+      await expect(tagged.getByTestId('witness-voters-trigger-phone')).toHaveText(EXPECTED[lang].voters);
+      await expect(tagged.getByTestId('witness-voters-trigger-phone')).toBeVisible();
+      await expect(tagged.getByTestId('witness-voters-trigger')).toBeHidden();
     });
 
     test(`WALLET-WITNESSES-ROW-04 — at 844 px in ${lang} no site link reaches the version column and every rank-up text shows whole`, async ({

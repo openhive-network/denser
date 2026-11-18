@@ -384,6 +384,7 @@
     "by": "por",
     "for": " para ",
     "vote_for_proposal": "Votar por la propuesta #{{id}}",
+    "remove_vote_for_proposal": "Retirar tu voto a la propuesta #{{id}}",
     "vote_ended": "Propuesta finalizada",
     "votes_on_proposal": "Votos de la propuesta",
     "voters_list": "Votantes",

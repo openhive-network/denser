@@ -148,4 +148,26 @@ test.describe('Proposal voters dialog', () => {
     expect(new Set(lefts).size).toBe(1);
     expect(await dialog.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(0);
   });
+
+  for (const [lang, label] of [
+    ['en', 'Voters'],
+    ['pl', 'Głosujący']
+  ] as const) {
+    test(`WALLET-PROPOSAL-VOTERS-05 — in ${lang} on a phone in portrait the vote total says it opens the voters, and does`, async ({
+      page,
+      baseURL
+    }) => {
+      await page.setViewportSize(PHONE);
+      await page.context().addCookies([{ name: 'NEXT_LOCALE', value: lang, url: baseURL }]);
+      await page.goto(`${WALLET_BASE_PATH}/proposals`);
+      const trigger = new ProposalsPage(page).proposalCard(VOTED_PROPOSAL).getByTestId('vote-proposals-dialog-trigger');
+      const votersLink = trigger.getByText(label, { exact: true });
+      await expect(votersLink).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+      const linkBox = await votersLink.boundingBox();
+      expect(linkBox && linkBox.x + linkBox.width).toBeLessThanOrEqual(PHONE.width);
+
+      await votersLink.click();
+      await expect(page.getByTestId('vote-proposals-dialog').getByTestId('voter-row').first()).toBeVisible();
+    });
+  }
 });

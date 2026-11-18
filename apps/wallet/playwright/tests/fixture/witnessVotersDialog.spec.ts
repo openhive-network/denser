@@ -196,7 +196,7 @@ test.describe('Witness voters dialog', () => {
     await expect(dialog.getByTestId('voters-summary')).toHaveText(`${VOTER_COUNT} voters`);
   });
 
-  test('WALLET-WITNESS-VOTERS-05 — in Polish on a phone the vote total opens the dialog full screen, one column, nothing sideways', async ({
+  test('WALLET-WITNESS-VOTERS-05 — in Polish on a phone the voters link opens the dialog full screen, one column, nothing sideways', async ({
     page,
     baseURL
   }) => {
@@ -205,6 +205,7 @@ test.describe('Witness voters dialog', () => {
     await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
     const trigger = witnessRow(page, HAFBE_WITNESS).getByTestId('witness-voters-trigger-phone');
     await expect(trigger).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(trigger).toHaveText('Głosujący');
     await trigger.click();
 
     const dialog = page.getByTestId('witness-voters-dialog');
