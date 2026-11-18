@@ -450,7 +450,7 @@
     "others_share_few": "pozostali ({{count}}) · {{share}}",
     "others_share_many": "pozostali ({{count}}) · {{share}}",
     "others_share_other": "pozostali ({{count}}) · {{share}}",
-    "weight_with_proxy": "{{own}} HP + {{proxy}} z proxy",
+    "weight_proxy": "+{{proxy}} z proxy",
     "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP z proxy",
     "votes_via_proxy": "głosuje przez @{{proxy}}",
     "breakdown_label": "Udział głosujących w sile głosów",

@@ -12,9 +12,9 @@ import { STUB_WITNESSES } from './witnessApiStub';
 /** How many voters each stub witness and the proposal have. */
 export const VOTER_COUNT = 250;
 
-/** The witness hafbe-api serves the voters of, and its largest voter, with own and proxied VESTS. */
+/** The witness hafbe-api serves the voters of, and its largest voter, with own and proxied VESTS and a name as long as Hive allows. */
 export const HAFBE_WITNESS = STUB_WITNESSES[0].owner;
-export const HAFBE_WHALE = 'stub-whale';
+export const HAFBE_WHALE = 'stub-whale-voter';
 /** The witness hafbe-api does not serve (it answers 404), listed by name only. */
 export const NAMES_ONLY_WITNESS = STUB_WITNESSES[1].owner;
 /** The proposal the dialog lists the voters of, and its largest voter. */

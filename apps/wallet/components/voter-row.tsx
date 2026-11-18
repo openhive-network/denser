@@ -5,17 +5,17 @@ import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
 import { useTranslation } from '@/wallet/i18n/client';
 import { formatShare, shareOf, voterHp, type Voter } from '@/wallet/lib/voters';
 
-const shortHp = (hp: number) => getRoundedAbbreveration(Big(hp));
+/** An amount of HP that rounds to zero at two decimals reads "0" rather than "0.00". */
+const shortHp = (hp: number) => (hp < 0.005 ? '0' : getRoundedAbbreveration(Big(hp)));
 const exactHp = (hp: number) => numberWithCommas(hp.toFixed(3));
 
-/** The weight column of a row: "16.82M HP + 16.60M proxy", the exact amounts as its title. */
+/**
+ * The weight column of a row: "16.82M HP +16.60M proxy", the proxied part smaller and lighter so the
+ * largest weights fit three columns; the exact amounts are its title.
+ */
 function VoterWeight({ weight }: { weight: NonNullable<Voter['weight']> }) {
   const { t } = useTranslation('common_wallet');
   const { ownHp, proxyHp } = weight;
-  const text =
-    proxyHp > 0
-      ? t('voters_dialog.weight_with_proxy', { own: shortHp(ownHp), proxy: shortHp(proxyHp) })
-      : `${shortHp(ownHp)} HP`;
   const title =
     proxyHp > 0
       ? t('voters_dialog.weight_exact_with_proxy', { own: exactHp(ownHp), proxy: exactHp(proxyHp) })
@@ -26,7 +26,15 @@ function VoterWeight({ weight }: { weight: NonNullable<Voter['weight']> }) {
       title={title}
       data-testid="voter-values-dialog"
     >
-      {text}
+      {shortHp(ownHp)} HP
+      {proxyHp > 0 && (
+        <>
+          {' '}
+          <span className="text-[11px] text-slate-400 dark:text-slate-500">
+            {t('voters_dialog.weight_proxy', { proxy: shortHp(proxyHp) })}
+          </span>
+        </>
+      )}
     </span>
   );
 }
@@ -57,7 +65,7 @@ function VoterRow({ voter, totalHp, isOwn, tabIndex, onFocus }: VoterRowProps) {
   const { t } = useTranslation('common_wallet');
   return (
     <li
-      className={clsx('flex h-10 min-w-0 items-center gap-2 rounded-md px-1.5 whitespace-nowrap', {
+      className={clsx('flex h-10 min-w-0 items-center gap-1.5 rounded-md px-1.5 whitespace-nowrap', {
         'bg-rose-100 dark:bg-rose-900/50': isOwn
       })}
       data-testid="voter-row"

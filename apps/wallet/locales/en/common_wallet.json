@@ -425,7 +425,7 @@
     "count_more_other": "{{count}}+ voters",
     "others_share_one": "{{count}} other · {{share}}",
     "others_share_other": "{{count}} others · {{share}}",
-    "weight_with_proxy": "{{own}} HP + {{proxy}} proxy",
+    "weight_proxy": "+{{proxy}} proxy",
     "weight_exact_with_proxy": "{{own}} HP own + {{proxy}} HP proxied",
     "votes_via_proxy": "votes via @{{proxy}}",
     "breakdown_label": "Share of the vote weight by voter",

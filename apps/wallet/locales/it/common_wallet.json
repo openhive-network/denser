@@ -437,7 +437,7 @@
     "others_share_one": "altri ({{count}}) · {{share}}",
     "others_share_many": "altri ({{count}}) · {{share}}",
     "others_share_other": "altri ({{count}}) · {{share}}",
-    "weight_with_proxy": "{{own}} HP + {{proxy}} tramite proxy",
+    "weight_proxy": "+{{proxy}} tramite proxy",
     "weight_exact_with_proxy": "{{own}} HP propri + {{proxy}} HP tramite proxy",
     "votes_via_proxy": "vota tramite @{{proxy}}",
     "breakdown_label": "Quota del peso di voto per votante",
