@@ -352,7 +352,9 @@
     },
     "vote_for_witness": "証人 {{witness}} に投票",
     "remove_vote_for_witness": "証人 {{witness}} への投票を取り消す",
-    "link_to_witness": "証人 {{witness}} へのリンク"
+    "link_to_witness": "証人 {{witness}} へのリンク",
+    "voters": "投票者",
+    "show_voters_label": "証人 @{{witness}} の投票者を表示"
   },
   "proposals_page": {
     "paid": "支払い済み",
@@ -405,6 +407,23 @@
     "dhf_explanation": "分散型Hiveファンドは、毎日HBD残高の1%を上限に、得票の多い提案から支払います。返還提案より下位の提案には支払われません。<faq>詳しくはFAQへ</faq>",
     "funding_line_funded": "次回の支払いで資金提供",
     "funding_line_not_funded": "次回の支払いで資金提供なし"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "証人への投票",
+    "summary_other": "投票者 {{count}}人 · {{total}} HP",
+    "count_other": "投票者 {{count}}人",
+    "count_more_other": "投票者 {{count}}人以上",
+    "others_share_other": "その他 {{count}}人 · {{share}}",
+    "weight_with_proxy": "{{own}} HP + プロキシ {{proxy}}",
+    "weight_exact_with_proxy": "自身 {{own}} HP + プロキシ経由 {{proxy}} HP",
+    "breakdown_label": "投票者ごとの投票力の割合",
+    "weights_unavailable": "このAPIノードは投票の重みを提供していないため、投票者は名前のみ表示されます。",
+    "search_placeholder": "投票者を検索",
+    "search_label": "名前で投票者を検索",
+    "no_voters": "まだ投票はありません。",
+    "no_matches": "検索に一致する投票者はいません。",
+    "load_more": "さらに読み込む",
+    "your_vote": "あなたの投票"
   },
   "login_form": {
     "cancel_button": "キャンセル",

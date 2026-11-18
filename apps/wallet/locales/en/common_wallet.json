@@ -356,7 +356,9 @@
     },
     "vote_for_witness": "Vote for witness {{witness}}",
     "remove_vote_for_witness": "Remove vote for witness {{witness}}",
-    "link_to_witness": "Link to witness {{witness}}"
+    "link_to_witness": "Link to witness {{witness}}",
+    "voters": "Voters",
+    "show_voters_label": "Show the voters of witness @{{witness}}"
   },
   "proposals_page": {
     "paid": "Paid",
@@ -412,6 +414,27 @@
     "dhf_explanation": "The Decentralized Hive Fund pays the proposals with the most votes every day, up to 1% of its HBD balance; proposals ranked below the return proposal get nothing. <faq>Read more in the FAQ</faq>",
     "funding_line_funded": "Funded in the next round",
     "funding_line_not_funded": "Not funded in the next round"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "Votes for witness",
+    "summary_one": "{{count}} voter · {{total}} HP",
+    "summary_other": "{{count}} voters · {{total}} HP",
+    "count_one": "{{count}} voter",
+    "count_other": "{{count}} voters",
+    "count_more_one": "{{count}}+ voter",
+    "count_more_other": "{{count}}+ voters",
+    "others_share_one": "{{count}} other · {{share}}",
+    "others_share_other": "{{count}} others · {{share}}",
+    "weight_with_proxy": "{{own}} HP + {{proxy}} proxy",
+    "weight_exact_with_proxy": "{{own}} HP own + {{proxy}} HP proxied",
+    "breakdown_label": "Share of the vote weight by voter",
+    "weights_unavailable": "This API node does not serve vote weights, so the voters are listed by name only.",
+    "search_placeholder": "Search voters",
+    "search_label": "Search the voters by name",
+    "no_voters": "No votes yet.",
+    "no_matches": "No voter matches the search.",
+    "load_more": "Load more",
+    "your_vote": "your vote"
   },
   "login_form": {
     "cancel_button": "Cancel",

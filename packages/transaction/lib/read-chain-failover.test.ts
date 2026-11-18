@@ -132,6 +132,25 @@ describe('getReadChain() REST failover', function () {
 
   const slowChain = () => getReadChain().withTimeout(SLOW_CALL_TIMEOUT_MS);
 
+  it("reads a witness's voters from the next node when the primary lacks hafbe-api, keeping its balance-api", async () => {
+    primary.statusByApi['hafbe-api'] = 404;
+
+    const voters = await slowChain().restApi['hafbe-api'].witnessVoters({
+      'account-name': 'gtg',
+      page: 1,
+      'page-size': 100
+    });
+    const delegations = await slowChain().restApi['balance-api'].accountDelegations({ 'account-name': 'alice' });
+
+    expect(voters).to.deep.equal({ node: second.url });
+    expect(delegations).to.deep.equal({ node: primary.url });
+    expect(primary.requests).to.deep.equal([
+      '/hafbe-api/witnesses/gtg/voters?page=1&page-size=100',
+      '/balance-api/accounts/alice/delegations'
+    ]);
+    expect(second.requests).to.deep.equal(['/hafbe-api/witnesses/gtg/voters?page=1&page-size=100']);
+  });
+
   it('serves account history from the next node when the primary answers 404', async () => {
     primary.statusByApi['hivemind-api'] = 404;
 

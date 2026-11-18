@@ -7,7 +7,7 @@ import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@hive/ui/components/button';
-import { getWitnessList, rankWitnesses, WITNESS_LIST_QUERY_KEY } from '@/wallet/lib/witness-list';
+import { getWitnessList, rankWitnesses, vestingTotalsOf, WITNESS_LIST_QUERY_KEY } from '@/wallet/lib/witness-list';
 import { majorityVersion as majorityVersionOf } from '@/wallet/lib/witness-row';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '@/wallet/components/dialog-login';
@@ -68,6 +68,7 @@ export default function WitnessesPage() {
     queryFn: getWitnessList
   });
   const rankedWitnesses = useMemo(() => (witnessList ? rankWitnesses(witnessList) : undefined), [witnessList]);
+  const vestingTotals = useMemo(() => (witnessList ? vestingTotalsOf(witnessList) : undefined), [witnessList]);
   const majorityVersion = useMemo(
     () =>
       rankedWitnesses &&
@@ -168,7 +169,7 @@ export default function WitnessesPage() {
                     {t('global.loading')}
                   </td>
                 </tr>
-              ) : !witnessList || !rankedWitnesses ? (
+              ) : !witnessList || !rankedWitnesses || !vestingTotals ? (
                 <tr>
                   <td colSpan={5} className="animate-pulse p-2 text-xl">
                     {t('global.something_went_wrong')}
@@ -182,6 +183,7 @@ export default function WitnessesPage() {
                     witnessProfile={witnessList.profiles[element.owner]}
                     key={element.id}
                     headBlock={witnessList.headBlock}
+                    vestingTotals={vestingTotals}
                     majorityVersion={majorityVersion}
                     highlighted={highlight === element.owner}
                     voteEnabled={user?.isLoggedIn}

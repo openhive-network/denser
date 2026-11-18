@@ -352,7 +352,9 @@
     },
     "vote_for_witness": "증인 {{witness}}에게 투표",
     "remove_vote_for_witness": "증인 {{witness}}에 대한 투표 철회",
-    "link_to_witness": "증인 {{witness}} 링크"
+    "link_to_witness": "증인 {{witness}} 링크",
+    "voters": "투표자",
+    "show_voters_label": "증인 @{{witness}}의 투표자 보기"
   },
   "proposals_page": {
     "paid": "지급됨",
@@ -405,6 +407,23 @@
     "dhf_explanation": "탈중앙화 Hive 펀드는 매일 HBD 잔액의 최대 1%까지 득표가 가장 많은 제안부터 지급합니다. 반환 제안보다 순위가 낮은 제안은 받지 못합니다. <faq>FAQ에서 자세히 보기</faq>",
     "funding_line_funded": "다음 지급에서 지원됨",
     "funding_line_not_funded": "다음 지급에서 지원 안 됨"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "증인에 대한 투표",
+    "summary_other": "투표자 {{count}}명 · {{total}} HP",
+    "count_other": "투표자 {{count}}명",
+    "count_more_other": "투표자 {{count}}명 이상",
+    "others_share_other": "기타 {{count}}명 · {{share}}",
+    "weight_with_proxy": "{{own}} HP + 프록시 {{proxy}}",
+    "weight_exact_with_proxy": "본인 {{own}} HP + 프록시 {{proxy}} HP",
+    "breakdown_label": "투표자별 투표 비중",
+    "weights_unavailable": "이 API 노드는 투표 비중을 제공하지 않아 투표자를 이름으로만 표시합니다.",
+    "search_placeholder": "투표자 검색",
+    "search_label": "이름으로 투표자 검색",
+    "no_voters": "아직 투표가 없습니다.",
+    "no_matches": "검색과 일치하는 투표자가 없습니다.",
+    "load_more": "더 불러오기",
+    "your_vote": "내 투표"
   },
   "login_form": {
     "cancel_button": "취소",

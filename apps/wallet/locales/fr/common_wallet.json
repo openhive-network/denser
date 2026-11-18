@@ -361,7 +361,9 @@
     },
     "vote_for_witness": "Voter pour le témoin {{witness}}",
     "remove_vote_for_witness": "Retirer le vote pour le témoin {{witness}}",
-    "link_to_witness": "Lien vers le témoin {{witness}}"
+    "link_to_witness": "Lien vers le témoin {{witness}}",
+    "voters": "Votants",
+    "show_voters_label": "Afficher les votants du témoin @{{witness}}"
   },
   "proposals_page": {
     "paid": "Payé",
@@ -420,6 +422,31 @@
     "dhf_explanation": "Le Fonds décentralisé Hive paie chaque jour les propositions ayant le plus de votes, jusqu'à 1 % de son solde HBD ; les propositions classées sous la proposition de retour ne reçoivent rien. <faq>En savoir plus dans la FAQ</faq>",
     "funding_line_funded": "Financées au prochain tour",
     "funding_line_not_funded": "Non financées au prochain tour"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "Votes pour le témoin",
+    "summary_one": "{{count}} votant · {{total}} HP",
+    "summary_many": "{{count}} votants · {{total}} HP",
+    "summary_other": "{{count}} votants · {{total}} HP",
+    "count_one": "{{count}} votant",
+    "count_many": "{{count}} votants",
+    "count_other": "{{count}} votants",
+    "count_more_one": "{{count}}+ votant",
+    "count_more_many": "{{count}}+ votants",
+    "count_more_other": "{{count}}+ votants",
+    "others_share_one": "autres ({{count}}) · {{share}}",
+    "others_share_many": "autres ({{count}}) · {{share}}",
+    "others_share_other": "autres ({{count}}) · {{share}}",
+    "weight_with_proxy": "{{own}} HP + {{proxy}} par proxy",
+    "weight_exact_with_proxy": "{{own}} HP propres + {{proxy}} HP par proxy",
+    "breakdown_label": "Part du poids des votes par votant",
+    "weights_unavailable": "Ce nœud d'API ne fournit pas le poids des votes : les votants sont listés par nom seulement.",
+    "search_placeholder": "Rechercher des votants",
+    "search_label": "Rechercher les votants par nom",
+    "no_voters": "Aucun vote pour l'instant.",
+    "no_matches": "Aucun votant ne correspond à la recherche.",
+    "load_more": "Afficher plus",
+    "your_vote": "votre vote"
   },
   "login_form": {
     "cancel_button": "Annuler",

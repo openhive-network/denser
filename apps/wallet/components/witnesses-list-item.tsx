@@ -6,6 +6,7 @@ import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { memo, useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
@@ -13,6 +14,11 @@ import { useLocale } from '@ui/components/locale-context';
 import { hasPublishedFeed, isVersionBelow } from '@/wallet/lib/witness-row';
 import WitnessVoteButton from './witness-vote-button';
 import WitnessSiteLink from './witness-site-link';
+import type { VestingTotals } from '@/wallet/lib/voters';
+import { useLazyDialog } from './hooks/use-lazy-dialog';
+
+// Loaded when a row's voters are first opened: the witness page's own load carries none of it.
+const WitnessVotersDialog = dynamic(() => import('./witness-voters-dialog'), { ssr: false });
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -26,6 +32,8 @@ interface WitnessListItemProps {
   data: RankedWitness;
   witnessProfile?: WitnessProfile;
   headBlock: number;
+  /** The chain totals the voters' VESTS are valued at */
+  vestingTotals: VestingTotals;
   /** The version most of the top witnesses run; a lower one is flagged on narrow screens */
   majorityVersion?: string;
   /** Whether the row is the one the page's `highlight` parameter names */
@@ -44,6 +52,7 @@ const NO_FEED = '—';
 function WitnessListItem({
   data,
   headBlock,
+  vestingTotals,
   witnessProfile,
   majorityVersion,
   highlighted,
@@ -78,6 +87,8 @@ function WitnessListItem({
     Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
   ).toFixed(3)}`;
   const feedPublished = hasPublishedFeed(data.last_hbd_exchange_update);
+  const votersDialog = useLazyDialog();
+  const showVotersLabel = t('witnesses_page.show_voters_label', { witness: data.owner });
 
   const ref = useRef<HTMLTableRowElement>(null);
   useEffect(() => {
@@ -209,7 +220,15 @@ function WitnessListItem({
               </button>
             )}
             <div className={clsx('truncate sm:hidden', MUTED_TEXT)}>
-              {hp}
+              <button
+                type="button"
+                onClick={votersDialog.openFrom}
+                aria-label={showVotersLabel}
+                className="underline decoration-dotted underline-offset-2"
+                data-testid="witness-voters-trigger-phone"
+              >
+                {hp}
+              </button>
               {rankUp && ` (+${rankUp})`} ·{' '}
               {feedPublished ? (
                 <>
@@ -232,6 +251,16 @@ function WitnessListItem({
         <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
           {hp}
         </div>
+        <button
+          type="button"
+          onClick={votersDialog.openFrom}
+          aria-label={showVotersLabel}
+          className="flex items-center gap-1 text-xs text-red-500 hover:underline dark:text-red-400"
+          data-testid="witness-voters-trigger"
+        >
+          <Icons.list className="h-3 w-3" aria-hidden="true" />
+          {t('witnesses_page.voters')}
+        </button>
         {rankUpText && (
           <div className={clsx('truncate', MUTED_TEXT)} title={rankUpText} data-testid="witness-rank-up">
             {rankUpText}
@@ -257,6 +286,16 @@ function WitnessListItem({
           >
             {NO_FEED}
           </span>
+        )}
+        {votersDialog.mounted && (
+          <WitnessVotersDialog
+            witness={data.owner}
+            totalHp={Number(data.vestsToHp)}
+            totals={vestingTotals}
+            open={votersDialog.open}
+            onOpenChange={votersDialog.onOpenChange}
+            onCloseAutoFocus={votersDialog.onCloseAutoFocus}
+          />
         )}
       </td>
     </tr>

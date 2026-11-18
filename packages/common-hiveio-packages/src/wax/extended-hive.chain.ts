@@ -1318,6 +1318,23 @@ export interface BalanceApiProposalPaymentTotals {
   last_payment_time: string | null;
 }
 
+/** A witness's voter as the block explorer's hafbe-api lists it; VESTS in satoshis, `vests` being own and proxied together. */
+export interface HafbeWitnessVoter {
+  voter_name: string;
+  vests: string;
+  account_vests: string;
+  proxied_vests: string;
+  /** When the vote was cast */
+  timestamp: string;
+}
+
+/** A page of a witness's voters from hafbe-api, with the count of all of them and of their pages. */
+export interface HafbeWitnessVoters {
+  total_votes: number;
+  total_pages: number;
+  voters: HafbeWitnessVoter[];
+}
+
 /** Paging and observer of a hivemind REST post list: `page-size` posts after `start-author`/`start-permlink`. */
 export interface HivemindRestPostPage {
   'page-size'?: number;
@@ -1498,6 +1515,21 @@ Together with the author name, it uniquely identifies the post.
       params: { 'proposal-ids': string };
       /** One entry per distinct requested id, in ascending id order */
       result: BalanceApiProposalPaymentTotals[];
+    };
+  };
+  'hafbe-api': {
+    witnessVoters: {
+      params: {
+        'account-name': string;
+        /** From 1 */
+        page?: number;
+        'page-size'?: number;
+        sort?: 'vests' | 'account_vests' | 'proxied_vests' | 'timestamp' | 'voter';
+        direction?: 'asc' | 'desc';
+        /** Lists only the voter of this exact name */
+        'voter-name'?: string;
+      };
+      result: HafbeWitnessVoters;
     };
   };
 };

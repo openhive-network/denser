@@ -352,7 +352,9 @@
     },
     "vote_for_witness": "为见证人 {{witness}} 投票",
     "remove_vote_for_witness": "撤销对见证人 {{witness}} 的投票",
-    "link_to_witness": "见证人 {{witness}} 的链接"
+    "link_to_witness": "见证人 {{witness}} 的链接",
+    "voters": "投票者",
+    "show_voters_label": "查看见证人 @{{witness}} 的投票者"
   },
   "proposals_page": {
     "paid": "已支付",
@@ -405,6 +407,23 @@
     "dhf_explanation": "去中心化 Hive 基金每天按票数从高到低支付提案，上限为其 HBD 余额的 1%；排在返还提案之后的提案得不到资助。<faq>在常见问题中了解更多</faq>",
     "funding_line_funded": "下一轮获得资助",
     "funding_line_not_funded": "下一轮不获资助"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "见证人的投票",
+    "summary_other": "{{count}} 位投票者 · {{total}} HP",
+    "count_other": "{{count}} 位投票者",
+    "count_more_other": "{{count}}+ 位投票者",
+    "others_share_other": "其他 {{count}} 位 · {{share}}",
+    "weight_with_proxy": "{{own}} HP + 代理 {{proxy}}",
+    "weight_exact_with_proxy": "自有 {{own}} HP + 代理 {{proxy}} HP",
+    "breakdown_label": "各投票者所占投票权重",
+    "weights_unavailable": "此 API 节点不提供投票权重，因此仅按名称列出投票者。",
+    "search_placeholder": "搜索投票者",
+    "search_label": "按名称搜索投票者",
+    "no_voters": "暂无投票。",
+    "no_matches": "没有与搜索匹配的投票者。",
+    "load_more": "加载更多",
+    "your_vote": "你的投票"
   },
   "login_form": {
     "cancel_button": "取消",
