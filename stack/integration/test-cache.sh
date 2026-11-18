@@ -55,24 +55,29 @@ fetch() {
     retry_after=$(sed -n 's/^[Rr]etry-[Aa]fter: //p' <<< "$headers" | tail -n 1)
 }
 
-# run_challenge SCRIPT refuse|keep: runs the challenge page's script against a browser
-# whose cookie jar refuses or keeps denser_human; prints its reloads and the page's text.
+# run_challenge SCRIPT refuse|keep [LANGUAGES]: runs the challenge page's script against a
+# browser whose cookie jar refuses or keeps denser_human and whose navigator.languages is
+# the comma-separated LANGUAGES (en-US by default); prints its reloads, <html lang> and the
+# page's text.
 run_challenge() {
     node -e '
         const vm = require("vm");
-        const [script, mode] = process.argv.slice(1);
+        const [script, mode, languages] = process.argv.slice(1);
         const message = { textContent: "" };
+        const html = { lang: "en" };
         let jar = "", reloads = 0;
         vm.runInNewContext(script, {
             document: {
                 get cookie() { return jar; },
                 set cookie(value) { if (mode === "keep") jar = value.split(";")[0]; },
                 getElementById: (id) => (id === "gate" ? message : null),
+                documentElement: html,
             },
+            navigator: { languages: languages.split(","), language: languages.split(",")[0] },
             location: { protocol: "https:", reload: () => reloads++ },
         });
-        console.log(`${reloads} ${message.textContent}`);
-    ' "$1" "$2"
+        console.log(`${reloads} ${html.lang} ${message.textContent}`);
+    ' "$1" "$2" "${3:-en-US}"
 }
 
 start_stub_stack() {
@@ -214,6 +219,7 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
     crawler=(-H 'Sec-Fetch-Site: none' -H "Referer: $base")
     challenge_marker='document.cookie="denser_human=1'
     cookies_message='This site needs cookies to continue. Please allow cookies for this site and reload.'
+    cookies_message_pl='Ta strona potrzebuje plików cookie, aby kontynuować. Zezwól na pliki cookie dla tej strony i odśwież ją.'
 
     fetch "$page"
     holds "gate: a LAN address gets the page" "$status" = 200 -a "${body#*"$challenge_marker"}" = "$body"
@@ -233,12 +239,22 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
         -a "${body#*'content="noindex"'}" != "$body"
     holds "gate: the challenge fits phones" "${body#*'<meta name="viewport" content="width=device-width,initial-scale=1">'}" != "$body"
     holds "gate: the challenge explains refused cookies" "${body#*"$cookies_message"}" != "$body"
+    fetch "$page" "${gate[@]}" -H 'Accept-Language: pl-PL,pl;q=0.9'
+    holds "gate: a Polish Accept-Language: the same page, in Polish once its script runs" \
+        "$status $cache_control" = "200 no-store" -a "${body#*"$cookies_message_pl"}" != "$body" \
+        -a "${body#*'<html lang="en">'}" != "$body" -a "${body#*'<noscript>This site needs JavaScript.</noscript>'}" != "$body"
     if command -v node > /dev/null; then
         script=${body#*<script>}
         script=${script%%</script>*}
-        check "gate: cookie refused: the message, no reload" "0 $cookies_message" \
+        check "gate: cookie refused: the message, no reload" "0 en $cookies_message" \
             "$(run_challenge "$script" refuse)"
-        check "gate: cookie stored: Loading…, one reload" "1 Loading…" "$(run_challenge "$script" keep)"
+        check "gate: cookie stored: Loading…, one reload" "1 en Loading…" "$(run_challenge "$script" keep)"
+        check "gate: cookie refused in Polish: the Polish message" "0 pl $cookies_message_pl" \
+            "$(run_challenge "$script" refuse pl-PL,en-US)"
+        check "gate: an unsupported language first: the next one's message" "0 pl $cookies_message_pl" \
+            "$(run_challenge "$script" refuse sw,pl)"
+        check "gate: only unsupported languages: the English message" "0 en $cookies_message" \
+            "$(run_challenge "$script" refuse sw-KE,tlh)"
     else
         echo "skip gate: the challenge's script (no node)"
     fi
@@ -264,8 +280,8 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
 fi
 
 if $stub && [ "${DENSER_BOT_GATE:-on}" != off ]; then
-    # 5 counted above (2 challenges, 3 passed page documents); fill the minute's 60.
-    for _ in $(seq 55); do
+    # 6 counted above (3 challenges, 3 passed page documents); fill the minute's 60.
+    for _ in $(seq 54); do
         fetch "$page" "${gate[@]}" "${human[@]}"
         [ "$status" = 200 ] || break
     done
