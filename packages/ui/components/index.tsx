@@ -49,3 +49,4 @@ export * from "../lib/html-escape-json";
 
 // hook exports
 export * from "../hooks/useStorageWithTTL";
+export * from "../hooks/use-user-avatar-url";

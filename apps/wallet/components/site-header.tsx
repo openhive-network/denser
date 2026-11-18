@@ -20,7 +20,7 @@ import type { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
 import { getAccount } from '@transaction/lib/hive-api';
-import { getUserAvatarUrl } from '@hive/ui';
+import { useUserAvatarUrl } from '@hive/ui';
 import dynamic from 'next/dynamic';
 import LoginKeyBadge from './login-key-badge';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
@@ -55,6 +55,7 @@ const SiteHeader: FC = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
   const loginAuthority = useLoginAuthorityLabels(user);
+  const avatarUrl = useUserAvatarUrl(user?.username || '', 'small');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -147,7 +148,7 @@ const SiteHeader: FC = () => {
                       <RcRingChart angle={chartAngle} />
                     </div>
                     <Avatar>
-                      <AvatarImage src={getUserAvatarUrl(user?.username || '', 'small')} alt={t('global.profile_picture')} />
+                      <AvatarImage src={avatarUrl} alt={t('global.profile_picture')} />
                       <AvatarFallback>
                         <Icons.user />
                       </AvatarFallback>

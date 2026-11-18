@@ -2,7 +2,7 @@ import { MouseEvent, useCallback } from 'react';
 import { DropdownMenuItem } from '@ui/components/dropdown-menu';
 import { Avatar, AvatarImage } from '@ui/components';
 import { Icons } from '@ui/components/icons';
-import { getUserAvatarUrl } from '@hive/ui';
+import { useUserAvatarUrl } from '@hive/ui';
 import { User } from '@smart-signer/types/common';
 import type { TFunction } from 'i18next';
 import LoginMethodIcon from './login-method-icon';
@@ -16,6 +16,7 @@ interface AccountSwitcherItemProps {
 }
 
 const AccountSwitcherItem = ({ account, disabled, onSwitch, onRemove, t }: AccountSwitcherItemProps) => {
+  const avatarUrl = useUserAvatarUrl(account.username, 'small');
   const removeLabel = t('navigation.user_menu.remove_account', { username: account.username });
 
   const handleSelect = useCallback(() => onSwitch(account), [account, onSwitch]);
@@ -38,7 +39,7 @@ const AccountSwitcherItem = ({ account, disabled, onSwitch, onRemove, t }: Accou
       data-testid="account-switcher-item"
     >
       <Avatar className="mr-2 h-6 w-6 shrink-0">
-        <AvatarImage src={getUserAvatarUrl(account.username, 'small')} alt="" />
+        <AvatarImage src={avatarUrl} alt="" />
       </Avatar>
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="truncate">{account.username}</span>
