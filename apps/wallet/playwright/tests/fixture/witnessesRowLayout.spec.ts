@@ -9,7 +9,8 @@ import { HEAD_BLOCK, STUB_WITNESSES, WITNESS_RESULTS, stubWitness } from '../sup
  * the longest one included ("+999.99K do miejsca 100"); at 390 px a row with a stale tag, a version
  * tag and an announcement link does not make the page scroll sideways, and the line that wraps does
  * not start with a "·". At 844 px (a phone in landscape) no site link runs into the version column and
- * no rank-up text is cut short. A witness that never published a feed shows a dash, a disabled one
+ * no rank-up text is cut short. At 1280 px a typical row keeps its name and site link on one line and
+ * its Voters link on the HP line, so it stays about 52 px tall. A witness that never published a feed shows a dash, a disabled one
  * says how long ago in the language's plural form, 12 months reading as a year, and an account page's
  * tab is not taken for an announcement.
  */
@@ -24,6 +25,9 @@ const WITNESS_COUNT = 101;
 const VOTE_GAP = 1_833_322_333_333_333n;
 const LOWEST_VOTES = 100_000_000_000_000_000n;
 const BLOCKS_PER_DAY = 28_800;
+/** A row of two 20 px lines and its 6 px top and bottom padding, as before the Voters link came. */
+const TWO_LINE_ROW_HEIGHT = 52;
+const ROW_HEIGHT_TOLERANCE = 2;
 
 const TAGGED_WITNESS = 'stub-long-name16';
 const NO_FEED_WITNESS = 'stub-w-002';
@@ -135,6 +139,25 @@ const siteLinksOverVersion = (page: Page) =>
     })
   );
 
+const medianRowHeight = (page: Page) =>
+  page
+    .getByTestId('witness-table-body')
+    .locator('tr')
+    .evaluateAll((rows) => {
+      const heights = rows.map((row) => row.getBoundingClientRect().height).sort((a, b) => a - b);
+      return heights[Math.floor(heights.length / 2)];
+    });
+
+/** Whether `testId`'s element in `owner`'s row starts on the line `otherTestId`'s element starts on. */
+const sharesLine = (page: Page, owner: string, testId: string, otherTestId: string) =>
+  witnessRow(page, owner).evaluate(
+    (row, ids) => {
+      const top = (id: string) => row.querySelector(`[data-testid="${id}"]`)?.getBoundingClientRect().top ?? NaN;
+      return Math.abs(top(ids[0]) - top(ids[1])) < 4;
+    },
+    [testId, otherTestId]
+  );
+
 /**
  * Where `owner`'s site link sits in its line: whether it has a dot before it, whether it starts a
  * line, and whether the dot shows, its box inside the line's.
@@ -208,6 +231,22 @@ for (const lang of ['pl', 'en'] as const) {
       await expect(page.getByTestId('witness-rank-up').last()).toHaveText(EXPECTED[lang].lastRankUp);
       expect(await siteLinksOverVersion(page)).toEqual([]);
       expect(await clippedRankUps(page)).toEqual([]);
+    });
+
+    test(`WALLET-WITNESSES-ROW-05 — at 1280 px a typical ${lang} row is one line of name and site link, about 52 px tall`, async ({
+      page,
+      baseURL
+    }) => {
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await openWitnessesPage(page, lang, baseURL);
+
+      await expect(witnessRow(page, NO_FEED_WITNESS).getByTestId('witness-voters-trigger')).toHaveText(
+        EXPECTED[lang].voters
+      );
+      expect(await sharesLine(page, NO_FEED_WITNESS, 'witness-name-link', 'witness-external-site-link')).toBe(true);
+      expect(await sharesLine(page, NO_FEED_WITNESS, 'witness-votes-received', 'witness-voters-trigger')).toBe(true);
+      expect(Math.abs((await medianRowHeight(page)) - TWO_LINE_ROW_HEIGHT)).toBeLessThanOrEqual(ROW_HEIGHT_TOLERANCE);
+      expect(await siteLinksOverVersion(page)).toEqual([]);
     });
 
     test(`WALLET-WITNESSES-ROW-03 — ${lang}: no feed shows a dash, a disabled witness says how long ago, a profile tab is no announcement`, async ({

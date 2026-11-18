@@ -138,7 +138,7 @@ function WitnessListItem({
             />
           </Link>
           <div className="min-w-0 flex-1 leading-5">
-            {/* The line wraps at every width, so the site link never runs into the version column */}
+            {/* The site link moves to its own line only where it would run into the version column */}
             <div className={clsx(DOTTED_ROW_CLASS, 'min-w-0 whitespace-nowrap')}>
               <div className="flex min-w-0 flex-wrap items-center gap-x-1.5">
                 <Link
@@ -254,19 +254,22 @@ function WitnessListItem({
         {data.running_version}
       </td>
       <td className="hidden py-1.5 pr-2 leading-5 sm:table-cell">
-        <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
-          {hp}
+        {/* Voters shares the HP line where the column has room, so it adds no line to the row */}
+        <div className="flex flex-wrap items-center gap-x-2">
+          <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
+            {hp}
+          </div>
+          <button
+            type="button"
+            onClick={votersDialog.openFrom}
+            aria-label={showVotersLabel}
+            className={VOTERS_TRIGGER_CLASS}
+            data-testid="witness-voters-trigger"
+          >
+            <Icons.list className="h-3 w-3" aria-hidden="true" />
+            {t('witnesses_page.voters')}
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={votersDialog.openFrom}
-          aria-label={showVotersLabel}
-          className={VOTERS_TRIGGER_CLASS}
-          data-testid="witness-voters-trigger"
-        >
-          <Icons.list className="h-3 w-3" aria-hidden="true" />
-          {t('witnesses_page.voters')}
-        </button>
         {rankUpText && (
           <div className={clsx('wrap-break-word', MUTED_TEXT)} title={rankUpText} data-testid="witness-rank-up">
             {rankUpText}
