@@ -118,5 +118,10 @@ export const EXTENDED_REST_API_DEFINITION = {
     proposalsPayments: {
       urlPath: 'proposals/payments'
     }
+  },
+  'hafbe-api': {
+    witnessVoters: {
+      urlPath: 'witnesses/{account-name}/voters'
+    }
   }
 };

@@ -20,7 +20,8 @@ import {
   IWitness,
   GetOperationsByAccountParams,
   BalanceApiIncomingDelegation,
-  BalanceApiProposalPaymentTotals
+  BalanceApiProposalPaymentTotals,
+  HafbeWitnessVoters
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
@@ -373,6 +374,51 @@ export const getProposalVotes = async (
     status: 'all'
   });
   return result.proposal_votes.filter((x) => x.proposal.proposal_id === proposalId);
+};
+
+/** Names of the voters of `proposalId` in name order from `from` on, `from` included, at most `limit`. */
+export const getProposalVoterNames = async (proposalId: number, from: string, limit: number): Promise<string[]> =>
+  (await getProposalVotes(proposalId, from, limit)).map((vote) => vote.voter);
+
+/** Names of the voters of `witness` in name order from `from` on, `from` included, at most `limit`. */
+export const getWitnessVoterNames = async (witness: string, from: string, limit: number): Promise<string[]> => {
+  const result = await getReadChain().api.database_api.list_witness_votes({
+    start: [witness, from],
+    limit,
+    order: 'by_witness_account'
+  });
+  return result.votes.filter((vote) => vote.witness === witness).map((vote) => vote.account);
+};
+
+/** Page `page` (from 1) of `witness`'s voters by weight from the block explorer's hafbe-api, or its voter named `voterName`. */
+export const getHafbeWitnessVoters = (
+  witness: string,
+  page: number,
+  pageSize: number,
+  voterName?: string
+): Promise<HafbeWitnessVoters> =>
+  getReadChain().restApi['hafbe-api'].witnessVoters({
+    'account-name': witness,
+    page,
+    'page-size': pageSize,
+    sort: 'vests',
+    direction: 'desc',
+    ...(voterName ? { 'voter-name': voterName } : {})
+  });
+
+/** The governance vote weight of each account: its own VESTS and the VESTS proxied to it, in satoshis. */
+export const getGovernanceWeights = async (
+  names: string[]
+): Promise<{ name: string; ownVests: string; proxiedVests: string }[]> => {
+  const { accounts } = await getReadChain().api.database_api.find_accounts({
+    accounts: names,
+    delayed_votes_active: false
+  });
+  return accounts.map((account) => ({
+    name: account.name,
+    ownVests: account.vesting_shares.amount,
+    proxiedVests: account.proxied_vsf_votes.reduce((sum, vests) => sum + BigInt(vests), BigInt(0)).toString()
+  }));
 };
 
 export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {

@@ -205,7 +205,7 @@ const readChainWith = (failover: TReadFailover): ReadChain => {
       // The read client fails only with ReadTransportError on transport; checking for it keeps
       // a failing browser read from loading wax.
       isTransportError: (error) => error instanceof ReadTransportError,
-      // REST reads (balance-api, hafah-api, hivemind-api) fail over too: not every node serves them.
+      // REST reads (balance-api, hafah-api, hafbe-api, hivemind-api) fail over too: not every node serves them.
       isRestApiUnavailable,
       createNodeChain: (node, timeoutMs) => createReadChain(() => readClientConfigOn(node, timeoutMs))
     })

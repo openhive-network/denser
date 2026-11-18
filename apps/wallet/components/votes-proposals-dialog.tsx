@@ -1,8 +1,13 @@
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@ui/components/dialog';
+import { Dialog, DialogTrigger } from '@ui/components/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { ReactElement, ReactNode } from 'react';
+import Loading from '@ui/components/loading';
+import dynamic from 'next/dynamic';
+import { ReactElement, ReactNode, useMemo } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
-import VotersList from './voters-list';
+import VotersDialogContent from './voters-dialog-content';
+
+// Loaded when the dialog opens: the proposals page's own load carries none of it.
+const ProposalVoters = dynamic(() => import('./proposal-voters'), { ssr: false, loading: () => <Loading loading /> });
 
 /** The voters dialog of proposal `id`, opened by `children`, a button, which shows `tooltip` on hover and focus. */
 function VoteProposals({
@@ -19,6 +24,10 @@ function VoteProposals({
   totalVestingFund: Big;
 }) {
   const { t } = useTranslation('common_wallet');
+  const totals = useMemo(
+    () => ({ vestingFundHive: totalVestingFund, vestingShares: totalShares }),
+    [totalVestingFund, totalShares]
+  );
 
   return (
     <Dialog>
@@ -30,20 +39,19 @@ function VoteProposals({
           <TooltipContent data-testid="vote-proposal-value-tooltip">{tooltip}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <DialogContent
-        className="sm:max-w-2/3 h-5/6 gap-3 overflow-auto px-3 pt-3"
+      <VotersDialogContent
         data-testid="vote-proposals-dialog"
-        aria-modal="true"
-        aria-describedby={undefined}
+        title={
+          <>
+            {t('proposals_page.votes_on_proposal')}{' '}
+            <span className="text-red-500 dark:text-red-400" data-testid="proposal-id-dialog">
+              #{id}
+            </span>
+          </>
+        }
       >
-        <DialogTitle className="h-fit border-b-2 border-solid border-slate-600 pb-2 text-base font-normal leading-normal tracking-normal">
-          {t('proposals_page.votes_on_proposal')}{' '}
-          <span className="text-red-500 dark:text-red-400" data-testid="proposal-id-dialog">
-            #{id}
-          </span>
-        </DialogTitle>
-        <VotersList id={id} totalShares={totalShares} totalVestingFund={totalVestingFund} />
-      </DialogContent>
+        <ProposalVoters id={id} totals={totals} />
+      </VotersDialogContent>
     </Dialog>
   );
 }

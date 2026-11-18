@@ -4,7 +4,9 @@ import type { IWitness } from '@hive/common-hiveio-packages/wax';
 import { getAccounts, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { createNaiAsset } from '@hive/ui/lib/asset-constants';
 import { convertToHP } from '@hive/ui/lib/utils';
+import { convertStringToBig } from '@ui/lib/helpers';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
+import type { VestingTotals } from '@/wallet/lib/voters';
 
 const WITNESS_LIST_LIMIT = 250;
 const TOP_WITNESSES_ALWAYS_LISTED = 101;
@@ -94,6 +96,12 @@ export const getWitnessList = async (): Promise<WitnessList> => {
     profiles: await getWitnessProfiles(listedOwners)
   };
 };
+
+/** The chain totals of `list` as the voters dialog values VESTS at them. */
+export const vestingTotalsOf = (list: Pick<WitnessList, 'totalVestingFundHive' | 'totalVestingShares'>): VestingTotals => ({
+  vestingFundHive: convertStringToBig(list.totalVestingFundHive),
+  vestingShares: convertStringToBig(list.totalVestingShares)
+});
 
 /** A listed witness with its rank and the values the table derives from the chain totals. */
 export type RankedWitness = WitnessSummary & {

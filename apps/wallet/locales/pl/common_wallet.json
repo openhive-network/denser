@@ -367,7 +367,9 @@
     },
     "vote_for_witness": "Głosuj na świadka {{witness}}",
     "remove_vote_for_witness": "Wycofaj głos na świadka {{witness}}",
-    "link_to_witness": "Link do świadka {{witness}}"
+    "link_to_witness": "Link do świadka {{witness}}",
+    "voters": "Głosujący",
+    "show_voters_label": "Pokaż głosujących na świadka @{{witness}}"
   },
   "proposals_page": {
     "paid": "Wypłacono",
@@ -429,6 +431,35 @@
     "dhf_explanation": "Zdecentralizowany Fundusz Hive codziennie opłaca propozycje z największą liczbą głosów, do 1% swojego salda HBD; propozycje poniżej propozycji zwrotnej nie dostają nic. <faq>Więcej w FAQ</faq>",
     "funding_line_funded": "Finansowane w następnej rundzie",
     "funding_line_not_funded": "Niefinansowane w następnej rundzie"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "Głosy na świadka",
+    "summary_one": "{{count}} głos · {{total}} HP",
+    "summary_few": "{{count}} głosy · {{total}} HP",
+    "summary_many": "{{count}} głosów · {{total}} HP",
+    "summary_other": "{{count}} głosu · {{total}} HP",
+    "count_one": "{{count}} głos",
+    "count_few": "{{count}} głosy",
+    "count_many": "{{count}} głosów",
+    "count_other": "{{count}} głosu",
+    "count_more_one": "{{count}}+ głos",
+    "count_more_few": "{{count}}+ głosy",
+    "count_more_many": "{{count}}+ głosów",
+    "count_more_other": "{{count}}+ głosu",
+    "others_share_one": "pozostali ({{count}}) · {{share}}",
+    "others_share_few": "pozostali ({{count}}) · {{share}}",
+    "others_share_many": "pozostali ({{count}}) · {{share}}",
+    "others_share_other": "pozostali ({{count}}) · {{share}}",
+    "weight_with_proxy": "{{own}} HP + {{proxy}} z proxy",
+    "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP z proxy",
+    "breakdown_label": "Udział głosujących w sile głosów",
+    "weights_unavailable": "Ten węzeł API nie podaje siły głosów, więc głosujący są wymienieni tylko z nazwy.",
+    "search_placeholder": "Szukaj głosujących",
+    "search_label": "Szukaj głosujących po nazwie",
+    "no_voters": "Nikt jeszcze nie głosował.",
+    "no_matches": "Żaden głosujący nie pasuje do wyszukiwania.",
+    "load_more": "Wczytaj więcej",
+    "your_vote": "twój głos"
   },
   "login_form": {
     "cancel_button": "Anuluj",

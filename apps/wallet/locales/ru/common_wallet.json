@@ -367,7 +367,9 @@
     },
     "vote_for_witness": "Голосовать за делегата {{witness}}",
     "remove_vote_for_witness": "Отозвать голос за делегата {{witness}}",
-    "link_to_witness": "Ссылка на делегата {{witness}}"
+    "link_to_witness": "Ссылка на делегата {{witness}}",
+    "voters": "Проголосовавшие",
+    "show_voters_label": "Показать проголосовавших за делегата @{{witness}}"
   },
   "proposals_page": {
     "paid": "Выплачено",
@@ -429,6 +431,35 @@
     "dhf_explanation": "Децентрализованный фонд Hive ежедневно оплачивает предложения с наибольшим числом голосов, до 1% своего баланса HBD; предложения ниже возвратного не получают ничего. <faq>Подробнее в FAQ</faq>",
     "funding_line_funded": "Финансируются в следующем раунде",
     "funding_line_not_funded": "Не финансируются в следующем раунде"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "Голоса за делегата",
+    "summary_one": "{{count}} голос · {{total}} HP",
+    "summary_few": "{{count}} голоса · {{total}} HP",
+    "summary_many": "{{count}} голосов · {{total}} HP",
+    "summary_other": "{{count}} голоса · {{total}} HP",
+    "count_one": "{{count}} голос",
+    "count_few": "{{count}} голоса",
+    "count_many": "{{count}} голосов",
+    "count_other": "{{count}} голоса",
+    "count_more_one": "{{count}}+ голос",
+    "count_more_few": "{{count}}+ голоса",
+    "count_more_many": "{{count}}+ голосов",
+    "count_more_other": "{{count}}+ голоса",
+    "others_share_one": "остальные ({{count}}) · {{share}}",
+    "others_share_few": "остальные ({{count}}) · {{share}}",
+    "others_share_many": "остальные ({{count}}) · {{share}}",
+    "others_share_other": "остальные ({{count}}) · {{share}}",
+    "weight_with_proxy": "{{own}} HP + {{proxy}} через прокси",
+    "weight_exact_with_proxy": "{{own}} HP своих + {{proxy}} HP через прокси",
+    "breakdown_label": "Доля проголосовавших в весе голосов",
+    "weights_unavailable": "Этот узел API не отдаёт вес голосов, поэтому проголосовавшие показаны только по имени.",
+    "search_placeholder": "Поиск проголосовавших",
+    "search_label": "Искать проголосовавших по имени",
+    "no_voters": "Голосов пока нет.",
+    "no_matches": "Никто из проголосовавших не подходит под поиск.",
+    "load_more": "Загрузить ещё",
+    "your_vote": "ваш голос"
   },
   "login_form": {
     "cancel_button": "Отмена",

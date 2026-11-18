@@ -361,7 +361,9 @@
     },
     "vote_for_witness": "Vota il witness {{witness}}",
     "remove_vote_for_witness": "Rimuovi il voto al witness {{witness}}",
-    "link_to_witness": "Link al witness {{witness}}"
+    "link_to_witness": "Link al witness {{witness}}",
+    "voters": "Votanti",
+    "show_voters_label": "Mostra i votanti del witness @{{witness}}"
   },
   "proposals_page": {
     "paid": "Pagato",
@@ -420,6 +422,31 @@
     "dhf_explanation": "Il Fondo decentralizzato di Hive paga ogni giorno le proposte con più voti, fino all'1% del suo saldo in HBD; le proposte sotto la proposta di ritorno non ricevono nulla. <faq>Scopri di più nelle FAQ</faq>",
     "funding_line_funded": "Finanziate nel prossimo turno",
     "funding_line_not_funded": "Non finanziate nel prossimo turno"
+  },
+  "voters_dialog": {
+    "votes_for_witness": "Voti per il witness",
+    "summary_one": "{{count}} votante · {{total}} HP",
+    "summary_many": "{{count}} votanti · {{total}} HP",
+    "summary_other": "{{count}} votanti · {{total}} HP",
+    "count_one": "{{count}} votante",
+    "count_many": "{{count}} votanti",
+    "count_other": "{{count}} votanti",
+    "count_more_one": "{{count}}+ votante",
+    "count_more_many": "{{count}}+ votanti",
+    "count_more_other": "{{count}}+ votanti",
+    "others_share_one": "altri ({{count}}) · {{share}}",
+    "others_share_many": "altri ({{count}}) · {{share}}",
+    "others_share_other": "altri ({{count}}) · {{share}}",
+    "weight_with_proxy": "{{own}} HP + {{proxy}} tramite proxy",
+    "weight_exact_with_proxy": "{{own}} HP propri + {{proxy}} HP tramite proxy",
+    "breakdown_label": "Quota del peso di voto per votante",
+    "weights_unavailable": "Questo nodo API non fornisce il peso dei voti, quindi i votanti sono elencati solo per nome.",
+    "search_placeholder": "Cerca votanti",
+    "search_label": "Cerca i votanti per nome",
+    "no_voters": "Ancora nessun voto.",
+    "no_matches": "Nessun votante corrisponde alla ricerca.",
+    "load_more": "Carica altri",
+    "your_vote": "il tuo voto"
   },
   "login_form": {
     "cancel_button": "Cancella",
