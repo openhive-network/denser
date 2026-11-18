@@ -312,12 +312,11 @@
     "title": "Votación para testigo",
     "setted_proxy_description": "Has establecido un proxy de votación. Si quieres volver a votar manualmente, elimina tu proxy.",
     "current_proxy": "Tu proxy actual es: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "No tienes votos restantes.",
-      "one": "Tienes 1 voto restante.",
-      "other": "Te quedan {{value}} votos disponibles."
-    },
-    "confirm_account_witness_vote": "Confirmar voto de testigo",
+    "no_votes_remaining": "No tienes votos restantes.",
+    "votes_remaining_one": "Te queda {{count}} voto disponible.",
+    "votes_remaining_many": "Te quedan {{count}} votos disponibles.",
+    "votes_remaining_other": "Te quedan {{count}} votos disponibles.",
+    "remove_witness_vote_title": "Retirar el voto de testigo para @{{witness}}",
     "you_are_about_remove_vote": "¿Retirar tu voto a @{{witness}}?",
     "cancel_button": "Cancelar",
     "ok": "OK",

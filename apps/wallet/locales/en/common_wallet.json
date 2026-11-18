@@ -308,12 +308,10 @@
     "title": "Witness Voting",
     "setted_proxy_description": "You have set a voting proxy. If you would like to re-enable manual voting, please clear your proxy.",
     "current_proxy": "Your current proxy is: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "You have no votes remaining.",
-      "one": "You have 1 vote remaining.",
-      "other": "You have {{value}} votes remaining."
-    },
-    "confirm_account_witness_vote": "Confirm Account Witness Vote",
+    "no_votes_remaining": "You have no votes remaining.",
+    "votes_remaining_one": "You have {{count}} vote remaining.",
+    "votes_remaining_other": "You have {{count}} votes remaining.",
+    "remove_witness_vote_title": "Remove your vote for witness @{{witness}}",
     "you_are_about_remove_vote": "Remove your vote for @{{witness}}?",
     "cancel_button": "Cancel",
     "ok": "OK",

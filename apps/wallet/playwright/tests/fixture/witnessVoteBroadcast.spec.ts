@@ -88,7 +88,7 @@ const removeVote = (page: Page) => {
   const control = witnessVote(page, VOTED_WITNESS);
   const confirm = page
     .getByRole('dialog')
-    .filter({ hasText: 'Confirm Account Witness Vote' })
+    .filter({ hasText: `Remove your vote for witness @${VOTED_WITNESS}` })
     .filter({ hasText: `Remove your vote for @${VOTED_WITNESS}?` });
   return voteUntilPending(control, async () => {
     await control.locator('svg').click({ timeout: ATTEMPT_TIMEOUT });

@@ -7,9 +7,11 @@ import { HEAD_BLOCK, STUB_WITNESSES, WITNESS_RESULTS, stubWitness } from '../sup
 /**
  * The witness rows' texts fit, in Polish and English: at 1280 px each rank-up text fits its cell,
  * the longest one included ("+999.99K do miejsca 100"); at 390 px a row with a stale tag, a version
- * tag and an announcement link does not make the page scroll sideways. A witness that never
- * published a feed shows a dash, a disabled one says how long ago in the language's plural form,
- * and an account page's tab is not taken for an announcement.
+ * tag and an announcement link does not make the page scroll sideways, and the line that wraps does
+ * not start with a "·". At 844 px (a phone in landscape) no site link runs into the version column and
+ * no rank-up text is cut short. A witness that never published a feed shows a dash, a disabled one
+ * says how long ago in the language's plural form, 12 months reading as a year, and an account page's
+ * tab is not taken for an announcement.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -27,6 +29,7 @@ const TAGGED_WITNESS = 'stub-long-name16';
 const NO_FEED_WITNESS = 'stub-w-002';
 const DISABLED_WITNESS = 'stub-w-003';
 const PROFILE_TAB_WITNESS = 'stub-w-004';
+const DISABLED_FOR_A_YEAR_WITNESS = 'stub-w-005';
 
 const OVERRIDES: Record<number, object> = {
   // Stale for 10 days, below the majority version, linked to an announcement
@@ -41,7 +44,12 @@ const OVERRIDES: Record<number, object> = {
     signing_key: 'STM1111111111111111111111111111111114T1Anm',
     last_confirmed_block_num: HEAD_BLOCK - 3 * 365 * BLOCKS_PER_DAY
   },
-  4: { url: `https://peakd.com/@${PROFILE_TAB_WITNESS}/posts` }
+  4: { url: `https://peakd.com/@${PROFILE_TAB_WITNESS}/posts` },
+  // 362 days: 12 months of 30 days, short of 365
+  5: {
+    signing_key: 'STM1111111111111111111111111111111114T1Anm',
+    last_confirmed_block_num: HEAD_BLOCK - 362 * BLOCKS_PER_DAY
+  }
 };
 
 const witnesses = Array.from({ length: WITNESS_COUNT }, (_, index) => ({
@@ -53,8 +61,16 @@ const witnesses = Array.from({ length: WITNESS_COUNT }, (_, index) => ({
 }));
 
 const EXPECTED = {
-  pl: { lastRankUp: '+999.99K do miejsca 100', disabled: 'Wyłączony 3 lata temu' },
-  en: { lastRankUp: '+999.99K to #100', disabled: 'Disabled 3 years ago' }
+  pl: {
+    lastRankUp: '+999.99K do miejsca 100',
+    disabled: 'Wyłączony 3 lata temu',
+    disabledForAYear: 'Wyłączony 1 rok temu'
+  },
+  en: {
+    lastRankUp: '+999.99K to #100',
+    disabled: 'Disabled 3 years ago',
+    disabledForAYear: 'Disabled 1 year ago'
+  }
 } as const;
 
 let stub: Server;
@@ -105,6 +121,39 @@ const clippedRankUps = (page: Page) =>
         .map((cell) => `${cell.textContent}: ${cell.scrollWidth}/${cell.clientWidth}`)
     );
 
+/** The site links that reach past their cell into the version column. */
+const siteLinksOverVersion = (page: Page) =>
+  page.getByTestId('witness-table-body').locator('tr').evaluateAll((rows) =>
+    rows.flatMap((row) => {
+      const site = row.querySelector('[data-testid="witness-external-site-link"]');
+      const version = row.querySelector('[data-testid="witness-version"]');
+      if (!site || !version) return [];
+      const overlap = site.getBoundingClientRect().right - version.getBoundingClientRect().left;
+      return overlap > 0 ? [`${site.textContent}: ${overlap}px`] : [];
+    })
+  );
+
+/**
+ * Where `owner`'s site link sits in its line: whether it has a dot before it, whether it starts a
+ * line, and whether the dot shows, its box inside the line's.
+ */
+const siteLinkDot = (page: Page, owner: string) =>
+  witnessRow(page, owner)
+    .getByTestId('witness-external-site-link')
+    .evaluate((site) => {
+      const line = site.parentElement;
+      if (!line) throw new Error('site link has no line');
+      const dot = getComputedStyle(site, '::before');
+      const lineBox = line.getBoundingClientRect();
+      const siteBox = site.getBoundingClientRect();
+      const dotLeft = siteBox.left - parseFloat(dot.width);
+      return {
+        hasDot: dot.content.includes('·'),
+        startsLine: Math.abs(siteBox.left - lineBox.left) < 1,
+        dotShown: getComputedStyle(line).overflowX !== 'clip' || dotLeft >= lineBox.left - 0.5
+      };
+    });
+
 for (const lang of ['pl', 'en'] as const) {
   test.describe(`witness rows in ${lang}`, () => {
     test(`WALLET-WITNESSES-ROW-01 — every ${lang} rank-up text fits its cell at 1280 px and has it as title`, async ({
@@ -137,6 +186,23 @@ for (const lang of ['pl', 'en'] as const) {
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth
       );
       expect(overflow).toBeLessThanOrEqual(0);
+      expect(await siteLinkDot(page, TAGGED_WITNESS)).toEqual({ hasDot: true, startsLine: true, dotShown: false });
+      expect(await siteLinkDot(page, NO_FEED_WITNESS)).toEqual({ hasDot: true, startsLine: false, dotShown: true });
+      await expect(witnessRow(page, TAGGED_WITNESS).getByTestId('witness-phone-summary')).toContainText(
+        /\$\d+\.\d{3} · \S/
+      );
+    });
+
+    test(`WALLET-WITNESSES-ROW-04 — at 844 px in ${lang} no site link reaches the version column and every rank-up text shows whole`, async ({
+      page,
+      baseURL
+    }) => {
+      await page.setViewportSize({ width: 844, height: 390 });
+      await openWitnessesPage(page, lang, baseURL);
+
+      await expect(page.getByTestId('witness-rank-up').last()).toHaveText(EXPECTED[lang].lastRankUp);
+      expect(await siteLinksOverVersion(page)).toEqual([]);
+      expect(await clippedRankUps(page)).toEqual([]);
     });
 
     test(`WALLET-WITNESSES-ROW-03 — ${lang}: no feed shows a dash, a disabled witness says how long ago, a profile tab is no announcement`, async ({
@@ -150,6 +216,9 @@ for (const lang of ['pl', 'en'] as const) {
       await expect(witnessRow(page, DISABLED_WITNESS).getByTestId('witness-external-site-link')).toHaveText(
         EXPECTED[lang].disabled
       );
+      await expect(
+        witnessRow(page, DISABLED_FOR_A_YEAR_WITNESS).getByTestId('witness-external-site-link')
+      ).toHaveText(EXPECTED[lang].disabledForAYear);
       await expect(
         witnessRow(page, PROFILE_TAB_WITNESS).getByTestId('witness-external-site-link').getByRole('link')
       ).toHaveText(`peakd.com/@${PROFILE_TAB_WITNESS}/posts`);

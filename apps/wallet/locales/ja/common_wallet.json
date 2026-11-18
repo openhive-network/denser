@@ -305,12 +305,9 @@
     "title": "証人投票",
     "setted_proxy_description": "投票の代理人が設定されています。手動投票を再度有効にしたい場合は、代理人を解除してください。",
     "current_proxy": "現在の代理人: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "これ以上投票できません.",
-      "one": "あと1人に投票できます.",
-      "other": "あと{{value}}人に投票できます."
-    },
-    "confirm_account_witness_vote": "証人への投票を確認",
+    "no_votes_remaining": "これ以上投票できません.",
+    "votes_remaining_other": "あと{{count}}人に投票できます.",
+    "remove_witness_vote_title": "@{{witness}} への証人投票を取り消す",
     "you_are_about_remove_vote": "@{{witness}} への投票を取り消しますか？",
     "cancel_button": "キャンセル",
     "ok": "OK",

@@ -12,6 +12,7 @@ import { ProposalVoteControl } from './proposal-vote-control';
 import { ProposalFundingBadge } from './proposal-funding-badge';
 import { ProposalPaidAmounts } from './proposal-paid-amounts';
 import { PhoneOrDesktopText } from './phone-or-desktop-text';
+import { DOTTED_ITEM_CLASS, DOTTED_ROW_CLASS } from './dotted-row';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import env from '@beam-australia/react-env';
 import TimeAgo from '@ui/components/time-ago';
@@ -67,12 +68,6 @@ const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month
 
 /** The daily pay without a zero fraction, "540" rather than "540.00", for a phone's narrow line. */
 const compactAmount = (amount: Big) => getRoundedAbbreveration(amount).replace(/\.00(?=\D*$)/, '');
-
-const Dot = ({ className }: { className?: string }) => (
-  <span aria-hidden="true" className={className}>
-    ·
-  </span>
-);
 
 /**
  * A proposal in three lines: its title and badges; who it is by, its daily pay, dates and the days
@@ -175,51 +170,52 @@ export function ProposalListItem({
       </div>
 
       <div
-        className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400 sm:text-sm"
+        className={`${DOTTED_ROW_CLASS} min-w-0 text-xs text-slate-600 dark:text-slate-400 sm:text-sm`}
         data-testid="proposal-details"
       >
-        <Link
-          href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden shrink-0 sm:block"
-        >
-          <UserAvatarImg
-            className="h-6 w-6 rounded-3xl"
-            height="24"
-            width="24"
-            src={getUserAvatarUrl(proposalData.creator, 'small')}
-            alt={`${proposalData.creator} profile picture`}
-          />
-        </Link>
-        {/* The author is never cut short: the figures after it wrap onto another line instead */}
-        <span className="min-w-0 break-words" data-testid="proposal-author">
-          {t('proposals_page.by')}{' '}
-          <Link href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`} target="_blank" rel="noopener noreferrer">
-            <span className={LINK_CLASS} data-testid="proposal-creator">
-              {proposalData.creator}
-            </span>
+        <span className="flex min-w-0 items-center gap-x-1.5">
+          <Link
+            href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden shrink-0 sm:block"
+          >
+            <UserAvatarImg
+              className="h-6 w-6 rounded-3xl"
+              height="24"
+              width="24"
+              src={getUserAvatarUrl(proposalData.creator, 'small')}
+              alt={`${proposalData.creator} profile picture`}
+            />
           </Link>
-          {proposalData.receiver !== proposalData.creator ? (
-            <>
-              {t('proposals_page.for')}
-              <Link
-                href={`${env('BLOG_DOMAIN')}/@${proposalData.receiver}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className={LINK_CLASS} data-testid="proposal-receiver">
-                  {proposalData.receiver}
-                </span>
-              </Link>
-            </>
-          ) : null}
+          {/* The author is never cut short: the figures after it wrap onto another line instead */}
+          <span className="min-w-0 break-words" data-testid="proposal-author">
+            {t('proposals_page.by')}{' '}
+            <Link href={`${env('BLOG_DOMAIN')}/@${proposalData.creator}`} target="_blank" rel="noopener noreferrer">
+              <span className={LINK_CLASS} data-testid="proposal-creator">
+                {proposalData.creator}
+              </span>
+            </Link>
+            {proposalData.receiver !== proposalData.creator ? (
+              <>
+                {t('proposals_page.for')}
+                <Link
+                  href={`${env('BLOG_DOMAIN')}/@${proposalData.receiver}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className={LINK_CLASS} data-testid="proposal-receiver">
+                    {proposalData.receiver}
+                  </span>
+                </Link>
+              </>
+            ) : null}
+          </span>
         </span>
         <span
-          className="flex items-center gap-x-1.5"
+          className={DOTTED_ITEM_CLASS}
           title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}
         >
-          <Dot />
           <PhoneOrDesktopText
             phone={t('proposals_page.per_day', { amount: compactAmount(proposalData.daily_pay.amount) })}
             desktop={t('proposals_page.per_day', {
@@ -228,13 +224,11 @@ export function ProposalListItem({
             testId="proposal-amount"
           />
         </span>
-        <span className="hidden items-center gap-x-1.5 whitespace-nowrap sm:flex">
-          <Dot />
-          <span data-testid="proposal-date">{dateRange}</span>
+        <span className={`${DOTTED_ITEM_CLASS} hidden whitespace-nowrap sm:inline`} data-testid="proposal-date">
+          {dateRange}
         </span>
         {timing ? (
-          <span className="flex items-center gap-x-1.5">
-            <Dot />
+          <span className={DOTTED_ITEM_CLASS}>
             <StatusTooltip
               proposal={proposalData}
               trigger={
