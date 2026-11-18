@@ -19,3 +19,48 @@ export function isWalletDecryptionFailure(error: unknown): boolean {
 export function needsGoogleSignInAgain(error: unknown): boolean {
   return !isUserCancelled(error) && !(error instanceof WaxExternalSignatureProviderError);
 }
+
+/**
+ * Runs `attempt`, and once more after `signInAgain` dropped the Google session when it failed for
+ * that session (`needsGoogleSignInAgain`). Any other failure, or a second one, rejects.
+ */
+export async function retryAfterGoogleSignIn<T>(attempt: () => Promise<T>, signInAgain: (error: unknown) => void): Promise<T> {
+  try {
+    return await attempt();
+  } catch (error) {
+    if (!needsGoogleSignInAgain(error)) throw error;
+    signInAgain(error);
+    return attempt();
+  }
+}
+
+/** The access token callback given to wax, remembering whether its last call failed */
+export interface TrackedAccessToken {
+  getToken: () => Promise<string>;
+  /** Throws the error the last `getToken` call failed with, if it failed */
+  throwIfFailed: () => void;
+}
+
+/**
+ * Wraps `getToken` for a wallet load. Wax reports the wallet file missing whenever its existence
+ * check fails, a failed access token included, so a load told so calls `throwIfFailed` before
+ * telling the user there is no wallet.
+ */
+export function trackAccessToken(getToken: () => Promise<string>): TrackedAccessToken {
+  let failure: { error: unknown } | undefined;
+  return {
+    getToken: async () => {
+      try {
+        const token = await getToken();
+        failure = undefined;
+        return token;
+      } catch (error) {
+        failure = { error };
+        throw error;
+      }
+    },
+    throwIfFailed: () => {
+      if (failure) throw failure.error;
+    }
+  };
+}
