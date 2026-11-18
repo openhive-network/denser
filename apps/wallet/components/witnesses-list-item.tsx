@@ -254,7 +254,7 @@ function WitnessListItem({
         {data.running_version}
       </td>
       <td className="hidden py-1.5 pr-2 leading-5 sm:table-cell">
-        {/* Voters shares the HP line where the column has room, so it adds no line to the row */}
+        {/* Voters shares the HP line from md up (the column is sized for it), so it adds no line to the row */}
         <div className="flex flex-wrap items-center gap-x-2">
           <div className="font-medium sm:text-sm" data-testid="witness-votes-received">
             {hp}
