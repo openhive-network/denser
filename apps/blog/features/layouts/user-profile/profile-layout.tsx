@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import env from '@beam-australia/react-env';
 
 import { useTranslation } from '@/blog/i18n/client';
-import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl, getDefaultImageUrl, escapeCssUrl, isSafeImageUrl, isSafeExternalUrl } from '@ui/components';
+import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, useUserAvatarUrl, getDefaultImageUrl, escapeCssUrl, isSafeImageUrl, isSafeExternalUrl } from '@ui/components';
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
@@ -83,6 +83,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     queryFn: () => getAccountFull(username),
     enabled: !!username
   });
+  const avatarUrl = useUserAvatarUrl(profileData?.name || '', 'large');
 
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const following = useFollowingInfiniteQuery(user.username, 1000, 'blog', ['blog']);
@@ -199,7 +200,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                 <Avatar className="h-20 w-20 shrink-0 ring-4 ring-white/30 sm:h-24 sm:w-24">
                   <AvatarImage
                     className="h-full w-full object-cover"
-                    src={getUserAvatarUrl(profileData?.name || '', 'large')}
+                    src={avatarUrl}
                     alt={t('global.profile_picture')}
                   />
                   <AvatarFallback>

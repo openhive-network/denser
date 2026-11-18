@@ -19,6 +19,7 @@ import {
   TEST_ABOUT,
   TEST_DISPLAY_NAME,
   TEST_LOCATION,
+  TEST_PROFILE_IMAGE,
   TEST_WEBSITE,
   TEST_X_HANDLE,
   expectPreferences,
@@ -28,15 +29,14 @@ import {
 /**
  * §8 User Profile & Settings — logged-in user editing their own settings.
  *
- * Covers SET-01..04 and SET-14 (profile fields and social links →
- * account_update2 broadcast, TX-10)
+ * Covers SET-01..05 and SET-14 (profile fields, profile image URL and social
+ * links → account_update2 broadcast, TX-10)
  * and SET-07..13 (NSFW / blog rewards / comment rewards / referral system
  * preferences → user-preferences-{username} localStorage, no broadcast).
  *
- * SET-05/06 (profile/cover image) are intentionally out of scope here —
- * the form exposes a URL-text path and a signed-upload path; covering
- * the upload variant requires stubbing the image-endpoint POST and is
- * not yet in scope.
+ * SET-05 covers the profile image URL-text path only; the signed-upload
+ * path (and SET-06, cover image) requires stubbing the image-endpoint POST
+ * and is not yet in scope.
  *
  * Settings page is gated on `user.isLoggedIn && user.username === username`
  * (apps/blog/app/[param]/(user-profile)/(profile-skeleton)/settings/content.tsx:12), so all
@@ -69,6 +69,10 @@ async function openPostReplyEditor(page: Page): Promise<CommentEditorPage> {
   }).toPass({ timeout: TIMEOUTS.HYDRATION });
   return commentEditor;
 }
+
+/** The logged-in user's avatar in the site header (AvatarImage or its fallback). */
+const headerAvatar = (page: Page) => page.getByTestId('profile-avatar-button').locator('img').first();
+const VERSIONED_AVATAR_SRC = /\/u\/[^/]+\/avatar\/small\?v=\d+$/;
 
 test.describe('§8 User Profile & Settings', () => {
   let settings: SettingsPage;
@@ -117,6 +121,8 @@ test.describe('§8 User Profile & Settings', () => {
 
     await expect(settings.changesSavedToast).toBeVisible();
     await expect(profilePage.profileName).toHaveText(TEST_DISPLAY_NAME);
+    // Only an image change versions the avatar URL
+    await expect(headerAvatar(page)).toHaveAttribute('src', new RegExp(`/u/${SETTINGS_USER}/avatar/small$`));
   });
 
   test('SET-02 — Change about/bio', async ({ page }) => {
@@ -181,6 +187,36 @@ test.describe('§8 User Profile & Settings', () => {
 
     await expect(settings.changesSavedToast).toBeVisible();
     await expect(profilePage.profileWebsiteLink(TEST_WEBSITE)).toBeVisible();
+  });
+
+  test('SET-05 — Change profile image URL: the header avatar URL is versioned for the session', async ({ page }) => {
+    const broadcast = await installBroadcastInterceptor(page, undefined, {
+      confirmInBlock: true,
+      profileUpdateSwap: { account: SETTINGS_USER }
+    });
+    await gotoLoggedIn(page, `/@${SETTINGS_USER}/settings`);
+    await settings.waitForReady();
+    await expect(headerAvatar(page)).toHaveAttribute('src', new RegExp(`/u/${SETTINGS_USER}/avatar/small$`));
+
+    await settings.profileImageInput.fill(TEST_PROFILE_IMAGE);
+    await settings.updateButton.click();
+    await broadcast.waitForCount(1);
+
+    expectAccountUpdate2Operation(broadcast.calls[0], {
+      account: SETTINGS_USER,
+      profile: { profile_image: TEST_PROFILE_IMAGE, version: 2 }
+    });
+
+    await expect(settings.changesSavedToast).toBeVisible();
+    // The browser caches imagehoster's avatar redirect; a new `v` makes it fetch the new one.
+    await expect(headerAvatar(page)).toHaveAttribute('src', VERSIONED_AVATAR_SRC);
+    const savedSrc = await headerAvatar(page).getAttribute('src');
+
+    // The version lives in sessionStorage: a reload in the same tab keeps it.
+    await page.reload();
+    await expect(headerAvatar(page)).toHaveAttribute('src', savedSrc ?? VERSIONED_AVATAR_SRC, {
+      timeout: TIMEOUTS.HYDRATION
+    });
   });
 
   test('SET-14 — Set X handle, keeping metadata other apps wrote', async ({ page }) => {

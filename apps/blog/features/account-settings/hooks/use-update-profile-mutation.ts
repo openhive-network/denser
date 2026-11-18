@@ -4,6 +4,7 @@ import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import type { ProfileMetadataUpdate } from '@transaction/index';
 import { mergePostingJsonMetadata } from '@transaction/lib/profile-metadata';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { recordAvatarVersion } from '@ui/lib/avatar-version';
 
 type UpdateProfileParams = Omit<ProfileMetadataUpdate, 'version'> & { version?: number };
 
@@ -13,6 +14,10 @@ const withVersion = (params: UpdateProfileParams): ProfileMetadataUpdate => ({
   ...params,
   version: params.version ?? PROFILE_METADATA_VERSION
 });
+
+const changesImage = (params: UpdateProfileParams, prevProfile: FullAccount['profile']): boolean =>
+  (params.profile_image ?? '') !== (prevProfile?.profile_image ?? '') ||
+  (params.cover_image ?? '') !== (prevProfile?.cover_image ?? '');
 
 export function useUpdateProfileMutation() {
   const { user } = useUserClient();
@@ -24,6 +29,8 @@ export function useUpdateProfileMutation() {
     onSuccess: (_data, params, queryClient) => {
       const prevProfileData: FullAccount | undefined = queryClient.getQueryData(queryKey);
       if (!prevProfileData) return;
+      // The browser caches imagehoster's avatar redirect: version this user's own avatar URL
+      if (changesImage(params, prevProfileData.profile)) recordAvatarVersion(user.username);
       queryClient.setQueryData(queryKey, {
         ...prevProfileData,
         posting_json_metadata: mergePostingJsonMetadata(prevProfileData.posting_json_metadata, withVersion(params)),

@@ -23,15 +23,23 @@ const PLACEHOLDER_AVATAR_PATH = '/defaultavatar.png';
 // Some callers pass a not-yet-loaded author through untyped data.
 const isDid = (username: string): boolean => typeof username === 'string' && username.startsWith(DID_PREFIX);
 
+// imagehoster ignores the query; a new `v` only makes the browser and the edge fetch a fresh redirect.
+const withVersion = (url: string, version?: number): string => (version ? `${url}?v=${version}` : url);
+
 /**
  * Get a user avatar URL served directly from the image hoster.
  * @param username - The Hive username, or a lite account DID (which gets the local placeholder)
  * @param size - The avatar size ('small', 'medium', 'large')
+ * @param version - Cache-busting avatar version (see `useAvatarVersion`); appended as `?v=` when set
  * @returns Direct image hoster avatar URL
  */
-export function getUserAvatarUrl(username: string, size: 'small' | 'medium' | 'large' = 'small'): string {
+export function getUserAvatarUrl(
+  username: string,
+  size: 'small' | 'medium' | 'large' = 'small',
+  version?: number
+): string {
   if (isDid(username)) return getImageSrc(PLACEHOLDER_AVATAR_PATH);
-  return `${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar/${size}`;
+  return withVersion(`${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar/${size}`, version);
 }
 
 /**
@@ -40,11 +48,17 @@ export function getUserAvatarUrl(username: string, size: 'small' | 'medium' | 'l
  * callers needing a specific size should request a named size or use
  * proxifyImageSrc. Kept for API compatibility.
  * @param username - The Hive username
+ * @param version - Cache-busting avatar version (see `useAvatarVersion`); appended as `?v=` when set
  * @returns Direct image hoster avatar URL
  */
-export function getUserAvatarUrlWithDimensions(username: string, _width: number, _height: number): string {
+export function getUserAvatarUrlWithDimensions(
+  username: string,
+  _width: number,
+  _height: number,
+  version?: number
+): string {
   if (isDid(username)) return getImageSrc(PLACEHOLDER_AVATAR_PATH);
-  return `${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar`;
+  return withVersion(`${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar`, version);
 }
 
 /**

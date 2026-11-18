@@ -16,7 +16,7 @@ import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-u
 import { ManabarRing } from './manabar-ring';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
-import { getUserAvatarUrl } from '@hive/ui';
+import { useUserAvatarUrl } from '@hive/ui';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
@@ -46,6 +46,7 @@ const MainBar: FC = () => {
   const pathname = usePathname();
   const { user } = useUserClient();
   const loginAuthority = useLoginAuthorityLabels(user);
+  const avatarUrl = useUserAvatarUrl(user?.username || '', 'small');
   const [isClient, setIsClient] = useState(false);
   // Here, as the header outlives every page a sign-out leaves, For You or one without its content
   useEndSignOutLeaveOnNavigation();
@@ -287,13 +288,13 @@ const MainBar: FC = () => {
                       <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
                         <AvatarImage
                           className="h-full w-full object-cover"
-                          src={getUserAvatarUrl(user?.username || '', 'small')}
+                          src={avatarUrl}
                           alt={t('global.profile_picture')}
                         />
                         <AvatarFallback>
                           <img
                             className="h-full w-full object-cover"
-                            src={getUserAvatarUrl(user?.username || '', 'small')}
+                            src={avatarUrl}
                             alt={t('global.profile_picture')}
                           />
                         </AvatarFallback>

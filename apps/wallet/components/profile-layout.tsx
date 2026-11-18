@@ -19,7 +19,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getExternalLink } from '@/wallet/lib/utils';
-import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
+import { useUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
 const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
   try {
@@ -49,6 +49,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
     queryFn: () => getAccountFull(username),
     enabled: !!username
   });
+  const avatarUrl = useUserAvatarUrl(profileData?.name || '', 'medium');
 
   if (!username) {
     notFound();
@@ -84,7 +85,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
               <UserAvatarImg
                 className="mr-3 h-[48px] w-[48px] rounded-3xl object-cover"
                 data-testid="profile-avatar"
-                src={getUserAvatarUrl(profileData?.name || '', 'medium')}
+                src={avatarUrl}
                 alt=""
                 fetchPriority="low"
               />
