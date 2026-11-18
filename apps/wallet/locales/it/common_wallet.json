@@ -312,12 +312,11 @@
     "title": "Voto Witness",
     "setted_proxy_description": "Hai impostato un proxy di voto. Se vuoi riattivare il voto manuale, rimuovi il proxy.",
     "current_proxy": "Il tuo proxy attuale è: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "Non hai voti residui.",
-      "one": "Ti resta 1 voto.",
-      "other": "Hai {{value}} voti residui."
-    },
-    "confirm_account_witness_vote": "Conferma voto al Witness",
+    "no_votes_remaining": "Non hai voti residui.",
+    "votes_remaining_one": "Ti resta {{count}} voto.",
+    "votes_remaining_many": "Hai {{count}} voti residui.",
+    "votes_remaining_other": "Hai {{count}} voti residui.",
+    "remove_witness_vote_title": "Rimuovi il voto al Witness @{{witness}}",
     "you_are_about_remove_vote": "Rimuovere il tuo voto per @{{witness}}?",
     "cancel_button": "Annulla",
     "ok": "OK",

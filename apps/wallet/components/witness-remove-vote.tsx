@@ -21,7 +21,7 @@ const WitnessRemoveVote = ({ witness, open, onOpenChange, onVote }: WitnessRemov
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>{t('witnesses_page.confirm_account_witness_vote')}</DialogHeader>
+        <DialogHeader>{t('witnesses_page.remove_witness_vote_title', { witness })}</DialogHeader>
         <DialogDescription>{t('witnesses_page.you_are_about_remove_vote', { witness })}</DialogDescription>
         <DialogFooter className="flex flex-row justify-between pt-4">
           <Button

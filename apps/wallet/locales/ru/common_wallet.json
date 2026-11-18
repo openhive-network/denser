@@ -317,12 +317,12 @@
     "title": "Топ делегатов",
     "setted_proxy_description": "Вы установили прокси для голосования. Чтобы снова голосовать самостоятельно, удалите прокси.",
     "current_proxy": "Ваш текущий прокси: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "У Вас не осталось голосов.",
-      "one": "У Вас остался 1 голос.",
-      "other": "У Вас осталось {{value}} голосов."
-    },
-    "confirm_account_witness_vote": "Подтвердите голос за делегата",
+    "no_votes_remaining": "У Вас не осталось голосов.",
+    "votes_remaining_one": "У Вас остался {{count}} голос.",
+    "votes_remaining_few": "У Вас осталось {{count}} голоса.",
+    "votes_remaining_many": "У Вас осталось {{count}} голосов.",
+    "votes_remaining_other": "У Вас осталось {{count}} голоса.",
+    "remove_witness_vote_title": "Отозвать голос за делегата @{{witness}}",
     "you_are_about_remove_vote": "Отозвать свой голос за @{{witness}}?",
     "cancel_button": "Отмена",
     "ok": "OK",

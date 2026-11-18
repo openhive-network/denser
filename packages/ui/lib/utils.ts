@@ -68,6 +68,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const MONTHS_PER_YEAR = 12;
+
 // The unit a block gap of `secs` is counted in, with the count.
 const blockGapCount = (secs: number): [number, Intl.RelativeTimeFormatUnit] => {
   const mins = Math.floor(secs / 60);
@@ -80,8 +82,9 @@ const blockGapCount = (secs: number): [number, Intl.RelativeTimeFormatUnit] => {
   if (hrs < 48) return [hrs, 'hour'];
   if (days < 14) return [days, 'day'];
   if (weeks < 4) return [weeks, 'week'];
-  if (months < 24) return [months, 'month'];
-  return [Math.floor(days / 365), 'year'];
+  if (months < MONTHS_PER_YEAR) return [months, 'month'];
+  // 12 months of 30 days are 360 days: from there the gap reads as a year, never "12 months"
+  return [Math.max(1, Math.floor(days / 365)), 'year'];
 };
 
 /**

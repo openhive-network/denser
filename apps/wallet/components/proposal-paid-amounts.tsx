@@ -13,6 +13,7 @@ import {
   type ProposalUnfunded
 } from '@/wallet/lib/proposal-payments';
 import { PhoneOrDesktopText } from './phone-or-desktop-text';
+import { DOTTED_ITEM_CLASS, DOTTED_ROW_CLASS } from './dotted-row';
 
 interface ProposalPaidAmountsProps {
   proposal: ProposalTerms;
@@ -62,15 +63,11 @@ const UnfundedNote = ({ unfunded }: { unfunded: ProposalUnfunded }) => {
 
 /** The figures of a line, separated by middle dots. */
 const DottedLine = ({ children }: { children: ReactNode[] }) => (
-  <p
-    className="flex flex-wrap items-center gap-x-1.5 text-xs text-slate-600 dark:text-slate-400"
-    data-testid="proposal-payments"
-  >
+  <p className={`${DOTTED_ROW_CLASS} text-xs text-slate-600 dark:text-slate-400`} data-testid="proposal-payments">
     {children
       .filter((child) => child)
       .map((child, index) => (
-        <span key={index} className="flex items-center gap-x-1.5 whitespace-nowrap">
-          {index > 0 ? <span aria-hidden="true">·</span> : null}
+        <span key={index} className={`${DOTTED_ITEM_CLASS} flex items-center whitespace-nowrap`}>
           {child}
         </span>
       ))}

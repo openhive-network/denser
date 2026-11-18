@@ -312,12 +312,11 @@
     "title": "Votes pour les témoins",
     "setted_proxy_description": "Vous avez donné une procuration de vote. Si vous souhaitez réactiver le vote manuel, veuillez supprimer votre procuration.",
     "current_proxy": "Votre procuration actuelle : {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "Il ne vous reste plus de vote disponible.",
-      "one": "Il vous reste 1 vote disponible.",
-      "other": "Il vous reste {{value}} votes disponibles."
-    },
-    "confirm_account_witness_vote": "Confirmer le vote pour le témoin",
+    "no_votes_remaining": "Il ne vous reste plus de vote disponible.",
+    "votes_remaining_one": "Il vous reste {{count}} vote disponible.",
+    "votes_remaining_many": "Il vous reste {{count}} votes disponibles.",
+    "votes_remaining_other": "Il vous reste {{count}} votes disponibles.",
+    "remove_witness_vote_title": "Retirer le vote de témoin pour @{{witness}}",
     "you_are_about_remove_vote": "Retirer votre vote pour @{{witness}} ?",
     "cancel_button": "Annuler",
     "ok": "OK",

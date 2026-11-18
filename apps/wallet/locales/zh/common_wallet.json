@@ -305,12 +305,9 @@
     "title": "见证人投票",
     "setted_proxy_description": "你已设置投票代理。如需恢复手动投票，请清除代理。",
     "current_proxy": "你当前的代理是：{{value}}",
-    "you_have_votes_remaining": {
-      "zero": "你无剩余选票.",
-      "one": "你还剩1张选票.",
-      "other": "你还剩{{value}}张选票."
-    },
-    "confirm_account_witness_vote": "确认见证人投票",
+    "no_votes_remaining": "你无剩余选票.",
+    "votes_remaining_other": "你还剩{{count}}张选票.",
+    "remove_witness_vote_title": "撤销对见证人 @{{witness}} 的投票",
     "you_are_about_remove_vote": "撤销对 @{{witness}} 的投票？",
     "cancel_button": "取消",
     "ok": "确定",

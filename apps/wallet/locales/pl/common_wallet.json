@@ -317,12 +317,12 @@
     "title": "Głosowanie na świadków",
     "setted_proxy_description": "Ustawiono pełnomocnika do głosowania. Jeśli chcesz ponownie głosować samodzielnie, usuń pełnomocnika.",
     "current_proxy": "Twój obecny pełnomocnik to: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "Nie masz już więcej głosów.",
-      "one": "Pozostał ci 1 głos.",
-      "other": "Pozostało ci {{value}} głosów."
-    },
-    "confirm_account_witness_vote": "Potwierdź głos na świadka",
+    "no_votes_remaining": "Nie masz już więcej głosów.",
+    "votes_remaining_one": "Pozostał ci {{count}} głos.",
+    "votes_remaining_few": "Pozostały ci {{count}} głosy.",
+    "votes_remaining_many": "Pozostało ci {{count}} głosów.",
+    "votes_remaining_other": "Pozostało ci {{count}} głosu.",
+    "remove_witness_vote_title": "Wycofaj głos na świadka @{{witness}}",
     "you_are_about_remove_vote": "Wycofać swój głos na @{{witness}}?",
     "cancel_button": "Anuluj",
     "ok": "OK",

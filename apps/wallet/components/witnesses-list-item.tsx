@@ -16,6 +16,7 @@ import WitnessVoteButton from './witness-vote-button';
 import WitnessSiteLink from './witness-site-link';
 import type { VestingTotals } from '@/wallet/lib/voters';
 import { useLazyDialog } from './hooks/use-lazy-dialog';
+import { DOTTED_ITEM_CLASS, DOTTED_ROW_CLASS } from './dotted-row';
 
 // Loaded when a row's voters are first opened: the witness page's own load carries none of it.
 const WitnessVotersDialog = dynamic(() => import('./witness-voters-dialog'), { ssr: false });
@@ -47,6 +48,7 @@ interface WitnessListItemProps {
 const ONE_WEEK_IN_SEC = 604800;
 const ONE_DAY_IN_SEC = 86400;
 const MUTED_TEXT = 'text-gray-600 dark:text-gray-400';
+const MUTED_DOT = 'before:text-gray-600 dark:before:text-gray-400';
 const NO_FEED = '—';
 
 function WitnessListItem({
@@ -135,74 +137,75 @@ function WitnessListItem({
             />
           </Link>
           <div className="min-w-0 flex-1 leading-5">
-            <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 whitespace-nowrap sm:flex-nowrap">
-              <Link
-                href={`/@${data.owner}`}
-                data-testid="witness-name-link"
-                target="_blank"
-                title={nameTitle}
-                className="shrink-0"
-              >
-                <div
-                  className={clsx('font-semibold sm:text-sm', {
-                    'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser,
-                    'font-bold text-red-500': !disableUser
-                  })}
+            {/* The line wraps at every width, so the site link never runs into the version column */}
+            <div className={clsx(DOTTED_ROW_CLASS, 'min-w-0 whitespace-nowrap')}>
+              <div className="flex min-w-0 flex-wrap items-center gap-x-1.5">
+                <Link
+                  href={`/@${data.owner}`}
+                  data-testid="witness-name-link"
+                  target="_blank"
+                  title={nameTitle}
+                  className="shrink-0"
                 >
-                  {data.owner}
-                </div>
-              </Link>
-              {witnessOwner && (
-                <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
-                  {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
-                </span>
-              )}
-              <Link
-                href={!highlighted ? `/~witnesses?highlight=${data.owner}` : `/~witnesses`}
-                replace
-                scroll={false}
-                className="shrink-0"
-                data-testid="witness-highlight-link"
-                title={t('witnesses_page.use_this_for_linking_title')}
-                aria-label={t('witnesses_page.link_to_witness', { witness: data.owner })}
-              >
-                <Icons.link className="h-[1em] w-[1em]" />
-              </Link>
-              {isStale && !disableUser && (
-                <span
-                  className="shrink-0 rounded-sm bg-red-600 px-1 text-[11px] font-semibold leading-4 text-white"
-                  title={t('witnesses_page.has_not_produced_blocks')}
-                  data-testid="witness-has-not-produced-blocks-warning"
-                >
-                  <Link
-                    href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
-                    data-testid="last-block-number"
-                  >
-                    {t('witnesses_page.no_blocks_for_days', {
-                      count: Math.floor(data.witnessLastBlockAgeInSecs / ONE_DAY_IN_SEC)
+                  <div
+                    className={clsx('font-semibold sm:text-sm', {
+                      'text-gray-500 line-through opacity-50 dark:text-gray-300': disableUser,
+                      'font-bold text-red-500': !disableUser
                     })}
-                  </Link>
-                </span>
-              )}
-              {isOutdated && (
-                <span className="shrink-0 rounded-sm bg-amber-200 px-1 text-[11px] leading-4 text-amber-900 sm:hidden dark:bg-amber-900 dark:text-amber-100">
-                  v{data.running_version}
-                </span>
-              )}
-              <span className="flex min-w-0 items-center gap-x-1.5">
-                <span aria-hidden="true" className={MUTED_TEXT}>
-                  ·
-                </span>
-                <span className="flex min-w-0" data-testid="witness-external-site-link">
-                  {disableUser ? (
-                    <span className="truncate">
-                      {t('witnesses_page.disabled')}
-                      {blockGap(headBlock, data.last_confirmed_block_num, t, locale)}
-                    </span>
-                  ) : (
-                    <WitnessSiteLink url={data.url} />
-                  )}
-                </span>
+                  >
+                    {data.owner}
+                  </div>
+                </Link>
+                {witnessOwner && (
+                  <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
+                    {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
+                  </span>
+                )}
+                <Link
+                  href={!highlighted ? `/~witnesses?highlight=${data.owner}` : `/~witnesses`}
+                  replace
+                  scroll={false}
+                  className="shrink-0"
+                  data-testid="witness-highlight-link"
+                  title={t('witnesses_page.use_this_for_linking_title')}
+                  aria-label={t('witnesses_page.link_to_witness', { witness: data.owner })}
+                >
+                  <Icons.link className="h-[1em] w-[1em]" />
+                </Link>
+                {isStale && !disableUser && (
+                  <span
+                    className="shrink-0 rounded-sm bg-red-600 px-1 text-[11px] font-semibold leading-4 text-white"
+                    title={t('witnesses_page.has_not_produced_blocks')}
+                    data-testid="witness-has-not-produced-blocks-warning"
+                  >
+                    <Link
+                      href={`https://hiveblocks.com/b/${data.last_confirmed_block_num}`}
+                      data-testid="last-block-number"
+                    >
+                      {t('witnesses_page.no_blocks_for_days', {
+                        count: Math.floor(data.witnessLastBlockAgeInSecs / ONE_DAY_IN_SEC)
+                      })}
+                    </Link>
+                  </span>
+                )}
+                {isOutdated && (
+                  <span className="shrink-0 rounded-sm bg-amber-200 px-1 text-[11px] leading-4 text-amber-900 sm:hidden dark:bg-amber-900 dark:text-amber-100">
+                    v{data.running_version}
+                  </span>
+                )}
+              </div>
+              <span
+                className={clsx(DOTTED_ITEM_CLASS, MUTED_DOT, 'flex min-w-0')}
+                data-testid="witness-external-site-link"
+              >
+                {disableUser ? (
+                  <span className="truncate">
+                    {t('witnesses_page.disabled')}
+                    {blockGap(headBlock, data.last_confirmed_block_num, t, locale)}
+                  </span>
+                ) : (
+                  <WitnessSiteLink url={data.url} />
+                )}
               </span>
             </div>
             {!disableUser && witnessDescription && (
@@ -219,7 +222,7 @@ function WitnessListItem({
                 {witnessDescription}
               </button>
             )}
-            <div className={clsx('truncate sm:hidden', MUTED_TEXT)}>
+            <div className={clsx('truncate sm:hidden', MUTED_TEXT)} data-testid="witness-phone-summary">
               <button
                 type="button"
                 onClick={votersDialog.openFrom}
@@ -232,7 +235,7 @@ function WitnessListItem({
               {rankUp && ` (+${rankUp})`} ·{' '}
               {feedPublished ? (
                 <>
-                  {priceFeed} <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
+                  {priceFeed} · <TimeAgo date={data.last_hbd_exchange_update} timeStyle="narrow" />
                 </>
               ) : (
                 <span title={t('witnesses_page.no_price_feed')}>{NO_FEED}</span>
@@ -262,7 +265,7 @@ function WitnessListItem({
           {t('witnesses_page.voters')}
         </button>
         {rankUpText && (
-          <div className={clsx('truncate', MUTED_TEXT)} title={rankUpText} data-testid="witness-rank-up">
+          <div className={clsx('wrap-break-word', MUTED_TEXT)} title={rankUpText} data-testid="witness-rank-up">
             {rankUpText}
           </div>
         )}

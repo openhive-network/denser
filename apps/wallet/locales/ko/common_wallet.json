@@ -305,12 +305,9 @@
     "title": "증인 투표",
     "setted_proxy_description": "투표 프록시가 설정되어 있습니다. 직접 투표를 다시 사용하려면 프록시를 해제하세요.",
     "current_proxy": "현재 프록시: {{value}}",
-    "you_have_votes_remaining": {
-      "zero": "남은 투표가 없습니다.",
-      "one": "남은 투표가 1개 있습니다.",
-      "other": "남은 투표가 {{value}}개 있습니다."
-    },
-    "confirm_account_witness_vote": "계정 증인 투표 확인",
+    "no_votes_remaining": "남은 투표가 없습니다.",
+    "votes_remaining_other": "남은 투표가 {{count}}개 있습니다.",
+    "remove_witness_vote_title": "@{{witness}} 증인 투표 철회",
     "you_are_about_remove_vote": "@{{witness}}에 대한 투표를 철회하시겠습니까?",
     "cancel_button": "취소",
     "ok": "확인",

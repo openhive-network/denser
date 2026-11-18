@@ -10,6 +10,8 @@ const TIME_INTERVALS: [number, Intl.RelativeTimeFormatUnit][] = [
   [1, 'second']
 ];
 
+const MONTHS_PER_YEAR = 12;
+
 const INVALID_TIME_AGO = 'Invalid date';
 const INVALID_TITLE = 'Invalid Date';
 const CLOCK_TICK_MS = 60000;
@@ -130,7 +132,8 @@ export const getTimeAgoString = (
     for (const [secondsInUnit, unit] of TIME_INTERVALS) {
       const value = Math.floor(diff / secondsInUnit);
       if (value > 0) {
-        return rtf.format(-value, unit);
+        const [count, countUnit] = rollOverMonths(value, unit);
+        return rtf.format(-count, countUnit);
       }
     }
   }
@@ -142,8 +145,17 @@ export const getTimeAgoString = (
 const formatFuture = (secondsLeft: number, rtf: RelativeFormat): string => {
   const [secondsInUnit, unit] =
     TIME_INTERVALS.find(([seconds]) => secondsLeft >= seconds) ?? TIME_INTERVALS[TIME_INTERVALS.length - 1];
-  return rtf.format(Math.round(secondsLeft / secondsInUnit), unit);
+  const [count, countUnit] = rollOverMonths(Math.round(secondsLeft / secondsInUnit), unit);
+  return rtf.format(count, countUnit);
 };
+
+// A month counts 30 days, so 360 to 364 days make 12 of them: those read as a year, as a gap of 365
+// days does, and no time reads "12 months".
+const rollOverMonths = (
+  value: number,
+  unit: Intl.RelativeTimeFormatUnit
+): [number, Intl.RelativeTimeFormatUnit] =>
+  unit === 'month' && value >= MONTHS_PER_YEAR ? [Math.floor(value / MONTHS_PER_YEAR), 'year'] : [value, unit];
 
 /**
  * `count` `unit`s ago in the long style, always numeric and with the locale's plural form: "2 years

@@ -133,7 +133,9 @@ export default function WitnessesPage() {
               </h1>
               <p className="text-xs sm:text-right sm:text-sm" data-testid="witness-header-vote">
                 <span className="font-semibold " data-testid="witness-header-vote-remaining">
-                  {t('witnesses_page.you_have_votes_remaining.other', { value: votesLeft })}
+                  {votesLeft > 0
+                    ? t('witnesses_page.votes_remaining', { count: votesLeft })
+                    : t('witnesses_page.no_votes_remaining')}
                 </span>{' '}
                 {t('witnesses_page.you_can_vote_for_maximum_of_witnesses')}
               </p>
