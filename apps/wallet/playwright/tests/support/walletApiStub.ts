@@ -55,6 +55,7 @@ export const fullAccount = (account: { name: string; [field: string]: unknown })
   withdrawn: 0,
   proxy: '',
   proxied_vsf_votes: [0, 0, 0, 0],
+  delayed_votes: [],
   voting_manabar: manabar,
   downvote_manabar: manabar,
   ...account

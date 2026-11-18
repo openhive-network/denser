@@ -452,6 +452,7 @@
     "others_share_other": "pozostali ({{count}}) · {{share}}",
     "weight_with_proxy": "{{own}} HP + {{proxy}} z proxy",
     "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP z proxy",
+    "votes_via_proxy": "głosuje przez @{{proxy}}",
     "breakdown_label": "Udział głosujących w sile głosów",
     "weights_unavailable": "Ten węzeł API nie podaje siły głosów, więc głosujący są wymienieni tylko z nazwy.",
     "search_placeholder": "Szukaj głosujących",
