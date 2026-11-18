@@ -6,11 +6,11 @@ type VotersDialogContentProps = Omit<ComponentPropsWithoutRef<typeof DialogConte
   children: ReactNode;
 };
 
-/** The voters dialog's frame: full screen on phones, about 1100 px wide on desktop, the title above its body. */
+/** The voters dialog's frame: full screen on phones, about 1150 px wide on desktop, the title above its body. */
 function VotersDialogContent({ title, children, ...props }: VotersDialogContentProps) {
   return (
     <DialogContent
-      className="flex h-dvh max-w-none flex-col gap-3 rounded-none px-3 pt-3 pb-3 sm:h-[85vh] sm:w-[calc(100vw-2rem)] sm:max-w-[1100px] sm:rounded-lg sm:px-5"
+      className="flex h-dvh max-w-none flex-col gap-3 rounded-none px-3 pt-3 pb-3 sm:h-[85vh] sm:w-[calc(100vw-2rem)] sm:max-w-6xl sm:rounded-lg sm:px-5"
       aria-describedby={undefined}
       {...props}
     >

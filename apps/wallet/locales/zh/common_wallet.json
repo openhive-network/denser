@@ -414,7 +414,7 @@
     "count_other": "{{count}} 位投票者",
     "count_more_other": "{{count}}+ 位投票者",
     "others_share_other": "其他 {{count}} 位 · {{share}}",
-    "weight_with_proxy": "{{own}} HP + 代理 {{proxy}}",
+    "weight_proxy": "+代理 {{proxy}}",
     "weight_exact_with_proxy": "自有 {{own}} HP + 代理 {{proxy}} HP",
     "votes_via_proxy": "通过 @{{proxy}} 投票",
     "breakdown_label": "各投票者所占投票权重",

@@ -81,6 +81,20 @@ const rowHeightsOtherThan = (rows: Locator, height: number) =>
     height
   );
 
+/** The weights and shares among the first `count` rows that their column cuts off with an ellipsis or wraps. */
+const clippedTexts = (rows: Locator, count: number) =>
+  rows.evaluateAll(
+    (items, n) =>
+      items
+        .slice(0, n)
+        .flatMap((item) => [
+          ...item.querySelectorAll<HTMLElement>('[data-testid="voter-values-dialog"], [data-testid="voter-share"]')
+        ])
+        .filter((element) => element.scrollWidth > element.clientWidth || element.getClientRects().length > 1)
+        .map((element) => element.textContent),
+    count
+  );
+
 test.describe('Witness voters dialog', () => {
   test('WALLET-WITNESS-VOTERS-01 — the Voters link shows the count, the total, the bar and one-line rows by weight in three columns', async ({
     page,
@@ -103,7 +117,7 @@ test.describe('Witness voters dialog', () => {
     await expect(rows).toHaveCount(100);
     const whale = rows.first();
     await expect(whale.getByTestId('proposal-voter-link-dialog')).toHaveText(HAFBE_WHALE);
-    await expect(whale.getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+M HP \+ [\d.]+M proxy$/);
+    await expect(whale.getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+M HP \+[\d.]+M proxy$/);
     await expect(whale.getByTestId('voter-values-dialog')).toHaveAttribute('title', /^[\d,]+\.\d{3} HP own \+ [\d,]+\.\d{3} HP proxied$/);
     await expect(whale.getByTestId('voter-share')).toHaveText('40.0%');
     await expect(rows.nth(1).getByTestId('proposal-voter-link-dialog')).toHaveText(witnessVoterName(1));
@@ -198,7 +212,7 @@ test.describe('Witness voters dialog', () => {
     await expect(rows).toHaveCount(100);
     await expect(dialog.getByRole('heading')).toHaveText(`Głosy na świadka @${HAFBE_WITNESS}`);
     await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d.]+M HP$`));
-    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+M HP \+ [\d.]+M z proxy$/);
+    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+M HP \+[\d.]+M z proxy$/);
     expect((await dialog.boundingBox())?.width).toBe(PHONE.width);
     expect(await columnCount(rows, 3)).toBe(1);
     expect(await rowHeightsOtherThan(rows, ROW_HEIGHT)).toEqual([]);
@@ -209,4 +223,20 @@ test.describe('Witness voters dialog', () => {
     await expect(dialog).toHaveCount(0);
     await expect(trigger).toBeFocused();
   });
+  for (const lang of ['en', 'pl'] as const) {
+    test(`WALLET-WITNESS-VOTERS-06 — in ${lang} at 1280 px the largest weights fit their column without an ellipsis`, async ({
+      page,
+      baseURL
+    }) => {
+      await page.setViewportSize(DESKTOP);
+      await openWitnessesPage(page, lang, baseURL);
+      const dialog = await openVoters(page, HAFBE_WITNESS);
+      const rows = dialog.getByTestId('voter-row');
+      await expect(rows).toHaveCount(100);
+
+      expect(await columnCount(rows, 6)).toBe(3);
+      expect(await clippedTexts(rows, 60)).toEqual([]);
+      expect(await rowHeightsOtherThan(rows, ROW_HEIGHT)).toEqual([]);
+    });
+  }
 });

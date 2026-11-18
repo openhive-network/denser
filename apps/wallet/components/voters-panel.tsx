@@ -169,7 +169,7 @@ function VotersPanel({
           </p>
         ) : (
           <ul
-            className="grid grid-cols-1 gap-x-4 md:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-x-3 md:grid-cols-2 lg:grid-cols-3"
             aria-label={t('proposals_page.voters_list')}
             onKeyDown={onKeyDown}
             data-testid="voters-list"

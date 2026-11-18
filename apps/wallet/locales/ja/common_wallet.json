@@ -414,7 +414,7 @@
     "count_other": "投票者 {{count}}人",
     "count_more_other": "投票者 {{count}}人以上",
     "others_share_other": "その他 {{count}}人 · {{share}}",
-    "weight_with_proxy": "{{own}} HP + プロキシ {{proxy}}",
+    "weight_proxy": "+プロキシ {{proxy}}",
     "weight_exact_with_proxy": "自身 {{own}} HP + プロキシ経由 {{proxy}} HP",
     "votes_via_proxy": "@{{proxy}} 経由で投票",
     "breakdown_label": "投票者ごとの投票力の割合",

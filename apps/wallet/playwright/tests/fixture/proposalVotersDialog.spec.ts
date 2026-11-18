@@ -75,7 +75,7 @@ test.describe('Proposal voters dialog', () => {
     const rows = dialog.getByTestId('voter-row');
     await expect(rows).toHaveCount(100);
     await expect(rows.first().getByTestId('proposal-voter-link-dialog')).toHaveText(PROPOSAL_WHALE);
-    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+K HP \+ [\d.]+K proxy$/);
+    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+K HP \+[\d.]+K proxy$/);
     await expect(rows.first().getByTestId('voter-share')).toHaveText(/^\d+\.\d%$/);
     await expect(rows.nth(1).getByTestId('proposal-voter-link-dialog')).toHaveText(STUB_ACCOUNT);
     await expect(rows.nth(2).getByTestId('proposal-voter-link-dialog')).toHaveText(proposalVoterName(0));
@@ -139,7 +139,7 @@ test.describe('Proposal voters dialog', () => {
 
     await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d.]+[KM] HP$`));
     await expect(dialog.getByTestId('voter-row').first().getByTestId('voter-values-dialog')).toHaveText(
-      /^[\d.]+K HP \+ [\d.]+K z proxy$/
+      /^[\d.]+K HP \+[\d.]+K z proxy$/
     );
     expect((await dialog.boundingBox())?.width).toBe(PHONE.width);
     const lefts = await dialog

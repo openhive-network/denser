@@ -450,7 +450,7 @@
     "others_share_few": "остальные ({{count}}) · {{share}}",
     "others_share_many": "остальные ({{count}}) · {{share}}",
     "others_share_other": "остальные ({{count}}) · {{share}}",
-    "weight_with_proxy": "{{own}} HP + {{proxy}} через прокси",
+    "weight_proxy": "+{{proxy}} через прокси",
     "weight_exact_with_proxy": "{{own}} HP своих + {{proxy}} HP через прокси",
     "votes_via_proxy": "голосует через @{{proxy}}",
     "breakdown_label": "Доля проголосовавших в весе голосов",
