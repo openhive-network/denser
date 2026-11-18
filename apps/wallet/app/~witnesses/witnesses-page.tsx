@@ -149,7 +149,7 @@ export default function WitnessesPage() {
               <col className="w-14 sm:w-16" />
               <col />
               <col className="w-0 sm:w-18" />
-              <col className="w-0 sm:w-32 md:w-44" />
+              <col className="w-0 sm:w-32 md:w-48" />
               <col className="w-0 sm:w-52" />
             </colgroup>
             <thead
