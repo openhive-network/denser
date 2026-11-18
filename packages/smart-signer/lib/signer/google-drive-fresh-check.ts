@@ -1,4 +1,4 @@
-import { needsGoogleSignInAgain } from '@smart-signer/lib/signer/google-drive-wallet-errors';
+import { retryAfterGoogleSignIn } from '@smart-signer/lib/signer/google-drive-wallet-errors';
 
 /**
  * Whether an operation signed with `keyType` asks for the wallet password first, as safe storage
@@ -23,11 +23,5 @@ export async function signAfterFreshPassword(
   signInAgain: (error: unknown) => void
 ): Promise<void> {
   const password = await askPassword();
-  try {
-    await signWithPassword(password);
-  } catch (error) {
-    if (!needsGoogleSignInAgain(error)) throw error;
-    signInAgain(error);
-    await signWithPassword(password);
-  }
+  await retryAfterGoogleSignIn(() => signWithPassword(password), signInAgain);
 }

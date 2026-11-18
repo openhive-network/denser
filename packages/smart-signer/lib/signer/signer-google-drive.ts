@@ -16,6 +16,8 @@ import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google
 import {
   isWalletDecryptionFailure,
   needsGoogleSignInAgain,
+  retryAfterGoogleSignIn,
+  trackAccessToken,
   WRONG_WALLET_PASSWORD_KEY
 } from '@smart-signer/lib/signer/google-drive-wallet-errors';
 import { needsFreshPasswordCheck, signAfterFreshPassword } from '@smart-signer/lib/signer/google-drive-fresh-check';
@@ -370,25 +372,39 @@ export class SignerGoogleDrive extends Signer {
   /**
    * The password prompt's `validatePassword`: resolves with the wrong-password message key when
    * `password` does not decrypt the wallet file, keeping the prompt open for another one, else with
-   * null, closing it. Any other failure is left to the wallet load that follows the prompt.
+   * null, closing it. A Google session failure drops the session and reads the file once more, so a
+   * stale session does not let the prompt close on a password it did not check. Any other failure is
+   * left to the wallet load that follows the prompt.
    */
   private async checkWalletPassword(password: string): Promise<string | null> {
-    let probe: IExternalWallet | undefined;
     try {
-      probe = await createExternalWallet(
-        await getChain(),
-        () => this.getAccessToken(),
-        async () => ({ password }),
-        siteConfig.googleDrive.walletFileName
+      await retryAfterGoogleSignIn(
+        () => this.readWalletWithPassword(password),
+        (error) => {
+          logger.debug('Google Drive wallet not read: %s Signing in to Google again', error instanceof Error ? error.message : String(error));
+          this._accessToken = undefined;
+        }
       );
-      await probe.enumStoredAccounts();
       return null;
     } catch (error) {
       if (isWalletDecryptionFailure(error)) return WRONG_WALLET_PASSWORD_KEY;
       logger.debug('Google Drive wallet password not checked: %s', error instanceof Error ? error.message : String(error));
       return null;
+    }
+  }
+
+  /** Decrypts the wallet file with `password`, rejecting as wax does when it cannot */
+  private async readWalletWithPassword(password: string): Promise<void> {
+    const probe = await createExternalWallet(
+      await getChain(),
+      () => this.getAccessToken(),
+      async () => ({ password }),
+      siteConfig.googleDrive.walletFileName
+    );
+    try {
+      await probe.enumStoredAccounts();
     } finally {
-      await probe?.close();
+      await probe.close();
     }
   }
 
@@ -413,11 +429,13 @@ export class SignerGoogleDrive extends Signer {
       let usedPassword = false;
 
       const attemptWalletLoad = async (): Promise<IExternalWalletContent> => {
+        const accessToken = trackAccessToken(() => this.getAccessToken());
         const wallet = await createExternalWallet(
           await getChain(),
-          () => this.getAccessToken(),
+          accessToken.getToken,
           async (missingStorageFile) => {
             if (missingStorageFile) {
+              accessToken.throwIfFailed();
               throw await waitForGoogleDriveErrorDialog({ errorType: 'wallet_not_found' });
             }
 
@@ -590,11 +608,13 @@ export class SignerGoogleDrive extends Signer {
 
   /** Signs `authTx` with the `keyType` key of the wallet opened by `password`, closing that wallet after */
   private async signWithWalletPassword(authTx: ITransaction, keyType: keyof THiveRoles, password: string): Promise<void> {
+    const accessToken = trackAccessToken(() => this.getAccessToken());
     const wallet = await createExternalWallet(
       await getChain(),
-      () => this.getAccessToken(),
+      accessToken.getToken,
       async (missingStorageFile) => {
         if (missingStorageFile) {
+          accessToken.throwIfFailed();
           throw await waitForGoogleDriveErrorDialog({ errorType: 'wallet_not_found' });
         }
         return { password };
