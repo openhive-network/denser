@@ -1038,7 +1038,11 @@ To serve another answer, `page.route` it in the spec: page routes take precedenc
 over the context's. `headerSearchMode.spec.ts` answers `sync-status` with the recorded 404
 (`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017`
 (a `sync-status` body, `AI Search...`), and checks it is the only hivesense request;
-`postSuggestions.spec.ts` serves its recorded `similar` answers the same way.
+`postSuggestions.spec.ts` serves its recorded `similar` answers the same way, with
+`sync-status` answered healthy: the signed-in post page shares the header's probe, and
+with AI off it asks hivemind's `search-api.find_similar` (through the proxy) instead.
+A recording without `search-api.find_similar` is answered "unknown method", as a hivemind
+before it answers, which is no miss: the sidebar stays empty.
 
 ### Esc closes the topmost Radix layer, which may be a tooltip
 

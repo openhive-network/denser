@@ -715,6 +715,7 @@
       "show_all": "Pokaż wszystkie",
       "hide": "Ukryj",
       "you_might_also_like": "Może Ci się również spodobać",
+      "related_posts": "Powiązane posty",
       "title": "Propozycje"
     },
     "browse_to_original_post": "Przejdź do oryginalnego posta autorstwa @{{author}}",

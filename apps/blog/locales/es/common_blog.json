@@ -710,6 +710,7 @@
       "show_all": "Mostrar todo",
       "hide": "Ocultar",
       "you_might_also_like": "También te puede gustar",
+      "related_posts": "Publicaciones relacionadas",
       "title": "Sugerencias"
     },
     "browse_to_original_post": "Ir a la publicación original de @{{author}}",

@@ -715,6 +715,7 @@
       "show_all": "Показать все",
       "hide": "Скрыть",
       "you_might_also_like": "Вам также может понравиться",
+      "related_posts": "Похожие посты",
       "title": "Рекомендации"
     },
     "browse_to_original_post": "Перейти к оригинальному посту @{{author}}",

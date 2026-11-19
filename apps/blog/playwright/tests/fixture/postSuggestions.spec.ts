@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Page } from '@playwright/test';
+import type { Page, Request } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { PostPage } from '../support/pages/postPage';
@@ -20,7 +20,12 @@ import { gotoLoggedIn } from '../support/postDisplayContext';
  * came back and the reputation/gray filter removed every one.
  *
  * The production build sends hivesense calls to REACT_APP_AI_DOMAIN, not the
- * fixture proxy, so the recording is served from the browser via page.route.
+ * fixture proxy, so the recording is served from the browser via page.route,
+ * with the `sync-status` probe answered healthy.
+ *
+ * When the probe finds HiveSense unavailable (the fixture's default answer), or
+ * the similar call fails, the page asks hivemind's `search-api.find_similar`
+ * (recorded, postSuggestions/0004) once and shows its posts as "Related Posts".
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- postSuggestions
  */
@@ -34,14 +39,18 @@ const LOW_REPUTATION = 10;
 const LOCALE_COOKIE = 'NEXT_LOCALE';
 // The first recorded suggestion was created 2022-10-09T21:18:51 (UTC).
 const FIRST_SUGGESTION_DATE_PL = '09.10.2022';
-const SIMILAR_RECORDING = path.resolve(
-  __dirname,
-  '..',
-  'mock',
-  'fixtures',
+const FIXTURES_ROOT = path.resolve(__dirname, '..', 'mock', 'fixtures');
+const SIMILAR_RECORDING = path.join(
+  FIXTURES_ROOT,
   'postDetail',
   '0007-GET_hivesense-api_posts_gtg_hive-hardfork-25-jump-starter-kit_similar.json'
 );
+const SYNC_STATUS_RECORDING = path.join(FIXTURES_ROOT, 'lighthouse/0017-GET_hivesense-api_sync-status.json');
+const HIVESENSE_SYNC_STATUS_PATH = '/hivesense-api/sync-status';
+const FIND_SIMILAR = 'search-api.find_similar';
+const RECORDED_FIND_SIMILAR_COUNT = 10;
+const SEMANTIC_TITLE = 'You Might Also Like';
+const TEXT_TITLE = 'Related Posts';
 
 // React Query's first retry of a failed query fires 1 s after the failure.
 const PAST_FIRST_RETRY_MS = 2_500;
@@ -67,6 +76,44 @@ const serveSimilarPosts = (page: Page, posts: SimilarPost[], delayMs = 0) =>
     if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
     await route.fulfill({ json: posts, headers: { 'access-control-allow-origin': '*' } });
   });
+
+/** Answers the HiveSense `sync-status` probe with a recorded healthy status (AI search on) */
+const serveHealthyHiveSenseProbe = (page: Page) =>
+  page.route(
+    (url) => url.pathname === HIVESENSE_SYNC_STATUS_PATH,
+    (route) =>
+      route.fulfill({
+        json: JSON.parse(fs.readFileSync(SYNC_STATUS_RECORDING, 'utf-8')).response,
+        headers: { 'access-control-allow-origin': '*' }
+      })
+  );
+
+const isFindSimilarRequest = (request: Request) => request.postData()?.includes(`"${FIND_SIMILAR}"`) ?? false;
+
+/** Answers the page's `search-api.find_similar` call as a hivemind without it does */
+const answerFindSimilarUnknownMethod = (page: Page) =>
+  page.route(
+    (url) => url.port === '8200',
+    (route) => {
+      if (!isFindSimilarRequest(route.request())) return route.fallback();
+      return route.fulfill({
+        json: {
+          jsonrpc: '2.0',
+          id: 1,
+          error: { code: -32602, message: 'Assert Exception:unknown method: search-apifind_similar' }
+        }
+      });
+    }
+  );
+
+/** Collects the console errors the page logs from now on */
+function recordConsoleErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
+  return errors;
+}
 
 /** Records the URL of every similar-posts request the page sends from now on */
 function recordSimilarRequests(page: Page): string[] {
@@ -97,17 +144,31 @@ test.describe('Post suggestions for an anonymous reader (fixture-based)', () => 
 test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
   test.use({ authenticatedUser: {} });
 
-  test('POST-SUGGEST-08: a signed-in visit asks for similar posts once and shows them', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
+    await serveHealthyHiveSenseProbe(page);
+  });
+
+  test('POST-SUGGEST-08: a signed-in visit asks HiveSense for similar posts once and shows them', async ({
+    page,
+    fixtureProxy
+  }) => {
     await serveSimilarPosts(page, recordedSimilarPosts());
     const similarRequests = recordSimilarRequests(page);
+    const findSimilarCalls = fixtureProxy.countRequests(({ method }) => method === FIND_SIMILAR);
 
-    const postPage = new PostPage(page);
-    await gotoLoggedIn(page, POST_URL);
-    await postPage.waitForPostHydration();
+    try {
+      const postPage = new PostPage(page);
+      await gotoLoggedIn(page, POST_URL);
+      await postPage.waitForPostHydration();
 
-    await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
-    await page.waitForTimeout(PAST_FIRST_RETRY_MS);
-    expect(similarRequests).toHaveLength(1);
+      await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
+      await expect(page.getByRole('heading', { name: SEMANTIC_TITLE })).toBeVisible();
+      await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+      expect(similarRequests).toHaveLength(1);
+      expect(findSimilarCalls.count()).toBe(0);
+    } finally {
+      findSimilarCalls.stop();
+    }
   });
 
   test('POST-SUGGEST-09: signing out on the post page removes the suggestions without a reload', async ({
@@ -221,7 +282,8 @@ test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
 
     expect(similarRequests).toHaveLength(1);
     await expect(postPage.articleBody).toBeVisible();
-    await expect(page.getByText('You Might Also Like')).toHaveCount(0);
+    await expect(page.getByText(SEMANTIC_TITLE)).toHaveCount(0);
+    await expect(page.getByText(TEXT_TITLE)).toHaveCount(0);
     await expect(postPage.suggestionsAllHiddenMessage).toHaveCount(0);
   });
 
@@ -240,8 +302,9 @@ test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
     });
   });
 
-  test('POST-SUGGEST-06: a failing similar call shows no suggestions, logs no error and is not retried', async ({
-    page
+  test('POST-SUGGEST-06: a failing similar call falls back to find_similar once, logs no error and is not retried', async ({
+    page,
+    fixtureProxy
   }) => {
     await page.route(SIMILAR_ROUTE, (route) =>
       route.fulfill({
@@ -255,17 +318,71 @@ test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
     page.on('console', (msg) => {
       if (msg.type() === 'error' && /similar/i.test(msg.text())) similarErrors.push(msg.text());
     });
-    const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
+    const findSimilarCalls = fixtureProxy.countRequests(({ method }) => method === FIND_SIMILAR);
+
+    try {
+      const postPage = new PostPage(page);
+      await gotoLoggedIn(page, POST_URL);
+      await postPage.waitForPostHydration();
+
+      await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_FIND_SIMILAR_COUNT);
+      await expect(page.getByRole('heading', { name: TEXT_TITLE })).toBeVisible();
+      await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+
+      expect(similarRequests).toHaveLength(1);
+      expect(findSimilarCalls.count()).toBe(1);
+      expect(similarErrors).toEqual([]);
+      await expect(page.getByText(SEMANTIC_TITLE)).toHaveCount(0);
+    } finally {
+      findSimilarCalls.stop();
+    }
+  });
+});
+
+test.describe('Post suggestions for a signed-in reader without HiveSense (fixture-based)', () => {
+  test.use({ authenticatedUser: {} });
+
+  test('POST-SUGGEST-11: HiveSense unavailable: find_similar once, its posts under "Related Posts"', async ({
+    page,
+    fixtureProxy
+  }) => {
+    const similarRequests = recordSimilarRequests(page);
+    const findSimilarCalls = fixtureProxy.countRequests(({ method }) => method === FIND_SIMILAR);
+
+    try {
+      const postPage = new PostPage(page);
+      await gotoLoggedIn(page, POST_URL);
+      await postPage.waitForPostHydration();
+
+      await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_FIND_SIMILAR_COUNT);
+      await expect(postPage.suggestionCardTitles.first()).toHaveText('DIY Eclipse Jump Starter Kit - Pure and Undiluted');
+      await expect(page.getByRole('heading', { name: TEXT_TITLE })).toBeVisible();
+      await expect(page.getByText(SEMANTIC_TITLE)).toHaveCount(0);
+      await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+
+      expect(similarRequests).toEqual([]);
+      expect(findSimilarCalls.count()).toBe(1);
+    } finally {
+      findSimilarCalls.stop();
+    }
+  });
+
+  test('POST-SUGGEST-12: HiveSense unavailable and find_similar unknown: no suggestions, no error logged', async ({
+    page
+  }) => {
+    await answerFindSimilarUnknownMethod(page);
+    const findSimilarAnswered = page.waitForResponse((response) => isFindSimilarRequest(response.request()));
+    const consoleErrors = recordConsoleErrors(page);
 
     const postPage = new PostPage(page);
     await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
-    await similarServed;
+    await findSimilarAnswered;
     await page.waitForTimeout(PAST_FIRST_RETRY_MS);
 
-    expect(similarRequests).toHaveLength(1);
-    expect(similarErrors).toEqual([]);
     await expect(postPage.articleBody).toBeVisible();
-    await expect(page.getByText('You Might Also Like')).toHaveCount(0);
+    await expect(page.getByTestId('suggestions-list')).toHaveCount(0);
+    await expect(page.getByText(TEXT_TITLE)).toHaveCount(0);
+    expect(consoleErrors.filter((text) => /similar/i.test(text))).toEqual([]);
   });
 });

@@ -1,6 +1,6 @@
 import { logger } from '@ui/lib/logger';
 import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
-import { getReadChain } from './chain';
+import { getReadChain, getSearchReadChain } from './chain';
 import { getHiveChainService } from './hive-chain-service';
 import {
   AI_SEARCH_BODY_LENGTH,
@@ -85,42 +85,86 @@ export const searchPosts = async ({
   }
 };
 
-/**
- * Posts HiveSense finds similar to @author/permlink; `null` when there are none, the post has no
- * embedding yet, or the call failed (logged as a warning). Never rejects.
- */
-export const getSimilarPostsByPost = async ({
-  author,
-  permlink,
-  truncate = 100,
-  result_limit = 100,
-  full_posts = 10,
-  observer
-}: {
+interface ISimilarPostsParams {
   author: string;
   permlink: string;
   truncate?: number;
   result_limit?: number;
   full_posts?: number;
   observer: string;
-}): Promise<MixedPostsResponse | null> => {
+}
+
+const readHiveSenseSimilarPosts = async ({
+  author,
+  permlink,
+  truncate = 100,
+  result_limit = 100,
+  full_posts = 10,
+  observer
+}: ISimilarPostsParams): Promise<MixedPostsResponse | null> => {
+  const chain = getReadChain().withTimeout(SIMILAR_POSTS_TIMEOUT_MS);
+  const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({
+    author,
+    permlink,
+    truncate,
+    result_limit,
+    full_posts,
+    observer
+  });
+  return response && withObserverVotes(response, observer);
+};
+
+/** Which index ranked a similar-posts list: HiveSense's embeddings, or hivemind's BM25 text index. */
+export type SimilarPostsSource = 'hivesense' | 'text';
+
+export interface ISimilarPosts {
+  source: SimilarPostsSource;
+  posts: MixedPostsResponse;
+}
+
+// Asked of each node once, like a reader's search: a node without find_similar must not move other calls off it.
+const readTextSimilarPosts = async ({
+  author,
+  permlink,
+  result_limit = 100,
+  observer
+}: ISimilarPostsParams): Promise<Entry[] | null> => {
   try {
-    const chain = getReadChain().withTimeout(SIMILAR_POSTS_TIMEOUT_MS);
-    const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({
+    const posts = await getSearchReadChain().api['search-api'].find_similar({
       author,
       permlink,
-      truncate,
-      result_limit,
-      full_posts,
+      limit: result_limit,
       observer
     });
-    return response && withObserverVotes(response, observer);
+    return listWithObserverVotes(posts, observer);
   } catch (error) {
-    if (isHiveSenseNoEmbeddingError(error)) return null;
-    // Suggestions are optional: a failure only means there are none to show.
-    logger.warn(error, 'getSimilarPostsByPost failed, showing no suggestions');
+    // Older hivemind answers "unknown method"; suggestions are optional either way.
+    logger.warn(error, 'search-api.find_similar failed, showing no suggestions');
     return null;
   }
+};
+
+/**
+ * Posts similar to @author/permlink: HiveSense's when `hiveSenseAvailable` and its call succeeds,
+ * else hivemind's `search-api.find_similar` (`source: 'text'`). A post HiveSense has no embedding
+ * for is not a HiveSense failure and gets no fallback. `null` when there are none or both failed
+ * (logged as warnings). Never rejects.
+ */
+export const getSimilarPosts = async ({
+  hiveSenseAvailable,
+  ...params
+}: ISimilarPostsParams & { hiveSenseAvailable: boolean }): Promise<ISimilarPosts | null> => {
+  if (hiveSenseAvailable) {
+    try {
+      const posts = await readHiveSenseSimilarPosts(params);
+      return posts ? { source: 'hivesense', posts } : null;
+    } catch (error) {
+      if (isHiveSenseNoEmbeddingError(error)) return null;
+      logger.warn(error, 'HiveSense similar posts failed, falling back to search-api.find_similar');
+    }
+  }
+  const posts = await readTextSimilarPosts(params);
+  return posts ? { source: 'text', posts } : null;
 };
 
 export const getPostsByIds = async ({

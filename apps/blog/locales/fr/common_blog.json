@@ -710,6 +710,7 @@
       "show_all": "Tout afficher",
       "hide": "Masquer",
       "you_might_also_like": "Vous aimerez peut-être aussi",
+      "related_posts": "Articles connexes",
       "title": "Suggestions"
     },
     "browse_to_original_post": "Voir le post original de @{{author}}",

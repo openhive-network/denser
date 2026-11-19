@@ -700,6 +700,7 @@
       "show_all": "すべて表示",
       "hide": "非表示",
       "you_might_also_like": "こちらもおすすめ",
+      "related_posts": "関連する投稿",
       "title": "おすすめ"
     },
     "browse_to_original_post": "@{{author}} による元の投稿を見る",

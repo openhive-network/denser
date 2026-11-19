@@ -18,6 +18,13 @@ export interface SearchType {
   start_permlink?: string;
 }
 
+export interface FindSimilarParams {
+  author: string;
+  permlink: string;
+  limit?: number;
+  observer?: string;
+}
+
 export interface EntryBeneficiaryRoute {
   account: string;
   weight: number;
@@ -1110,6 +1117,8 @@ export type ExtendedNodeApi = {
     find_text: TWaxApiRequest<SearchType, Entry[]>;
     /** `find_text` without votes (hivemind's `find_text_v2`): its entries carry `observer_vote`, no `active_votes`. */
     find_text_v2: TWaxApiRequest<SearchType & IVoteFreeParams, Entry[]>;
+    /** Posts lexically similar to @author/permlink, ranked by hivemind's BM25 index. */
+    find_similar: TWaxApiRequest<FindSimilarParams, Entry[]>;
   };
 };
 

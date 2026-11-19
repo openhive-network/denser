@@ -7,7 +7,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useTranslation } from '@/blog/i18n/client';
 
-const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
+const AnimatedList = ({ suggestions, title }: { suggestions: Entry[]; title: string }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [showSuggestions, storeShowSuggestions] = useStorageWithTTL<boolean>(
@@ -29,7 +29,7 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
             className="flex min-h-0 flex-col"
           >
             <div className="flex shrink-0 items-center justify-between px-4 pb-3 pt-1">
-              <h2 className="font-sanspro text-lg font-semibold">{t('post_content.suggestions.you_might_also_like')}</h2>
+              <h2 className="font-sanspro text-lg font-semibold">{title}</h2>
               <button
                 type="button"
                 onClick={() => storeShowSuggestions(false)}
