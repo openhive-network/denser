@@ -1,3 +1,24 @@
+/** What `captureMessage` takes besides the message: the event's level, tags and fingerprint. */
+export interface SentryMessageContext {
+  level: 'warning';
+  tags: Record<string, string>;
+  fingerprint: string[];
+}
+
+/**
+ * A message to send with `captureMessage` rather than an error. `bufferHandledError` keeps it like an
+ * error until the SDK loads; `captureEarlyErrors` then sends it as a message.
+ */
+export class SentryMessage {
+  readonly message: string;
+  readonly context: SentryMessageContext;
+
+  constructor(message: string, context: SentryMessageContext) {
+    this.message = message;
+    this.context = context;
+  }
+}
+
 let collectHandledError: ((error: unknown) => void) | undefined;
 
 /**
@@ -27,11 +48,25 @@ export const bufferEarlyErrors = (): (() => unknown[]) => {
 };
 
 /**
- * Hands a caught error to the running `bufferEarlyErrors` collection, if there is one.
+ * Hands a caught error (or a `SentryMessage`) to the running `bufferEarlyErrors` collection, if there is one.
  * Returns false when nothing is collecting: the SDK is loaded, or there is no DSN.
  */
 export const bufferHandledError = (error: unknown): boolean => {
   if (!collectHandledError) return false;
   collectHandledError(error);
   return true;
+};
+
+/** The SDK's two capture functions, as `captureEarlyErrors` uses them. */
+interface SentryCapture {
+  captureException: (error: unknown) => unknown;
+  captureMessage: (message: string, context: SentryMessageContext) => unknown;
+}
+
+/** Sends what `bufferEarlyErrors` collected: each `SentryMessage` as a message, anything else as an exception. */
+export const captureEarlyErrors = (earlyErrors: unknown[], { captureException, captureMessage }: SentryCapture): void => {
+  earlyErrors.forEach((error) => {
+    if (error instanceof SentryMessage) captureMessage(error.message, error.context);
+    else captureException(error);
+  });
 };

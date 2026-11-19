@@ -1,6 +1,7 @@
 // Loaded only through a dynamic import(), and only when a DSN is configured, so the Sentry SDK stays out of the initial chunks.
 import env from "@beam-australia/react-env";
-import { captureException, captureRouterTransitionStart, init } from "@sentry/nextjs";
+import { captureException, captureMessage, captureRouterTransitionStart, init } from "@sentry/nextjs";
+import { captureEarlyErrors } from "@ui/lib/sentry-early-errors";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
 import { parseTracesSampleRate } from "@ui/lib/sentry-sample-rate";
 import { sentryDeploymentOptions } from "@ui/lib/sentry-deployment";
@@ -54,7 +55,7 @@ export const initSentry = (earlyErrors: unknown[]) => {
     beforeSend: scrubEvent as any,
   });
 
-  earlyErrors.forEach((error) => captureException(error));
+  captureEarlyErrors(earlyErrors, { captureException, captureMessage });
 
   if (document.readyState === 'complete') {
     scheduleReplayIntegration();
