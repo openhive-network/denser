@@ -90,9 +90,9 @@ Apps support deployment at root (`/`) or subdirectory (`/blog`, `/wallet`):
 5. Forms in `packages/smart-signer/components/auth/`
 
 ### Localization
-- Use `next-i18next` with `localePath: './public/locales'`
-- Copy locale files via CopyPlugin during build (both app and package locales)
-- Gitignore `public/locales/` in apps
+- i18next + react-i18next, set up by `packages/ui/lib/i18n-client.ts` and `i18n-server.ts`; each app's `i18n/` passes its settings and a loader that imports `locales/<lng>/<ns>.json` (smart-signer's namespace from `packages/smart-signer/locales`), so the files are bundled and the app reads no copy of them from `public/`
+- The language is the `NEXT_LOCALE` cookie, shared by the apps of an origin
+- Rules for user-facing text and the translation validators (`lint:translations`, `lint:translations:usage`, `scripts/check-smart-signer-translations.js`): see Translation Rules in `CLAUDE.md`
 
 ### Code Organization
 - **apps/*/pages/** - Next.js page routes

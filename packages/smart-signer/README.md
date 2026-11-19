@@ -27,29 +27,21 @@ blockchain.
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
    [../../apps/auth/components/site-header.tsx](../../apps/auth/components/site-header.tsx).
-7. To use locale stuff from
-   [../../packages/smart-signer/locales](../../packages/smart-signer/locales),
-   you need to import translation files to a location known to i18n
-   engine used in your application:
-
-    a) set `localePath: path.resolve('./public/locales')` in your
-    `next-i18next.config.js`, see
-    [../../apps/auth/next-i18next.config.js](../../apps/auth/next-i18next.config.js]),
-
-    b) copy locale files, both for your application and for package
-    `smart-signer`, to your `./public/locales`, see the `copy:public`
-    script in [../../apps/blog/package.json](../../apps/blog/package.json),
-
-    c) gitignore your `./public/locales`, see
-    [../../apps/auth/.gitignore](../../apps/auth/.gitignore),
-
-    d) add script `clean` to your `package.json`, see
-    [../../apps/auth/package.json](../../apps/auth/package.json) and use
-    it in `start` and `build` scripts.
-
-    e) add string `smart-signer` to the array of namespaces loaded in
-    your `serverSideTranslations` handler, see
-    [../../apps/auth/lib/get-translations.ts](../../apps/auth/lib/get-translations.ts).
+7. Translations: the package's strings are in
+   [locales/\<lng\>/smart-signer.json](./locales). The app loads the
+   `smart-signer` namespace with `loadSmartSignerTranslations` from
+   [lib/i18n.ts](./lib/i18n.ts) in the namespace loader it passes to
+   `createI18nClient` and `createI18nServer`
+   ([../../packages/ui/lib/i18n-client.ts](../../packages/ui/lib/i18n-client.ts),
+   [../../packages/ui/lib/i18n-server.ts](../../packages/ui/lib/i18n-server.ts));
+   see the blog's [i18n/client.ts](../../apps/blog/i18n/client.ts) and
+   [i18n/server.ts](../../apps/blog/i18n/server.ts). The files are
+   bundled by these `import()` calls; the app reads no
+   copy of them from `public/`.
+   The language is the `NEXT_LOCALE` cookie. Keep every locale in sync with
+   `en`: `node scripts/check-smart-signer-translations.js` checks it. The
+   rules for user-facing text are under Translation Rules in
+   [CLAUDE.md](../../CLAUDE.md).
 
 8. Create environment variables for logger in your
    `.env.local` file, when you need to see logger messages emitted on
