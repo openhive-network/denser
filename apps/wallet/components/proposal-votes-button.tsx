@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import { Icons } from '@hive/ui/components/icons';
-import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
+import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
 import { useTranslation } from '@/wallet/i18n/client';
 import VoteProposals from './votes-proposals-dialog';
 
@@ -20,14 +21,15 @@ export function ProposalVotesButton({
   totalVestingFund
 }: ProposalVotesButtonProps) {
   const { t } = useTranslation('common_wallet');
-  const amount = `${getRoundedAbbreveration(totalVotesHp)} HP`;
+  const { locale } = useLocale();
+  const amount = `${getRoundedAbbreveration(totalVotesHp, locale)} HP`;
 
   return (
     <VoteProposals
       id={proposalId}
       totalShares={totalShares}
       totalVestingFund={totalVestingFund}
-      tooltip={t('proposals_page.show_voters_tooltip', { amount: numberWithCommas(totalVotesHp.toFixed(2)) })}
+      tooltip={t('proposals_page.show_voters_tooltip', { amount: formatDecimal(totalVotesHp, 2, locale) })}
     >
       <button
         type="button"

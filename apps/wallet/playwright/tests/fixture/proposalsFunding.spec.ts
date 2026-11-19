@@ -62,6 +62,17 @@ test.describe('Proposals page DHF funding', () => {
     await expect(faqLink).toHaveAttribute('href', /\/faq\.html#What_is_the_Decentralized_Hive_Fund__DHF$/);
   });
 
+  test('WALLET-PROPOSALS-DHF-12 — in pl the summary groups thousands with a space and writes a decimal comma', async ({
+    page,
+    baseURL
+  }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL }]);
+    const proposalsPage = await openProposals(page);
+
+    await expect(proposalsPage.dhfDailyFunded).toHaveText('200,000 HBD');
+    await expect(proposalsPage.dhfTotalBudget).toHaveText('50\u00a0000,000 HBD');
+  });
+
   test('WALLET-PROPOSALS-DHF-02 — in vote order the funding line follows the last funded proposal, the return proposal', async ({
     page
   }) => {

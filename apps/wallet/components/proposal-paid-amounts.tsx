@@ -1,6 +1,6 @@
 import type Big from 'big.js';
 import type { ReactNode } from 'react';
-import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
+import { cn, formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { useLocale } from '@ui/components/locale-context';
 import {
@@ -27,16 +27,19 @@ interface ProposalPaidAmountsProps {
 const UNFUNDED_COLOR = 'text-amber-700 dark:text-amber-400';
 const LAST_PAID_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
-const HbdAmount = ({ amount, className }: { amount: Big; className?: string }) => (
-  <span
-    title={numberWithCommas(amount.toFixed(2)) + ' HBD'}
-    className={cn('font-semibold text-red-600 dark:text-red-200', className)}
-  >
-    {getRoundedAbbreveration(amount)}
-    {/* A phone's line is too narrow for the unit after every amount */}
-    <span className="hidden sm:inline"> HBD</span>
-  </span>
-);
+const HbdAmount = ({ amount, className }: { amount: Big; className?: string }) => {
+  const { locale } = useLocale();
+  return (
+    <span
+      title={formatDecimal(amount, 2, locale) + ' HBD'}
+      className={cn('font-semibold text-red-600 dark:text-red-200', className)}
+    >
+      {getRoundedAbbreveration(amount, locale)}
+      {/* A phone's line is too narrow for the unit after every amount */}
+      <span className="hidden sm:inline"> HBD</span>
+    </span>
+  );
+};
 
 /** Why a proposal was not paid: how long, or that it never was; nothing for no unpaid time. */
 const UnfundedNote = ({ unfunded }: { unfunded: ProposalUnfunded }) => {

@@ -216,8 +216,8 @@ export const PROPOSALS_PAGE_REST_RESULTS: RestResults = {
 
 /**
  * Proposals the size of the live list's, ranked above the seven and paid every hour up to the hour
- * before 2026-06-01: titles longer than a phone's line and money lines with six-character amounts,
- * #392 "651.70K", "41.80K" and "693.50K".
+ * before 2026-06-01: titles longer than a phone's line and money lines with five-character amounts,
+ * #392 "651.7K", "41.8K" and "693.5K".
  */
 export const REAL_SIZE_PROPOSALS = {
   longest: 392,

@@ -178,7 +178,7 @@ test.describe('Witnesses page tests', () => {
       1000000
     );
     expect(await witnessesPage.witnessVotesReceived.first().textContent()).toBe(
-      getRoundedAbbreveration(vestsToHp) + ' HP'
+      getRoundedAbbreveration(vestsToHp, 'en') + ' HP'
     );
 
     // Validate Witness price feed (NaiAsset format: amount/10^precision)

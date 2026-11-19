@@ -137,9 +137,9 @@ test.describe('Proposal voters dialog', () => {
     await page.setViewportSize(PHONE);
     const dialog = await openVoters(page, 'pl', baseURL);
 
-    await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d.]+[KM] HP$`));
+    await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d,]+[KM] HP$`));
     await expect(dialog.getByTestId('voter-row').first().getByTestId('voter-values-dialog')).toHaveText(
-      /^[\d.]+K HP \+[\d.]+K z proxy$/
+      /^[\d,]+K HP \+[\d,]+K z proxy$/
     );
     expect((await dialog.boundingBox())?.width).toBe(PHONE.width);
     const lefts = await dialog

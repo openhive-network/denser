@@ -439,7 +439,7 @@ test.describe('Proposals page tests', () => {
 
       // Proposal amount contains daily pay amount
       expect(await proposalsPage.proposalAmountHBD.first().textContent()).toContain(
-        getRoundedAbbreveration(firstProposalDailyPayAmountAPI)
+        getRoundedAbbreveration(firstProposalDailyPayAmountAPI, 'en')
       );
     } else {
       await expect(proposalsPage.proposalsBody.locator('main').locator('p').first()).toHaveText(

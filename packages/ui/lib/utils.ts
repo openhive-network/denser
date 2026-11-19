@@ -11,7 +11,7 @@ import { Symbol, createNaiAsset, getNaiToSymbol } from './asset-constants';
 import { vestsToHiveSatoshis } from './asset-math';
 
 // Re-export getRoundedAbbreveration from math-utils for backward compatibility
-export { getRoundedAbbreveration } from './math-utils';
+export { formatDecimal, getRoundedAbbreveration } from './math-utils';
 
 export interface Asset {
   amount: number;

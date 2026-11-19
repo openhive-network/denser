@@ -81,8 +81,8 @@ function WitnessListItem({
   ]
     .filter(Boolean)
     .join('\n');
-  const hp = `${getRoundedAbbreveration(data.vestsToHp)} HP`;
-  const rankUp = data.requiredHpToRankUp ? getRoundedAbbreveration(data.requiredHpToRankUp) : null;
+  const hp = `${getRoundedAbbreveration(data.vestsToHp, locale)} HP`;
+  const rankUp = data.requiredHpToRankUp ? getRoundedAbbreveration(data.requiredHpToRankUp, locale) : null;
   const rankUpText = rankUp
     ? t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })
     : null;

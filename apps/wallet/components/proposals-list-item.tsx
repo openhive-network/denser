@@ -1,9 +1,8 @@
-import type Big from 'big.js';
 import type { ReactNode } from 'react';
 import { Link } from '@hive/ui';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
-import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
+import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { isRefundProposal, remainingDays } from '@/wallet/lib/proposals-list';
 import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
@@ -65,9 +64,6 @@ const StatusTooltip = ({
 // The full month name: with a day, a locale writes it in its date form (Polish "15 maja"), which the
 // abbreviation does not always give ("15 maj")
 const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-
-/** The daily pay without a zero fraction, "540" rather than "540.00", for a phone's narrow line. */
-const compactAmount = (amount: Big) => getRoundedAbbreveration(amount).replace(/\.00(?=\D*$)/, '');
 
 /**
  * A proposal in three lines: its title and badges; who it is by, its daily pay, dates and the days
@@ -213,16 +209,11 @@ export function ProposalListItem({
           </span>
         </span>
         <span
-          className={DOTTED_ITEM_CLASS}
-          title={numberWithCommas(proposalData.daily_pay.amount.toFixed(2)) + ' HBD'}
+          className={`${DOTTED_ITEM_CLASS} whitespace-nowrap`}
+          title={formatDecimal(proposalData.daily_pay.amount, 2, locale) + ' HBD'}
+          data-testid="proposal-amount"
         >
-          <PhoneOrDesktopText
-            phone={t('proposals_page.per_day', { amount: compactAmount(proposalData.daily_pay.amount) })}
-            desktop={t('proposals_page.per_day', {
-              amount: getRoundedAbbreveration(proposalData.daily_pay.amount)
-            })}
-            testId="proposal-amount"
-          />
+          {t('proposals_page.per_day', { amount: getRoundedAbbreveration(proposalData.daily_pay.amount, locale) })}
         </span>
         <span className={`${DOTTED_ITEM_CLASS} hidden whitespace-nowrap sm:inline`} data-testid="proposal-date">
           {dateRange}

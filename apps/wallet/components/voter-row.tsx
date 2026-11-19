@@ -1,13 +1,13 @@
 import Big from 'big.js';
 import clsx from 'clsx';
 import { Link, getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
-import { getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
+import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
 import { useTranslation } from '@/wallet/i18n/client';
 import { formatShare, shareOf, voterHp, type Voter } from '@/wallet/lib/voters';
 
-/** An amount of HP that rounds to zero at two decimals reads "0" rather than "0.00". */
-const shortHp = (hp: number) => (hp < 0.005 ? '0' : getRoundedAbbreveration(Big(hp)));
-const exactHp = (hp: number) => numberWithCommas(hp.toFixed(3));
+const shortHp = (hp: number, locale: string) => getRoundedAbbreveration(Big(hp), locale);
+const exactHp = (hp: number, locale: string) => formatDecimal(Big(hp), 3, locale);
 
 /**
  * The weight column of a row: "16.82M HP +16.60M proxy", the proxied part smaller and lighter so the
@@ -15,23 +15,27 @@ const exactHp = (hp: number) => numberWithCommas(hp.toFixed(3));
  */
 function VoterWeight({ weight }: { weight: NonNullable<Voter['weight']> }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { ownHp, proxyHp } = weight;
   const title =
     proxyHp > 0
-      ? t('voters_dialog.weight_exact_with_proxy', { own: exactHp(ownHp), proxy: exactHp(proxyHp) })
-      : `${exactHp(ownHp)} HP`;
+      ? t('voters_dialog.weight_exact_with_proxy', {
+          own: exactHp(ownHp, locale),
+          proxy: exactHp(proxyHp, locale)
+        })
+      : `${exactHp(ownHp, locale)} HP`;
   return (
     <span
       className="min-w-0 flex-1 truncate text-xs text-slate-500 dark:text-slate-400"
       title={title}
       data-testid="voter-values-dialog"
     >
-      {shortHp(ownHp)} HP
+      {shortHp(ownHp, locale)} HP
       {proxyHp > 0 && (
         <>
           {' '}
           <span className="text-[11px] text-slate-400 dark:text-slate-500">
-            {t('voters_dialog.weight_proxy', { proxy: shortHp(proxyHp) })}
+            {t('voters_dialog.weight_proxy', { proxy: shortHp(proxyHp, locale) })}
           </span>
         </>
       )}

@@ -3,6 +3,7 @@ import Big from 'big.js';
 import { Input } from '@ui/components/input';
 import Loading from '@ui/components/loading';
 import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/wallet/i18n/client';
 import { VOTERS_PAGE_SIZE, breakdownOf, filterByName, type Voter } from '@/wallet/lib/voters';
@@ -70,6 +71,7 @@ function VotersPanel({
   searchMatches = []
 }: VotersPanelProps) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { user } = useUserClient();
   const [shownCount, setShownCount] = useState(VOTERS_PAGE_SIZE);
   // Roving tabindex: only one voter link is in the Tab order; the arrow keys, Home and End move between them.
@@ -132,7 +134,7 @@ function VotersPanel({
   // Voters via a proxy hold no share, so the bar's rest leaves them out.
   const viaProxyCount = voters.filter((voter) => voter.proxy).length;
   const summary = weighted
-    ? t('voters_dialog.summary', { count, total: getRoundedAbbreveration(Big(totalHp)) })
+    ? t('voters_dialog.summary', { count, total: getRoundedAbbreveration(Big(totalHp), locale) })
     : hasMore
       ? t('voters_dialog.count_more', { count })
       : t('voters_dialog.count', { count });

@@ -212,8 +212,8 @@ test.describe('Witness voters dialog', () => {
     const rows = dialog.getByTestId('voter-row');
     await expect(rows).toHaveCount(100);
     await expect(dialog.getByRole('heading')).toHaveText(`Głosy na świadka @${HAFBE_WITNESS}`);
-    await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d.]+M HP$`));
-    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d.]+M HP \+[\d.]+M z proxy$/);
+    await expect(dialog.getByTestId('voters-summary')).toHaveText(new RegExp(`^${VOTER_COUNT} głosów · [\\d,]+M HP$`));
+    await expect(rows.first().getByTestId('voter-values-dialog')).toHaveText(/^[\d,]+M HP \+[\d,]+M z proxy$/);
     expect((await dialog.boundingBox())?.width).toBe(PHONE.width);
     expect(await columnCount(rows, 3)).toBe(1);
     expect(await rowHeightsOtherThan(rows, ROW_HEIGHT)).toEqual([]);

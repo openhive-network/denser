@@ -158,9 +158,8 @@ test.describe('Proposal rows on a phone', () => {
     const proposalsPage = await openProposals(page, 'en', baseURL);
     const details = proposalsPage.proposalCard(funded).getByTestId('proposal-details');
 
-    await expect(details.getByText('200 HBD/day', { exact: true })).toBeVisible();
+    await expect(details.getByTestId('proposal-amount')).toHaveText('200 HBD/day');
     await expect(details.getByText('213d left', { exact: true })).toBeVisible();
-    await expect(details.getByTestId('proposal-amount')).toBeHidden();
     await expect(details.getByTestId('proposal-remaining-days')).toBeHidden();
     await expect(
       proposalsPage.proposalCard(upcoming).getByTestId('proposal-details').getByText(/^starts in \d+d$/)
@@ -179,15 +178,15 @@ test.describe('Proposal rows on a phone', () => {
     await expect(card.getByTestId('proposal-id')).toBeInViewport();
     const linkTitle = await card.getByTestId('proposal-post-link').getAttribute('title');
     expect(linkTitle?.split('\n')).toContain(await subject.textContent());
-    await expect(card.getByTestId('proposal-paid')).toHaveText('Wypł. 651.70K', { useInnerText: true });
-    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfin. 41.80K (22 d.)', {
+    await expect(card.getByTestId('proposal-paid')).toHaveText('Wypł. 651,7K', { useInnerText: true });
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfin. 41,8K (22 d.)', {
       useInnerText: true
     });
-    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693.50K', {
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693,5K', {
       useInnerText: true
     });
     await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
-      'Niesfin. 7.55K (nigdy)',
+      'Niesfin. 7,55K (nigdy)',
       { useInnerText: true }
     );
   });
@@ -220,15 +219,15 @@ test.describe('Proposal rows on a desktop', () => {
         .first()
         .evaluate((subject) => getComputedStyle(subject).display)
     ).toBe('inline');
-    await expect(card.getByTestId('proposal-paid')).toHaveText('Wypłacono 651.70K HBD', {
+    await expect(card.getByTestId('proposal-paid')).toHaveText('Wypłacono 651,7K HBD', {
       useInnerText: true
     });
-    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfinansowane 41.80K HBD (22 dni)', {
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Niesfinansowane 41,8K HBD (22 dni)', {
       useInnerText: true
     });
-    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693.50K HBD');
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Jeszcze maks. 693,5K HBD');
     await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
-      'Niesfinansowane 7.55K HBD (nigdy nie finansowana)',
+      'Niesfinansowane 7,55K HBD (nigdy nie finansowana)',
       { useInnerText: true }
     );
   });

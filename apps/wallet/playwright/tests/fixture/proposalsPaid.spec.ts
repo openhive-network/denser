@@ -87,11 +87,11 @@ test.describe('Proposals page payments', () => {
     const proposalsPage = await openProposals(page);
 
     const card = proposalsPage.proposalCard(funded);
-    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 20.20K HBD', DESKTOP_TEXT);
+    await expect(card.getByTestId('proposal-paid')).toHaveText('Paid 20.2K HBD', DESKTOP_TEXT);
     await expect(card.getByTestId('proposal-paid').locator('[title]')).toHaveAttribute('title', '20,200.00 HBD');
-    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Unfunded 10.00K HBD (50 days)', DESKTOP_TEXT);
+    await expect(card.getByTestId('proposal-unfunded')).toHaveText('Unfunded 10K HBD (50 days)', DESKTOP_TEXT);
     await expect(card.getByTestId('proposal-unfunded')).toHaveAttribute('title', /^What this proposal would have received/);
-    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.60K HBD left');
+    await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.6K HBD left');
     await expect(card.getByTestId('proposal-last-paid')).toHaveText('last paid May 30');
     await expect(proposalsPage.proposalCard(belowLine).getByTestId('proposal-unfunded')).toHaveText(
       'Unfunded 7.55K HBD (never funded)',
@@ -110,7 +110,7 @@ test.describe('Proposals page payments', () => {
     await proposalsPage.statusTab('Expired').click();
     const expiredCard = proposalsPage.proposalCard(expired);
     await expect(expiredCard.getByTestId('proposal-paid')).toHaveText('Paid 1.51K HBD of 1.51K HBD');
-    await expect(expiredCard.getByTestId('proposal-unfunded')).toHaveText('Unfunded 0.00 HBD', DESKTOP_TEXT);
+    await expect(expiredCard.getByTestId('proposal-unfunded')).toHaveText('Unfunded 0 HBD', DESKTOP_TEXT);
     await expect(expiredCard.getByTestId('proposal-up-to-left')).toHaveCount(0);
     // Only the expired proposal was not known yet.
     expect(calls).toEqual([calls[0], String(expired)]);
@@ -170,7 +170,7 @@ test.describe('Proposals page payments', () => {
       const card = proposalsPage.proposalCard(funded);
       await expect(card.getByTestId('proposal-amount')).toBeVisible();
       await expect(card.getByTestId('proposal-remaining-days')).toHaveText('213 days left');
-      await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.60K HBD left');
+      await expect(card.getByTestId('proposal-up-to-left')).toHaveText('Up to 42.6K HBD left');
       await expect(page.getByTestId('proposal-paid')).toHaveCount(0);
       await expect(page.getByTestId('proposal-unfunded')).toHaveCount(0);
       await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
