@@ -215,7 +215,12 @@ test('an empty change selects everything', () => {
 });
 
 test('a docs-only change selects none of the mapped suites', () => {
-  const change = ['docs/decisions/0001-x.md', 'README.md', 'apps/blog/playwright/tests/fixture/CLAUDE.md'];
+  const change = [
+    'docs/decisions/0001-x.md',
+    'README.md',
+    'apps/blog/playwright/tests/fixture/CLAUDE.md',
+    '.aidev/i18n/glossary.pl.md'
+  ];
   assert.deepEqual(selected(change), Object.fromEntries(SUITES.map((suite) => [suite, SKIP])));
 });
 

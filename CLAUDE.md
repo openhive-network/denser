@@ -423,6 +423,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 ESLint (`no-restricted-syntax`, an error) rejects a string literal in `aria-label`, `placeholder`, `title` or `alt`.
 
+**Glossaries:** before writing or changing a string in any locale (blog, wallet or smart-signer), read `.aidev/i18n/glossary.<lang>.md` and follow it: its terms, register (formal or informal address), plural forms, number/date conventions and untranslated names. An `agreed` term was settled by the tester; keep it unless a new tester decision changes it. A term the glossary lacks: use the locale's most frequent rendering and add it as `unreviewed` in the same change. Don't copy a string listed under "Known drift". `.aidev/i18n/README.md` explains the format.
+
 ### Translation Keys Validation
 
 #### 1. Cross-locale key sync
