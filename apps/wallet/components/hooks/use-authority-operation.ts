@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAuthority, LevelAuthority } from '@transaction/lib/hive';
 import { AccountAuthorityUpdateOperation, WaxError } from '@hiveio/wax';
 import { toast } from '@ui/components/hooks/use-toast';
+import { useTranslation } from '@/wallet/i18n/client';
 
 type Actions =
   | { type: 'initializeOperations'; payload: AccountAuthorityUpdateOperation }
@@ -72,6 +73,7 @@ const getAuthorityState = (operationsData?: AccountAuthorityUpdateOperation) => 
 export type AuthorityAction = Dispatch<Actions>;
 
 export const useAuthorityOperations = (username: string) => {
+  const { t } = useTranslation('common_wallet');
   const { data: operationsData, isPending } = useQuery({
     queryKey: ['authority', username],
     queryFn: () => getAuthority(username),
@@ -86,6 +88,8 @@ export const useAuthorityOperations = (username: string) => {
   function reducer(
     state: {
       data: ReturnType<typeof getAuthorityState>;
+      /** The authorities as the chain holds them, before any edit */
+      initial: ReturnType<typeof getAuthorityState>;
       operations?: AccountAuthorityUpdateOperation;
       error?: unknown | null;
     },
@@ -93,7 +97,11 @@ export const useAuthorityOperations = (username: string) => {
   ) {
     let operationError = false;
     if (action.type === 'initializeOperations') {
-      return { operations: action.payload, data: getAuthorityState(action.payload) };
+      return {
+        operations: action.payload,
+        data: getAuthorityState(action.payload),
+        initial: getAuthorityState(action.payload)
+      };
     }
 
     if (!state.operations) {
@@ -146,14 +154,15 @@ export const useAuthorityOperations = (username: string) => {
 
   const [state, dispatch] = useReducer(reducer, {
     data: getAuthorityState(),
+    initial: getAuthorityState(),
     operations: undefined
   });
   useEffect(() => {
     const e = state.error;
     if (e instanceof WaxError) {
       toast({
-        title: 'Error',
-        description: e.message,
+        title: t('authorities_page.errors.title'),
+        description: t('authorities_page.errors.invalid_entry', { detail: e.message }),
         variant: 'destructive'
       });
     }

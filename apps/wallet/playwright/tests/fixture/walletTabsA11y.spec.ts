@@ -6,7 +6,8 @@ import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
 /**
  * The wallet tabs are a named nav landmark that marks the current tab and keeps keyboard focus on
  * the activated tab across the client-side navigation; the Keys & Permissions page has one h1, an
- * h2 per key and an h3 per permission list. Reads come from the stub node (support/walletApiStub.ts).
+ * h2 for the account's permissions and per key, and an h3 per role and permission list. Reads come
+ * from the stub node (support/walletApiStub.ts).
  */
 
 let stub: Server;
@@ -51,13 +52,14 @@ test.describe('Wallet tabs accessibility', () => {
     await expect(delegations).toBeFocused();
   });
 
-  test('WALLET-A11Y-TABS-02 — Keys & Permissions has one h1, an h2 per key and an h3 per permission list', async ({
+  test('WALLET-A11Y-TABS-02 — Keys & Permissions has one h1, an h2 per section and an h3 per role and permission list', async ({
     page
   }) => {
     await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/permissions`);
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(['Keys & Permissions']);
     await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+      `Permissions of @${STUB_ACCOUNT}`,
       'Posting Key',
       'Active Key',
       'Owner Key',
@@ -65,6 +67,10 @@ test.describe('Wallet tabs accessibility', () => {
       'Public keys'
     ]);
     await expect(page.getByRole('heading', { level: 3 })).toHaveText([
+      'Active Authority',
+      'Posting Authority',
+      'Owner Authority',
+      'Memo key',
       'Posting Key permissions',
       'Active Key permissions',
       'Owner Key permissions',

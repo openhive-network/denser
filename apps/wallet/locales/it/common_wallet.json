@@ -470,7 +470,6 @@
   "change_password_page": {
     "change_password": "Cambia Password",
     "account_name": "Nome Account",
-    "current_password": "Password attuale",
     "recover_password": "Recupera Account",
     "generated_password": "Password generata",
     "new": "Nuovo",
@@ -502,7 +501,28 @@
       "m4": "Non condividere mai le tue chiavi private",
       "confirm_security": "Ho compreso e accetto queste implicazioni di sicurezza"
     },
-    "save_all": "Salva tutto"
+    "save_all": "Salva tutto",
+    "current_credential": "Password principale attuale o chiave Owner",
+    "current_credential_help": "Cambiare la password sostituisce le tue chiavi, il che richiede la chiave Owner: inserisci la password principale, che la deriva, oppure la chiave privata Owner stessa.",
+    "sign_in_notice": "Accedi come @{{username}} per cambiarne le chiavi.",
+    "errors": {
+      "required_credential": "Inserisci la password principale attuale o la chiave Owner",
+      "generate_first": "Genera prima una nuova password",
+      "wrong_password": "Questa password principale non deriva la chiave dell'account: {{role}}.",
+      "not_owner_key": "Questa chiave privata non è la chiave Owner dell'account.",
+      "role_not_single_key": "L'account ha più chiavi di questo tipo: {{role}}. La chiave Owner non può sapere quale sostituire: inserisci la password principale o cambia le chiavi nella pagina Autorità."
+    },
+    "confirm": {
+      "title": "Cambiare la password?",
+      "replaces_keys": "Le chiavi Owner, Active e Posting di questo account verranno sostituite con quelle derivate dalla nuova password.",
+      "keep_posting_key": "Mantieni la mia chiave Posting attuale (cambia solo le chiavi Owner e Active)",
+      "proceed": "Cambia password",
+      "cancel": "Annulla"
+    },
+    "success": {
+      "title": "Password cambiata",
+      "description": "La tua password principale è stata cambiata."
+    }
   },
   "delegations_page": {
     "returning_delegations": "Deleghe in restituzione",
@@ -542,7 +562,29 @@
     "owner_authority": "Autorità Owner",
     "active_authority": "Autorità Active",
     "posting_authority": "Autorità Posting",
-    "owner_threshold_warning": "Modificando la soglia dell'autorità Owner potresti perdere l'accesso indipendente a questo account.\n\nVuoi davvero continuare?"
+    "no_data": "Nessun dato",
+    "errors": {
+      "title": "Errore",
+      "owner_update_limit": "Questo account ha raggiunto il limite di modifiche Owner. Attendi un'ora e riprova.",
+      "missing_account": "Un account dell'elenco non esiste: {{detail}}",
+      "missing_owner_auth": "Questa modifica richiede la chiave Owner.",
+      "invalid_key_in_list": "Una delle chiavi non è valida.",
+      "invalid_key": "Chiave non valida: {{key}}",
+      "failed_with_detail": "Aggiornamento delle autorità non riuscito: {{detail}}",
+      "failed": "Aggiornamento delle autorità non riuscito.",
+      "invalid_entry": "Questa voce non è valida: {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}: la soglia di {{threshold}} non può essere raggiunta, perché i pesi sommano {{total}}.",
+      "owner_empty": "L'autorità Owner deve mantenere almeno una chiave o un account."
+    },
+    "lockout": {
+      "title": "Questa modifica può bloccarti l'accesso",
+      "session_key": "Rimuove o sostituisce una chiave con cui firma questa sessione: questa sessione verrà disconnessa.",
+      "passkey_key": "Rimuove o sostituisce la chiave Posting derivata dalla tua passkey: l'accesso con passkey smetterà di funzionare.",
+      "owner_threshold": "Porta la soglia dell'autorità Owner sopra 1: nessuna singola chiave o account Owner potrà agire da solo per questo account.",
+      "confirm": "Aggiorna comunque"
+    }
   },
   "transfers_page": {
     "currency": "Valuta",
@@ -704,7 +746,8 @@
       "upvote": "Dare upvote o downvote",
       "reblog": "Fare reblog di contenuti",
       "follow": "Seguire persone",
-      "mute": "Silenziare account"
+      "mute": "Silenziare account",
+      "can": "La chiave Posting può:"
     },
     "active_key": {
       "name": "Chiave Active",
@@ -719,7 +762,8 @@
       "place_order": "Inserire un ordine su un exchange",
       "profile_changes": "Alcune modifiche al profilo",
       "publish": "Pubblicare un price feed da Witness",
-      "create": "Creare un nuovo utente"
+      "create": "Creare un nuovo utente",
+      "can": "La chiave Active può:"
     },
     "owner_key": {
       "name": "Chiave Owner",
@@ -729,7 +773,8 @@
       "to": "Usa la tua chiave Owner per:",
       "reset": "Reimpostare le chiavi Owner, Active e Posting",
       "recover": "Recuperare il tuo account",
-      "decline": "Rinunciare ai diritti di voto"
+      "decline": "Rinunciare ai diritti di voto",
+      "can": "La chiave Owner può:"
     },
     "memo_key": {
       "name": "Chiave Memo",
@@ -738,11 +783,46 @@
       "permissions": "Permessi della chiave Memo",
       "to": "Usa la tua chiave Memo per:",
       "send": "Inviare un messaggio cifrato",
-      "view": "Visualizzare un messaggio cifrato"
+      "view": "Visualizzare un messaggio cifrato",
+      "can": "La chiave Memo può:"
     },
     "public_keys": "Chiavi pubbliche",
     "public_info": "Ogni chiave Hive ha una chiave pubblica e una privata per cifrare e decifrare i dati. Le chiavi pubbliche sono associate ai nomi utente e possono essere usate per cercare le transazioni associate sulla blockchain. Le chiavi pubbliche non servono per accedere a Hive.blog e non è necessario conservarle al sicuro.",
-    "view_public": "Visualizza le informazioni sulle chiavi pubbliche di questo account (nella sezione 'Autorità'):"
+    "view_public": "Visualizza le informazioni sulle chiavi pubbliche di questo account (nella sezione 'Autorità'):",
+    "about_this_account": "Ogni account Hive ha quattro chiavi con permessi diversi: la chiave Posting per le azioni social, la chiave Active per le azioni del portafoglio, la chiave Owner per cambiare le altre chiavi e recuperare l'account, e la chiave Memo per i messaggi privati. Qui sotto ci sono le chiavi pubbliche e gli account che controllano @{{username}}. Solo le chiavi private, che il proprietario dell'account conserva, possono firmare per esso.",
+    "reveal_intro": "Inserisci la tua password principale per rivelare le tue chiavi private: la password principale le deriva tutte. Se hai effettuato l'accesso con una sola chiave privata, non c'è una password principale da inserire e quella chiave non può rivelare le altre.",
+    "reveal_dialog": "Inserisci la tua password principale per rivelare la chiave privata. La password principale deriva tutte le tue chiavi.",
+    "master_password": "Password principale",
+    "block_explorer": "Esploratore di blocchi - {{username}}",
+    "public_info_this_account": "Ogni chiave Hive ha una chiave pubblica e una privata. Le chiavi pubbliche sono associate ai nomi utente e servono a cercare le transazioni dell'account sulla blockchain. Si possono condividere senza rischi.",
+    "errors": {
+      "title": "Errore",
+      "not_all_keys": "Questa password principale non deriva tutte le chiavi dell'account.",
+      "reveal_failed": "Impossibile rivelare la chiave privata."
+    },
+    "summary": {
+      "title": "Permessi di @{{username}}",
+      "threshold": "Soglia: {{threshold}}",
+      "weight": "peso {{weight}}",
+      "none": "Nessuna chiave o account",
+      "recovery_account": "Account di recupero",
+      "edit_on_authorities": "Vedi i dettagli e modifica nella pagina Autorità",
+      "view_on_authorities": "Vedi i dettagli nella pagina Autorità"
+    },
+    "how_you_sign": {
+      "title": "Come firmi",
+      "wif": "Hai effettuato l'accesso con una chiave privata, che questa scheda conserva solo in memoria.",
+      "safe_storage": "Le tue chiavi sono salvate cifrate nell'archivio sicuro di questo browser:",
+      "signed_in_with": "accesso effettuato con questa chiave",
+      "remove_from_browser": "Rimuovi da questo browser",
+      "external_wallet": "Le tue chiavi sono custodite da {{wallet}}; visualizzale o esportale lì.",
+      "hiveauth": "Le tue chiavi sono nella tua app portafoglio HiveAuth.",
+      "google": "Le tue chiavi sono nel tuo portafoglio Google Drive.",
+      "manage_in_hive_bridge": "Gestiscile in Hive Bridge",
+      "passkey": "La tua chiave Posting è derivata dalla tua passkey su {{origin}}.",
+      "passkey_signer": "il firmatario passkey",
+      "session_marked": "Le chiavi con cui firma questa sessione sono contrassegnate con «Questa sessione» nell'elenco qui sopra."
+    }
   },
   "communities": {
     "create_community": "Crea una community",
@@ -832,5 +912,18 @@
     "stop_checking": "Interrompi il controllo",
     "node_unavailable": "{{selected}} non è disponibile per {{set}}; viene usato {{node}} finché non torna disponibile.",
     "catalog_only": "Si possono scegliere solo i nodi elencati: il sito non può contattarne altri."
+  },
+  "account_keys": {
+    "this_session": "Questa sessione",
+    "stored_in_browser": "Salvata in questo browser",
+    "passkey_signer": "Passkey",
+    "open_hive_bridge": "Apri Hive Bridge",
+    "follow_up": {
+      "update_wallet": "Dopo la modifica, aggiorna le chiavi in {{wallet}}, altrimenti smetterà di firmare per questo account.",
+      "update_google_drive": "Il tuo portafoglio Google Drive contiene le vecchie chiavi. Aggiornalo in Hive Bridge dopo la modifica, altrimenti l'accesso con Google smetterà di funzionare.",
+      "passkey_lost": "La tua chiave Posting è derivata dalla tua passkey. Cambiare le chiavi la sostituisce e l'accesso con passkey smetterà di funzionare.",
+      "safe_storage_replaced": "Le nuove chiavi sostituiranno quelle salvate nell'archivio sicuro di questo browser.",
+      "none": "Una chiave conservata da questa scheda viene sostituita con quella nuova; altrimenti inserisci la nuova chiave la prossima volta che firmi."
+    }
   }
 }

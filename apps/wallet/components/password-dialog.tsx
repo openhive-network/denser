@@ -35,11 +35,11 @@ const PasswordDialog = ({ onReveal, keysUploaded }: PasswordDialogProps) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogDescription>Enter your master password to reveal the private key.</DialogDescription>
+          <DialogDescription>{t('permissions.reveal_dialog')}</DialogDescription>
         </DialogHeader>
 
         <div>
-          <Label htmlFor="password">Master password</Label>
+          <Label htmlFor="password">{t('permissions.master_password')}</Label>
           <Input
             id="password"
             type="password"

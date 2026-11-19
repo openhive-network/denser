@@ -45,6 +45,8 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | password | password | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | mercato / interessi | unreviewed | |
+| this session (key badge) | Questa sessione | unreviewed | |
+| recovery account | account di recupero | unreviewed | |
 
 ## Register
 

@@ -457,7 +457,6 @@
   "change_password_page": {
     "change_password": "Change Password",
     "account_name": "Account Name",
-    "current_password": "Current Master Password",
     "recover_password": "Recover Account",
     "generated_password": "Generated Password and Keys",
     "new": "New",
@@ -489,7 +488,28 @@
       "m4": "Never share your private keys",
       "confirm_security": "I understand and accept these security implications"
     },
-    "save_all": "Save All"
+    "save_all": "Save All",
+    "current_credential": "Current master password or owner key",
+    "current_credential_help": "Changing the password replaces your keys, which needs the owner key: enter the master password, which derives it, or the owner private key itself.",
+    "sign_in_notice": "Sign in as @{{username}} to change its keys.",
+    "errors": {
+      "required_credential": "Enter the current master password or owner key",
+      "generate_first": "Generate a new password first",
+      "wrong_password": "This master password does not derive the account's key: {{role}}.",
+      "not_owner_key": "This private key is not the account's owner key.",
+      "role_not_single_key": "The account has several keys of this kind: {{role}}. The owner key cannot tell which one to replace: enter the master password, or change the keys on the Authorities page."
+    },
+    "confirm": {
+      "title": "Change the password?",
+      "replaces_keys": "The owner, active and posting keys of this account will be replaced with the ones the new password derives.",
+      "keep_posting_key": "Keep my current posting key (change only the owner and active keys)",
+      "proceed": "Change password",
+      "cancel": "Cancel"
+    },
+    "success": {
+      "title": "Password changed",
+      "description": "Your master password has been changed."
+    }
   },
   "delegations_page": {
     "returning_delegations": "Returning delegations",
@@ -529,7 +549,29 @@
     "owner_authority": "Owner Authority",
     "active_authority": "Active Authority",
     "posting_authority": "Posting Authority",
-    "owner_threshold_warning": "By changing Owner Authority threshold, you may lose the independent access to this account.\n\n Are you sure you want to continue"
+    "no_data": "No data",
+    "errors": {
+      "title": "Error",
+      "owner_update_limit": "This account reached the limit of owner changes. Wait an hour and try again.",
+      "missing_account": "An account in the list does not exist: {{detail}}",
+      "missing_owner_auth": "This change needs the owner key.",
+      "invalid_key_in_list": "One of the keys is invalid.",
+      "invalid_key": "Invalid key: {{key}}",
+      "failed_with_detail": "Updating the authorities failed: {{detail}}",
+      "failed": "Updating the authorities failed.",
+      "invalid_entry": "This entry is not valid: {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}: the threshold of {{threshold}} cannot be reached, as the weights add up to {{total}}.",
+      "owner_empty": "The Owner Authority must keep at least one key or account."
+    },
+    "lockout": {
+      "title": "This change can lock you out",
+      "session_key": "It removes or replaces a key this session signs with: this session will be signed out.",
+      "passkey_key": "It removes or replaces the posting key derived from your passkey: passkey sign-in will stop working.",
+      "owner_threshold": "It raises the Owner Authority threshold above 1: no single owner key or account will be able to act for this account alone.",
+      "confirm": "Update anyway"
+    }
   },
   "transfers_page": {
     "decode_memo": "Decode",
@@ -690,7 +732,8 @@
       "upvote": "Upvote or downvote",
       "reblog": "Reblog content",
       "follow": "Follow people",
-      "mute": "Mute accounts"
+      "mute": "Mute accounts",
+      "can": "The Posting Key can:"
     },
     "active_key": {
       "name": "Active Key",
@@ -705,7 +748,8 @@
       "place_order": "Place an order on an exchange",
       "profile_changes": "Certain profile changes",
       "publish": "Publish a Witness price feed",
-      "create": "Create a new user"
+      "create": "Create a new user",
+      "can": "The Active Key can:"
     },
     "owner_key": {
       "name": "Owner Key",
@@ -715,7 +759,8 @@
       "to": "Use your Owner Key to:",
       "reset": "Reset Owner, Active, and Posting keys",
       "recover": "Recover your account",
-      "decline": "Decline voting rights"
+      "decline": "Decline voting rights",
+      "can": "The Owner Key can:"
     },
     "memo_key": {
       "name": "Memo Key",
@@ -724,11 +769,46 @@
       "permissions": "Memo Key permissions",
       "to": "Use your Memo Key to:",
       "send": "Send an encrypted message",
-      "view": "View an encrypted message"
+      "view": "View an encrypted message",
+      "can": "The Memo Key can:"
     },
     "public_keys": "Public keys",
     "public_info": "Each Hive Key has a public and private key to encrypt and decrypt data. Public keys are associated with usernames and can be used to look up associated transactions on the blockchain. Your public keys are not required for login on Hive.blog and you don't need to store these safely.",
-    "view_public": "View public key information for this account (in the 'Authorities' module):"
+    "view_public": "View public key information for this account (in the 'Authorities' module):",
+    "about_this_account": "Every Hive account has four keys with different permissions: the Posting Key for social actions, the Active Key for wallet actions, the Owner Key to change the other keys and recover the account, and the Memo Key for private messages. Below are the public keys and accounts that control @{{username}}. Only the private keys, which the account's owner keeps, can sign for it.",
+    "reveal_intro": "Enter your master password to reveal your private keys: the master password derives all of them. If you signed in with a single private key, there is no master password to enter, and that key cannot reveal the others.",
+    "reveal_dialog": "Enter your master password to reveal the private key. The master password derives all of your keys.",
+    "master_password": "Master password",
+    "block_explorer": "Block Explorer - {{username}}",
+    "public_info_this_account": "Each Hive key has a public and a private key. Public keys are associated with usernames and can be used to look up the account's transactions on the blockchain. They can be shared safely.",
+    "errors": {
+      "title": "Error",
+      "not_all_keys": "This master password does not derive all of the account's keys.",
+      "reveal_failed": "Revealing the private key failed."
+    },
+    "summary": {
+      "title": "Permissions of @{{username}}",
+      "threshold": "Threshold: {{threshold}}",
+      "weight": "weight {{weight}}",
+      "none": "No keys or accounts",
+      "recovery_account": "Recovery account",
+      "edit_on_authorities": "View details and edit on the Authorities page",
+      "view_on_authorities": "View details on the Authorities page"
+    },
+    "how_you_sign": {
+      "title": "How you sign",
+      "wif": "You signed in with a private key, which this tab keeps in memory only.",
+      "safe_storage": "Your keys are stored encrypted in Safe Storage in this browser:",
+      "signed_in_with": "signed in with this key",
+      "remove_from_browser": "Remove from this browser",
+      "external_wallet": "Your keys are held by {{wallet}}; view or export them there.",
+      "hiveauth": "Your keys are in your HiveAuth wallet app.",
+      "google": "Your keys are in your Google Drive wallet.",
+      "manage_in_hive_bridge": "Manage them in Hive Bridge",
+      "passkey": "Your posting key is derived from your passkey on {{origin}}.",
+      "passkey_signer": "the passkey signer",
+      "session_marked": "The keys this session signs with are marked “This session” in the list above."
+    }
   },
   "communities": {
     "create_community": "Create a community",
@@ -816,5 +896,18 @@
     "stop_checking": "Stop checking",
     "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers.",
     "catalog_only": "Only the listed nodes can be chosen: the site may call no others."
+  },
+  "account_keys": {
+    "this_session": "This session",
+    "stored_in_browser": "Stored in this browser",
+    "passkey_signer": "Passkey",
+    "open_hive_bridge": "Open Hive Bridge",
+    "follow_up": {
+      "update_wallet": "After the change, update the keys in {{wallet}}, or it will stop signing for this account.",
+      "update_google_drive": "Your Google Drive wallet holds the old keys. Update it in Hive Bridge after the change, or Google sign-in will stop working.",
+      "passkey_lost": "Your posting key is derived from your passkey. Changing the keys replaces it, and passkey sign-in will stop working.",
+      "safe_storage_replaced": "The new keys will replace the ones stored in Safe Storage in this browser.",
+      "none": "A key this tab keeps is replaced with the new one; otherwise, enter the new key the next time you sign."
+    }
   }
 }

@@ -238,6 +238,7 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
       active: x.active,
       posting: x.posting,
       memo_key: x.memo_key,
+      recovery_account: x.recovery_account,
       post_count: x.post_count,
       created: x.created,
       posting_json_metadata: x.posting_json_metadata,

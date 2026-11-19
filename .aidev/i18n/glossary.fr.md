@@ -46,6 +46,8 @@ No native speaker has reviewed the French strings yet, so every term is
 | password | mot de passe | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | marché / intérêts | unreviewed | |
+| this session (key badge) | Cette session | unreviewed | |
+| recovery account | compte de récupération | unreviewed | |
 
 ## Register
 

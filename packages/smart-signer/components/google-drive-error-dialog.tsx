@@ -7,9 +7,7 @@ import { create, InstanceProps } from 'react-modal-promise';
 import { Icons } from '@ui/components/icons';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-
-// Bridge's pages read neither an account name nor a return address from the URL, so none is passed
-const HIVE_BRIDGE_URL = 'https://auth.openhive.network';
+import { HIVE_BRIDGE_URL } from '@smart-signer/lib/google-drive-urls';
 
 export interface GoogleDriveErrorDialogProps {
   errorType: 'wallet_not_found' | 'key_not_found' | 'account_not_found';

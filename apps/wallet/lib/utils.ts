@@ -72,38 +72,48 @@ export const cutPublicKey = (publicKey?: string, width?: number, firstCut: numbe
   return `${publicKey.slice(0, 8)}...${publicKey.slice(publicKey.length - 5)}`;
 };
 
+/** A translated message: a common_wallet key and its interpolation values */
+export interface TranslatedMessage {
+  key: string;
+  values?: Record<string, string>;
+}
+
+/** The message telling why the authority update failed, or null when it did not fail or was cancelled. */
 export function handleAuthorityError(
   updateAuthorityMutation: ReturnType<typeof useUpdateAuthorityOperationMutation>
-) {
-  if (!updateAuthorityMutation.isError) return '';
+): TranslatedMessage | null {
+  if (!updateAuthorityMutation.isError) return null;
   // A cancelled owner key prompt is the user's own cancel: nothing was sent, nothing to show
-  if (isUserCancelled(updateAuthorityMutation.error)) return '';
+  if (isUserCancelled(updateAuthorityMutation.error)) return null;
   const transactionError = updateAuthorityMutation.error as Error;
   const message = transactionError.message;
   try {
     const errorObject = JSON.parse(message.split('Invalid response from API: ')[1]);
     if (errorObject.error.message.includes('owner_update_limit_mgr')) {
-      return 'Limit actions reached for this account, wait an hour and try again';
+      return { key: 'authorities_page.errors.owner_update_limit' };
     }
     if (errorObject.error.message.includes('references non-existing')) {
-      return errorObject.error.message.split('Assert Exception:a != nullptr: ')[1];
+      return {
+        key: 'authorities_page.errors.missing_account',
+        values: { detail: errorObject.error.message.split('Assert Exception:a != nullptr: ')[1] }
+      };
     }
     if (errorObject.error.data.name === 'tx_missing_owner_auth') {
-      return errorObject.error.data.message;
+      return { key: 'authorities_page.errors.missing_owner_auth' };
     }
   } catch (e) {
     if (message.includes('10 assert_exception: Assert Exception')) {
-      return 'One of the keys is invalid';
+      return { key: 'authorities_page.errors.invalid_key_in_list' };
     }
     if (message.includes('Wax API error: "4 parse_error_exception: Parse Error')) {
       const error = message.split('\n')[2];
       const invalidKey = JSON.parse(error).base58_str;
-      return `Invalid key: ${invalidKey}`;
+      return { key: 'authorities_page.errors.invalid_key', values: { key: invalidKey } };
     }
-    return message;
+    return { key: 'authorities_page.errors.failed_with_detail', values: { detail: message } };
   }
 
-  return 'Operation failed';
+  return { key: 'authorities_page.errors.failed' };
 }
 
 export type KeyAuth = {

@@ -47,6 +47,8 @@ markup and plural keys, not their wording.
 | password | 비밀번호 | unreviewed | |
 | passkey | 패스키 | unreviewed | |
 | market / interest | 마켓 / 이자 | unreviewed | |
+| this session (key badge) | 이 세션 | unreviewed | |
+| recovery account | 복구 계정 | unreviewed | |
 
 ## Register
 

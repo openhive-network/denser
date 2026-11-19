@@ -46,6 +46,8 @@ most as of 2026-11-19.
 | password | contraseña | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | mercado / intereses | unreviewed | |
+| this session (key badge) | Esta sesión | unreviewed | |
+| recovery account | cuenta de recuperación | unreviewed | |
 
 ## Register
 

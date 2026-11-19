@@ -61,6 +61,8 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | password / master password | hasło / hasło główne | agreed (#1188) | |
 | passkey | klucz dostępu | unreviewed | |
 | notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na twój post” (#1609). |
+| this session (key badge) | Ta sesja | unreviewed | |
+| recovery account | konto odzyskiwania | unreviewed | |
 
 ## Register
 

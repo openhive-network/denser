@@ -470,7 +470,6 @@
   "change_password_page": {
     "change_password": "Changer le mot de passe",
     "account_name": "Nom du compte",
-    "current_password": "Mot de passe actuel",
     "recover_password": "Récupérer un compte",
     "generated_password": "Mot de passe généré",
     "new": "nouveau",
@@ -502,7 +501,28 @@
       "m4": "Ne partagez jamais vos clés privées",
       "confirm_security": "Je comprends et j'accepte ces implications de sécurité"
     },
-    "save_all": "Tout enregistrer"
+    "save_all": "Tout enregistrer",
+    "current_credential": "Mot de passe principal actuel ou clé propriétaire",
+    "current_credential_help": "Changer le mot de passe remplace vos clés, ce qui nécessite la clé propriétaire : saisissez le mot de passe principal, qui la dérive, ou la clé privée propriétaire elle-même.",
+    "sign_in_notice": "Connectez-vous en tant que @{{username}} pour changer ses clés.",
+    "errors": {
+      "required_credential": "Saisissez le mot de passe principal actuel ou la clé propriétaire",
+      "generate_first": "Générez d'abord un nouveau mot de passe",
+      "wrong_password": "Ce mot de passe principal ne dérive pas la clé du compte : {{role}}.",
+      "not_owner_key": "Cette clé privée n'est pas la clé propriétaire du compte.",
+      "role_not_single_key": "Le compte possède plusieurs clés de ce type : {{role}}. La clé propriétaire ne permet pas de savoir laquelle remplacer : saisissez le mot de passe principal, ou changez les clés sur la page Autorités."
+    },
+    "confirm": {
+      "title": "Changer le mot de passe ?",
+      "replaces_keys": "Les clés propriétaire, active et de publication de ce compte seront remplacées par celles que dérive le nouveau mot de passe.",
+      "keep_posting_key": "Conserver ma clé de publication actuelle (changer uniquement les clés propriétaire et active)",
+      "proceed": "Changer le mot de passe",
+      "cancel": "Annuler"
+    },
+    "success": {
+      "title": "Mot de passe changé",
+      "description": "Votre mot de passe principal a été changé."
+    }
   },
   "delegations_page": {
     "returning_delegations": "Délégations en retour",
@@ -542,7 +562,29 @@
     "owner_authority": "Autorité propriétaire (Owner)",
     "active_authority": "Autorité active (Active)",
     "posting_authority": "Autorité de publication (Posting)",
-    "owner_threshold_warning": "En modifiant le seuil de l'autorité propriétaire (Owner), vous pourriez perdre l'accès indépendant à ce compte.\n\nVoulez-vous vraiment continuer ?"
+    "no_data": "Aucune donnée",
+    "errors": {
+      "title": "Erreur",
+      "owner_update_limit": "Ce compte a atteint la limite de changements de propriétaire. Attendez une heure et réessayez.",
+      "missing_account": "Un compte de la liste n'existe pas : {{detail}}",
+      "missing_owner_auth": "Ce changement nécessite la clé propriétaire.",
+      "invalid_key_in_list": "L'une des clés n'est pas valide.",
+      "invalid_key": "Clé non valide : {{key}}",
+      "failed_with_detail": "La mise à jour des autorités a échoué : {{detail}}",
+      "failed": "La mise à jour des autorités a échoué.",
+      "invalid_entry": "Cette entrée n'est pas valide : {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}} : le seuil de {{threshold}} ne peut pas être atteint, car les poids totalisent {{total}}.",
+      "owner_empty": "L'autorité propriétaire doit conserver au moins une clé ou un compte."
+    },
+    "lockout": {
+      "title": "Ce changement peut vous priver d'accès",
+      "session_key": "Il retire ou remplace une clé avec laquelle cette session signe : cette session sera déconnectée.",
+      "passkey_key": "Il retire ou remplace la clé de publication dérivée de votre passkey : la connexion par passkey ne fonctionnera plus.",
+      "owner_threshold": "Il porte le seuil de l'autorité propriétaire au-dessus de 1 : aucune clé ni aucun compte propriétaire ne pourra plus agir seul pour ce compte.",
+      "confirm": "Mettre à jour quand même"
+    }
   },
   "transfers_page": {
     "currency": "Devise",
@@ -704,7 +746,8 @@
       "upvote": "Voter pour ou contre",
       "reblog": "Rebloguer du contenu",
       "follow": "Suivre des personnes",
-      "mute": "Mettre des comptes en sourdine"
+      "mute": "Mettre des comptes en sourdine",
+      "can": "La clé de publication permet de :"
     },
     "active_key": {
       "name": "Clé active",
@@ -719,7 +762,8 @@
       "place_order": "Passer un ordre sur une plateforme d'échange",
       "profile_changes": "Certaines modifications du profil",
       "publish": "Publier un flux de prix de témoin",
-      "create": "Créer un nouvel utilisateur"
+      "create": "Créer un nouvel utilisateur",
+      "can": "La clé active permet de :"
     },
     "owner_key": {
       "name": "Clé propriétaire",
@@ -729,7 +773,8 @@
       "to": "Utilisez votre clé propriétaire pour :",
       "reset": "Réinitialiser les clés propriétaire, active et de publication",
       "recover": "Récupérer votre compte",
-      "decline": "Renoncer aux droits de vote"
+      "decline": "Renoncer aux droits de vote",
+      "can": "La clé propriétaire permet de :"
     },
     "memo_key": {
       "name": "Clé mémo",
@@ -738,11 +783,46 @@
       "permissions": "Permissions de la clé mémo",
       "to": "Utilisez votre clé mémo pour :",
       "send": "Envoyer un message chiffré",
-      "view": "Lire un message chiffré"
+      "view": "Lire un message chiffré",
+      "can": "La clé mémo permet de :"
     },
     "public_keys": "Clés publiques",
     "public_info": "Chaque clé Hive possède une clé publique et une clé privée pour chiffrer et déchiffrer des données. Les clés publiques sont associées aux noms d'utilisateur et permettent de retrouver les transactions associées sur la blockchain. Vos clés publiques ne sont pas nécessaires pour vous connecter sur Hive.blog et vous n'avez pas besoin de les conserver en lieu sûr.",
-    "view_public": "Voir les informations de clé publique de ce compte (dans le module « Autorités ») :"
+    "view_public": "Voir les informations de clé publique de ce compte (dans le module « Autorités ») :",
+    "about_this_account": "Chaque compte Hive possède quatre clés aux permissions différentes : la clé de publication pour les actions sociales, la clé active pour les actions du portefeuille, la clé propriétaire pour changer les autres clés et récupérer le compte, et la clé mémo pour les messages privés. Ci-dessous figurent les clés publiques et les comptes qui contrôlent @{{username}}. Seules les clés privées, que conserve le propriétaire du compte, peuvent signer pour lui.",
+    "reveal_intro": "Saisissez votre mot de passe principal pour révéler vos clés privées : le mot de passe principal les dérive toutes. Si vous vous êtes connecté avec une seule clé privée, il n'y a pas de mot de passe principal à saisir, et cette clé ne peut pas révéler les autres.",
+    "reveal_dialog": "Saisissez votre mot de passe principal pour révéler la clé privée. Le mot de passe principal dérive toutes vos clés.",
+    "master_password": "Mot de passe principal",
+    "block_explorer": "Explorateur de blocs - {{username}}",
+    "public_info_this_account": "Chaque clé Hive comporte une clé publique et une clé privée. Les clés publiques sont associées aux noms d'utilisateur et servent à retrouver les transactions du compte sur la blockchain. Elles peuvent être partagées sans risque.",
+    "errors": {
+      "title": "Erreur",
+      "not_all_keys": "Ce mot de passe principal ne dérive pas toutes les clés du compte.",
+      "reveal_failed": "La révélation de la clé privée a échoué."
+    },
+    "summary": {
+      "title": "Permissions de @{{username}}",
+      "threshold": "Seuil : {{threshold}}",
+      "weight": "poids {{weight}}",
+      "none": "Aucune clé ni aucun compte",
+      "recovery_account": "Compte de récupération",
+      "edit_on_authorities": "Voir les détails et modifier sur la page Autorités",
+      "view_on_authorities": "Voir les détails sur la page Autorités"
+    },
+    "how_you_sign": {
+      "title": "Comment vous signez",
+      "wif": "Vous vous êtes connecté avec une clé privée, que cet onglet conserve uniquement en mémoire.",
+      "safe_storage": "Vos clés sont enregistrées chiffrées dans le stockage sécurisé de ce navigateur :",
+      "signed_in_with": "connecté avec cette clé",
+      "remove_from_browser": "Retirer de ce navigateur",
+      "external_wallet": "Vos clés sont détenues par {{wallet}} ; consultez-les ou exportez-les là-bas.",
+      "hiveauth": "Vos clés se trouvent dans votre application de portefeuille HiveAuth.",
+      "google": "Vos clés se trouvent dans votre portefeuille Google Drive.",
+      "manage_in_hive_bridge": "Gérez-les dans Hive Bridge",
+      "passkey": "Votre clé de publication est dérivée de votre passkey sur {{origin}}.",
+      "passkey_signer": "le signataire passkey",
+      "session_marked": "Les clés avec lesquelles cette session signe sont marquées « Cette session » dans la liste ci-dessus."
+    }
   },
   "communities": {
     "create_community": "Créer une communauté",
@@ -832,5 +912,18 @@
     "stop_checking": "Arrêter la vérification",
     "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement.",
     "catalog_only": "Seuls les nœuds listés peuvent être choisis : le site ne peut en appeler aucun autre."
+  },
+  "account_keys": {
+    "this_session": "Cette session",
+    "stored_in_browser": "Enregistrée dans ce navigateur",
+    "passkey_signer": "Passkey",
+    "open_hive_bridge": "Ouvrir Hive Bridge",
+    "follow_up": {
+      "update_wallet": "Après le changement, mettez à jour les clés dans {{wallet}}, sinon il ne signera plus pour ce compte.",
+      "update_google_drive": "Votre portefeuille Google Drive contient les anciennes clés. Mettez-le à jour dans Hive Bridge après le changement, sinon la connexion avec Google ne fonctionnera plus.",
+      "passkey_lost": "Votre clé de publication est dérivée de votre passkey. Changer les clés la remplace, et la connexion par passkey ne fonctionnera plus.",
+      "safe_storage_replaced": "Les nouvelles clés remplaceront celles enregistrées dans le stockage sécurisé de ce navigateur.",
+      "none": "Une clé conservée par cet onglet est remplacée par la nouvelle ; sinon, saisissez la nouvelle clé la prochaine fois que vous signez."
+    }
   }
 }
