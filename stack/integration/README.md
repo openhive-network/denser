@@ -485,6 +485,13 @@ mode), the same full commit hash the sidebar's "Version" shortens.
   environment, e.g. `REACT_APP_SENTRY_DSN=http://key@<host>:<port>/1 stack/integration/session-stack.sh up`
   with a stand-in that answers `POST /api/1/envelope/` to see the events locally.
 
+## Passkey signers (optional)
+
+Off unless `.env` sets `REACT_APP_PASSKEY_SIGNERS`: the hive-passkey-signer sites blog and
+wallet offer for passkey sign-in, as a JSON array or comma-separated list of https origins,
+e.g. `REACT_APP_PASSKEY_SIGNERS=["https://signer.syncad.com"]`. compose.yml passes it to both
+apps in both modes; set it and run `./upgrade.sh`. Empty (the default) shows no passkey options.
+
 ## One server session for blog and wallet
 
 Blog and wallet share the browser's stored user and accounts list, since they share the

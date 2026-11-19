@@ -55,6 +55,8 @@ x-app: &app
     REACT_APP_SENTRY_DSN: ${REACT_APP_SENTRY_DSN:-}
     REACT_APP_SENTRY_TRACES_SAMPLE_RATE: ${REACT_APP_SENTRY_TRACES_SAMPLE_RATE:-}
     REACT_APP_SENTRY_ENVIRONMENT: ${REACT_APP_SENTRY_ENVIRONMENT:-integration}
+    # Passkey signer sites (hive-passkey-signer): JSON array or comma-separated https origins; empty disables passkey options.
+    REACT_APP_PASSKEY_SIGNERS: ${REACT_APP_PASSKEY_SIGNERS:-}
     # REACT_APP_HIVEMIND_REST_NODES comes from networks/, which reads .env's HIVEMIND_REST_NODES:
     # an entry here would override the network's default.
 
