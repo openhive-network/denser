@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getGoogleDriveOAuth2Client } from '@/wallet/lib/google-drive-client';
+import { googleDriveTokenRequest } from '@/wallet/lib/google-drive-token-request';
+import { googleDriveTokenRequestRefusal } from '@smart-signer/lib/google-drive-token-request';
 import { getLogger } from '@ui/lib/logging';
 import { googleDriveCallbackUri, googleDriveServerOrigin } from '@smart-signer/lib/google-drive-urls';
 
@@ -21,6 +23,12 @@ export default async function handler(
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const refusal = googleDriveTokenRequestRefusal(await googleDriveTokenRequest(req, res));
+  if (refusal) {
+    logger.info('Refused Google Drive code exchange: %s', refusal);
+    return res.status(403).json({ error: 'Forbidden' });
   }
 
   try {

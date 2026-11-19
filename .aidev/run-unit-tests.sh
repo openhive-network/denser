@@ -139,6 +139,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/matrix-login-token.test.ts \
     packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
     packages/smart-signer/lib/csrf-protection.test.ts \
+    packages/smart-signer/lib/google-drive-token-request.test.ts \
     packages/smart-signer/lib/api-handlers/chat/sso.test.ts \
     packages/smart-signer/lib/same-origin-request.test.ts \
     packages/smart-signer/lib/api-handlers/auth/challenge.test.ts \
