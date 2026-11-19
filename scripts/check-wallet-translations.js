@@ -50,6 +50,10 @@ const POLICY = {
       'market_page.total',
       'resource_credits.total',
       'transfers_page.memo',
+      'permissions.errors.title',
+      'authorities_page.errors.title',
+      // The glossary keeps "passkey" as the product term
+      'account_keys.passkey_signer',
       // Hive operation names the Spanish texts keep in English
       'profile.power_up',
       'profile.power_down',
@@ -70,6 +74,8 @@ const POLICY = {
       'resource_credits.minutes_other',
       'page_titles.permissions',
       'witnesses_page.version',
+      // The glossary keeps "passkey" as the product term
+      'account_keys.passkey_signer',
       // Hive operation names the French texts keep in English
       'profile.power_up',
       'profile.power_down',
@@ -82,7 +88,9 @@ const POLICY = {
       'page_titles.home',
       'transfers_page.memo',
       // Hive role name the Italian texts keep in English
-      'witnesses_page.witness'
+      'witnesses_page.witness',
+      // The glossary keeps "passkey" as the product term
+      'account_keys.passkey_signer'
     ])
   }
 };

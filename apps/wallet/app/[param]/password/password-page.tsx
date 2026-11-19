@@ -4,7 +4,15 @@ import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/components/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@ui/components/form';
 import { useForm } from 'react-hook-form';
 import { Checkbox, Separator } from '@hive/ui';
 import { Link } from '@hive/ui';
@@ -16,7 +24,21 @@ import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
 import { getChain } from '@transaction/lib/chain';
+import { getAccount } from '@transaction/lib/hive-api';
 import { cn } from '@ui/lib/utils';
+import Loading from '@ui/components/loading';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import ChangePasswordConfirmDialog from '@/wallet/components/change-password-confirm-dialog';
+import KeyChangeFollowUp from '@/wallet/components/key-change-follow-up';
+import { isOwnAccount } from '@/wallet/lib/account-keys';
+import {
+  CredentialError,
+  currentPublicKeys,
+  passwordChange,
+  roleAuthoritiesOf,
+  type ChangedRole,
+  type KeyDerivation
+} from '@/wallet/lib/change-password-keys';
 
 // New type for derived keys
 interface DerivedKeys {
@@ -34,8 +56,41 @@ interface KeyDisplay {
   description: string;
 }
 
+async function waxDerivation(): Promise<KeyDerivation> {
+  const chain = await getChain();
+  return {
+    publicKeyOf: (wif) => chain.calculatePublicKey(wif),
+    keyFromPassword: (account, role, password) => chain.getPrivateKeyFromPassword(account, role, password)
+  };
+}
+
+/** The change password form on the signed-in user's own account; a notice to sign in as it elsewhere. */
 export default function PasswordPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
+  const { user, isHydrated } = useUserClient();
+  if (!isHydrated) return <Loading loading />;
+  if (!isOwnAccount(user, username)) {
+    return (
+      <>
+        <WalletMenu username={username} />
+        <div className="m-auto flex max-w-2xl flex-col gap-4 bg-background p-2 pb-8">
+          <div className="text-2xl font-bold">{t('change_password_page.change_password')}</div>
+          <Separator />
+          <p data-testid="change-password-sign-in-notice">
+            {t('change_password_page.sign_in_notice', { username })}
+          </p>
+        </div>
+      </>
+    );
+  }
+  return <ChangePasswordForm username={username} />;
+}
+
+function ChangePasswordForm({ username }: { username: string }) {
+  const { t } = useTranslation('common_wallet');
+  const { loginType } = useUserClient().user;
+  // The replaced keys, proven by the current credential, while the change awaits confirmation
+  const [pendingKeys, setPendingKeys] = useState<Record<ChangedRole, string> | null>(null);
   const [isKeyGenerated, setIsKeyGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,22 +102,22 @@ export default function PasswordPage({ username }: { username: string }) {
   const accountFormSchema = useMemo(
     () =>
       z.object({
-        name: z.string().min(2, 'Account name should be longer'),
-        curr_password: z.string().min(2, { message: 'Required master password' }),
+        name: z.string().min(2, t('change_password_page.account_name_should_be_longer')),
+        curr_password: z.string().min(2, { message: t('change_password_page.errors.required_credential') }),
         genereted_password: z.string().refine((value) => value === generatedPassword, {
-          message: 'Passwords do not match'
+          message: t('change_password_page.passwords_do_not_match')
         }),
         understand_master: z.boolean().refine((value) => value === true, {
-          message: 'Required'
+          message: t('change_password_page.required')
         }),
         saved_password: z.boolean().refine((value) => value === true, {
-          message: 'Required'
+          message: t('change_password_page.required')
         }),
         understand_security: z.boolean().refine((value) => value === true, {
-          message: 'Required'
+          message: t('change_password_page.required')
         })
       }),
-    [generatedPassword]
+    [generatedPassword, t]
   );
   type PasswordFormValues = z.infer<typeof accountFormSchema>;
 
@@ -85,62 +140,43 @@ export default function PasswordPage({ username }: { username: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  async function onSubmit(_data: z.infer<typeof accountFormSchema>) {
+  /** Checks the current credential against the account's keys, then asks to confirm the change. */
+  async function onSubmit(data: z.infer<typeof accountFormSchema>) {
+    if (!generatedPassword) {
+      form.setError('genereted_password', { message: t('change_password_page.errors.generate_first') });
+      return;
+    }
     setLoading(true);
     try {
-      const components = await resolveChangePasswordComponents(_data.curr_password);
-      await changePasswordMutation.mutateAsync({ ...components });
-      form.reset();
+      const [derivation, account] = await Promise.all([waxDerivation(), getAccount(username)]);
+      setPendingKeys(currentPublicKeys(username, data.curr_password, roleAuthoritiesOf(account), derivation));
     } catch (error) {
-      handleError(error, { method: 'changePassword', params: { ..._data } });
+      if (!(error instanceof CredentialError)) {
+        handleError(error, { method: 'changePasswordCredential', params: { account: username } });
+        return;
+      }
+      form.setError('curr_password', {
+        message: t(`change_password_page.errors.${error.code}`, {
+          role: t(`permissions.${error.role}_key.name`)
+        })
+      });
     } finally {
       setLoading(false);
     }
   }
 
-  async function resolveChangePasswordComponents(password: string): Promise<{
-    account: string;
-    keys: Record<string, { old: string; new: string }>;
-    wifs: Record<string, string>;
-  }> {
-    if (!generatedPassword) {
-      throw new Error('Generated password is required');
+  async function onConfirm(current: Record<ChangedRole, string>, keepPosting: boolean) {
+    setPendingKeys(null);
+    setLoading(true);
+    try {
+      const change = passwordChange(username, current, generatedPassword, await waxDerivation(), keepPosting);
+      await changePasswordMutation.mutateAsync(change);
+      form.reset();
+    } catch (error) {
+      handleError(error, { method: 'changePassword', params: { account: username, keepPosting } });
+    } finally {
+      setLoading(false);
     }
-
-    const hiveChain = await getChain();
-
-    // password !== WIF
-    const oldOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', password);
-    const oldActive = hiveChain.getPrivateKeyFromPassword(username, 'active', password);
-    const oldPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', password);
-
-    // private keys for account authorities
-    const newOwner = hiveChain.getPrivateKeyFromPassword(username, 'owner', generatedPassword);
-    const newActive = hiveChain.getPrivateKeyFromPassword(username, 'active', generatedPassword);
-    const newPosting = hiveChain.getPrivateKeyFromPassword(username, 'posting', generatedPassword);
-
-    return {
-      account: username,
-      keys: {
-        owner: {
-          old: oldOwner.associatedPublicKey,
-          new: newOwner.associatedPublicKey
-        },
-        active: {
-          old: oldActive.associatedPublicKey,
-          new: newActive.associatedPublicKey
-        },
-        posting: {
-          old: oldPosting.associatedPublicKey,
-          new: newPosting.associatedPublicKey
-        }
-      },
-      wifs: {
-        owner: newOwner.wifPrivateKey,
-        active: newActive.wifPrivateKey,
-        posting: newPosting.wifPrivateKey
-      }
-    };
   }
 
   async function handleKey() {
@@ -315,7 +351,7 @@ IMPORTANT:
                       )}
                     </Button>
                   </div>
-                  <div className="mt-1 break-all font-mono text-xs">
+                  <div className="mt-1 break-all font-mono text-xs" data-testid={`generated-key-${key.type}`}>
                     {showKeys ? key.value : '••••••••••••••••••••••••••'}
                   </div>
                 </div>
@@ -354,7 +390,7 @@ IMPORTANT:
               render={({ field }) => (
                 <FormItem>
                   <div className="flex justify-between">
-                    <FormLabel>{t('change_password_page.current_password')}</FormLabel>
+                    <FormLabel>{t('change_password_page.current_credential')}</FormLabel>
                     <Link
                       className="pointer-events-none text-sm text-destructive opacity-70"
                       href="/recover_account_step_1"
@@ -366,9 +402,10 @@ IMPORTANT:
                     <PasswordInput
                       {...field}
                       autoComplete="current-password"
-                      placeholder={t('change_password_page.current_password')}
+                      placeholder={t('change_password_page.current_credential')}
                     />
                   </FormControl>
+                  <FormDescription>{t('change_password_page.current_credential_help')}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -434,6 +471,9 @@ IMPORTANT:
                 </FormItem>
               )}
             />
+            <div className="rounded bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
+              <KeyChangeFollowUp loginType={loginType} />
+            </div>
             <Button
               type="submit"
               variant="redHover"
@@ -449,6 +489,12 @@ IMPORTANT:
           </form>
         </Form>
       </div>
+      <ChangePasswordConfirmDialog
+        open={pendingKeys !== null}
+        loginType={loginType}
+        onConfirm={(keepPosting) => pendingKeys && onConfirm(pendingKeys, keepPosting)}
+        onCancel={() => setPendingKeys(null)}
+      />
     </>
   );
 }

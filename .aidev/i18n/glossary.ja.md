@@ -45,6 +45,8 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | password | パスワード | unreviewed | |
 | passkey | パスキー | unreviewed | |
 | market / interest | マーケット / 利息 | unreviewed | |
+| this session (key badge) | このセッション | unreviewed | |
+| recovery account | リカバリーアカウント | unreviewed | |
 
 ## Register
 

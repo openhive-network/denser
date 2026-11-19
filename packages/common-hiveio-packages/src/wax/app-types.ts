@@ -30,6 +30,7 @@ export interface FullAccount {
   active: ApiAuthority;
   posting: ApiAuthority;
   memo_key: string;
+  recovery_account: string;
   post_count: number;
   created: string;
   json_metadata: string;

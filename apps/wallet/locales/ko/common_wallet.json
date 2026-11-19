@@ -445,7 +445,6 @@
   "change_password_page": {
     "change_password": "비밀번호 변경",
     "account_name": "계정 이름",
-    "current_password": "현재 마스터 비밀번호",
     "recover_password": "계정 복구",
     "generated_password": "생성된 비밀번호와 키",
     "new": "새로 만들기",
@@ -477,7 +476,28 @@
       "m4": "개인 키를 절대 공유하지 마세요",
       "confirm_security": "이러한 보안상의 영향을 이해하고 동의합니다"
     },
-    "save_all": "모두 저장"
+    "save_all": "모두 저장",
+    "current_credential": "현재 마스터 비밀번호 또는 소유자 키",
+    "current_credential_help": "비밀번호를 변경하면 키가 교체되므로 소유자 키가 필요합니다. 소유자 키를 파생하는 마스터 비밀번호나 소유자 개인 키 자체를 입력하세요.",
+    "sign_in_notice": "키를 변경하려면 @{{username}}(으)로 로그인하세요.",
+    "errors": {
+      "required_credential": "현재 마스터 비밀번호 또는 소유자 키를 입력하세요",
+      "generate_first": "먼저 새 비밀번호를 생성하세요",
+      "wrong_password": "이 마스터 비밀번호로는 계정의 키가 파생되지 않습니다: {{role}}.",
+      "not_owner_key": "이 개인 키는 계정의 소유자 키가 아닙니다.",
+      "role_not_single_key": "계정에 이 종류의 키가 여러 개 있습니다: {{role}}. 소유자 키로는 어느 키를 교체할지 알 수 없습니다. 마스터 비밀번호를 입력하거나 계정 권한 페이지에서 키를 변경하세요."
+    },
+    "confirm": {
+      "title": "비밀번호를 변경하시겠습니까?",
+      "replaces_keys": "이 계정의 소유자, 액티브, 포스팅 키가 새 비밀번호에서 파생된 키로 교체됩니다.",
+      "keep_posting_key": "현재 포스팅 키 유지 (소유자 키와 액티브 키만 변경)",
+      "proceed": "비밀번호 변경",
+      "cancel": "취소"
+    },
+    "success": {
+      "title": "비밀번호 변경됨",
+      "description": "마스터 비밀번호가 변경되었습니다."
+    }
   },
   "delegations_page": {
     "returning_delegations": "반환 중인 위임",
@@ -517,7 +537,29 @@
     "owner_authority": "소유자 권한",
     "active_authority": "액티브 권한",
     "posting_authority": "포스팅 권한",
-    "owner_threshold_warning": "소유자 권한 임계값을 변경하면 이 계정에 대한 독립적인 접근 권한을 잃을 수 있습니다.\n\n 계속하시겠습니까"
+    "no_data": "데이터 없음",
+    "errors": {
+      "title": "오류",
+      "owner_update_limit": "이 계정은 소유자 변경 한도에 도달했습니다. 한 시간 후에 다시 시도하세요.",
+      "missing_account": "목록의 계정이 존재하지 않습니다: {{detail}}",
+      "missing_owner_auth": "이 변경에는 소유자 키가 필요합니다.",
+      "invalid_key_in_list": "키 중 하나가 유효하지 않습니다.",
+      "invalid_key": "유효하지 않은 키: {{key}}",
+      "failed_with_detail": "계정 권한을 업데이트하지 못했습니다: {{detail}}",
+      "failed": "계정 권한을 업데이트하지 못했습니다.",
+      "invalid_entry": "이 항목은 유효하지 않습니다: {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}: 가중치의 합이 {{total}}이므로 임계값 {{threshold}}에 도달할 수 없습니다.",
+      "owner_empty": "소유자 권한에는 키 또는 계정이 하나 이상 있어야 합니다."
+    },
+    "lockout": {
+      "title": "이 변경으로 접근이 막힐 수 있습니다",
+      "session_key": "이 세션이 서명에 사용하는 키를 제거하거나 교체합니다. 이 세션은 로그아웃됩니다.",
+      "passkey_key": "패스키에서 파생된 포스팅 키를 제거하거나 교체합니다. 패스키 로그인이 작동하지 않습니다.",
+      "owner_threshold": "소유자 권한의 임계값을 1보다 크게 올립니다. 소유자 키나 계정 하나만으로는 이 계정을 대신할 수 없게 됩니다.",
+      "confirm": "그래도 업데이트"
+    }
   },
   "transfers_page": {
     "decode_memo": "복호화",
@@ -677,7 +719,8 @@
       "upvote": "업보팅 또는 다운보팅",
       "reblog": "콘텐츠 리블로그",
       "follow": "사용자 팔로우",
-      "mute": "계정 뮤트"
+      "mute": "계정 뮤트",
+      "can": "포스팅 키로 할 수 있는 일:"
     },
     "active_key": {
       "name": "액티브 키",
@@ -692,7 +735,8 @@
       "place_order": "거래소에 주문 넣기",
       "profile_changes": "일부 프로필 변경",
       "publish": "증인 가격 피드 게시",
-      "create": "새 사용자 생성"
+      "create": "새 사용자 생성",
+      "can": "액티브 키로 할 수 있는 일:"
     },
     "owner_key": {
       "name": "소유자 키",
@@ -702,7 +746,8 @@
       "to": "소유자 키로 할 수 있는 일:",
       "reset": "소유자 키, 액티브 키, 포스팅 키 재설정",
       "recover": "계정 복구",
-      "decline": "투표권 포기"
+      "decline": "투표권 포기",
+      "can": "소유자 키로 할 수 있는 일:"
     },
     "memo_key": {
       "name": "메모 키",
@@ -711,11 +756,46 @@
       "permissions": "메모 키 권한",
       "to": "메모 키로 할 수 있는 일:",
       "send": "암호화된 메시지 보내기",
-      "view": "암호화된 메시지 보기"
+      "view": "암호화된 메시지 보기",
+      "can": "메모 키로 할 수 있는 일:"
     },
     "public_keys": "공개 키",
     "public_info": "각 Hive 키에는 데이터를 암호화하고 복호화하는 공개 키와 개인 키가 있습니다. 공개 키는 사용자 이름과 연결되어 있으며 블록체인에서 관련 트랜잭션을 조회하는 데 사용할 수 있습니다. 공개 키는 Hive.blog 로그인에 필요하지 않으며 안전하게 보관할 필요도 없습니다.",
-    "view_public": "이 계정의 공개 키 정보 보기('계정 권한' 모듈에서):"
+    "view_public": "이 계정의 공개 키 정보 보기('계정 권한' 모듈에서):",
+    "about_this_account": "모든 Hive 계정에는 권한이 서로 다른 네 개의 키가 있습니다. 소셜 활동을 위한 포스팅 키, 지갑 작업을 위한 액티브 키, 다른 키를 변경하고 계정을 복구하기 위한 소유자 키, 비공개 메시지를 위한 메모 키입니다. 아래는 @{{username}}을(를) 제어하는 공개 키와 계정입니다. 계정 소유자가 보관하는 개인 키만 이 계정을 위해 서명할 수 있습니다.",
+    "reveal_intro": "개인 키를 보려면 마스터 비밀번호를 입력하세요. 마스터 비밀번호로 모든 키가 파생됩니다. 하나의 개인 키로 로그인했다면 입력할 마스터 비밀번호가 없으며, 그 키로 다른 키를 볼 수 없습니다.",
+    "reveal_dialog": "개인 키를 보려면 마스터 비밀번호를 입력하세요. 마스터 비밀번호로 모든 키가 파생됩니다.",
+    "master_password": "마스터 비밀번호",
+    "block_explorer": "블록 탐색기 - {{username}}",
+    "public_info_this_account": "각 Hive 키에는 공개 키와 개인 키가 있습니다. 공개 키는 사용자 이름과 연결되며 블록체인에서 계정의 트랜잭션을 조회하는 데 사용할 수 있습니다. 공개 키는 안전하게 공유할 수 있습니다.",
+    "errors": {
+      "title": "오류",
+      "not_all_keys": "이 마스터 비밀번호로는 계정의 모든 키가 파생되지 않습니다.",
+      "reveal_failed": "개인 키를 표시하지 못했습니다."
+    },
+    "summary": {
+      "title": "@{{username}}의 권한",
+      "threshold": "임계값: {{threshold}}",
+      "weight": "가중치 {{weight}}",
+      "none": "키 또는 계정 없음",
+      "recovery_account": "복구 계정",
+      "edit_on_authorities": "계정 권한 페이지에서 자세히 보기 및 편집",
+      "view_on_authorities": "계정 권한 페이지에서 자세히 보기"
+    },
+    "how_you_sign": {
+      "title": "서명 방법",
+      "wif": "개인 키로 로그인했습니다. 이 탭은 그 키를 메모리에만 보관합니다.",
+      "safe_storage": "키가 이 브라우저의 안전 저장소에 암호화되어 저장되어 있습니다:",
+      "signed_in_with": "이 키로 로그인함",
+      "remove_from_browser": "이 브라우저에서 제거",
+      "external_wallet": "키는 {{wallet}}에 보관되어 있습니다. 확인하거나 내보내려면 그곳을 이용하세요.",
+      "hiveauth": "키는 HiveAuth 지갑 앱에 있습니다.",
+      "google": "키는 Google Drive 지갑에 있습니다.",
+      "manage_in_hive_bridge": "Hive Bridge에서 관리",
+      "passkey": "포스팅 키는 {{origin}}의 패스키에서 파생됩니다.",
+      "passkey_signer": "패스키 서명자",
+      "session_marked": "이 세션이 서명에 사용하는 키는 위 목록에 '이 세션'으로 표시됩니다."
+    }
   },
   "communities": {
     "create_community": "커뮤니티 만들기",
@@ -801,5 +881,18 @@
     "stop_checking": "확인 중지",
     "node_unavailable": "{{selected}}을(를) {{set}}에 사용할 수 없어 복구될 때까지 {{node}}을(를) 사용합니다.",
     "catalog_only": "목록의 노드만 선택할 수 있습니다. 사이트는 다른 노드에 연결할 수 없습니다."
+  },
+  "account_keys": {
+    "this_session": "이 세션",
+    "stored_in_browser": "이 브라우저에 저장됨",
+    "passkey_signer": "패스키",
+    "open_hive_bridge": "Hive Bridge 열기",
+    "follow_up": {
+      "update_wallet": "변경 후 {{wallet}}의 키를 업데이트하세요. 그렇지 않으면 이 계정에 대한 서명이 중단됩니다.",
+      "update_google_drive": "Google Drive 지갑에는 이전 키가 있습니다. 변경 후 Hive Bridge에서 업데이트하세요. 그렇지 않으면 Google 로그인이 작동하지 않습니다.",
+      "passkey_lost": "포스팅 키는 패스키에서 파생됩니다. 키를 변경하면 이 키가 교체되어 패스키 로그인이 작동하지 않습니다.",
+      "safe_storage_replaced": "새 키가 이 브라우저의 안전 저장소에 저장된 키를 대체합니다.",
+      "none": "이 탭이 보관하는 키는 새 키로 교체됩니다. 그렇지 않으면 다음에 서명할 때 새 키를 입력하세요."
+    }
   }
 }

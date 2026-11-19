@@ -40,6 +40,8 @@ translate the terms below. Status values and how to use this file:
 | post / comment / reply | unreviewed | |
 | log in / log out | unreviewed | Labels: "Login", "Logout". |
 | passkey | unreviewed | |
+| This session (key badge) | unreviewed | Marks the keys the signed-in session signs with. |
+| recovery account | unreviewed | |
 
 ## Register
 

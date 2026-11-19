@@ -484,7 +484,6 @@
   "change_password_page": {
     "change_password": "Zmień hasło",
     "account_name": "Nazwa konta",
-    "current_password": "Obecne hasło główne",
     "recover_password": "Odzyskaj konto",
     "generated_password": "Wygenerowane hasło i klucze",
     "new": "Nowe",
@@ -516,7 +515,28 @@
       "m4": "Nigdy nikomu nie udostępniaj swoich kluczy prywatnych",
       "confirm_security": "Rozumiem i akceptuję te zasady bezpieczeństwa"
     },
-    "save_all": "Zapisz wszystkie"
+    "save_all": "Zapisz wszystkie",
+    "current_credential": "Obecne hasło główne lub klucz Owner",
+    "current_credential_help": "Zmiana hasła zastępuje Twoje klucze, do czego potrzebny jest klucz Owner: wprowadź hasło główne, które go wyprowadza, albo sam prywatny klucz Owner.",
+    "sign_in_notice": "Zaloguj się jako @{{username}}, aby zmienić klucze tego konta.",
+    "errors": {
+      "required_credential": "Wprowadź obecne hasło główne lub klucz Owner",
+      "generate_first": "Najpierw wygeneruj nowe hasło",
+      "wrong_password": "To hasło główne nie wyprowadza klucza konta: {{role}}.",
+      "not_owner_key": "Ten klucz prywatny nie jest kluczem Owner konta.",
+      "role_not_single_key": "Konto ma kilka kluczy tego rodzaju: {{role}}. Po kluczu Owner nie da się ustalić, który zastąpić: wprowadź hasło główne albo zmień klucze na stronie Upoważnienia."
+    },
+    "confirm": {
+      "title": "Zmienić hasło?",
+      "replaces_keys": "Klucze Owner, Active i Posting tego konta zostaną zastąpione kluczami wyprowadzonymi z nowego hasła.",
+      "keep_posting_key": "Zachowaj obecny klucz Posting (zmień tylko klucze Owner i Active)",
+      "proceed": "Zmień hasło",
+      "cancel": "Anuluj"
+    },
+    "success": {
+      "title": "Hasło zostało zmienione",
+      "description": "Twoje hasło główne zostało zmienione."
+    }
   },
   "delegations_page": {
     "returning_delegations": "Powracające delegacje",
@@ -556,7 +576,29 @@
     "owner_authority": "Upoważnienie właściciela (Owner)",
     "active_authority": "Upoważnienie Active",
     "posting_authority": "Upoważnienie Posting",
-    "owner_threshold_warning": "Zmieniając próg upoważnienia właściciela (Owner), możesz stracić samodzielny dostęp do tego konta.\n\nCzy na pewno chcesz kontynuować?"
+    "no_data": "Brak danych",
+    "errors": {
+      "title": "Błąd",
+      "owner_update_limit": "To konto osiągnęło limit zmian klucza Owner. Odczekaj godzinę i spróbuj ponownie.",
+      "missing_account": "Konto z listy nie istnieje: {{detail}}",
+      "missing_owner_auth": "Ta zmiana wymaga klucza Owner.",
+      "invalid_key_in_list": "Jeden z kluczy jest nieprawidłowy.",
+      "invalid_key": "Nieprawidłowy klucz: {{key}}",
+      "failed_with_detail": "Nie udało się zaktualizować upoważnień: {{detail}}",
+      "failed": "Nie udało się zaktualizować upoważnień.",
+      "invalid_entry": "Ten wpis jest nieprawidłowy: {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}: progu {{threshold}} nie da się osiągnąć, bo wagi sumują się do {{total}}.",
+      "owner_empty": "Upoważnienie właściciela (Owner) musi zachować co najmniej jeden klucz lub konto."
+    },
+    "lockout": {
+      "title": "Ta zmiana może odciąć Ci dostęp",
+      "session_key": "Usuwa lub zastępuje klucz, którym podpisuje ta sesja: ta sesja zostanie wylogowana.",
+      "passkey_key": "Usuwa lub zastępuje klucz Posting wyprowadzony z klucza dostępu: logowanie kluczem dostępu przestanie działać.",
+      "owner_threshold": "Podnosi próg upoważnienia właściciela (Owner) powyżej 1: żaden pojedynczy klucz ani konto Owner nie będzie mogło samo działać za to konto.",
+      "confirm": "Zaktualizuj mimo to"
+    }
   },
   "transfers_page": {
     "currency": "Waluta",
@@ -719,7 +761,8 @@
       "upvote": "Głosować za lub przeciw",
       "reblog": "Reblogować treść",
       "follow": "Obserwować",
-      "mute": "Wyciszyć konta"
+      "mute": "Wyciszyć konta",
+      "can": "Klucz Posting pozwala:"
     },
     "active_key": {
       "name": "Klucz Active",
@@ -734,7 +777,8 @@
       "place_order": "Złożyć zlecenie na giełdzie",
       "profile_changes": "Dokonywać niektórych zmian w profilu",
       "publish": "Publikować kurs ceny jako świadek",
-      "create": "Utworzyć nowego użytkownika"
+      "create": "Utworzyć nowego użytkownika",
+      "can": "Klucz Active pozwala:"
     },
     "owner_key": {
       "name": "Klucz właściciela (Owner)",
@@ -744,7 +788,8 @@
       "to": "Użyj klucza właściciela (Owner), aby:",
       "reset": "Zresetować klucze Owner, Active i Posting",
       "recover": "Odzyskać swoje konto",
-      "decline": "Odrzucić prawa do głosowania"
+      "decline": "Odrzucić prawa do głosowania",
+      "can": "Klucz Owner pozwala:"
     },
     "memo_key": {
       "name": "Klucz notatek (Memo)",
@@ -753,11 +798,46 @@
       "permissions": "Uprawnienia klucza notatek (Memo)",
       "to": "Użyj klucza notatek (Memo), aby:",
       "send": "Wysłać zaszyfrowaną wiadomość",
-      "view": "Wyświetlić zaszyfrowaną wiadomość"
+      "view": "Wyświetlić zaszyfrowaną wiadomość",
+      "can": "Klucz Memo pozwala:"
     },
     "public_keys": "Klucze publiczne",
     "public_info": "Każdy klucz Hive składa się z klucza publicznego i prywatnego, które służą do szyfrowania i odszyfrowywania danych. Klucze publiczne są powiązane z nazwami użytkowników i pozwalają wyszukiwać powiązane transakcje w blockchainie. Klucze publiczne nie są potrzebne do logowania w Hive.blog i nie trzeba ich bezpiecznie przechowywać.",
-    "view_public": "Zobacz informacje o kluczach publicznych tego konta (w zakładce 'Upoważnienia'):"
+    "view_public": "Zobacz informacje o kluczach publicznych tego konta (w zakładce 'Upoważnienia'):",
+    "about_this_account": "Każde konto Hive ma cztery klucze o różnych uprawnieniach: klucz Posting do działań społecznościowych, klucz Active do operacji w portfelu, klucz Owner do zmiany pozostałych kluczy i odzyskania konta oraz klucz Memo do prywatnych wiadomości. Poniżej są klucze publiczne i konta, które kontrolują @{{username}}. Podpisywać za to konto mogą tylko klucze prywatne, które przechowuje jego właściciel.",
+    "reveal_intro": "Wprowadź hasło główne, aby odsłonić klucze prywatne: hasło główne wyprowadza je wszystkie. Po zalogowaniu się pojedynczym kluczem prywatnym nie ma hasła głównego do wprowadzenia, a ten klucz nie odsłoni pozostałych.",
+    "reveal_dialog": "Wprowadź hasło główne, aby odsłonić klucz prywatny. Hasło główne wyprowadza wszystkie Twoje klucze.",
+    "master_password": "Hasło główne",
+    "block_explorer": "Eksplorator bloków - {{username}}",
+    "public_info_this_account": "Każdy klucz Hive ma klucz publiczny i prywatny. Klucze publiczne są powiązane z nazwami użytkowników i pozwalają wyszukać transakcje konta w blockchainie. Można je bezpiecznie udostępniać.",
+    "errors": {
+      "title": "Błąd",
+      "not_all_keys": "To hasło główne nie wyprowadza wszystkich kluczy konta.",
+      "reveal_failed": "Nie udało się odsłonić klucza prywatnego."
+    },
+    "summary": {
+      "title": "Uprawnienia @{{username}}",
+      "threshold": "Próg: {{threshold}}",
+      "weight": "waga {{weight}}",
+      "none": "Brak kluczy i kont",
+      "recovery_account": "Konto odzyskiwania",
+      "edit_on_authorities": "Zobacz szczegóły i edytuj na stronie Upoważnienia",
+      "view_on_authorities": "Zobacz szczegóły na stronie Upoważnienia"
+    },
+    "how_you_sign": {
+      "title": "Jak podpisujesz",
+      "wif": "Zalogowano kluczem prywatnym, który ta karta przechowuje tylko w pamięci.",
+      "safe_storage": "Twoje klucze są zaszyfrowane w bezpiecznym magazynie w tej przeglądarce:",
+      "signed_in_with": "zalogowano tym kluczem",
+      "remove_from_browser": "Usuń z tej przeglądarki",
+      "external_wallet": "Twoje klucze przechowuje {{wallet}}; tam możesz je wyświetlić lub wyeksportować.",
+      "hiveauth": "Twoje klucze są w aplikacji portfela HiveAuth.",
+      "google": "Twoje klucze są w portfelu Google Drive.",
+      "manage_in_hive_bridge": "Zarządzaj nimi w Hive Bridge",
+      "passkey": "Twój klucz Posting jest wyprowadzony z klucza dostępu na {{origin}}.",
+      "passkey_signer": "usłudze podpisu kluczem dostępu",
+      "session_marked": "Klucze, którymi podpisuje ta sesja, są oznaczone na liście powyżej jako „Ta sesja”."
+    }
   },
   "communities": {
     "create_community": "Utwórz społeczność",
@@ -849,5 +929,18 @@
     "stop_checking": "Zatrzymaj sprawdzanie",
     "node_unavailable": "{{selected}} jest niedostępny dla {{set}}; do czasu jego powrotu używany jest {{node}}.",
     "catalog_only": "Można wybrać tylko węzły z listy: strona nie może łączyć się z innymi."
+  },
+  "account_keys": {
+    "this_session": "Ta sesja",
+    "stored_in_browser": "Zapisany w tej przeglądarce",
+    "passkey_signer": "Klucz dostępu",
+    "open_hive_bridge": "Otwórz Hive Bridge",
+    "follow_up": {
+      "update_wallet": "Po zmianie zaktualizuj klucze w {{wallet}}, inaczej przestanie podpisywać dla tego konta.",
+      "update_google_drive": "Twój portfel Google Drive przechowuje stare klucze. Po zmianie zaktualizuj go w Hive Bridge, inaczej logowanie przez Google przestanie działać.",
+      "passkey_lost": "Twój klucz Posting jest wyprowadzony z klucza dostępu. Zmiana kluczy go zastąpi i logowanie kluczem dostępu przestanie działać.",
+      "safe_storage_replaced": "Nowe klucze zastąpią te zapisane w bezpiecznym magazynie w tej przeglądarce.",
+      "none": "Klucz przechowywany przez tę kartę zostanie zastąpiony nowym; w przeciwnym razie przy następnym podpisie wprowadź nowy klucz."
+    }
   }
 }

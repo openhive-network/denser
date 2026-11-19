@@ -445,7 +445,6 @@
   "change_password_page": {
     "change_password": "修改密码",
     "account_name": "用户名",
-    "current_password": "当前密码",
     "recover_password": "恢复账号",
     "generated_password": "生成密码",
     "new": "最新",
@@ -477,7 +476,28 @@
       "m4": "切勿与他人分享你的私钥",
       "confirm_security": "我了解并接受这些安全事项"
     },
-    "save_all": "全部保存"
+    "save_all": "全部保存",
+    "current_credential": "当前主密码或 Owner 密钥",
+    "current_credential_help": "更改密码会替换你的密钥，这需要 Owner 密钥：请输入可派生它的主密码，或 Owner 私钥本身。",
+    "sign_in_notice": "请以 @{{username}} 身份登录以更改其密钥。",
+    "errors": {
+      "required_credential": "请输入当前主密码或 Owner 密钥",
+      "generate_first": "请先生成新密码",
+      "wrong_password": "此主密码无法派生该账户的密钥：{{role}}。",
+      "not_owner_key": "此私钥不是该账户的 Owner 密钥。",
+      "role_not_single_key": "该账户有多个此类密钥：{{role}}。Owner 密钥无法判断要替换哪一个：请输入主密码，或在权限页面更改密钥。"
+    },
+    "confirm": {
+      "title": "要更改密码吗？",
+      "replaces_keys": "此账户的 Owner、Active 和 Posting 密钥将被替换为新密码派生的密钥。",
+      "keep_posting_key": "保留我当前的 Posting 密钥（只更改 Owner 和 Active 密钥）",
+      "proceed": "更改密码",
+      "cancel": "取消"
+    },
+    "success": {
+      "title": "密码已更改",
+      "description": "你的主密码已更改。"
+    }
   },
   "delegations_page": {
     "returning_delegations": "退回中的代理",
@@ -517,7 +537,29 @@
     "owner_authority": "所有者权限",
     "active_authority": "活跃权限",
     "posting_authority": "发帖权限",
-    "owner_threshold_warning": "更改所有者权限阈值可能会使你失去对此账户的独立访问权。\n\n确定要继续吗？"
+    "no_data": "暂无数据",
+    "errors": {
+      "title": "错误",
+      "owner_update_limit": "此账户已达到所有者变更次数上限。请等待一小时后重试。",
+      "missing_account": "列表中的某个账户不存在：{{detail}}",
+      "missing_owner_auth": "此更改需要 Owner 密钥。",
+      "invalid_key_in_list": "其中一个密钥无效。",
+      "invalid_key": "无效密钥：{{key}}",
+      "failed_with_detail": "更新权限失败：{{detail}}",
+      "failed": "更新权限失败。",
+      "invalid_entry": "此条目无效：{{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}：权重合计为 {{total}}，无法达到阈值 {{threshold}}。",
+      "owner_empty": "所有者权限必须至少保留一个密钥或账户。"
+    },
+    "lockout": {
+      "title": "此更改可能导致你无法访问账户",
+      "session_key": "它会移除或替换当前会话用于签名的密钥：当前会话将被退出登录。",
+      "passkey_key": "它会移除或替换由通行密钥派生的 Posting 密钥：通行密钥登录将无法使用。",
+      "owner_threshold": "它会将所有者权限的阈值提高到 1 以上：任何单个所有者密钥或账户都无法再单独代表此账户操作。",
+      "confirm": "仍然更新"
+    }
   },
   "transfers_page": {
     "currency": "货币",
@@ -677,7 +719,8 @@
       "upvote": "点赞或点踩",
       "reblog": "转发内容",
       "follow": "关注他人",
-      "mute": "屏蔽账户"
+      "mute": "屏蔽账户",
+      "can": "Posting 密钥可以："
     },
     "active_key": {
       "name": "Active 密钥",
@@ -692,7 +735,8 @@
       "place_order": "在交易所下单",
       "profile_changes": "部分个人资料修改",
       "publish": "发布见证人喂价",
-      "create": "创建新用户"
+      "create": "创建新用户",
+      "can": "Active 密钥可以："
     },
     "owner_key": {
       "name": "Owner 密钥",
@@ -702,7 +746,8 @@
       "to": "Owner 密钥可用于：",
       "reset": "重置 Owner、Active 和 Posting 密钥",
       "recover": "恢复你的账户",
-      "decline": "放弃投票权"
+      "decline": "放弃投票权",
+      "can": "Owner 密钥可以："
     },
     "memo_key": {
       "name": "Memo 密钥",
@@ -711,11 +756,46 @@
       "permissions": "Memo 密钥权限",
       "to": "Memo 密钥可用于：",
       "send": "发送加密消息",
-      "view": "查看加密消息"
+      "view": "查看加密消息",
+      "can": "Memo 密钥可以："
     },
     "public_keys": "公钥",
     "public_info": "每个 Hive 密钥都有一对公钥和私钥，用于加密和解密数据。公钥与用户名关联，可用于在区块链上查询相关交易。登录 Hive.blog 不需要公钥，你也无需妥善保管它们。",
-    "view_public": "查看此账户的公钥信息（在“权限”模块中）："
+    "view_public": "查看此账户的公钥信息（在“权限”模块中）：",
+    "about_this_account": "每个 Hive 账户都有四个权限不同的密钥：用于社交操作的 Posting 密钥、用于钱包操作的 Active 密钥、用于更改其他密钥和恢复账户的 Owner 密钥，以及用于私信的 Memo 密钥。下面是控制 @{{username}} 的公钥和账户。只有账户所有者保管的私钥才能为它签名。",
+    "reveal_intro": "输入主密码即可显示你的私钥：所有私钥都由主密码派生。如果你是用单个私钥登录的，则没有可输入的主密码，该私钥也无法显示其他私钥。",
+    "reveal_dialog": "输入主密码以显示私钥。所有密钥都由主密码派生。",
+    "master_password": "主密码",
+    "block_explorer": "区块浏览器 - {{username}}",
+    "public_info_this_account": "每个 Hive 密钥都有一个公钥和一个私钥。公钥与用户名关联，可用于在区块链上查询该账户的交易。公钥可以放心分享。",
+    "errors": {
+      "title": "错误",
+      "not_all_keys": "此主密码无法派生该账户的全部密钥。",
+      "reveal_failed": "无法显示私钥。"
+    },
+    "summary": {
+      "title": "@{{username}} 的权限",
+      "threshold": "阈值：{{threshold}}",
+      "weight": "权重 {{weight}}",
+      "none": "没有密钥或账户",
+      "recovery_account": "恢复账户",
+      "edit_on_authorities": "在权限页面查看详情并编辑",
+      "view_on_authorities": "在权限页面查看详情"
+    },
+    "how_you_sign": {
+      "title": "你的签名方式",
+      "wif": "你使用私钥登录，此标签页仅在内存中保存该私钥。",
+      "safe_storage": "你的密钥已加密存储在此浏览器的安全存储中：",
+      "signed_in_with": "使用此密钥登录",
+      "remove_from_browser": "从此浏览器移除",
+      "external_wallet": "你的密钥由 {{wallet}} 保管；请在那里查看或导出。",
+      "hiveauth": "你的密钥在 HiveAuth 钱包应用中。",
+      "google": "你的密钥在 Google Drive 钱包中。",
+      "manage_in_hive_bridge": "在 Hive Bridge 中管理",
+      "passkey": "你的 Posting 密钥由 {{origin}} 上的通行密钥派生。",
+      "passkey_signer": "通行密钥签名服务",
+      "session_marked": "当前会话用于签名的密钥在上方列表中标有“当前会话”。"
+    }
   },
   "communities": {
     "create_community": "创建社区",
@@ -801,5 +881,18 @@
     "stop_checking": "停止检查",
     "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。",
     "catalog_only": "只能选择列出的节点：本站无法连接其他节点。"
+  },
+  "account_keys": {
+    "this_session": "当前会话",
+    "stored_in_browser": "已存储在此浏览器",
+    "passkey_signer": "通行密钥",
+    "open_hive_bridge": "打开 Hive Bridge",
+    "follow_up": {
+      "update_wallet": "更改后，请在 {{wallet}} 中更新密钥，否则它将无法再为此账户签名。",
+      "update_google_drive": "你的 Google Drive 钱包保存的是旧密钥。更改后请在 Hive Bridge 中更新，否则 Google 登录将无法使用。",
+      "passkey_lost": "你的 Posting 密钥由通行密钥派生。更改密钥会替换它，通行密钥登录将无法使用。",
+      "safe_storage_replaced": "新密钥将替换此浏览器安全存储中保存的密钥。",
+      "none": "此标签页保存的密钥会替换为新密钥；否则，请在下次签名时输入新密钥。"
+    }
   }
 }

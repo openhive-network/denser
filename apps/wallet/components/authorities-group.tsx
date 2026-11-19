@@ -10,7 +10,7 @@ import { KeyAuth } from '../lib/utils';
 import NumberInput from './number-input';
 import { LevelAuthority } from '@transaction/lib/hive';
 import { AuthorityAction } from './hooks/use-authority-operation';
-import { toast } from '@ui/components/hooks/use-toast';
+import type { KeyMarks } from './hooks/use-key-marks';
 
 type AuthorityLevel = {
   level: LevelAuthority;
@@ -27,6 +27,7 @@ type GroupProps = {
   isDisabled: boolean;
   accordionControl: Dispatch<SetStateAction<string[]>>;
   authorityUpdated: boolean;
+  marks: KeyMarks;
 };
 
 const AuthoritesGroup: FC<GroupProps> = ({
@@ -36,7 +37,8 @@ const AuthoritesGroup: FC<GroupProps> = ({
   authoritiesActions,
   accordionControl,
   isDisabled,
-  authorityUpdated
+  authorityUpdated,
+  marks
 }) => {
   const { t } = useTranslation('common_wallet');
   const [editMode, setEditMode] = useState(false);
@@ -92,20 +94,13 @@ const AuthoritesGroup: FC<GroupProps> = ({
             <div className="w-12">
               {editMode ? (
                 <NumberInput
+                  id={`threshold-${level}`}
                   value={thresholdValue.threshold}
                   disabled={isDisabled}
                   onChange={(value) => {
                     setThresholdValue({ threshold: Number(value) });
                   }}
-                  onBlur={() => {
-                    if (thresholdValue.threshold > 1 && level === 'owner') {
-                      confirm(t('authorities_page.owner_threshold_warning'))
-                        ? handleUpdateThreshold()
-                        : setThresholdValue({ threshold: data.weight_threshold });
-                    } else {
-                      handleUpdateThreshold();
-                    }
-                  }}
+                  onBlur={handleUpdateThreshold}
                   className="justify-self-end"
                 />
               ) : (
@@ -183,6 +178,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
                 <AuthoritiesGroupItem
                   width={width}
                   item={e}
+                  marks={marks}
                   editMode={editMode}
                   disabled={isDisabled}
                   onDeleteAuthority={() => handleDeleteAuthority(e.keyOrAccount)}
@@ -199,6 +195,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
                 <AuthoritiesGroupItem
                   width={width}
                   item={e}
+                  marks={marks}
                   editMode={editMode}
                   disabled={isDisabled}
                   onDeleteAuthority={() => handleDeleteAuthority(e.keyOrAccount)}

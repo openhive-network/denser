@@ -1089,9 +1089,13 @@ export class TransactionService {
     }, transactionOptions);
   }
 
+  /**
+   * Replaces the owner, active and posting keys of `account`, each `old` key for its `new` one. Without
+   * `keys.posting` the posting authority is left as it is.
+   */
   async changeMasterPassword(
     account: string,
-    keys: Record<'owner' | 'active' | 'posting', { old: string; new: string }>,
+    keys: Record<'owner' | 'active', { old: string; new: string }> & { posting?: { old: string; new: string } },
     transactionOptions: TransactionOptions
   ) {
     try {
@@ -1100,7 +1104,7 @@ export class TransactionService {
         account
       );
 
-      if (!keys.owner || !keys.active || !keys.posting) {
+      if (!keys.owner || !keys.active) {
         throw new Error('Missing required keys for master password change');
       }
 
@@ -1109,14 +1113,14 @@ export class TransactionService {
       if (
         !accountAuthorityUpdateOp.role('owner').has(owner.old) ||
         !accountAuthorityUpdateOp.role('active').has(active.old) ||
-        !accountAuthorityUpdateOp.role('posting').has(posting.old)
+        (posting && !accountAuthorityUpdateOp.role('posting').has(posting.old))
       ) {
         throw new Error('Wrong master password');
       }
 
       accountAuthorityUpdateOp.role('owner').replace(owner.old, 1, owner.new);
       accountAuthorityUpdateOp.role('active').replace(active.old, 1, active.new);
-      accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
+      if (posting) accountAuthorityUpdateOp.role('posting').replace(posting.old, 1, posting.new);
 
       return await this.processHiveAppOperation(async (builder) => {
         builder.pushOperation(accountAuthorityUpdateOp);

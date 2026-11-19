@@ -10,15 +10,19 @@ import { Link } from '@hive/ui';
 import ButtonTooltip from './button-tooltip';
 import NumberInput from './number-input';
 import { useTranslation } from '@/wallet/i18n/client';
+import type { KeyMarks } from './hooks/use-key-marks';
+import KeyMarkBadges from './key-mark-badges';
 
 const AuthoritiesGroupItem: FC<{
   item: { keyOrAccount: string; thresholdWeight: number };
   width: number;
+  /** Which signers of the user hold the key */
+  marks: KeyMarks;
   editMode: boolean;
   disabled: boolean;
   onDeleteAuthority: () => void;
   onUpdateKeyOrAccount: (newKeyOrAccount: string, newThresholdWeight: number) => void;
-}> = ({ item, width, editMode, disabled, onDeleteAuthority, onUpdateKeyOrAccount }) => {
+}> = ({ item, width, marks, editMode, disabled, onDeleteAuthority, onUpdateKeyOrAccount }) => {
   const [itemValue, setItemValue] = useState(item);
 
   useEffect(() => {
@@ -35,7 +39,7 @@ const AuthoritiesGroupItem: FC<{
       <div className="flex items-center">
         <Icon className="size-5" aria-hidden="true" />
       </div>
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center gap-2">
         {editMode ? (
           <Input
             value={itemValue.keyOrAccount}
@@ -53,10 +57,13 @@ const AuthoritiesGroupItem: FC<{
             {itemValue.keyOrAccount}
           </Link>
         ) : (
-          <CopyToKeyboard
-            value={itemValue.keyOrAccount}
-            displayValue={cutPublicKey(itemValue.keyOrAccount, width)}
-          />
+          <>
+            <CopyToKeyboard
+              value={itemValue.keyOrAccount}
+              displayValue={cutPublicKey(itemValue.keyOrAccount, width)}
+            />
+            <KeyMarkBadges publicKey={item.keyOrAccount} marks={marks} />
+          </>
         )}
       </div>
       <div className="flex w-12 items-center justify-center">

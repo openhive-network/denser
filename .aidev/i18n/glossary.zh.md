@@ -45,6 +45,8 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | password | 密码 | unreviewed | |
 | passkey | 通行密钥 | unreviewed | |
 | market / interest | 市场 / 利息 | unreviewed | |
+| this session (key badge) | 当前会话 | unreviewed | |
+| recovery account | 恢复账户 | unreviewed | |
 
 ## Register
 

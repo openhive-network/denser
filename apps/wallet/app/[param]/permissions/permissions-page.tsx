@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Separator } from '@ui/components';
+import { Separator } from '@ui/components';
 import { Link } from '@hive/ui';
-import { cn } from '@ui/lib/utils';
 import { getImageSrc } from '@ui/lib/path-utils';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -12,48 +11,64 @@ import { getPrivateKeys } from '@transaction/lib/hive';
 import { toast } from '@ui/components/hooks/use-toast';
 import RevealKeyComponent from '@/wallet/components/reveal-key-component';
 import WalletMenu from '@/wallet/components/wallet-menu';
+import AccountPermissionsSummary from '@/wallet/components/account-permissions-summary';
+import HowYouSign from '@/wallet/components/how-you-sign';
+import KeyRoleCard, { type KeyRoleName } from '@/wallet/components/key-role-card';
+import { useAuthorityOperations } from '@/wallet/components/hooks/use-authority-operation';
+import { useKeyMarks } from '@/wallet/components/hooks/use-key-marks';
+import { isOwnAccount } from '@/wallet/lib/account-keys';
+
+const ROLES: readonly KeyRoleName[] = ['posting', 'active', 'owner', 'memo'];
 
 interface Key {
   type: string;
   privateKey: string;
   correctKey: boolean;
 }
-function keyDecoded(keys: Key[], type: 'posting' | 'active' | 'owner' | 'memo') {
+function keyDecoded(keys: Key[], type: KeyRoleName) {
   const key = keys.find((key) => key.type === type);
   return key?.correctKey ? key?.privateKey : undefined;
 }
+
+const MOCK_VALUE = '1'.repeat(50);
 
 export default function PermissionsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
   const explorerURL = env('EXPLORER_DOMAIN');
-  const wifLogin = user.isLoggedIn && user.loginType === 'wif';
-  const [reveal, setReveal] = useState({
+  const own = isOwnAccount(user, username);
+  // A master password derives the keys of the signed-in account, so only its own page reveals them
+  const canReveal = own && user.loginType === 'wif';
+  const {
+    state: {
+      data: { memo, authorityLevels }
+    },
+    isLoading
+  } = useAuthorityOperations(username);
+  const marks = useKeyMarks(user, username, authorityLevels);
+  const [reveal, setReveal] = useState<Record<KeyRoleName, boolean>>({
     posting: false,
     active: false,
     owner: false,
     memo: false
   });
-  const mockValue = Array.from({ length: 50 }, (_, i) => '1')
-    .toString()
-    .replace(/,/g, '');
-  const [keys, setKeys] = useState({
-    posting: mockValue,
-    active: mockValue,
-    owner: mockValue,
-    memo: mockValue
+  const [keys, setKeys] = useState<Record<KeyRoleName, string>>({
+    posting: MOCK_VALUE,
+    active: MOCK_VALUE,
+    owner: MOCK_VALUE,
+    memo: MOCK_VALUE
   });
-  const onReveal = async (password: string, keyType: 'posting' | 'active' | 'owner' | 'memo') => {
-    if (keys[keyType] !== mockValue) {
+  const onReveal = async (password: string, keyType: KeyRoleName) => {
+    if (keys[keyType] !== MOCK_VALUE) {
       setReveal((prev) => ({ ...prev, [keyType]: true }));
       return;
     }
     try {
-      const keysCheck = await getPrivateKeys(user.username, password);
+      const keysCheck = await getPrivateKeys(username, password);
       if (keysCheck.some((key) => key.correctKey !== true)) {
         toast({
-          title: 'Error',
-          description: 'Password is not including all keys',
+          title: t('permissions.errors.title'),
+          description: t('permissions.errors.not_all_keys'),
           variant: 'destructive'
         });
       } else {
@@ -67,8 +82,8 @@ export default function PermissionsPage({ username }: { username: string }) {
       }
     } catch {
       toast({
-        title: 'Error',
-        description: 'Operation failed',
+        title: t('permissions.errors.title'),
+        description: t('permissions.errors.reveal_failed'),
         variant: 'destructive'
       });
     }
@@ -82,8 +97,14 @@ export default function PermissionsPage({ username }: { username: string }) {
         <h1 className="text-2xl font-semibold">{t('permissions.keys_and_permissions')}</h1>
         <div className="flex flex-col gap-6 md:flex-row">
           <div className="flex flex-col gap-6 text-sm">
-            <p>{t('permissions.any_password')}</p>
-            <p>{t('permissions.note')}</p>
+            {own ? (
+              <>
+                <p>{t('permissions.any_password')}</p>
+                <p>{t('permissions.note')}</p>
+              </>
+            ) : (
+              <p>{t('permissions.about_this_account', { username })}</p>
+            )}
           </div>
           <img
             className="w-[300px]"
@@ -92,148 +113,41 @@ export default function PermissionsPage({ username }: { username: string }) {
           />
         </div>
 
-        <Card
-          className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
-        >
-          <h2 className="p-4 text-2xl font-semibold">{t('permissions.posting_key.name')}</h2>
-          <Separator />
-          <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
-            <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-              <p>{t('permissions.posting_key.info')}</p>
-              <p>{t('permissions.posting_key.use')}</p>
-              {wifLogin ? (
-                <RevealKeyComponent
-                  reveal={reveal.posting}
-                  keyValue={keys.posting}
-                  onReveal={(password) => onReveal(password, 'posting')}
-                  title={t('permissions.posting_key.private')}
-                  mockValue={mockValue}
-                  type="posting"
-                />
-              ) : null}
-            </div>
+        <AccountPermissionsSummary
+          username={username}
+          authorityLevels={authorityLevels}
+          memoKey={memo?.value}
+          isLoading={isLoading}
+          marks={marks}
+          canEdit={own}
+        />
 
-            <div className="flex flex-col p-4">
-              <h3 className="text-lg font-semibold">{t('permissions.posting_key.permissions')}</h3>
-              <span>{t('permissions.posting_key.to')}</span>
-              <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                <li>{t('permissions.posting_key.publish')}</li>
-                <li>{t('permissions.posting_key.edit')}</li>
-                <li>{t('permissions.posting_key.upvote')}</li>
-                <li>{t('permissions.posting_key.reblog')}</li>
-                <li>{t('permissions.posting_key.follow')}</li>
-                <li>{t('permissions.posting_key.mute')}</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
+        {own ? <HowYouSign user={user} /> : null}
 
-        <Card
-          className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
-        >
-          <h2 className="p-4 text-2xl font-semibold">{t('permissions.active_key.name')}</h2>
-          <Separator />
-          <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
-            <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-              <p>{t('permissions.active_key.info')}</p>
-              <p>{t('permissions.active_key.use')}</p>
-              {wifLogin ? (
-                <RevealKeyComponent
-                  reveal={reveal.active}
-                  keyValue={keys.active}
-                  onReveal={(password) => onReveal(password, 'active')}
-                  title={t('permissions.active_key.private')}
-                  mockValue={mockValue}
-                  type="active"
-                />
-              ) : null}
-            </div>
-            <div className="flex flex-col p-4">
-              <h3 className="text-lg font-semibold">{t('permissions.active_key.permissions')}</h3>
-              <span>{t('permissions.active_key.to')}</span>
-              <ul className="flex list-disc flex-col gap-2 px-5 pt-2 ">
-                <li>{t('permissions.active_key.transfer')}</li>
-                <li>{t('permissions.active_key.power_hive')}</li>
-                <li>{t('permissions.active_key.vote')}</li>
-                <li>{t('permissions.active_key.place_order')}</li>
-                <li>{t('permissions.active_key.profile_changes')}</li>
-                <li>{t('permissions.active_key.publish')}</li>
-                <li>{t('permissions.active_key.create')}</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
-        >
-          <h2 className="p-4 text-2xl font-semibold">{t('permissions.owner_key.name')}</h2>
-          <Separator />
-          <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
-            <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-              <p>{t('permissions.owner_key.info')}</p>
-              {wifLogin ? (
-                <RevealKeyComponent
-                  reveal={reveal.owner}
-                  keyValue={keys.owner}
-                  onReveal={(password) => onReveal(password, 'owner')}
-                  title={t('permissions.owner_key.private')}
-                  mockValue={mockValue}
-                  type="owner"
-                />
-              ) : null}
-            </div>
-            <div className="flex flex-col p-4">
-              <h3 className="text-lg font-semibold">{t('permissions.owner_key.permissions')}</h3>
-              <span>{t('permissions.owner_key.to')}</span>
-              <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                <li>{t('permissions.owner_key.reset')}</li>
-                <li>{t('permissions.owner_key.recover')}</li>
-                <li>{t('permissions.owner_key.decline')}</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
-        >
-          <h2 className="p-4 text-2xl font-semibold">{t('permissions.memo_key.name')}</h2>
-          <Separator />
-          <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
-            <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
-              <p>{t('permissions.memo_key.info')}</p>
-
-              {wifLogin ? (
-                <RevealKeyComponent
-                  reveal={reveal.memo}
-                  keyValue={keys.memo}
-                  onReveal={(password) => onReveal(password, 'memo')}
-                  title={t('permissions.memo_key.private')}
-                  mockValue={mockValue}
-                  type="memo"
-                />
-              ) : null}
-            </div>
-            <div className="flex flex-col p-4">
-              <h3 className="text-lg font-semibold">{t('permissions.memo_key.permissions')}</h3>
-              <span>{t('permissions.memo_key.to')}</span>
-              <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
-                <li>{t('permissions.memo_key.send')}</li>
-                <li>{t('permissions.memo_key.view')}</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
+        {canReveal ? <p className="text-sm">{t('permissions.reveal_intro')}</p> : null}
+        {ROLES.map((role) => (
+          <KeyRoleCard key={role} role={role} own={own}>
+            {canReveal ? (
+              <RevealKeyComponent
+                reveal={reveal[role]}
+                keyValue={keys[role]}
+                onReveal={(password) => onReveal(password, role)}
+                title={t(`permissions.${role}_key.private`)}
+                mockValue={MOCK_VALUE}
+                type={role}
+              />
+            ) : null}
+          </KeyRoleCard>
+        ))}
 
         <Separator />
         <div className="flex flex-col gap-4 py-12 text-sm">
           <h2 className="text-xl font-semibold">{t('permissions.public_keys')}</h2>
-          <p>{t('permissions.public_info')}</p>
+          <p>{t(own ? 'permissions.public_info' : 'permissions.public_info_this_account')}</p>
           <div>
             <p>{t('permissions.view_public')}</p>
             <Link href={`${explorerURL}/@${username}`} className="font-bold text-red-600" target="_blank">
-              {`Block Explorer - ${username}`}
+              {t('permissions.block_explorer', { username })}
             </Link>
           </div>
         </div>

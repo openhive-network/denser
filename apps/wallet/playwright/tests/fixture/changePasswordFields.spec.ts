@@ -31,7 +31,7 @@ test.beforeEach(async ({ context }) => {
 });
 
 const FIELDS = [
-  { label: 'Current Master Password', autocomplete: 'current-password' },
+  { label: 'Current master password or owner key', autocomplete: 'current-password' },
   { label: 'Re-enter Generated Master Password', autocomplete: 'new-password' }
 ] as const;
 

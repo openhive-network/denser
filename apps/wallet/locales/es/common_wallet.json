@@ -470,7 +470,6 @@
   "change_password_page": {
     "change_password": "Cambiar Contraseña",
     "account_name": "Nombre de cuenta",
-    "current_password": "Contraseña Actual",
     "recover_password": "Recuperar Cuenta",
     "generated_password": "Contraseña Generada",
     "new": "Nuevo",
@@ -502,7 +501,28 @@
       "m4": "Nunca compartas tus claves privadas",
       "confirm_security": "Entiendo y acepto estas implicaciones de seguridad"
     },
-    "save_all": "Guardar todo"
+    "save_all": "Guardar todo",
+    "current_credential": "Contraseña maestra actual o clave de propietario",
+    "current_credential_help": "Cambiar la contraseña reemplaza tus claves, lo que necesita la clave de propietario: introduce la contraseña maestra, que la deriva, o la propia clave privada de propietario.",
+    "sign_in_notice": "Inicia sesión como @{{username}} para cambiar sus claves.",
+    "errors": {
+      "required_credential": "Introduce la contraseña maestra actual o la clave de propietario",
+      "generate_first": "Primero genera una nueva contraseña",
+      "wrong_password": "Esta contraseña maestra no deriva la clave de la cuenta: {{role}}.",
+      "not_owner_key": "Esta clave privada no es la clave de propietario de la cuenta.",
+      "role_not_single_key": "La cuenta tiene varias claves de este tipo: {{role}}. La clave de propietario no puede saber cuál reemplazar: introduce la contraseña maestra o cambia las claves en la página de Autoridades."
+    },
+    "confirm": {
+      "title": "¿Cambiar la contraseña?",
+      "replaces_keys": "Las claves de propietario, activa y de publicación de esta cuenta se reemplazarán por las que deriva la nueva contraseña.",
+      "keep_posting_key": "Conservar mi clave de publicación actual (cambiar solo las claves de propietario y activa)",
+      "proceed": "Cambiar contraseña",
+      "cancel": "Cancelar"
+    },
+    "success": {
+      "title": "Contraseña cambiada",
+      "description": "Tu contraseña maestra se ha cambiado."
+    }
   },
   "delegations_page": {
     "returning_delegations": "Delegaciones en devolución",
@@ -542,7 +562,29 @@
     "owner_authority": "Autoridad de propietario (Owner)",
     "active_authority": "Autoridad activa (Active)",
     "posting_authority": "Autoridad de publicación (Posting)",
-    "owner_threshold_warning": "Al cambiar el umbral de la autoridad de propietario (Owner), puedes perder el acceso independiente a esta cuenta.\n\n¿Seguro que quieres continuar?"
+    "no_data": "Sin datos",
+    "errors": {
+      "title": "Error",
+      "owner_update_limit": "Esta cuenta alcanzó el límite de cambios de propietario. Espera una hora e inténtalo de nuevo.",
+      "missing_account": "Una cuenta de la lista no existe: {{detail}}",
+      "missing_owner_auth": "Este cambio necesita la clave de propietario.",
+      "invalid_key_in_list": "Una de las claves no es válida.",
+      "invalid_key": "Clave no válida: {{key}}",
+      "failed_with_detail": "No se pudieron actualizar las autoridades: {{detail}}",
+      "failed": "No se pudieron actualizar las autoridades.",
+      "invalid_entry": "Esta entrada no es válida: {{detail}}"
+    },
+    "problems": {
+      "unreachable_threshold": "{{authority}}: no se puede alcanzar el umbral de {{threshold}}, ya que los pesos suman {{total}}.",
+      "owner_empty": "La autoridad de propietario debe conservar al menos una clave o cuenta."
+    },
+    "lockout": {
+      "title": "Este cambio puede dejarte sin acceso",
+      "session_key": "Quita o reemplaza una clave con la que firma esta sesión: se cerrará esta sesión.",
+      "passkey_key": "Quita o reemplaza la clave de publicación derivada de tu passkey: el inicio de sesión con passkey dejará de funcionar.",
+      "owner_threshold": "Sube el umbral de la autoridad de propietario por encima de 1: ninguna clave o cuenta de propietario podrá actuar sola por esta cuenta.",
+      "confirm": "Actualizar de todos modos"
+    }
   },
   "transfers_page": {
     "currency": "Moneda",
@@ -704,7 +746,8 @@
       "upvote": "Votar a favor o en contra",
       "reblog": "Rebloguear contenido",
       "follow": "Seguir a personas",
-      "mute": "Silenciar cuentas"
+      "mute": "Silenciar cuentas",
+      "can": "La clave de publicación puede:"
     },
     "active_key": {
       "name": "Clave activa",
@@ -719,7 +762,8 @@
       "place_order": "Colocar una orden en un exchange",
       "profile_changes": "Ciertos cambios de perfil",
       "publish": "Publicar un feed de precios de testigo",
-      "create": "Crear un nuevo usuario"
+      "create": "Crear un nuevo usuario",
+      "can": "La clave activa puede:"
     },
     "owner_key": {
       "name": "Clave de propietario",
@@ -729,7 +773,8 @@
       "to": "Usa tu clave de propietario para:",
       "reset": "Restablecer las claves de propietario, activa y de publicación",
       "recover": "Recuperar tu cuenta",
-      "decline": "Renunciar a los derechos de voto"
+      "decline": "Renunciar a los derechos de voto",
+      "can": "La clave de propietario puede:"
     },
     "memo_key": {
       "name": "Clave de memo",
@@ -738,11 +783,46 @@
       "permissions": "Permisos de la clave de memo",
       "to": "Usa tu clave de memo para:",
       "send": "Enviar un mensaje cifrado",
-      "view": "Ver un mensaje cifrado"
+      "view": "Ver un mensaje cifrado",
+      "can": "La clave de memo puede:"
     },
     "public_keys": "Claves públicas",
     "public_info": "Cada clave de Hive tiene una clave pública y una privada para cifrar y descifrar datos. Las claves públicas están asociadas a nombres de usuario y pueden usarse para buscar las transacciones asociadas en la blockchain. Tus claves públicas no son necesarias para iniciar sesión en Hive.blog y no hace falta que las guardes de forma segura.",
-    "view_public": "Ver la información de las claves públicas de esta cuenta (en el módulo 'Autoridades'):"
+    "view_public": "Ver la información de las claves públicas de esta cuenta (en el módulo 'Autoridades'):",
+    "about_this_account": "Cada cuenta de Hive tiene cuatro claves con permisos distintos: la clave de publicación para acciones sociales, la clave activa para acciones de la billetera, la clave de propietario para cambiar las otras claves y recuperar la cuenta, y la clave de memo para mensajes privados. Abajo están las claves públicas y las cuentas que controlan @{{username}}. Solo las claves privadas, que guarda el propietario de la cuenta, pueden firmar por ella.",
+    "reveal_intro": "Introduce tu contraseña maestra para revelar tus claves privadas: la contraseña maestra las deriva todas. Si iniciaste sesión con una sola clave privada, no hay contraseña maestra que introducir, y esa clave no puede revelar las demás.",
+    "reveal_dialog": "Introduce tu contraseña maestra para revelar la clave privada. La contraseña maestra deriva todas tus claves.",
+    "master_password": "Contraseña maestra",
+    "block_explorer": "Explorador de bloques - {{username}}",
+    "public_info_this_account": "Cada clave de Hive tiene una clave pública y una privada. Las claves públicas están asociadas a nombres de usuario y sirven para buscar las transacciones de la cuenta en la blockchain. Se pueden compartir sin riesgo.",
+    "errors": {
+      "title": "Error",
+      "not_all_keys": "Esta contraseña maestra no deriva todas las claves de la cuenta.",
+      "reveal_failed": "No se pudo revelar la clave privada."
+    },
+    "summary": {
+      "title": "Permisos de @{{username}}",
+      "threshold": "Umbral: {{threshold}}",
+      "weight": "peso {{weight}}",
+      "none": "Sin claves ni cuentas",
+      "recovery_account": "Cuenta de recuperación",
+      "edit_on_authorities": "Ver detalles y editar en la página de Autoridades",
+      "view_on_authorities": "Ver detalles en la página de Autoridades"
+    },
+    "how_you_sign": {
+      "title": "Cómo firmas",
+      "wif": "Iniciaste sesión con una clave privada, que esta pestaña guarda solo en memoria.",
+      "safe_storage": "Tus claves están guardadas cifradas en el almacenamiento seguro de este navegador:",
+      "signed_in_with": "sesión iniciada con esta clave",
+      "remove_from_browser": "Quitar de este navegador",
+      "external_wallet": "Tus claves las guarda {{wallet}}; consúltalas o expórtalas allí.",
+      "hiveauth": "Tus claves están en tu aplicación de billetera HiveAuth.",
+      "google": "Tus claves están en tu billetera de Google Drive.",
+      "manage_in_hive_bridge": "Gestiónalas en Hive Bridge",
+      "passkey": "Tu clave de publicación se deriva de tu passkey en {{origin}}.",
+      "passkey_signer": "el firmante de passkey",
+      "session_marked": "Las claves con las que firma esta sesión están marcadas con «Esta sesión» en la lista de arriba."
+    }
   },
   "communities": {
     "create_community": "Crear una comunidad",
@@ -832,5 +912,18 @@
     "stop_checking": "Detener la comprobación",
     "node_unavailable": "{{selected}} no está disponible para {{set}}; se usa {{node}} hasta que se recupere.",
     "catalog_only": "Solo se pueden elegir los nodos de la lista: el sitio no puede llamar a otros."
+  },
+  "account_keys": {
+    "this_session": "Esta sesión",
+    "stored_in_browser": "Guardada en este navegador",
+    "passkey_signer": "Passkey",
+    "open_hive_bridge": "Abrir Hive Bridge",
+    "follow_up": {
+      "update_wallet": "Después del cambio, actualiza las claves en {{wallet}}, o dejará de firmar para esta cuenta.",
+      "update_google_drive": "Tu billetera de Google Drive guarda las claves antiguas. Actualízala en Hive Bridge después del cambio, o el inicio de sesión con Google dejará de funcionar.",
+      "passkey_lost": "Tu clave de publicación se deriva de tu passkey. Cambiar las claves la reemplaza y el inicio de sesión con passkey dejará de funcionar.",
+      "safe_storage_replaced": "Las nuevas claves reemplazarán las guardadas en el almacenamiento seguro de este navegador.",
+      "none": "Una clave que guarda esta pestaña se reemplaza por la nueva; si no, introduce la nueva clave la próxima vez que firmes."
+    }
   }
 }

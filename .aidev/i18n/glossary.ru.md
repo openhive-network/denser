@@ -45,6 +45,8 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | password | пароль | unreviewed | |
 | passkey | ключ доступа | unreviewed | |
 | market / interest | биржа / проценты | unreviewed | |
+| this session (key badge) | Эта сессия | unreviewed | |
+| recovery account | аккаунт восстановления | unreviewed | |
 
 ## Register
 

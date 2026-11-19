@@ -4,6 +4,10 @@ export const GOOGLE_DRIVE_AUTH_PATH = '/api/google-drive/auth';
 export const GOOGLE_DRIVE_REFRESH_PATH = '/api/google-drive/refresh';
 export const GOOGLE_DRIVE_CALLBACK_PATH = '/api/google-drive/callback';
 
+// Bridge's pages read neither an account name nor a return address from the URL, so none is passed
+/** Hive Bridge, where a Google Drive wallet is set up and its keys managed */
+export const HIVE_BRIDGE_URL = 'https://auth.openhive.network';
+
 /**
  * Absolute URL of one of the app's Google Drive API routes, under the app's base path.
  * @param origin - the app's origin (`https://example.com`), without a path
