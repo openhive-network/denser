@@ -45,23 +45,33 @@ export const passwordWif = z.string().superRefine(async (val, ctx) => {
   return true;
 });
 
+/**
+ * How long an entered WIF key is kept: not at all (''), in this tab's memory ('tab'), or on this
+ * device, in safe storage behind a password ('device')
+ */
+export type RememberKey = '' | 'tab' | 'device';
+
 const passwordFormSchemaWif = z.object({
   password: passwordWif,
-  storePassword: z.boolean()
+  rememberKey: z.enum(['', 'tab', 'device'])
 });
 export type PasswordFormSchemaWif = z.infer<typeof passwordFormSchemaWif>;
 
-export const passwordFormDefaultValuesWif = {
+export const passwordFormDefaultValuesWif: PasswordFormSchemaWif = {
   password: '',
-  storePassword: false
+  rememberKey: ''
 };
+
+const REMEMBER_KEY_CHOICES: { value: Exclude<RememberKey, ''>; label: string; testId: string }[] = [
+  { value: 'tab', label: 'password_form.remember_key_tab_label', testId: 'remember-key-tab' },
+  { value: 'device', label: 'password_form.remember_key_device_label', testId: 'remember-key-device' }
+];
 
 // smart-signer translation keys of the captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
   title?: string;
   description?: string;
   inputPasswordPlaceholder?: string;
-  inputStorePasswordLabel?: string;
   submitButtonName?: string;
   submitButtonNameWhenWorking?: string;
   cancelButtonName?: string;
@@ -69,7 +79,8 @@ export interface PasswordFormI18nKeysForCaptions {
 
 export interface PasswordFormOptions {
   mode?: PasswordFormMode;
-  showInputStorePassword?: boolean;
+  /** Offers to remember the entered WIF key for this tab or on this device (`rememberKey`); WIF mode only */
+  showRememberKey?: boolean;
   errorMessage?: string;
   onSubmit?: (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => any;
   /** Closes the form without submitting anything. */
@@ -98,7 +109,7 @@ export interface PasswordFormOptions {
 
 export function PasswordForm({
   mode = PasswordFormMode.HBAUTH,
-  showInputStorePassword = true,
+  showRememberKey = false,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   onCancel = () => {},
@@ -118,7 +129,6 @@ export function PasswordForm({
     title: 'password_form.password_form_title',
     description: '',
     inputPasswordPlaceholder: 'password_form.password_placeholder',
-    inputStorePasswordLabel: 'password_form.store_password_label',
     submitButtonName: 'login_form.login_button',
     submitButtonNameWhenWorking: 'login_form.working',
     cancelButtonName: 'login_form.cancel_button'
@@ -146,11 +156,16 @@ export function PasswordForm({
     handleSubmit,
     formState: { errors, isSubmitting },
     resetField,
-    setError
+    setError,
+    watch,
+    setValue
   } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
     resolver: zodResolver(resolver),
     defaultValues: passwordFormDefaultValues
   });
+
+  // Two boxes for one choice: ticking one unticks the other
+  const rememberKey = watch('rememberKey');
 
   const submitIfValid = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
     const errorKey = await validatePassword?.(data.password);
@@ -194,22 +209,28 @@ export function PasswordForm({
             )}
           </div>
 
-          {showInputStorePassword && (
-            <div className="mb-5 flex items-center py-1">
-              <input
-                id={`store-password-${randomValue}`}
-                type="checkbox"
-                value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-hidden"
-                {...register('storePassword')}
-              />
-              <label
-                htmlFor={`store-password-${randomValue}`}
-                className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
-              >
-                {caption(captionKey.inputStorePasswordLabel)}
-              </label>
-            </div>
+          {showRememberKey && mode === PasswordFormMode.WIF && (
+            <fieldset className="mb-5 flex flex-col gap-2 py-1">
+              {REMEMBER_KEY_CHOICES.map(({ value, label, testId }) => (
+                <div key={value} className="flex items-center">
+                  <input
+                    id={`remember-key-${value}-${randomValue}`}
+                    type="checkbox"
+                    className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-hidden"
+                    checked={rememberKey === value}
+                    onChange={(event) => setValue('rememberKey', event.target.checked ? value : '')}
+                    data-testid={testId}
+                  />
+                  <label
+                    htmlFor={`remember-key-${value}-${randomValue}`}
+                    className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
+                  >
+                    {t(label)}
+                  </label>
+                </div>
+              ))}
+              <p className="text-xs text-muted-foreground">{t('password_form.remember_key_hint')}</p>
+            </fieldset>
           )}
 
           <div className="mt-10 flex items-center justify-between">

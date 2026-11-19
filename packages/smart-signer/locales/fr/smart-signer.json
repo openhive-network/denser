@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "Mot de passe",
     "password_form_title": "Entrez votre mot de passe",
-    "store_key_label": "Enregistrer la clé",
-    "store_password_label": "Enregistrer le mot de passe",
     "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive",
     "safe_storage_recovery_description": "Un autre onglet a modifié le stockage sécurisé pendant l'enregistrement d'une clé de @{{username}}. Saisissez le mot de passe du stockage sécurisé de @{{username}} pour terminer l'enregistrement.",
-    "fresh_check_title": "Confirmez avec votre mot de passe",
-    "fresh_check_description": "Cette opération nécessite votre clé {{keyType}}. Saisissez le mot de passe de votre portefeuille pour la signer. Le mot de passe est redemandé avant chaque opération qui nécessite cette clé.",
-    "fresh_check_sign_button": "Signer"
+    "remember_key_tab_label": "Mémoriser pour cet onglet",
+    "remember_key_device_label": "Mémoriser sur cet appareil (stockage sécurisé)",
+    "remember_key_hint": "Une clé mémorisée pour cet onglet est oubliée au rechargement. Le stockage sécurisé la conserve sur cet appareil, chiffrée par un mot de passe."
+  },
+  "key_protection": {
+    "dialog_title": "Votre clé est enregistrée sans protection",
+    "dialog_description": "Une clé de @{{username}} est enregistrée sans protection dans ce navigateur. Protégez-la avec le stockage sécurisé.",
+    "set_password_button": "Définir un mot de passe",
+    "not_now_button": "Pas maintenant",
+    "password_title": "Protégez votre clé avec le stockage sécurisé",
+    "password_description_new": "Choisissez un mot de passe du stockage sécurisé pour @{{username}}. Vous le saisirez pour signer avec votre clé sur cet appareil.",
+    "password_description_existing": "Saisissez le mot de passe du stockage sécurisé de @{{username}} pour y ajouter votre clé.",
+    "protect_button": "Protéger la clé",
+    "protected": "Votre clé est maintenant dans le stockage sécurisé.",
+    "menu_notice": "Votre clé est enregistrée sans protection dans ce navigateur. Protégez-la avec le stockage sécurisé. La déconnexion l'oublie."
   },
   "operation_summary": {
     "witness_vote": "Signer : voter pour le témoin @{{witness}}",

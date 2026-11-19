@@ -83,7 +83,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
 
   const {
     mode,
-    showInputStorePassword,
+    showRememberKey,
     validatePassword,
     i18nKeysForCaptions,
     i18nValues,
@@ -105,7 +105,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
           onCancel={onCancel}
           errorMessage={errorMsg}
           mode={mode}
-          showInputStorePassword={showInputStorePassword}
+          showRememberKey={showRememberKey}
           validatePassword={validatePassword}
           i18nKeysForCaptions={i18nKeysForCaptions}
           i18nValues={i18nValues}

@@ -1,6 +1,7 @@
 /**
- * Storage keys of the credentials signers keep for an account (stored WIF keys, HiveAuth tokens,
- * Google Drive tokens), so several signed-in accounts of one login method each keep their own.
+ * Storage keys of the credentials signers keep for an account (HiveAuth tokens, Google Drive tokens,
+ * and WIF keys earlier versions stored in plaintext), so several signed-in accounts of one login
+ * method each keep their own.
  */
 
 const WIF_KEY_PREFIX = 'wif.';
@@ -31,22 +32,37 @@ export function storedWifKeyTypes(storage: Storage, username: string, keyType: s
   return WIF_KEY_TYPES.filter((type) => storage.getItem(wifCredentialKey(username, type)) === wif);
 }
 
-/**
- * Remove `username`'s WIF keys stored for key types other than `keyType`, the one a session just
- * signed in with, but those holding the key stored as the `keyType` key (one key pair for several),
- * so only keys stored for this session sign without asking. Returns whether any was removed.
- */
-export function clearOtherSessionWifKeys(storage: Storage, username: string, keyType: string): boolean {
-  const sessionKeyTypes = storedWifKeyTypes(storage, username, keyType);
-  let removed = false;
-  for (const type of WIF_KEY_TYPES) {
-    if (type === keyType || sessionKeyTypes.includes(type)) continue;
-    const key = wifCredentialKey(username, type);
-    if (storage.getItem(key) === null) continue;
-    storage.removeItem(key);
-    removed = true;
+/** A WIF key stored in plaintext by an earlier version, before keys were kept in safe storage only */
+export interface StoredWifKey {
+  keyType: string;
+  wif: string;
+}
+
+/** The WIF keys stored in plaintext for `username`, posting first. */
+export function storedWifKeys(storage: Storage, username: string): StoredWifKey[] {
+  const keys: StoredWifKey[] = [];
+  for (const keyType of WIF_KEY_TYPES) {
+    const wif = parseStoredWif(storage.getItem(wifCredentialKey(username, keyType)));
+    if (wif) keys.push({ keyType, wif });
   }
-  return removed;
+  return keys;
+}
+
+/** The WIF key in a stored entry (JSON text); null for none, or for an entry that is not one */
+export function parseStoredWif(stored: string | null): string | null {
+  if (!stored) return null;
+  try {
+    const wif: unknown = JSON.parse(stored);
+    return typeof wif === 'string' && wif ? wif : null;
+  } catch (error) {
+    if (error instanceof SyntaxError) return null;
+    throw error;
+  }
+}
+
+/** Remove the plaintext WIF keys of `keyTypes` stored for `username`. */
+export function removeStoredWifKeys(storage: Storage, username: string, keyTypes: readonly string[]): void {
+  for (const keyType of keyTypes) storage.removeItem(wifCredentialKey(username, keyType));
 }
 
 export function hiveAuthCredentialKey(username: string): CredentialKey {
@@ -57,11 +73,18 @@ export function googleRefreshTokenCredentialKey(username: string): CredentialKey
   return { key: `${LEGACY_GOOGLE_REFRESH_TOKEN_KEY}.${username}`, legacyKey: LEGACY_GOOGLE_REFRESH_TOKEN_KEY };
 }
 
-export function googleEncryptionKeyWifCredentialKey(username: string): CredentialKey {
-  return {
-    key: `${LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY}.${username}`,
-    legacyKey: LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY
-  };
+/**
+ * Remove the Google Drive wallet encryption keys earlier versions stored, of every account and the
+ * entry they all shared: the key now lives in the page's memory only (tab-credentials.ts).
+ */
+export function clearStoredDriveEncryptionKeys(storage: Storage): void {
+  for (const key of storageKeys(storage)) {
+    if (isDriveEncryptionKey(key)) storage.removeItem(key);
+  }
+}
+
+function isDriveEncryptionKey(key: string): boolean {
+  return key === LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY || key.startsWith(`${LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY}.`);
 }
 
 /**
@@ -98,7 +121,7 @@ export function clearAccountCredentials(storage: Storage, username: string): voi
   const accountKeys = new Set([
     hiveAuthCredentialKey(username).key,
     googleRefreshTokenCredentialKey(username).key,
-    googleEncryptionKeyWifCredentialKey(username).key
+    `${LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY}.${username}`
   ]);
   for (const key of storageKeys(storage)) {
     if (key.startsWith(wifPrefix) || accountKeys.has(key)) storage.removeItem(key);

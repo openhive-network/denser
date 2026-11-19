@@ -5,6 +5,7 @@ import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { observerListsApi } from '@transaction/lib/bridge-api';
 import { ownListsQueryKey, refreshOwnLists } from '@transaction/lib/observer-lists';
 import { replaceAccount } from '@smart-signer/lib/auth/accounts';
+import { forgetTabCredentials } from '@smart-signer/lib/signer/tab-credentials';
 
 /** Store the remembered accounts where `useAccounts` reads them. */
 export function setAccounts(queryClient: QueryClient, accounts: User[]): void {
@@ -12,8 +13,13 @@ export function setAccounts(queryClient: QueryClient, accounts: User[]): void {
   userLocalStorage.saveAccounts(accounts);
 }
 
-/** Make a signed-in `user` the one the app acts as, and refetch what depends on the observer. */
+/**
+ * Make a signed-in `user` the one the app acts as, and refetch what depends on the observer. The keys
+ * this tab kept for the account acting before are forgotten: switching back asks for them again.
+ */
 export function setActiveUser(queryClient: QueryClient, user: User): void {
+  const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
+  if (previousUser?.username && previousUser.username !== user.username) forgetTabCredentials(previousUser.username);
   queryClient.setQueryData([QUERY_KEY.user], user);
   // Sync localStorage now so pages navigated to next get the right initial data
   userLocalStorage.saveUser(user);

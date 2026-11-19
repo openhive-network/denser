@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "비밀번호",
     "password_form_title": "비밀번호를 입력하십시오",
-    "store_key_label": "키 저장",
-    "store_password_label": "비밀번호 저장",
     "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호",
     "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전한 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요.",
-    "fresh_check_title": "비밀번호로 확인",
-    "fresh_check_description": "이 작업에는 {{keyType}} 키가 필요합니다. 서명하려면 지갑 비밀번호를 입력하세요. 이 키가 필요한 작업마다 비밀번호를 다시 묻습니다.",
-    "fresh_check_sign_button": "서명"
+    "remember_key_tab_label": "이 탭에서 기억",
+    "remember_key_device_label": "이 기기에서 기억 (안전한 저장소)",
+    "remember_key_hint": "이 탭에서 기억한 키는 새로고침하면 지워집니다. 안전한 저장소는 비밀번호로 암호화하여 이 기기에 보관합니다."
+  },
+  "key_protection": {
+    "dialog_title": "키가 보호 없이 저장되어 있습니다",
+    "dialog_description": "@{{username}}의 키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요.",
+    "set_password_button": "비밀번호 설정",
+    "not_now_button": "나중에",
+    "password_title": "안전한 저장소로 키 보호",
+    "password_description_new": "@{{username}}의 안전한 저장소 비밀번호를 정하세요. 이 기기에서 키로 서명할 때 입력합니다.",
+    "password_description_existing": "키를 추가하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요.",
+    "protect_button": "키 보호",
+    "protected": "키가 이제 안전한 저장소에 있습니다.",
+    "menu_notice": "키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요. 로그아웃하면 지워집니다."
   },
   "operation_summary": {
     "witness_vote": "서명: 증인 @{{witness}}에게 투표",

@@ -207,4 +207,23 @@ test.describe('Account switching safety', () => {
     await expect(page.getByText(`Could not remove ${OTHER.username}.`, { exact: true })).toBeVisible();
     await expect(profileMenu.accountSwitcherItems).toContainText(OTHER.username);
   });
+
+  test('ACCOUNT-SWITCH-15: the stored Google Drive encryption keys are removed on load, the WIF keys stay', async ({
+    page,
+    context
+  }) => {
+    await seedCredentials(context, {
+      ...credentialsOf(CURRENT.username),
+      ...credentialsOf(OTHER.username),
+      gdrive_encryption_key_wif: 'shared-encryption-wif'
+    });
+    await page.goto(PAGE_WITH_HEADER);
+
+    await expect
+      .poll(async () => (await readStoredKeys(page)).filter((key) => key.startsWith('gdrive_encryption_key_wif')))
+      .toEqual([]);
+    expect(await readStoredKeys(page)).toEqual(
+      expect.arrayContaining([`wif.${CURRENT.username}@posting`, `wif.${OTHER.username}@active`])
+    );
+  });
 });

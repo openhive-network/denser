@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "Contraseña",
     "password_form_title": "Ingrese su contraseña",
-    "store_key_label": "Guardar clave",
-    "store_password_label": "Guardar contraseña",
     "google_drive_password_placeholder": "Contraseña para desbloquear la billetera de Google Drive",
     "safe_storage_recovery_description": "Otra pestaña modificó el almacenamiento seguro mientras se guardaba una clave de @{{username}}. Introduce la contraseña del almacenamiento seguro de @{{username}} para terminar de guardarla.",
-    "fresh_check_title": "Confirma con tu contraseña",
-    "fresh_check_description": "Esta operación necesita tu clave {{keyType}}. Introduce la contraseña de tu billetera para firmarla. La contraseña se vuelve a pedir antes de cada operación que necesite esta clave.",
-    "fresh_check_sign_button": "Firmar"
+    "remember_key_tab_label": "Recordar en esta pestaña",
+    "remember_key_device_label": "Recordar en este dispositivo (almacenamiento seguro)",
+    "remember_key_hint": "Una clave recordada en esta pestaña se olvida al recargar. El almacenamiento seguro la guarda en este dispositivo, cifrada con una contraseña."
+  },
+  "key_protection": {
+    "dialog_title": "Tu clave está guardada sin protección",
+    "dialog_description": "Una clave de @{{username}} está guardada sin protección en este navegador. Protégela con el almacenamiento seguro.",
+    "set_password_button": "Establecer una contraseña",
+    "not_now_button": "Ahora no",
+    "password_title": "Protege tu clave con el almacenamiento seguro",
+    "password_description_new": "Elige una contraseña del almacenamiento seguro para @{{username}}. La introducirás para firmar con tu clave en este dispositivo.",
+    "password_description_existing": "Introduce la contraseña del almacenamiento seguro de @{{username}} para añadirle tu clave.",
+    "protect_button": "Proteger clave",
+    "protected": "Tu clave ya está en el almacenamiento seguro.",
+    "menu_notice": "Tu clave está guardada sin protección en este navegador. Protégela con el almacenamiento seguro. Al cerrar sesión se olvida."
   },
   "operation_summary": {
     "witness_vote": "Firmar: votar por el testigo @{{witness}}",

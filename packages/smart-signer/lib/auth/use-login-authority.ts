@@ -5,6 +5,7 @@ import { LoginType, type User } from '@smart-signer/types/common';
 import { getLoginAuthority, type LoginAuthority } from '@smart-signer/lib/auth/login-authority';
 import { SAFE_STORAGE_KEYS_CHANGED_EVENT, getSafeStorageKeyTypes } from '@smart-signer/lib/signer/safe-storage-keys';
 import { storedWifKeyTypes } from '@smart-signer/lib/signer/credential-storage';
+import { tabWifKeyTypes } from '@smart-signer/lib/signer/tab-credentials';
 import { subscribeSafeStorageGeneration } from '@hive/common-hiveio-packages/safe-storage-generation-subscription';
 
 export interface StoredKeyTypes {
@@ -16,12 +17,14 @@ export interface StoredKeyTypes {
 
 async function readStoredKeyTypes({ loginType, username, keyType }: User): Promise<readonly string[]> {
   if (loginType === LoginType.hbauth) return getSafeStorageKeyTypes(username);
-  return storedWifKeyTypes(window.localStorage, username, keyType);
+  const keyTypes = [...tabWifKeyTypes(username, keyType), ...storedWifKeyTypes(window.localStorage, username, keyType)];
+  return [...new Set(keyTypes)];
 }
 
 /**
  * The key types `user`'s session holds keys of, kept up to date: those in safe storage for an
- * hbauth session, those its stored key is stored as for a wif session.
+ * hbauth session; for a wif session, those its key is remembered as in this tab or, by an earlier
+ * version, stored as in plaintext.
  */
 export function useStoredKeyTypes(user: User): StoredKeyTypes {
   const { isLoggedIn, loginType, username, keyType } = user;

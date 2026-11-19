@@ -18,7 +18,8 @@ import enWallet from '../../../locales/en/common_wallet.json';
 /**
  * An account using one key pair as both its posting and its active key: a session signed in with
  * it holds both keys, whichever of them it signed in as. Safe storage keeps the key for both types,
- * a WIF session that stores its key stores it as both, and the header names both keys, offers no
+ * a WIF session that remembers its key for the tab remembers it as both, writing no key to storage,
+ * as does a plaintext key an earlier version stored as both, and the header names both keys, offers no
  * key to add and signs a transfer without asking for a key. The stub node
  * (support/walletApiStub.ts) lists the key below in the account's posting and active authorities,
  * and vouches for it as safe storage's sign-in checks; the broadcast is intercepted.
@@ -142,7 +143,7 @@ test.describe('An account whose posting and active keys are one key', () => {
     await transferWithoutKeyPrompt(page, broadcasts);
   });
 
-  test('WALLET-SHARED-KEY-02 — the WIF sign-in stores the key as both, and a transfer asks for no key', async ({
+  test('WALLET-SHARED-KEY-02 — the WIF sign-in remembers the key for the tab as both, and a transfer asks for no key', async ({
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);
@@ -152,17 +153,17 @@ test.describe('An account whose posting and active keys are one key', () => {
     await loginForm.otherSignInOptionsUsernameInput.fill(STUB_ACCOUNT);
     await loginForm.signInWithWifButton.click();
     await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    await loginForm.storeKeyCheckbox.check();
+    await loginForm.rememberKeyForTabCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(SHARED_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
     await expect(loginForm.loginDialog).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
 
     await expectBothKeysHeld(page);
-    expect(await storedWifKeys(page)).toEqual([`wif.${STUB_ACCOUNT}@active`, `wif.${STUB_ACCOUNT}@posting`]);
+    expect(await storedWifKeys(page)).toEqual([]);
     await transferWithoutKeyPrompt(page, broadcasts);
   });
 
-  test('WALLET-SHARED-KEY-03 — the blog\'s posting WIF session whose key is stored as both signs a transfer without asking', async ({
+  test('WALLET-SHARED-KEY-03 — the blog\'s posting WIF session whose key an earlier version stored as both signs a transfer without asking', async ({
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);

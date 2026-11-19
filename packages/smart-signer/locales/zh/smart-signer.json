@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "密码",
     "password_form_title": "输入您的密码",
-    "store_key_label": "存储密钥",
-    "store_password_label": "存储密码",
     "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码",
     "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。",
-    "fresh_check_title": "使用密码确认",
-    "fresh_check_description": "此操作需要您的 {{keyType}} 密钥。请输入钱包密码以签名。每次需要此密钥的操作前都会再次询问密码。",
-    "fresh_check_sign_button": "签名"
+    "remember_key_tab_label": "在此标签页中记住",
+    "remember_key_device_label": "在此设备上记住（安全存储）",
+    "remember_key_hint": "在此标签页中记住的密钥会在刷新后被遗忘。安全存储会用密码加密后将其保存在此设备上。"
+  },
+  "key_protection": {
+    "dialog_title": "您的密钥未受保护地保存着",
+    "dialog_description": "@{{username}} 的一个密钥未受保护地保存在此浏览器中。请用安全存储保护它。",
+    "set_password_button": "设置密码",
+    "not_now_button": "以后再说",
+    "password_title": "用安全存储保护您的密钥",
+    "password_description_new": "为 @{{username}} 选择一个安全存储密码。在此设备上用密钥签名时需要输入它。",
+    "password_description_existing": "输入 @{{username}} 的安全存储密码以将密钥添加进去。",
+    "protect_button": "保护密钥",
+    "protected": "您的密钥现已保存在安全存储中。",
+    "menu_notice": "您的密钥未受保护地保存在此浏览器中。请用安全存储保护它。退出登录会将其遗忘。"
   },
   "operation_summary": {
     "witness_vote": "签名：为见证人 @{{witness}} 投票",

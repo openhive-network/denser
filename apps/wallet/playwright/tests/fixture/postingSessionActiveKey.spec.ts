@@ -20,7 +20,8 @@ import { openOtherTab, signOutInTab } from '../support/otherTab';
  * posting-key session the blog signed in. The wallet opens it as the user's own: balances, owner
  * views and the account menu, and signs posting-authority operations (Delegate RC) with the posting
  * key. An operation needing the active key asks for it when it is signed: cancelling sends nothing,
- * entering it signs and sends the operation once. A broadcast the node rejects for a missing
+ * entering it signs and sends the operation once. Remembered for the tab, it signs later operations
+ * without asking, stored nowhere, until a reload. A broadcast the node rejects for a missing
  * authority reads as a message naming the key, not as the node's answer. A sign-out in another tab
  * closes the prompt, and a key entered after one, the active key or the session's own one, is neither
  * used nor kept. Reads come from the stub node (support/walletApiStub.ts).
@@ -299,6 +300,38 @@ test.describe('A posting-key session on the wallet', () => {
     expect(await storedUser(page)).toMatchObject({ isLoggedIn: true, username: STUB_ACCOUNT, keyType: 'posting' });
   });
 
+  test('WALLET-POSTING-SESSION-10 — the active key remembered for the tab signs the next transfer unasked, stored nowhere, and is asked for again after a reload', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await logInAsStubAccount(page, 'posting');
+    await storeStubAccountKey(page, 'posting', POSTING_WIF);
+    await page.goto(ownTransfersPage);
+    await submitTransfer(page, EN_LABELS);
+
+    const prompt = activeKeyPrompt(page);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
+    await prompt.getByTestId('remember-key-tab').check();
+    await prompt.getByTestId('password-submit-button').click();
+    await broadcasts.waitForCount(1);
+    await expect(prompt).toHaveCount(0);
+    // The transfer dialog stays open after sending
+    const transferDialog = page.getByRole('dialog', { name: EN_LABELS.dialog, exact: true });
+    await transferDialog.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    await submitTransfer(page, EN_LABELS);
+    await broadcasts.waitForCount(2);
+    await expect(prompt).toHaveCount(0);
+    expect(await storedActiveKey(page)).toBeNull();
+
+    await page.reload();
+    await submitTransfer(page, EN_LABELS);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    expect(broadcasts.calls).toHaveLength(2);
+  });
+
   test('WALLET-POSTING-SESSION-06 — a sign-out in another tab closes the active key prompt; nothing is sent', async ({
     page
   }) => {
@@ -332,7 +365,7 @@ test.describe('A posting-key session on the wallet', () => {
     await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await signOutUnheard(page);
     await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
-    await prompt.getByLabel('Store key').check();
+    await prompt.getByTestId('remember-key-tab').check();
     await prompt.getByTestId('password-submit-button').click();
 
     await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.', {
@@ -355,7 +388,7 @@ test.describe('A posting-key session on the wallet', () => {
     await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await signOutUnheard(page);
     await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
-    await prompt.getByLabel('Store key').check();
+    await prompt.getByTestId('remember-key-tab').check();
     await prompt.getByTestId('password-submit-button').click();
 
     await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.', {

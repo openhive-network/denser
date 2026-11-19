@@ -3,7 +3,7 @@ import type { AuthStatus, KeyAuthorityType, OfflineClient, OnlineClient } from '
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { THexString, TTransactionPackType } from '@hiveio/wax';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
-import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
+import { PasswordFormMode, PasswordFormOptions, type RememberKey } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
@@ -75,7 +75,6 @@ export class SignerHbauth extends Signer {
   async getPasswordFromUser(operation?: OperationSummary): Promise<string> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
-      showInputStorePassword: false,
       showSessionTime: true,
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
@@ -217,7 +216,6 @@ export class SignerHbauth extends Signer {
       // Get password for single sign
       const passwordFormOptions: PasswordFormOptions = {
         mode: PasswordFormMode.HBAUTH,
-        showInputStorePassword: false,
         i18nKeysForCaptions: {
           title: `login_form.enter_key_title_${singleSignKeyType}`,
           description: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
@@ -391,7 +389,6 @@ export class SignerHbauth extends Signer {
     });
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
-      showInputStorePassword: false,
       validatePassword: registration.validateKey,
       i18nKeysForCaptions: {
         title: `login_form.this_operation_requires_your_${keyType}_key_enter_key_and_keep_it_in_safe_storage`,
@@ -413,13 +410,13 @@ export class SignerHbauth extends Signer {
   }
 
   /**
-   * What the user entered in a dialog opened with `passwordFormOptions`: the key, and whether to
-   * keep it. A dismissed dialog is the user's cancel: it rejects with 'No password from user'; one
+   * What the user entered in a dialog opened with `passwordFormOptions`: the key, and how long to
+   * remember it. A dismissed dialog is the user's cancel: it rejects with 'No password from user'; one
    * closed by a sign-out rejects with `SignedOutError`.
    */
   protected async getKeyFromUser(
     passwordFormOptions: PasswordFormOptions
-  ): Promise<{ password: string; storePassword?: boolean }> {
+  ): Promise<{ password: string; rememberKey?: RememberKey }> {
     try {
       return await PasswordDialogModalPromise({ isOpen: true, passwordFormOptions });
     } catch (error) {

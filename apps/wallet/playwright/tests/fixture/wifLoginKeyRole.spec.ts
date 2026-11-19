@@ -71,14 +71,14 @@ test.describe('WIF sign-in with a key of the wrong role', () => {
     await loginForm.signInWithWifButton.click();
 
     await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    await loginForm.storeKeyCheckbox.check();
+    await loginForm.rememberKeyForTabCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
 
     await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText(ACTIVE_KEY_ERROR);
     await expect(loginForm.headerEnterYourKey).toBeVisible();
     await expect(loginForm.postingPrivateKeyInput).toHaveValue('');
-    await expect(loginForm.storeKeyCheckbox).toBeChecked();
+    await expect(loginForm.rememberKeyForTabCheckbox).toBeChecked();
     await expect(loginForm.otherSignInOptionsUsernameInput).toHaveValue(STUB_ACCOUNT);
 
     const storedKeys = await page.evaluate(() => Object.keys(window.localStorage).filter((key) => key.startsWith('wif.')));

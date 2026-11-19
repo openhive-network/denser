@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "Password",
     "password_form_title": "Enter your password",
-    "store_key_label": "Store key",
-    "store_password_label": "Store password",
     "google_drive_password_placeholder": "Password to unlock Google Drive wallet",
     "safe_storage_recovery_description": "Another tab changed safe storage while a key of @{{username}} was being saved. Enter the safe storage password of @{{username}} to finish saving it.",
-    "fresh_check_title": "Confirm with your password",
-    "fresh_check_description": "This operation needs your {{keyType}} key. Enter your wallet password to sign it. The password is asked for again before every operation that needs this key.",
-    "fresh_check_sign_button": "Sign"
+    "remember_key_tab_label": "Remember for this tab",
+    "remember_key_device_label": "Remember on this device (Safe Storage)",
+    "remember_key_hint": "A key remembered for this tab is forgotten on reload. Safe Storage keeps it on this device, encrypted with a password."
+  },
+  "key_protection": {
+    "dialog_title": "Your key is saved unprotected",
+    "dialog_description": "A key of @{{username}} is saved unprotected in this browser. Protect it with Safe Storage.",
+    "set_password_button": "Set a password",
+    "not_now_button": "Not now",
+    "password_title": "Protect your key with Safe Storage",
+    "password_description_new": "Choose a Safe Storage password for @{{username}}. You will enter it to sign with your key on this device.",
+    "password_description_existing": "Enter the Safe Storage password of @{{username}} to add your key to it.",
+    "protect_button": "Protect key",
+    "protected": "Your key is now in Safe Storage.",
+    "menu_notice": "Your key is saved unprotected in this browser. Protect it with Safe Storage. Signing out forgets it."
   },
   "operation_summary": {
     "witness_vote": "Sign: vote for witness @{{witness}}",

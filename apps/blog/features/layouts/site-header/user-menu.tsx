@@ -27,6 +27,8 @@ import LoginMethodIcon from '@smart-signer/components/login-method-icon';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
+import { useKeyProtection } from '@smart-signer/lib/auth/use-key-protection';
+import KeyProtectionMenuItem from '@smart-signer/components/key-protection-menu-item';
 import { usePathname } from 'next/navigation';
 import { startSignOutLeave } from '@/blog/features/tags-pages/sign-out-leave';
 
@@ -50,6 +52,7 @@ const UserMenu = ({
 }) => {
   const onLogout = useLogout();
   useSafeStorageLockNotice(user);
+  const keyProtection = useKeyProtection(user);
   const pathname = usePathname();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
@@ -130,6 +133,7 @@ const UserMenu = ({
             </TooltipProvider>
           </DropdownMenuLabel>
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
+          <KeyProtectionMenuItem keyProtection={keyProtection} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} t={t} />
 
