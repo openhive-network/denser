@@ -86,7 +86,7 @@ RUN --mount=type=cache,id=next-${TURBO_APP_NAME},target=/app${TURBO_APP_PATH}/.n
 # `file_server { precompressed br zstd gzip }`). The server itself serves the originals.
 COPY --from=builder /app/scripts/precompress-static.mjs /usr/local/lib/precompress-static.mjs
 RUN node /usr/local/lib/precompress-static.mjs /app${TURBO_APP_PATH}/.next/static \
-    /app${TURBO_APP_PATH}/public/auth /app${TURBO_APP_PATH}/public/locales /app${TURBO_APP_PATH}/public/smart-signer
+    /app${TURBO_APP_PATH}/public/auth /app${TURBO_APP_PATH}/public/smart-signer
 
 # ============================================================================
 # RUNNER: Minimal production image

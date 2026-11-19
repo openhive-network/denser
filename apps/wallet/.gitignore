@@ -45,7 +45,6 @@ public/__ENV.js
 /playwright/.cache/
 /blob-report/
 
-public/locales
 public/smart-signer
 
 public/auth/assets/

@@ -42,7 +42,7 @@ for (const app of ['blog', 'wallet']) {
     });
 
     test(`${app} middleware skips build assets and public files ${where}`, () => {
-      for (const path of ['/_next/static/chunks/a.js', '/_next/static/media/wax.common.x.wasm', '/_next/image', '/favicon.ico', '/locales/en/common_blog.json']) {
+      for (const path of ['/_next/static/chunks/a.js', '/_next/static/media/wax.common.x.wasm', '/_next/image', '/favicon.ico', '/smart-signer/images/metamask.svg']) {
         assert.equal(match(path), false, path);
       }
     });

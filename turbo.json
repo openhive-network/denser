@@ -33,7 +33,6 @@
         ".next/**",
         "!.next/cache/**",
         "public/auth/**",
-        "public/locales/**",
         "public/smart-signer/**"
       ]
     },

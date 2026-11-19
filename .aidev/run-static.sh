@@ -69,8 +69,7 @@ status=0
 for app in blog wallet; do
     echo "== eslint apps/$app" >&2
     pnpm --filter "@hive/$app" exec eslint . --quiet \
-        --ignore-pattern 'public/auth/**' --ignore-pattern 'public/locales/**' \
-        --ignore-pattern 'public/smart-signer/**' < /dev/null || status=1
+        --ignore-pattern 'public/auth/**' --ignore-pattern 'public/smart-signer/**' < /dev/null || status=1
     echo "== tsc apps/$app" >&2
     # --incremental false: the shared tsconfig enables incremental builds, which
     # would leave a .tsbuildinfo in the tree.
