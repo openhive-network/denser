@@ -97,7 +97,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts \
     packages/ui/lib/passkey-signers.test.ts packages/ui/lib/sanitize-url.test.ts \
     packages/ui/lib/html-escape-json.test.ts packages/ui/lib/reputation.test.ts \
-    packages/ui/lib/i18n-interpolation.test.ts packages/ui/lib/chunk-load-error.test.ts \
+    packages/ui/lib/i18n-interpolation.test.ts packages/ui/lib/i18n-fallback-report.test.ts \
+    packages/ui/lib/chunk-load-error.test.ts \
     packages/ui/lib/sentry-deployment.test.ts packages/ui/lib/sentry-deferred-load.test.ts \
     packages/ui/lib/avatar-version.test.ts packages/ui/lib/avatar-utils.test.ts \
     packages/ui/components/hooks/use-toast.test.ts < /dev/null || status=1

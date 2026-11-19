@@ -11,7 +11,7 @@ registerHooks({
 });
 
 const { deferSentryLoad } = await import('./sentry-deferred-load.ts');
-const { bufferHandledError } = await import('./sentry-early-errors.ts');
+const { bufferHandledError, captureEarlyErrors, SentryMessage } = await import('./sentry-early-errors.ts');
 
 // Longer than any delay the loader may wait for after `load`.
 const LONG_AFTER_LOAD_MS = 60_000;
@@ -169,5 +169,27 @@ describe('bufferHandledError', () => {
     assert.deepEqual(loads, [[]]);
 
     assert.equal(bufferHandledError(new Error('after load')), false);
+  });
+});
+
+describe('captureEarlyErrors', () => {
+  it('sends a buffered SentryMessage as a message and anything else as an exception', () => {
+    const sent: [string, unknown][] = [];
+    const error = new Error('early');
+    const message = new SentryMessage('Missing translation', {
+      level: 'warning',
+      tags: { i18n: 'missing' },
+      fingerprint: ['i18n:missing']
+    });
+
+    captureEarlyErrors([error, message], {
+      captureException: (exception) => sent.push(['exception', exception]),
+      captureMessage: (text, context) => sent.push(['message', { text, context }])
+    });
+
+    assert.deepEqual(sent, [
+      ['exception', error],
+      ['message', { text: 'Missing translation', context: message.context }]
+    ]);
   });
 });

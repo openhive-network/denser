@@ -8,6 +8,9 @@ import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
 import { readLocaleCookie } from '@ui/lib/locale-cookie';
 import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { reportFallbacks } from '@ui/lib/i18n-fallback-report';
+import { reportFallbackToSentry } from '@ui/lib/i18n-fallback-sentry';
+import env from '@beam-australia/react-env';
 
 export { Trans } from 'react-i18next';
 /**
@@ -58,11 +61,20 @@ export function createI18nClient(
     return defaultLocale;
   }
 
+  // On the server this instance renders client components, which the browser renders again on
+  // hydration with the same keys: the browser reports them, with the page's route. Server-only
+  // translations (createI18nServer) are reported by the server.
+  const fallbackReport =
+    !isServer && env('SENTRY_DSN')
+      ? reportFallbacks(i18next, (fallback) => reportFallbackToSentry(fallback, window.location.pathname))
+      : {};
+
   i18next
     .use(initReactI18next)
     .use(resourcesToBackend(loadNamespace))
     .init({
       ...getOptions(getInitialLanguage()),
+      ...fallbackReport,
       interpolation: I18N_INTERPOLATION,
       detection: {
         order: ['cookie', 'path', 'htmlTag', 'navigator'],

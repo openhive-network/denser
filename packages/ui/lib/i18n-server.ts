@@ -1,7 +1,10 @@
 import { cookies } from 'next/headers';
 import { createInstance, type InitOptions, type TFunction } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
+import env from '@beam-australia/react-env';
 import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { reportFallbacks } from '@ui/lib/i18n-fallback-report';
+import { reportFallbackToSentry } from '@ui/lib/i18n-fallback-sentry';
 
 /** The app's `i18n/settings` module. */
 interface I18nSettings {
@@ -32,10 +35,14 @@ export function createI18nServer(
     let pending = instances.get(cacheKey);
     if (!pending) {
       const instance = createInstance();
+      // The instance serves every request, so a key is reported once per server process. The event
+      // carries the request the SDK has in scope rather than a route of its own.
+      const fallbackReport = env('SENTRY_DSN') ? reportFallbacks(instance, (fallback) => reportFallbackToSentry(fallback)) : {};
       pending = instance
         .use(resourcesToBackend(loadNamespace))
         .init({
           ...getOptions(lng, ns),
+          ...fallbackReport,
           interpolation: I18N_INTERPOLATION
         })
         .then(() => {

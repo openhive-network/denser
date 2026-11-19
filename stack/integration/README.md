@@ -481,6 +481,17 @@ mode), the same full commit hash the sidebar's "Version" shortens.
 - **Stack traces stay minified:** follow mode has no Sentry auth token, and the apps'
   builds upload no source maps (`sourcemaps.disable` in `next.config.js`), so frames show
   the served chunk names and positions. Tie them to the code through the release.
+- **Missing translations:** with a DSN, a page rendering a key its language lacks (i18next
+  falls back to English, or shows the key) sends one `warning` event tagged `i18n:missing`,
+  titled `Missing translation: <language> <namespace>:<key>`, with the tags `i18n.language`,
+  `i18n.namespace`, `i18n.key` and, from the browser, `route` (the page's path). The browser
+  sends it once per page load, language and key, with the deferred SDK (5 s after `load`);
+  translations rendered only by the server (page titles, server components) are sent once per
+  server process, with the request's URL. Each key is one GlitchTip issue: search the
+  project's issues for `i18n:missing` (or filter on the `i18n` tag) and read the tags. To check
+  it, remove a key from `apps/blog/locales/pl/common_blog.json`, serve that tree, open a page
+  using the key with `NEXT_LOCALE=pl` and wait 5 s: one event names the key and route.
+  Normal pages send none.
 - **A session's stack:** `session-stack.sh` takes the same three variables from its
   environment, e.g. `REACT_APP_SENTRY_DSN=http://key@<host>:<port>/1 stack/integration/session-stack.sh up`
   with a stand-in that answers `POST /api/1/envelope/` to see the events locally.
