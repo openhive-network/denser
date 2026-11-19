@@ -122,7 +122,7 @@ test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
     const similarRequests = recordSimilarRequests(page);
 
     await homePage.profileAvatarButton.click();
-    await new ProfileUserMenu(page).signOut();
+    await new ProfileUserMenu(page).logoutLink.click();
 
     await expect(homePage.loginBtn).toBeVisible();
     await expect(page.getByTestId('suggestions-list')).toHaveCount(0);

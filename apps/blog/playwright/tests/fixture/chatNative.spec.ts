@@ -154,7 +154,7 @@ function recordFailedResponses(page: Page): string[] {
 
 async function signOut(page: Page): Promise<void> {
   await new HomePage(page).profileAvatarButton.click();
-  await new ProfileUserMenu(page).signOut();
+  await new ProfileUserMenu(page).logoutLink.click();
 }
 
 const storedSession = (page: Page) =>

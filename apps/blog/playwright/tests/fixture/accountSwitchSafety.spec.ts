@@ -115,7 +115,9 @@ test.describe('Account switching safety', () => {
     const profileMenu = await openUserMenu(page);
 
     const loggedOut = page.waitForResponse('**/api/auth/logout');
-    await profileMenu.signOut();
+    await profileMenu.logoutLink.click();
+    // The keys seeded here are saved in plaintext: signing out asks first
+    await page.getByTestId('leave-saved-key-forget').click();
     await loggedOut;
 
     await expect.poll(() => readStoredCredentialsOf(page, CURRENT.username)).toEqual([]);

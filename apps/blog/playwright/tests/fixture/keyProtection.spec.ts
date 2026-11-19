@@ -20,7 +20,11 @@ import { clickUntilOpen } from '../support/uiPrimitives';
  */
 
 test.skip(isRecordMode, 'replay-only: shares the accountSwitchSafety recording');
-test.use({ fixtureTestName: 'accountSwitchSafety', authenticatedUser: { authenticateOnBackend: true } });
+test.use({
+  fixtureTestName: 'accountSwitchSafety',
+  authenticatedUser: { authenticateOnBackend: true },
+  authenticatedUserAsksAboutSavedKey: true
+});
 
 const PAGE_WITH_HEADER = '/faq.html';
 // The dialog follows the check whether safe storage holds the key already, which loads hb-auth

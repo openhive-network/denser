@@ -60,18 +60,6 @@ export class ProfileUserMenu {
         await expect(this.profileUserName).toHaveText(username);
     }
 
-    /**
-     * Clicks Logout in the open menu. A sign-out first asks about the keys saved in plaintext, as
-     * the fixture seeder saves the user's posting key: answered "Forget it and sign out".
-     */
-    async signOut() {
-      const hasSavedKey = await this.page.evaluate(() =>
-        Object.keys(window.localStorage).some((key) => /^wif\..+@(posting|active)$/.test(key))
-      );
-      await this.logoutLink.click();
-      if (hasSavedKey) await this.leaveSavedKeyDialog.getByTestId('leave-saved-key-forget').click();
-    }
-
     async clickCloseProfileMenu() {
         await this.headerPostList.click({force: true});
     }

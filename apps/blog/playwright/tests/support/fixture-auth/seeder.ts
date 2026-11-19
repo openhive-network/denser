@@ -41,6 +41,10 @@ const KEY_PROTECTION_SNOOZE_MS = 24 * 60 * 60 * 1000;
  * A session the context already holds (e.g. a pending OAuth request the
  * server stored) is kept, with the user replaced, as a real login keeps it.
  *
+ * The seeded posting key is the seeder's, not a key the test saved: a click on Logout forgets it
+ * before the sign-out looks for saved keys, so a sign-out does not first ask about it. Specs of
+ * that question pass `asksAboutSavedKey` (the `authenticatedUserAsksAboutSavedKey` option).
+ *
  * `hasOwnLists` seeds the answer the login-time list check stores (see
  * `observer-lists.ts`): true (the default) keeps every read on the username, as
  * the recordings expect, and makes no check request; false makes feed and post
@@ -51,7 +55,8 @@ const KEY_PROTECTION_SNOOZE_MS = 24 * 60 * 60 * 1000;
 export async function seedAuthCookie(
   context: BrowserContext,
   overrides: Partial<User> = {},
-  hasOwnLists = true
+  hasOwnLists = true,
+  asksAboutSavedKey = false
 ): Promise<User> {
   const user: User = { ...DEFAULT_USER, ...overrides, isLoggedIn: true };
 
@@ -132,12 +137,25 @@ export async function seedAuthCookie(
   });
 
   await context.addInitScript(
-    ({ userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue }) => {
+    ({ userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue, asksAboutSavedKey }) => {
       try {
         window.localStorage.setItem('user', userJson);
         if (wifValue) {
           window.localStorage.setItem(wifKey, wifValue);
           window.localStorage.setItem(snoozeKey, snoozeValue);
+        }
+        if (wifValue && !asksAboutSavedKey) {
+          // Capture phase on window: runs before the app's own click handler reads storage
+          window.addEventListener(
+            'click',
+            (event) => {
+              const target = event.target instanceof Element ? event.target : null;
+              if (target?.closest('[data-testid="user-profile-menu-logout-link"]')) {
+                window.localStorage.removeItem(wifKey);
+              }
+            },
+            true
+          );
         }
         if (window.localStorage.getItem(ownListsKey) === null) {
           window.localStorage.setItem(ownListsKey, ownListsValue);
@@ -146,7 +164,7 @@ export async function seedAuthCookie(
         /* storage may be unavailable in some edge contexts — ignore */
       }
     },
-    { userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue }
+    { userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue, asksAboutSavedKey }
   );
 
   return user;

@@ -71,6 +71,11 @@ export type FixtureAuthTestFixtures = {
    * `seedAuthCookie`). Default true: every read sends the username.
    */
   authenticatedUserHasOwnLists: boolean;
+  /**
+   * Whether signing out asks about the posting key the seeder saves in plaintext (see
+   * `seedAuthCookie`). Default false: a click on Logout forgets it first.
+   */
+  authenticatedUserAsksAboutSavedKey: boolean;
 };
 
 export const isRecordMode = process.env.FIXTURE_MODE === 'record';
@@ -155,8 +160,12 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
 
   authenticatedUser: [undefined, { option: true }],
   authenticatedUserHasOwnLists: [true, { option: true }],
+  authenticatedUserAsksAboutSavedKey: [false, { option: true }],
 
-  context: async ({ context, authenticatedUser, authenticatedUserHasOwnLists }, use) => {
+  context: async (
+    { context, authenticatedUser, authenticatedUserHasOwnLists, authenticatedUserAsksAboutSavedKey },
+    use
+  ) => {
     // Every API call goes to the local fixture proxy, so the suite needs no
     // network — but on a host without one (e.g. `docker run --network none`)
     // Chromium reports navigator.onLine === false, and React Query then pauses
@@ -169,7 +178,12 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
     });
     await stubHiveSense(context);
     if (authenticatedUser !== undefined) {
-      await seedAuthCookie(context, authenticatedUser, authenticatedUserHasOwnLists);
+      await seedAuthCookie(
+        context,
+        authenticatedUser,
+        authenticatedUserHasOwnLists,
+        authenticatedUserAsksAboutSavedKey
+      );
     }
     await use(context);
   }

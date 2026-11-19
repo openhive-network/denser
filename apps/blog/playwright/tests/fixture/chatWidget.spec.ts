@@ -152,7 +152,7 @@ async function signOut(page: Page): Promise<void> {
   const homePage = new HomePage(page);
   const profileMenu = new ProfileUserMenu(page);
   await homePage.profileAvatarButton.click();
-  await profileMenu.signOut();
+  await profileMenu.logoutLink.click();
 }
 
 /** The first frame `matches` accepts, once there is one. */

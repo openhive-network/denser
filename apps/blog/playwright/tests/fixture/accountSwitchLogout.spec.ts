@@ -100,7 +100,7 @@ test.describe('Account switching and the server session', () => {
     await profileMenu.validateUserNameInProfileMenu(CLIENT_ONLY_USERNAME);
 
     const loggedOut = page.waitForResponse('**/api/auth/logout');
-    await profileMenu.signOut();
+    await profileMenu.logoutLink.click();
     expect((await loggedOut).ok()).toBe(true);
 
     expect((await readServerUser(context)).isLoggedIn).toBe(false);
@@ -129,7 +129,7 @@ test.describe('Account switching and the server session', () => {
     await homePage.profileAvatarButton.click();
     await profileMenu.validateUserNameInProfileMenu(CLIENT_ONLY_USERNAME);
     const loggedOut = page.waitForResponse('**/api/auth/logout');
-    await profileMenu.signOut();
+    await profileMenu.logoutLink.click();
     expect((await loggedOut).ok()).toBe(true);
 
     await homePage.loginBtn.click();

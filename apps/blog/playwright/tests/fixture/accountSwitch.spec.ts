@@ -116,7 +116,7 @@ test.describe('Account switching', { tag: '@basepath' }, () => {
   test('ACCOUNT-SWITCH-04: logging out forgets every signed-in account', async ({ page, context }) => {
     // The UI logs out optimistically: wait for the server to end the session too
     const loggedOut = page.waitForResponse(`**${withBase('/api/auth/logout')}`);
-    await profileMenu.signOut();
+    await profileMenu.logoutLink.click();
     await loggedOut;
 
     await expect(homePage.loginBtn).toBeVisible();
