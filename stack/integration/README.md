@@ -76,8 +76,8 @@ The site runs from this checkout; no image is built or pulled for the apps.
    app as before (`caddy/Caddyfile.static.next`).
 
    The public/ files the build generates (`copy:public`: hb-auth's `auth/worker.js`
-   and `auth/assets/`, `locales/`, `smart-signer/`) get the same sidecars, and caddy
-   serves `/<app>/auth/*`, `/<app>/locales/*` and `/<app>/smart-signer/*` from the
+   and `auth/assets/`, `smart-signer/`) get the same sidecars, and caddy
+   serves `/<app>/auth/*` and `/<app>/smart-signer/*` from the
    served release's `public/` (`releases/<app>/current`). Their names carry no
    content hash, so they are `public, max-age=0, must-revalidate` and a repeat
    use is a 304 on the ETag; hb-auth's `auth/assets/` are content-hashed and

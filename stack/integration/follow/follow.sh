@@ -115,8 +115,7 @@ _package() {
         && node scripts/precompress-static.mjs "$out/apps/$app/.next/static" \
         && rm -rf "$out/apps/$app/public" \
         && cp -a "apps/$app/public" "$out/apps/$app/public" \
-        && node scripts/precompress-static.mjs "$out/apps/$app/public/auth" \
-            "$out/apps/$app/public/locales" "$out/apps/$app/public/smart-signer" \
+        && node scripts/precompress-static.mjs "$out/apps/$app/public/auth" "$out/apps/$app/public/smart-signer" \
         && if [ -d "apps/$app/lib/markdowns" ]; then
             mkdir -p "$out/apps/$app/lib" && cp -a "apps/$app/lib/markdowns" "$out/apps/$app/lib/markdowns"
         fi

@@ -51,7 +51,7 @@ test.describe('Static assets and pages — no cookies', () => {
 
     const assets = [...new Set(page.body.match(CHUNK_URL_PATTERN) ?? [])];
     expect(assets.length).toBeGreaterThan(0);
-    for (const path of [...assets, '/favicon.ico', '/locales/en/common_blog.json', '/auth/worker.js']) {
+    for (const path of [...assets, '/favicon.ico', '/smart-signer/images/metamask.svg', '/auth/worker.js']) {
       const asset = await get(path);
       expect(asset.status, path).toBe(200);
       expect(asset.cookies, path).toEqual([]);
