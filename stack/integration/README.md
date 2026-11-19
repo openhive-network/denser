@@ -197,7 +197,9 @@ only for a page that renders the same for every anonymous reader
   sorted (the blog gets that URL too), and the language: the `NEXT_LOCALE` cookie when it
   is one of `ar en es fr it ja ko pl ru zh`, else `en` (the blog's `resolveLocale`). A
   looked-up request reaches the blog with no cookie but `NEXT_LOCALE` for a language
-  other than `en`; theme, NSFW and every other cookie are dropped and stay out of the key.
+  other than `en`, and without `Accept-Language` (from which the blog renders a request
+  without `NEXT_LOCALE`); theme, NSFW and every other cookie are dropped and stay out of
+  the key.
   The blog sends `private` for a request with `NEXT_LOCALE` today, so only `en` pages
   are stored; the key keeps the languages apart should that change.
 - **Stored** only when the response is a 200 (or a 404) whose `Cache-Control` is
@@ -278,8 +280,11 @@ crawl from reaching the apps' servers.
      refusing the cookie gets no reload but "This site needs cookies to continue…" in
      the page, in the first of its `navigator.languages` the blog has a locale for
      (English otherwise; the messages sit inline in the page), with `<html lang>` set to
-     match. A client without JavaScript gets the English `<noscript>` text and never
-     gets further.
+     match. A browser keeping the cookie whose language is one of those, other than
+     English, and that has no `NEXT_LOCALE` yet also gets `NEXT_LOCALE` set to it (a
+     year, `Path=/`, `SameSite=Lax`, as the apps write it), so the reload shows the site,
+     and its cached pages, in that language. A client without JavaScript gets the English
+     `<noscript>` text and never gets further.
   5. Anything else passes.
 - **Caching:** the HTML cache drops `denser_human` with the other cookies it does not
   key on, so anonymous pages are still keyed on URL and language only.

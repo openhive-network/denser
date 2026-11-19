@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { logPageVisit } from './page-visit-logger';
+import { LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE_S } from '@hive/ui/lib/locale-cookie.ts';
 import { buildCsp, generateNonce, NONCE_HEADER, SECURITY_HEADERS, type CspConfig } from './csp';
+import { detectFirstVisitLocale, withRequestCookie } from './locale-detection';
 import {
+  isPageRoute,
   isPublicCacheableRequest,
   NO_STORE_CACHE_CONTROL,
   publicCacheControl,
-  type PublicCacheConfig
+  type PublicCacheConfig,
+  type RequestCookie
 } from './public-cache';
 
 /**
@@ -35,18 +39,36 @@ export interface MiddlewareConfig {
    * `installPublicCacheGuard`, which takes it back for a response other than a cookie-less 200.
    */
   publicCache?: PublicCacheConfig;
+
+  /**
+   * The app's UI languages. If provided, a page requested without a language cookie is rendered in
+   * the first of them its `Accept-Language` names, and the response stores that language in the
+   * cookie, so the browser renders what the server did and the other apps of the origin follow.
+   */
+  locales?: readonly string[];
 }
 
-/** `isPublicCacheableRequest` for a request the middleware sees, its path taken without the base path. */
-function isPublicCacheable(request: NextRequest, basePath: string): boolean {
-  const { pathname, searchParams } = request.nextUrl;
-  const pathInApp = basePath && pathname.startsWith(`${basePath}/`) ? pathname.slice(basePath.length) : pathname;
+/** The path of a request the middleware sees, without the base path. */
+function pathInApp(request: NextRequest, basePath: string): string {
+  const { pathname } = request.nextUrl;
+  return basePath && pathname.startsWith(`${basePath}/`) ? pathname.slice(basePath.length) : pathname;
+}
+
+/** The language a first visit to a page is rendered in, when it is not the default one; see `detectFirstVisitLocale`. */
+function firstVisitLocale(request: NextRequest, basePath: string, locales: readonly string[]): string | null {
+  if (request.method !== 'GET' && request.method !== 'HEAD') return null;
+  if (!isPageRoute(pathInApp(request, basePath))) return null;
+  return detectFirstVisitLocale(request.cookies.getAll(), request.headers.get('accept-language'), locales);
+}
+
+/** `isPublicCacheableRequest` for a request the middleware sees, rendered with `cookies`. */
+function isPublicCacheable(request: NextRequest, basePath: string, cookies: readonly RequestCookie[]): boolean {
   return isPublicCacheableRequest({
     method: request.method,
-    pathname: pathInApp,
-    searchParams,
+    pathname: pathInApp(request, basePath),
+    searchParams: request.nextUrl.searchParams,
     headers: request.headers,
-    cookies: request.cookies.getAll()
+    cookies
   });
 }
 
@@ -77,11 +99,26 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
       requestHeaders.set(NONCE_HEADER, nonce);
       requestHeaders.set('Content-Security-Policy', cspHeader);
     }
+    // The page renders as if the request carried the language cookie the response sets
+    const detectedLocale = config.locales ? firstVisitLocale(request, basePath, config.locales) : null;
+    const renderCookies: RequestCookie[] = request.cookies.getAll();
+    if (detectedLocale) {
+      requestHeaders.set('cookie', withRequestCookie(request.headers.get('cookie'), LOCALE_COOKIE, detectedLocale));
+      renderCookies.push({ name: LOCALE_COOKIE, value: detectedLocale });
+    }
     const forward = { request: { headers: requestHeaders } };
     const res =
       config.rootRewrite && isRootPath
         ? NextResponse.rewrite(new URL(`${basePath}${config.rootRewrite}`, request.url), forward)
         : NextResponse.next(forward);
+
+    if (detectedLocale) {
+      res.cookies.set(LOCALE_COOKIE, detectedLocale, {
+        path: '/',
+        maxAge: LOCALE_COOKIE_MAX_AGE_S,
+        sameSite: 'lax'
+      });
+    }
 
     // Apply CSP and security headers
     if (cspHeader) {
@@ -91,7 +128,7 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
       }
     }
 
-    if (config.publicCache && config.publicCache.sMaxAgeS > 0 && isPublicCacheable(request, basePath)) {
+    if (config.publicCache && config.publicCache.sMaxAgeS > 0 && isPublicCacheable(request, basePath, renderCookies)) {
       res.headers.set('Cache-Control', publicCacheControl(config.publicCache));
     } else if (config.publicCache && request.headers.has('authorization')) {
       // API routes send no Cache-Control of their own unless they set one

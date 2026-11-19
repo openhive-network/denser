@@ -1,7 +1,10 @@
 import { createMiddleware } from '@hive/middleware/lib/common';
+import { languages } from '@/wallet/i18n/settings';
 
-// Wallet middleware: no root redirect (stays at /), applies a per-request nonce CSP at runtime
+// Wallet middleware: no root redirect (stays at /), applies a per-request nonce CSP at runtime and
+// renders a first visit in the browser's language
 export const proxy = createMiddleware({
+  locales: languages,
   csp: {
     // Allow Google accounts for OAuth popup/iframe
     frameSrc: ["'self'", 'https://accounts.google.com'],
