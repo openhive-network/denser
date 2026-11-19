@@ -30,7 +30,7 @@ import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-sc
 import { logger } from '@ui/lib/logger';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { useInjectedExtensions } from './use-injected-extensions';
-import { configuredPasskeySigners } from '@ui/config/public-vars';
+import { configuredHiveAuth, configuredPasskeySigners } from '@ui/config/public-vars';
 
 export interface MethodsProps {
   onSetStep: (step: Steps) => void;
@@ -313,23 +313,25 @@ const Methods: FC<MethodsProps> = ({
               </>
             ) : null}
 
-            <Separator className="my-1 w-full" />
-
-            <div className="flex w-full items-center">
-              <Button
-                disabled
-                className="flex flex-1 py-6"
-                type="button"
-                variant="ghost"
-                data-testid="hive-auth-button"
-              >
-                <div className="flex flex-1 items-center">
-                  <Icons.hiveauth className="mr-4 h-8 w-8" />
-                  {t('login_form.signin_with_hiveauth')}
+            {configuredHiveAuth.enabled ? (
+              <>
+                <Separator className="my-1 w-full" />
+                <div className="flex w-full items-center">
+                  <Button
+                    disabled={!form.formState.isValid}
+                    className="flex flex-1 justify-start py-6"
+                    type="button"
+                    variant="ghost"
+                    onClick={form.handleSubmit(() => onSubmit(LoginType.hiveauth))}
+                    data-testid="hive-auth-button"
+                  >
+                    <Icons.hiveauth className="mr-4 h-8 w-8" />
+                    {t('login_form.signin_with_hiveauth')}
+                  </Button>
+                  {renderMethodInfo('hiveauth', 'HiveAuth')}
                 </div>
-              </Button>
-              {renderMethodInfo('hiveauth', 'HiveAuth')}
-            </div>
+              </>
+            ) : null}
 
             <Button
               className="mt-8 w-full"

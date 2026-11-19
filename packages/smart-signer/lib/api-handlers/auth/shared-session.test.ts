@@ -24,7 +24,9 @@ function stub(source: string): string {
 const LOGGER = 'export const getLogger = () => ({ info() {}, error() {} });';
 const STUBS: Record<string, string> = {
   next: stub('export const NextApiHandler = undefined;'),
-  '@smart-signer/types/common': stub('export const User = undefined, IronSessionData = undefined;'),
+  '@smart-signer/types/common': stub(
+    'export const User = undefined, IronSessionData = undefined, LoginType = { hiveauth: "hiveauth" };'
+  ),
   '@smart-signer/lib/auth/utils': stub(
     `const parsed = { parseAsync: async (body) => body };
     export const postLoginSchema = parsed, postSwitchSchema = parsed, postAccountSchema = parsed;
@@ -63,6 +65,7 @@ const REAL: Record<string, string> = {
   '@smart-signer/lib/auth/accounts': '../../auth/accounts.ts',
   '@smart-signer/lib/auth/chat-session': '../../auth/chat-session.ts',
   '@smart-signer/lib/auth/known-login-type': '../../auth/known-login-type.ts',
+  '@smart-signer/lib/hiveauth/login-message': '../../hiveauth/login-message.ts',
   '@smart-signer/lib/api-handlers/auth/challenge': './challenge.ts',
   './set-cookie': '../../set-cookie.ts'
 };

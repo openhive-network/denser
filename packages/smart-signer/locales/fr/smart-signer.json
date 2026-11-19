@@ -34,7 +34,15 @@
     "tokenExpired": "Le jeton HiveAuth a expiré, veuillez réessayer...",
     "unknownCommand": "commande inconnue",
     "userRejectedRequest": "l'utilisateur a rejeté la demande HiveAuth",
-    "verifyPostingKeyInstructions": "Veuillez utiliser votre application mobile compatible HiveAuth pour vérifier votre clé de publication."
+    "verifyPostingKeyInstructions": "Veuillez utiliser votre application mobile compatible HiveAuth pour vérifier votre clé de publication.",
+    "title_sign_in": "Se connecter avec HiveAuth",
+    "title_sign": "Approuver avec HiveAuth",
+    "approveOnPhone": "Approuvez sur votre téléphone…",
+    "openInWallet": "Ouvrir dans l'application portefeuille",
+    "close": "Fermer",
+    "cancelled": "La demande HiveAuth a été annulée.",
+    "unreachable": "Le serveur HiveAuth est injoignable. Vérifiez votre connexion et réessayez.",
+    "failed": "La demande HiveAuth a échoué. Réessayez."
   },
   "login_form": {
     "private_key_placeholder": "Votre clé privée {{keyType}}",

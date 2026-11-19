@@ -541,6 +541,7 @@
     "encrypt_memo_title": "加密 MEMO 消息",
     "encrypt_memo_description": "此备注将在发送前加密。请提供 MEMO 私钥。",
     "encrypt_memo_description_with_wallet": "此备注将在发送前加密。请提供 MEMO 私钥或使用 {{wallet}}。",
+    "memo_hiveauth_unsupported": "HiveAuth 钱包应用无法在此加密或解密备注。请改为输入您的 MEMO 私钥。",
     "encrypt_memo_plaintext": "待加密消息",
     "encrypt_memo_with_private_key": "使用私钥加密",
     "encrypt_memo_with_keychain": "使用 Keychain 加密",

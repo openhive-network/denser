@@ -26,6 +26,22 @@ export interface EncryptMemo {
   memo: string;
 }
 
+/**
+ * A signer whose wallet broadcasts the transactions it signs (HiveAuth's wallet apps): it hands the
+ * page no signature, so the transaction service has it broadcast the transaction instead.
+ */
+export interface BroadcastingSigner {
+  /**
+   * Has the wallet sign `transaction`'s operations and broadcast them. Resolves with the id of the
+   * transaction the wallet broadcast, empty when the wallet did not name it.
+   */
+  broadcastTransaction(arg: SignTransaction): Promise<string>;
+}
+
+export function isBroadcastingSigner(signer: object): signer is BroadcastingSigner {
+  return 'broadcastTransaction' in signer && typeof signer.broadcastTransaction === 'function';
+}
+
 export interface SignerOptions {
   username: string;
   loginType: LoginType;

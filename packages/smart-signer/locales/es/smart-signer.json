@@ -34,7 +34,15 @@
     "tokenExpired": "El token de HiveAuth ha expirado, por favor intente nuevamente...",
     "unknownCommand": "comando desconocido",
     "userRejectedRequest": "el usuario ha rechazado la solicitud de HiveAuth",
-    "verifyPostingKeyInstructions": "'Por favor, use su aplicación móvil compatible con HiveAuth para verificar su clave de publicación.'"
+    "verifyPostingKeyInstructions": "'Por favor, use su aplicación móvil compatible con HiveAuth para verificar su clave de publicación.'",
+    "title_sign_in": "Iniciar sesión con HiveAuth",
+    "title_sign": "Aprobar con HiveAuth",
+    "approveOnPhone": "Aprueba en tu teléfono…",
+    "openInWallet": "Abrir en la app de billetera",
+    "close": "Cerrar",
+    "cancelled": "La solicitud de HiveAuth fue cancelada.",
+    "unreachable": "No se pudo conectar con el servidor de HiveAuth. Comprueba tu conexión e inténtalo de nuevo.",
+    "failed": "La solicitud de HiveAuth falló. Inténtalo de nuevo."
   },
   "login_form": {
     "private_key_placeholder": "Su clave privada {{keyType}}",

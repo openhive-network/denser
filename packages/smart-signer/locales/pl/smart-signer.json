@@ -34,7 +34,15 @@
     "tokenExpired": "Token HiveAuth wygasł, proszę spróbować ponownie...",
     "unknownCommand": "nieznane polecenie",
     "userRejectedRequest": "użytkownik odrzucił żądanie HiveAuth",
-    "verifyPostingKeyInstructions": "'Proszę użyć kompatybilnej aplikacji mobilnej HiveAuth do weryfikacji klucza Posting.'"
+    "verifyPostingKeyInstructions": "'Proszę użyć kompatybilnej aplikacji mobilnej HiveAuth do weryfikacji klucza Posting.'",
+    "title_sign_in": "Zaloguj się przez HiveAuth",
+    "title_sign": "Zatwierdź przez HiveAuth",
+    "approveOnPhone": "Zatwierdź na telefonie…",
+    "openInWallet": "Otwórz w aplikacji portfela",
+    "close": "Zamknij",
+    "cancelled": "Żądanie HiveAuth zostało anulowane.",
+    "unreachable": "Nie można połączyć się z serwerem HiveAuth. Sprawdź połączenie i spróbuj ponownie.",
+    "failed": "Żądanie HiveAuth nie powiodło się. Spróbuj ponownie."
   },
   "login_form": {
     "private_key_placeholder": "Twój prywatny klucz {{keyType, capitalize}}",

@@ -50,45 +50,50 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
     };
 
     try {
-      const [{ getSigner, getOperationForLogin, hiveChain }, challenge] = await Promise.all([
-        loadSigningStack(),
-        fetchLoginChallenge()
-      ]);
-      const operation: operation = await getOperationForLogin(username, keyType, challenge, loginType);
+      if (loginType === LoginType.hiveauth) {
+        const { signInWithHiveAuth } = await import('@smart-signer/lib/hiveauth/sign-in');
+        signInData = await signInWithHiveAuth(loginSignerOptions, authenticateOnBackend);
+      } else {
+        const [{ getSigner, getOperationForLogin, hiveChain }, challenge] = await Promise.all([
+          loadSigningStack(),
+          fetchLoginChallenge()
+        ]);
+        const operation: operation = await getOperationForLogin(username, keyType, challenge, loginType);
 
-      const expr = new Date();
-      expr.setHours(expr.getHours() + 1);
-      const txBuilder = await hiveChain.createTransaction(expr);
-      txBuilder.pushOperation(operation);
-      txBuilder.validate();
-      const tx = txBuilder.transaction;
+        const expr = new Date();
+        expr.setHours(expr.getHours() + 1);
+        const txBuilder = await hiveChain.createTransaction(expr);
+        txBuilder.pushOperation(operation);
+        txBuilder.validate();
+        const tx = txBuilder.transaction;
 
-      const signer = getSigner(loginSignerOptions);
-      const pack = signer.pack;
-      const signature = await signer.signTransaction({
-        digest: txBuilder.sigDigest,
-        transaction: tx
-      });
+        const signer = getSigner(loginSignerOptions);
+        const pack = signer.pack;
+        const signature = await signer.signTransaction({
+          digest: txBuilder.sigDigest,
+          transaction: tx
+        });
 
-      logger.debug('signature: %s', signature);
-      txBuilder.addSignature(signature);
-      signatures[keyType] = signature;
+        logger.debug('signature: %s', signature);
+        txBuilder.addSignature(signature);
+        signatures[keyType] = signature;
 
-      logger.debug('transaction: %o', {
-        pack,
-        toApi: txBuilder.toApi(),
-        toApiParsed: JSON.parse(txBuilder.toApi())
-      });
+        logger.debug('transaction: %o', {
+          pack,
+          toApi: txBuilder.toApi(),
+          toApiParsed: JSON.parse(txBuilder.toApi())
+        });
 
-      signInData = {
-        username,
-        loginType,
-        keyType,
-        txJSON: txBuilder.toApi(),
-        pack,
-        signatures,
-        authenticateOnBackend
-      };
+        signInData = {
+          username,
+          loginType,
+          keyType,
+          txJSON: txBuilder.toApi(),
+          pack,
+          signatures,
+          authenticateOnBackend
+        };
+      }
     } catch (error) {
       // The caller logs a cancel once; only a real failure gets its stack here
       if (!isUserCancelled(error)) logger.error(error, 'onSubmit error in signLoginChallenge');

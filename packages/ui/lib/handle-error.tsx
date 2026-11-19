@@ -34,6 +34,7 @@ import {
   findWrongSafeStoragePassword
 } from '@smart-signer/lib/wrong-safe-storage-password';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
+import { HiveAuthError } from '@smart-signer/lib/hiveauth/hiveauth-error';
 import { findChunkLoadError } from '@ui/lib/chunk-load-error';
 import { bufferHandledError } from '@ui/lib/sentry-early-errors';
 import { BrowserOfflineError } from '@hive/transaction/lib/connectivity';
@@ -75,6 +76,12 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // User-cancelled operations (dismissed password dialog) — silently ignore
   if (isUserCancelled(error)) {
     logger.info('User cancelled operation in %s — no toast', ctx?.method);
+    return;
+  }
+
+  // The HiveAuth dialog already says how its request ended, until the user closes it
+  if (error instanceof HiveAuthError) {
+    logger.info('HiveAuth request in %s ended: %s', ctx?.method, error.failure);
     return;
   }
 

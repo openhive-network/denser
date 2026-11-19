@@ -34,7 +34,15 @@
     "tokenExpired": "Token HiveAuth scaduto, per favore riprova..",
     "unknownCommand": "comando sconosciuto",
     "userRejectedRequest": "l'utente ha rifiutato la richiesta HiveAuth",
-    "verifyPostingKeyInstructions": "Per favore usa la tua app wallet mobile compatibile con HiveAuth per verificare la tua chiave di pubblicazione."
+    "verifyPostingKeyInstructions": "Per favore usa la tua app wallet mobile compatibile con HiveAuth per verificare la tua chiave di pubblicazione.",
+    "title_sign_in": "Accedi con HiveAuth",
+    "title_sign": "Approva con HiveAuth",
+    "approveOnPhone": "Approva sul tuo telefono…",
+    "openInWallet": "Apri nell'app portafoglio",
+    "close": "Chiudi",
+    "cancelled": "La richiesta HiveAuth è stata annullata.",
+    "unreachable": "Impossibile raggiungere il server HiveAuth. Controlla la connessione e riprova.",
+    "failed": "La richiesta HiveAuth non è riuscita. Riprova."
   },
   "login_form": {
     "private_key_placeholder": "La tua chiave privata {{keyType}}",

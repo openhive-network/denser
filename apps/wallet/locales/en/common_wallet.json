@@ -552,6 +552,7 @@
     "encrypt_memo_title": "Encrypt MEMO message",
     "encrypt_memo_description": "This memo will be encrypted before sending. Provide the MEMO private key.",
     "encrypt_memo_description_with_wallet": "This memo will be encrypted before sending. Provide the MEMO private key or use {{wallet}}.",
+    "memo_hiveauth_unsupported": "HiveAuth wallet apps cannot encrypt or decode memos here. Enter your MEMO private key instead.",
     "encrypt_memo_plaintext": "Message to encrypt",
     "encrypt_memo_with_private_key": "Encrypt with private key",
     "encrypt_memo_with_keychain": "Encrypt with Keychain",

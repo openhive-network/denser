@@ -6,6 +6,7 @@
  */
 
 import { apiSetsEnvFromProcess, resolveApiSetsConfig } from '@hive/ui/config/api-sets';
+import { hiveAuthConnectOrigins, resolveHiveAuthConfig } from '@hive/ui/config/hiveauth';
 import {
   matrixClientOrigins,
   matrixFrameOrigins,
@@ -120,6 +121,11 @@ function buildConnectSrcHosts(): Set<string> {
       hosts.add('https://*.ingest.us.sentry.io');
     }
   }
+
+  // The HAS relay the HiveAuth sign-in and signing talk to, only while HiveAuth is offered
+  hiveAuthConnectOrigins(resolveHiveAuthConfig((key) => process.env[`REACT_APP_${key}`])).forEach((origin) =>
+    hosts.add(origin)
+  );
 
   // The native Matrix chat client talks to the homeserver from the page
   matrixClientOrigins(

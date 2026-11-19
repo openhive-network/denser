@@ -141,6 +141,12 @@ const EncryptMemoDialog = ({
           </DialogDescription>
         </DialogHeader>
 
+        {user.loginType === LoginType.hiveauth && (
+          <p className="text-sm text-muted-foreground" data-testid="memo-hiveauth-unsupported">
+            {t('transfers_page.memo_hiveauth_unsupported')}
+          </p>
+        )}
+
         <div className="grid gap-4">
           <div>
             <Label htmlFor="encrypt-memo-plaintext">{t('transfers_page.encrypt_memo_plaintext')}</Label>

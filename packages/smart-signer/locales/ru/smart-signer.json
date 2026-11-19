@@ -34,7 +34,15 @@
     "tokenExpired": "Токен HiveAuth истек, пожалуйста, попробуйте снова..",
     "unknownCommand": "неизвестная команда",
     "userRejectedRequest": "пользователь отклонил запрос HiveAuth",
-    "verifyPostingKeyInstructions": "Пожалуйста, используйте совместимое мобильное приложение HiveAuth для подтверждения вашего ключа для публикации."
+    "verifyPostingKeyInstructions": "Пожалуйста, используйте совместимое мобильное приложение HiveAuth для подтверждения вашего ключа для публикации.",
+    "title_sign_in": "Войти через HiveAuth",
+    "title_sign": "Подтвердить через HiveAuth",
+    "approveOnPhone": "Подтвердите на телефоне…",
+    "openInWallet": "Открыть в приложении-кошельке",
+    "close": "Закрыть",
+    "cancelled": "Запрос HiveAuth отменён.",
+    "unreachable": "Не удалось подключиться к серверу HiveAuth. Проверьте соединение и попробуйте снова.",
+    "failed": "Запрос HiveAuth не выполнен. Попробуйте снова."
   },
   "login_form": {
     "private_key_placeholder": "Ваш приватный ключ {{keyType}}",

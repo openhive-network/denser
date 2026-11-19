@@ -134,6 +134,36 @@ export function watchInclusion(
   return { included, cancel: () => finish(false) };
 }
 
+/** How often `pollInclusion` asks the node, about once a block. */
+export const INCLUSION_POLL_INTERVAL_MS = 3_000;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Asks `lookUpInclusion` about a transaction known by any of `transactionIds` every `intervalMs`
+ * until a block includes it, at most for `timeoutMs`: for a transaction another app broadcast (a
+ * HiveAuth wallet app), whose block may be past before this page learns its id, so no block scan
+ * can be relied on. Resolves true once found, false when not found in time; a failed lookup is
+ * retried, and rejects with its failure when it is the last.
+ */
+export async function pollInclusion(
+  lookUpInclusion: InclusionLookup,
+  transactionIds: readonly string[],
+  timeoutMs = INCLUSION_TIMEOUT_MS,
+  intervalMs = INCLUSION_POLL_INTERVAL_MS
+): Promise<boolean> {
+  const lookups = Math.max(1, Math.floor(timeoutMs / intervalMs) + 1);
+  for (let lookup = 1; ; lookup++) {
+    try {
+      if (await lookUpInclusion(transactionIds)) return true;
+      if (lookup >= lookups) return false;
+    } catch (error) {
+      if (lookup >= lookups) throw error;
+    }
+    await sleep(intervalMs);
+  }
+}
+
 /**
  * WorkerBee's `broadcast` rejects with this text when the node accepted the transaction but no block
  * the bot scanned before `expireInMs` included it.

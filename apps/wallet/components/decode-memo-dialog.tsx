@@ -192,6 +192,12 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
+        {user.loginType === LoginType.hiveauth && (
+          <p className="text-sm text-muted-foreground" data-testid="memo-hiveauth-unsupported">
+            {t('transfers_page.memo_hiveauth_unsupported')}
+          </p>
+        )}
+
         <div className="grid gap-4">
           {showAutoTrying && (
             <div className="text-sm text-muted-foreground" data-testid="decode-memo-auto-trying">

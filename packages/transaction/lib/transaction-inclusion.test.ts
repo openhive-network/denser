@@ -7,6 +7,7 @@ import {
   findWaxRequestTimeout,
   inclusionLookupVia,
   isNodeNetworkFailure,
+  pollInclusion,
   isWaxRequestTimeout,
   recordedTransactionId,
   TransactionNotConfirmedError,
@@ -245,6 +246,42 @@ describe('watchInclusion after a scanner error', () => {
 
     expect(await watch.included).to.equal(false);
     expect(asked).to.deep.equal([]);
+  });
+});
+
+describe('pollInclusion', () => {
+  /** A lookup answering `answers` in turn (an Error rejects), recording the ids it was asked about */
+  function lookup(...answers: Array<boolean | Error>) {
+    const asked: Array<readonly string[]> = [];
+    const lookUp: InclusionLookup = async (transactionIds) => {
+      const answer = answers[asked.length] ?? false;
+      asked.push(transactionIds);
+      if (answer instanceof Error) throw answer;
+      return answer;
+    };
+    return { lookUp, asked };
+  }
+
+  it('resolves true as soon as the node finds the transaction, asking no more', async () => {
+    const { lookUp, asked } = lookup(false, true, false);
+    expect(await pollInclusion(lookUp, ['tx'], 40, 10)).to.equal(true);
+    expect(asked).to.deep.equal([['tx'], ['tx']]);
+  });
+
+  it('resolves false after asking once per interval through the timeout', async () => {
+    const { lookUp, asked } = lookup();
+    expect(await pollInclusion(lookUp, ['tx'], 30, 10)).to.equal(false);
+    expect(asked).to.have.length(4);
+  });
+
+  it('retries a failed lookup, and rejects with the failure of the last one', async () => {
+    const failure = new Error('node down');
+    expect(await pollInclusion(lookup(failure, true).lookUp, ['tx'], 20, 10)).to.equal(true);
+    const error = await pollInclusion(lookup(false, false, failure).lookUp, ['tx'], 20, 10).then(
+      () => undefined,
+      (caught: unknown) => caught
+    );
+    expect(error).to.equal(failure);
   });
 });
 

@@ -5,12 +5,13 @@ import { sessionOptions } from '@smart-signer/lib/session';
 import { getAccount } from '@transaction/lib/hive-api';
 import { getChain } from '@transaction/lib/chain';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
-import { User } from '@smart-signer/types/common';
+import { LoginType, User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation';
+import { hiveAuthLoginMessage } from '@smart-signer/lib/hiveauth/login-message';
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
@@ -89,8 +90,9 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     } catch (error) {
       logger.error(error, 'Failed to create user object for %s', username);
     }
-  } else {
-    result = await verifyLoginChallenge(chainAccount, signatures, JSON.stringify({ loginChallenge }));
+  } else if (loginType === LoginType.hiveauth && loginChallenge) {
+    // A HiveAuth wallet app signs the login challenge, not a transaction
+    result = await verifyLoginChallenge(chainAccount, signatures, hiveAuthLoginMessage(loginChallenge), keyType);
   }
 
   if (!result) {

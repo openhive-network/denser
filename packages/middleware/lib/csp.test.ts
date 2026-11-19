@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { createRequire, registerHooks } from 'node:module';
 import { SELECTABLE_API_NODES } from '../../ui/config/api-sets.ts';
 
-// csp.ts imports the API sets and chat config the way the apps' bundler resolves it, without the extension
+// csp.ts imports the API sets, chat and HiveAuth config the way the apps' bundler resolves it, without the extension
 // node's type stripping needs.
-const UI_CONFIG_MODULES = new Set(['@hive/ui/config/api-sets', '@hive/ui/config/chat']);
+const UI_CONFIG_MODULES = new Set(['@hive/ui/config/api-sets', '@hive/ui/config/chat', '@hive/ui/config/hiveauth']);
 registerHooks({
   resolve(specifier, context, nextResolve) {
     return nextResolve(UI_CONFIG_MODULES.has(specifier) ? `${specifier}.ts` : specifier, context);
@@ -300,6 +300,40 @@ test("connect-src admits Sentry SaaS's ingest hosts for a sentry.io DSN, and no 
       assert.ok(!connectSrc.some((source) => source.includes('sentry')), connectSrc.join(' '));
     });
   }
+});
+
+const withHiveAuthEnv = (values: { enabled?: string; server?: string }, run: () => void) => {
+  const saved = { enabled: process.env.REACT_APP_HIVEAUTH_ENABLED, server: process.env.REACT_APP_HIVEAUTH_SERVER };
+  const assign = (key: string, value: string | undefined) => {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  };
+  assign('REACT_APP_HIVEAUTH_ENABLED', values.enabled);
+  assign('REACT_APP_HIVEAUTH_SERVER', values.server);
+  try {
+    run();
+  } finally {
+    assign('REACT_APP_HIVEAUTH_ENABLED', saved.enabled);
+    assign('REACT_APP_HIVEAUTH_SERVER', saved.server);
+  }
+};
+
+test("connect-src admits the HiveAuth relay while HiveAuth is on, the configured one in place of the public one", () => {
+  withHiveAuthEnv({}, () => {
+    assert.ok(connectSrcOf(buildCsp({}, 'bm9uY2U=')).includes('wss://hive-auth.arcange.eu'));
+  });
+  withHiveAuthEnv({ server: 'wss://has.example.org:8443/relay' }, () => {
+    const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+    assert.ok(connectSrc.includes('wss://has.example.org:8443'), connectSrc.join(' '));
+    assert.ok(!connectSrc.includes('wss://hive-auth.arcange.eu'), connectSrc.join(' '));
+  });
+});
+
+test('connect-src has no HiveAuth relay while HiveAuth is off', () => {
+  withHiveAuthEnv({ enabled: 'no', server: 'wss://has.example.org' }, () => {
+    const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+    assert.ok(!connectSrc.some((source) => source.startsWith('wss:')), connectSrc.join(' '));
+  });
 });
 
 test('the baseline headers of every path agree with what the middleware sets', () => {
