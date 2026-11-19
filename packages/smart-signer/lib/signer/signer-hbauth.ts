@@ -18,6 +18,7 @@ import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
+import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
 import { SignedOutError } from '@transaction/lib/signed-out';
 
 const logger = getLogger('app');
@@ -66,19 +67,20 @@ export class SignerHbauth extends Signer {
 
   /**
    * Displays dialog and asks user to enter password for unlocking
-   * wallet.
+   * wallet, stating `operation`, the one the unlock signs, when given.
    *
    * @returns {Promise<string>}
    * @memberof SignerHbauth
    */
-  async getPasswordFromUser(): Promise<string> {
+  async getPasswordFromUser(operation?: OperationSummary): Promise<string> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       showSessionTime: true,
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
-      }
+      },
+      operation
     };
 
     try {
@@ -124,14 +126,15 @@ export class SignerHbauth extends Signer {
       throw new Error('Digests do not match');
     }
 
-    return this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
+    return this.signDigest(digest, '', singleSignKeyType, requiredKeyType, summarizeOperations(transaction.operations));
   }
 
   async signDigest(
     digest: THexString,
     password: string,
     singleSignKeyType?: KeyAuthorityType,
-    requiredKeyType?: KeyAuthorityType
+    requiredKeyType?: KeyAuthorityType,
+    operation?: OperationSummary
   ) {
     const { username, keyType } = this;
     logger.debug('signDigest args: %o', { digest, username, keyType });
@@ -141,7 +144,7 @@ export class SignerHbauth extends Signer {
     }
 
     return hbauthService.withOnlineClient((authClient) =>
-      this.signDigestWith(authClient, digest, password, singleSignKeyType, requiredKeyType)
+      this.signDigestWith(authClient, digest, password, singleSignKeyType, requiredKeyType, operation)
     );
   }
 
@@ -150,7 +153,8 @@ export class SignerHbauth extends Signer {
     digest: THexString,
     password: string,
     singleSignKeyType?: KeyAuthorityType,
-    requiredKeyType?: KeyAuthorityType
+    requiredKeyType?: KeyAuthorityType,
+    operation?: OperationSummary
   ): Promise<string> {
     const { username, keyType } = this;
     const checkAuthResult = await this.checkAuth(authClient, username, keyType, requiredKeyType);
@@ -180,7 +184,7 @@ export class SignerHbauth extends Signer {
       // Fall back to password if biometric didn't succeed
       if (!authStatus.ok) {
         if (!password) {
-          password = await this.getPasswordFromUser();
+          password = await this.getPasswordFromUser(operation);
         }
         if (!password) throw new Error('No password to unlock key');
 
@@ -218,7 +222,8 @@ export class SignerHbauth extends Signer {
           title: `login_form.enter_key_title_${singleSignKeyType}`,
           description: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
           inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
-        }
+        },
+        operation
       };
 
       try {
@@ -243,7 +248,7 @@ export class SignerHbauth extends Signer {
     }
 
     if (requiredKeyType && requiredKeyType !== keyType) {
-      const signature = await this.requireOtherKey(authClient, requiredKeyType, username, digest, password);
+      const signature = await this.requireOtherKey(authClient, requiredKeyType, username, digest, password, operation);
       return signature;
     } else {
       const signature = await authClient.sign(username, digest, keyType);
@@ -325,14 +330,15 @@ export class SignerHbauth extends Signer {
     keyType: KeyAuthorityType,
     username: string,
     digest: string,
-    password: string
+    password: string,
+    operation?: OperationSummary
   ): Promise<string> {
     const auths = await authClient.getRegisteredUserByUsername(username);
     if (!auths) throw new Error('User not found');
 
     // If key is not registered in safe storage, ask user to enter it
     if (!auths.registeredKeyTypes.includes(keyType)) {
-      await this.registerKey(authClient, keyType, password);
+      await this.registerKey(authClient, keyType, password, operation);
     }
     // The account holding authority over this one, when the required key is one of its keys
     const settings = await authClient.getUserSettings(username);
@@ -360,10 +366,15 @@ export class SignerHbauth extends Signer {
    * Asks for the `keyType` key and registers it in safe storage, in the Direct Authority Mode the
    * session's key was registered with, and for the session's key type too when it is that key as
    * well. `password` is the safe storage password when this flow already has it; otherwise it is
-   * asked for, once per signer.
+   * asked for, once per signer. Both prompts state `operation`, the one the key signs, when given.
    */
-  private async registerKey(authClient: OnlineClient, keyType: KeyAuthorityType, password: string): Promise<void> {
-    if (!password) password = await this.getPasswordFromUser();
+  private async registerKey(
+    authClient: OnlineClient,
+    keyType: KeyAuthorityType,
+    password: string,
+    operation?: OperationSummary
+  ): Promise<void> {
+    if (!password) password = await this.getPasswordFromUser(operation);
     // Registered from within the prompt: a key hb-auth refuses for its authority keeps it open with the role hint
     const registration = promptedKeyRegistration(keyType, async (wif) => {
       requireStillSignedInAs(this.username);
@@ -385,7 +396,8 @@ export class SignerHbauth extends Signer {
       i18nKeysForCaptions: {
         title: `login_form.this_operation_requires_your_${keyType}_key_enter_key_and_keep_it_in_safe_storage`,
         inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
-      }
+      },
+      operation
     };
     await askWhileSignedIn(this.username, () => this.getKeyFromUser(passwordFormOptions));
     try {

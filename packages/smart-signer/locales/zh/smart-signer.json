@@ -203,6 +203,12 @@
     "fresh_check_description": "此操作需要您的 {{keyType}} 密钥。请输入钱包密码以签名。每次需要此密钥的操作前都会再次询问密码。",
     "fresh_check_sign_button": "签名"
   },
+  "operation_summary": {
+    "witness_vote": "签名：为见证人 @{{witness}} 投票",
+    "witness_unvote": "签名：撤销对见证人 @{{witness}} 的投票",
+    "proposal_vote": "签名：为提案 {{proposals}} 投票",
+    "proposal_unvote": "签名：撤销对提案 {{proposals}} 的投票"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "{{token}} 金额最多只能有 {{precision}} 位小数。",
     "missing_owner_authority": "此操作需要您的所有者密钥（owner），因此在此处不可用。",

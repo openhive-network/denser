@@ -10,6 +10,7 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
 import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/google-drive-error-dialog';
 import { missingKeyDialogProps } from '@smart-signer/lib/signer/google-drive-missing-key';
 import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
@@ -577,12 +578,13 @@ export class SignerGoogleDrive extends Signer {
   }
 
   /**
-   * Asks for the wallet password for one operation needing the `keyType` key, in a field the browser
-   * does not fill in, and checks it against the wallet before the prompt closes.
+   * Asks for the wallet password for one operation needing the `keyType` key, stating `operation`
+   * when given, in a field the browser does not fill in, and checks it against the wallet before the
+   * prompt closes.
    *
    * @throws {Error} "No password from user" when the prompt is closed
    */
-  private async askFreshPassword(keyType: keyof THiveRoles): Promise<string> {
+  private async askFreshPassword(keyType: keyof THiveRoles, operation?: OperationSummary): Promise<string> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
@@ -595,7 +597,8 @@ export class SignerGoogleDrive extends Signer {
         submitButtonName: 'password_form.fresh_check_sign_button',
         submitButtonNameWhenWorking: 'login_form.working'
       },
-      i18nValues: { keyType }
+      i18nValues: { keyType },
+      operation
     };
     try {
       const { password } = await PasswordDialogModalPromise({ isOpen: true, passwordFormOptions });
@@ -642,7 +645,7 @@ export class SignerGoogleDrive extends Signer {
    */
   private signWithFreshPassword(authTx: ITransaction, keyType: keyof THiveRoles): Promise<void> {
     return signAfterFreshPassword(
-      () => this.askFreshPassword(keyType),
+      () => this.askFreshPassword(keyType, summarizeOperations(authTx.transaction.operations)),
       (password) => this.signWithWalletPassword(authTx, keyType, password),
       (error) => {
         logger.error('Error opening Google Drive wallet: %s Signing in to Google again', error instanceof Error ? error.message : String(error));

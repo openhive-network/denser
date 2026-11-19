@@ -174,7 +174,7 @@ test.describe('Witness vote broadcast', () => {
     });
   });
 
-  test('WALLET-TX-WITNESS-UNVOTE-02 — declining to give the active key for a vote removal broadcasts nothing', async ({
+  test('WALLET-TX-WITNESS-UNVOTE-02 — the key prompt after the confirmation names the removal, and declining it broadcasts nothing', async ({
     page
   }) => {
     const broadcasts = await openWitnessesPage(page, { storeKey: false });
@@ -182,6 +182,9 @@ test.describe('Witness vote broadcast', () => {
     await removeVote(page);
     const keyInput = page.getByPlaceholder('Your active private key');
     await expect(keyInput).toBeVisible();
+    await expect(page.getByTestId('password-form-operation')).toHaveText(
+      `Sign: remove witness vote for @${VOTED_WITNESS}`
+    );
     await page.keyboard.press('Escape');
 
     await expect(keyInput).toBeHidden();

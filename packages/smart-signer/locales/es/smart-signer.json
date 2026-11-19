@@ -203,6 +203,12 @@
     "fresh_check_description": "Esta operación necesita tu clave {{keyType}}. Introduce la contraseña de tu billetera para firmarla. La contraseña se vuelve a pedir antes de cada operación que necesite esta clave.",
     "fresh_check_sign_button": "Firmar"
   },
+  "operation_summary": {
+    "witness_vote": "Firmar: votar por el testigo @{{witness}}",
+    "witness_unvote": "Firmar: retirar el voto por el testigo @{{witness}}",
+    "proposal_vote": "Firmar: votar por la propuesta {{proposals}}",
+    "proposal_unvote": "Firmar: retirar el voto por la propuesta {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "La cantidad de {{token}} puede tener como máximo {{precision}} decimales.",
     "missing_owner_authority": "Esta operación necesita tu clave de propietario (owner) y no está disponible aquí.",

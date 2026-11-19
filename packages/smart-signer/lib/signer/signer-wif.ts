@@ -18,6 +18,7 @@ import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
+import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
 
 const logger = getLogger('app');
 
@@ -48,10 +49,11 @@ export class SignerWif extends SignerHbauth {
       throw new Error('Digests do not match');
     }
 
-    const otherKey = signingKeyType === this.keyType ? null : await this.getOtherKey(signingKeyType);
+    const operation = summarizeOperations(transaction.operations);
+    const otherKey = signingKeyType === this.keyType ? null : await this.getOtherKey(signingKeyType, operation);
     const signature = otherKey
       ? await signDigestWithWif(digest, otherKey.wif)
-      : await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
+      : await this.signDigest(digest, '', singleSignKeyType, requiredKeyType, operation);
     txBuilder.addSignature(signature);
 
     await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, signingKeyType, 'WIF');
@@ -67,13 +69,16 @@ export class SignerWif extends SignerHbauth {
 
   /**
    * The WIF key of `keyType`, another than the session's: the stored one, or, for the active key,
-   * the one the user enters for this operation, then kept when they ask for it. An operation
+   * the one the user enters for `operation`, stated in the prompt, then kept when they ask for it. An operation
    * needing another key the session lacks is refused instead of letting the node reject it.
    *
    * @throws {MissingAuthorityError} when no key of `keyType` is stored and it is not the active key
    * @throws {SignedOutError} when the user signed out, or switched account, while asked for the key
    */
-  private async getOtherKey(keyType: KeyAuthorityType): Promise<{ wif: string; store: boolean }> {
+  private async getOtherKey(
+    keyType: KeyAuthorityType,
+    operation?: OperationSummary
+  ): Promise<{ wif: string; store: boolean }> {
     const storedWif = this.getStoredWif(keyType);
     if (storedWif) return { wif: storedWif, store: false };
     if (keyType !== 'active') throw new MissingAuthorityError(keyType);
@@ -88,7 +93,8 @@ export class SignerWif extends SignerHbauth {
         title: 'login_form.enter_key_title_active',
         description: 'login_form.this_operation_requires_your_key_for_single_sign_active'
       },
-      i18nValues: { keyType }
+      i18nValues: { keyType },
+      operation
     };
     const { password: wif, storePassword } = await askWhileSignedIn(username, () =>
       this.getKeyFromUser(passwordFormOptions)
@@ -105,7 +111,8 @@ export class SignerWif extends SignerHbauth {
     digest: THexString,
     explicitPassword: string = '',
     _singleSignKeyType?: KeyAuthorityType,
-    _requiredKeyType?: KeyAuthorityType
+    _requiredKeyType?: KeyAuthorityType,
+    operation?: OperationSummary
   ) {
     const { username, keyType } = this;
     logger.debug('signDigest #wif args: %o', { digest, username, keyType });
@@ -123,7 +130,7 @@ export class SignerWif extends SignerHbauth {
         wif = keyFromStorage;
 
       if (!wif)
-        wif = await this.getPasswordFromUser();
+        wif = await this.getPasswordFromUser(operation);
 
       if (!wif)
         throw new Error("Failed to parse private key from storage");
@@ -144,7 +151,7 @@ export class SignerWif extends SignerHbauth {
    * @returns {Promise<string>}
    * @memberof SignerWif
    */
-  async getPasswordFromUser(): Promise<string> {
+  async getPasswordFromUser(operation?: OperationSummary): Promise<string> {
     const { username, keyType } = this;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
@@ -156,7 +163,8 @@ export class SignerWif extends SignerHbauth {
         title: `login_form.enter_key_title_${keyType}`,
         description: `login_form.this_operation_requires_your_key_for_single_sign_${keyType}`
       },
-      i18nValues: { keyType }
+      i18nValues: { keyType },
+      operation
     };
 
     try {
