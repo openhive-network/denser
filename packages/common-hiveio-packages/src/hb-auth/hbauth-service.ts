@@ -19,6 +19,18 @@ import { setSafeStorageLockProbe } from './safe-storage-lock';
 import { LiteWalletClient } from './lite-wallet-client';
 
 export { SupersededKeyWriteError, type OnlineClientOperationOptions } from './online-client-operation';
+
+/**
+ * A client of safe storage's worker failed to initialize: the worker did not load, or did not answer
+ * hb-auth's handshake in time. Its `cause` is hb-auth's error, whose timeout message blames the WASM,
+ * which the handshake does not load.
+ */
+export class SafeStorageStartError extends Error {
+  constructor(options?: ErrorOptions) {
+    super('Safe storage could not start; reload the page', options);
+    this.name = 'SafeStorageStartError';
+  }
+}
 export type { LiteWalletClient } from './lite-wallet-client';
 
 const logger = getLogger('app');
@@ -199,7 +211,8 @@ const logoutIfSignedOutSince = async (client: OnlineClient | OfflineClient, work
  * Initializes `client`, and starts its worker's session with a single call, after the clients other
  * pages are starting with that worker: hb-auth's worker starts beekeeper, and instantiates its WASM,
  * for every call that reaches it before the first start finished, and keeps only the last one. A
- * worker that missed a sign-out is logged out of before the client is used.
+ * worker that missed a sign-out is logged out of before the client is used. Rejects with
+ * SafeStorageStartError when the client does not initialize.
  */
 const startClient = (
   client: OnlineClient | OfflineClient,
@@ -207,7 +220,10 @@ const startClient = (
   workerUrl: string
 ): Promise<void> =>
   startWithWorker(workerUrl, async () => {
-    await client.initialize(chain);
+    await client.initialize(chain).catch((error: unknown) => {
+      logger.error(error, 'HB-Auth client did not initialize with its worker %s', workerUrl);
+      throw new SafeStorageStartError({ cause: error });
+    });
     await client.getRegisteredUsers();
     await logoutIfSignedOutSince(client, workerUrl);
   });
