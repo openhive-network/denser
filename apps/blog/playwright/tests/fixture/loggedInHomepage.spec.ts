@@ -74,6 +74,28 @@ test.describe('Homepage — seeded logged-in user', () => {
     await expect(userMenu).toBeHidden();
   });
 
+  test('in phone landscape the profile menu fits the viewport and scrolls to its last item', async ({ page }) => {
+    const landscape = { width: 844, height: 390 };
+    await page.setViewportSize(landscape);
+    await page.goto('/');
+
+    const userMenu = page.getByTestId('user-profile-menu-content');
+    await expect(async () => {
+      await page.getByTestId('profile-avatar-button').click();
+      await expect(userMenu).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
+
+    const box = await userMenu.boundingBox();
+    expect(box).not.toBeNull();
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(landscape.height);
+    const isScrollable = await userMenu.evaluate((el) => el.scrollHeight > el.clientHeight);
+    expect(isScrollable).toBe(true);
+
+    const logout = page.getByTestId('user-profile-menu-logout-link');
+    await logout.scrollIntoViewIfNeeded();
+    await expect(logout).toBeInViewport();
+  });
+
   test('the Theme item is a keyboard submenu: ArrowRight, Enter and Space open it, ArrowLeft and Esc return to it, and Enter applies a theme', async ({
     page
   }) => {
