@@ -100,6 +100,8 @@ test.describe('Account switching safety', () => {
     await expect(page.getByTestId('account-switcher-login-method')).toContainText('WIF Key');
 
     await profileMenu.accountSwitcherRemoveButtons.click();
+    // Its WIF keys are saved in plaintext: removing the account asks first
+    await page.getByTestId('leave-saved-key-forget').click();
 
     await expect(profileMenu.accountSwitcherItems).toHaveCount(0);
     await expect.poll(() => readStoredCredentialsOf(page, OTHER.username)).toEqual([]);
@@ -114,6 +116,8 @@ test.describe('Account switching safety', () => {
 
     const loggedOut = page.waitForResponse('**/api/auth/logout');
     await profileMenu.logoutLink.click();
+    // The keys seeded here are saved in plaintext: signing out asks first
+    await page.getByTestId('leave-saved-key-forget').click();
     await loggedOut;
 
     await expect.poll(() => readStoredCredentialsOf(page, CURRENT.username)).toEqual([]);

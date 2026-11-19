@@ -218,7 +218,19 @@
     "password_description_existing": "输入 @{{username}} 的安全存储密码以将密钥添加进去。",
     "protect_button": "保护密钥",
     "protected": "您的密钥现已保存在安全存储中。",
-    "menu_notice": "您的密钥未受保护地保存在此浏览器中。请用安全存储保护它。退出登录会将其遗忘。"
+    "menu_notice": "您的密钥未受保护地保存在此浏览器中。请用安全存储保护它。退出登录会将其遗忘。",
+    "forget_button": "忘记已保存的密钥",
+    "forget_title": "忘记已保存的密钥？",
+    "forget_description": "此浏览器将不再记住该密钥。请确保你有另一份副本。",
+    "forget_confirm_button": "忘记密钥",
+    "cancel_button": "取消",
+    "forgotten": "此浏览器已不再记住你的密钥。",
+    "leave_title": "你的密钥保存在此浏览器中",
+    "leave_description_sign_out": "{{accounts}} 的一个密钥未受保护地保存在此浏览器中。退出登录会将其遗忘。请用安全存储保护它，或确保你有另一份副本。",
+    "leave_description_remove_account": "{{accounts}} 的一个密钥未受保护地保存在此浏览器中。移除该账户会将其遗忘。请用安全存储保护它，或确保你有另一份副本。",
+    "leave_protect_button": "用安全存储保护",
+    "leave_forget_sign_out_button": "忘记并退出登录",
+    "leave_forget_remove_account_button": "忘记并移除账户"
   },
   "operation_summary": {
     "witness_vote": "签名：为见证人 @{{witness}} 投票",

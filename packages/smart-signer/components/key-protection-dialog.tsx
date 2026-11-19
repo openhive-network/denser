@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@ui/components';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import type { KeyProtectionChoice } from '@smart-signer/lib/auth/key-protection';
 
 interface KeyProtectionDialogProps {
   username: string;
@@ -13,16 +14,17 @@ interface KeyProtectionDialogProps {
 
 /**
  * Tells that a key of `username` is saved unprotected in this browser and offers to protect it with
- * safe storage. Resolves true for "Set a password", false for "Not now" or a closed dialog.
+ * safe storage, or to forget it. Resolves the choice; a closed dialog is "Not now".
  */
-const KeyProtectionDialog: FC<KeyProtectionDialogProps & InstanceProps<boolean>> = ({
+const KeyProtectionDialog: FC<KeyProtectionDialogProps & InstanceProps<KeyProtectionChoice>> = ({
   isOpen = false,
   onResolve,
   username
 }) => {
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
-  const notNow = () => onResolve(false);
-  const protect = () => onResolve(true);
+  const notNow = () => onResolve('notNow');
+  const forget = () => onResolve('forget');
+  const protect = () => onResolve('protect');
   const onOpenChange = (open: boolean) => {
     if (!open) notNow();
   };
@@ -35,6 +37,9 @@ const KeyProtectionDialog: FC<KeyProtectionDialogProps & InstanceProps<boolean>>
           <DialogDescription className="pt-2">{t('key_protection.dialog_description', { username })}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex-col gap-2 sm:flex-row">
+          <Button variant="ghost" onClick={forget} data-testid="key-protection-forget">
+            {t('key_protection.forget_button')}
+          </Button>
           <Button variant="outline" onClick={notNow} data-testid="key-protection-not-now">
             {t('key_protection.not_now_button')}
           </Button>

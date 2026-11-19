@@ -19,7 +19,7 @@ registerHooks({
   }
 });
 
-const { protectStoredKeys } = await import('./key-protection.ts');
+const { protectStoredKeys, settleStoredKeysBeforeLeaving } = await import('./key-protection.ts');
 const { importKeysIntoSafeStorage, keysHeldInSafeStorage, SafeStorageKeyMismatchError } = await import(
   '../signer/safe-storage-import.ts'
 );
@@ -27,6 +27,7 @@ const { wifCredentialKey } = await import('../signer/credential-storage.ts');
 const { WrongSafeStoragePasswordError } = await import('../wrong-safe-storage-password.ts');
 
 type WifKey = { keyType: KeyAuthorityType; wif: string };
+type KeyProtectionChoice = 'protect' | 'notNow' | 'forget';
 
 const USERNAME = 'alice';
 const PASSWORD = 'safe-storage-password';
@@ -117,7 +118,11 @@ function storageWith(keys: Partial<Record<KeyAuthorityType, string>>): StubStora
 }
 
 /** The steps protecting USERNAME's keys with `safeStorage`, recording what the user was asked */
-function stepsFor(storage: StubStorage, safeStorage: FakeSafeStorage, answers: { protect: boolean; password?: string }) {
+function stepsFor(
+  storage: StubStorage,
+  safeStorage: FakeSafeStorage,
+  answers: { choice: KeyProtectionChoice; confirmForget?: boolean; password?: string }
+) {
   const asked: string[] = [];
   return {
     asked,
@@ -126,7 +131,11 @@ function stepsFor(storage: StubStorage, safeStorage: FakeSafeStorage, answers: {
       findHeldKeys: (keys: WifKey[]) => keysHeldInSafeStorage(safeStorage, USERNAME, keys, KEY_CHECK),
       askToProtect: async () => {
         asked.push('protect');
-        return answers.protect;
+        return answers.choice;
+      },
+      confirmForget: async () => {
+        asked.push('confirm forget');
+        return answers.confirmForget ?? false;
       },
       importKeys: async (keys: WifKey[]) => {
         asked.push(`password for ${keys.map(({ keyType }) => keyType).join('+')}`);
@@ -143,7 +152,7 @@ describe('protectStoredKeys', () => {
   it('imports every saved key into a new safe storage wallet, checks it signs with them, then removes them', async () => {
     const storage = storageWith({ posting: 'posting-wif', active: 'active-wif' });
     const safeStorage = new FakeSafeStorage();
-    const { asked, steps } = stepsFor(storage, safeStorage, { protect: true, password: PASSWORD });
+    const { asked, steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: PASSWORD });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'moved');
 
@@ -157,7 +166,7 @@ describe('protectStoredKeys', () => {
     const safeStorage = new FakeSafeStorage();
     safeStorage.password = PASSWORD;
     safeStorage.keys.set('posting', 'older-posting-wif');
-    const { steps } = stepsFor(storage, safeStorage, { protect: true, password: PASSWORD });
+    const { steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: PASSWORD });
 
     await assert.rejects(protectStoredKeys(USERNAME, steps), SafeStorageKeyMismatchError);
 
@@ -170,7 +179,7 @@ describe('protectStoredKeys', () => {
     const safeStorage = new FakeSafeStorage();
     safeStorage.password = PASSWORD;
     safeStorage.keys.set('posting', 'posting-wif');
-    const { steps } = stepsFor(storage, safeStorage, { protect: true, password: 'wrong' });
+    const { steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: 'wrong' });
 
     await assert.rejects(protectStoredKeys(USERNAME, steps), WrongSafeStoragePasswordError);
 
@@ -183,7 +192,7 @@ describe('protectStoredKeys', () => {
     const safeStorage = new FakeSafeStorage();
     safeStorage.password = PASSWORD;
     safeStorage.keys.set('posting', 'posting-wif');
-    const { steps } = stepsFor(storage, safeStorage, { protect: true, password: PASSWORD });
+    const { steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: PASSWORD });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'moved');
 
@@ -194,7 +203,7 @@ describe('protectStoredKeys', () => {
   it('on "Not now" keeps the saved keys and puts off asking again', async () => {
     const storage = storageWith({ posting: 'posting-wif' });
     const safeStorage = new FakeSafeStorage();
-    const { asked, steps } = stepsFor(storage, safeStorage, { protect: false });
+    const { asked, steps } = stepsFor(storage, safeStorage, { choice: 'notNow' });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'snoozed');
 
@@ -205,7 +214,7 @@ describe('protectStoredKeys', () => {
 
   it('takes a closed password prompt as "Not now"', async () => {
     const storage = storageWith({ posting: 'posting-wif' });
-    const { asked, steps } = stepsFor(storage, new FakeSafeStorage(), { protect: true });
+    const { asked, steps } = stepsFor(storage, new FakeSafeStorage(), { choice: 'protect' });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'snoozed');
 
@@ -220,7 +229,7 @@ describe('protectStoredKeys', () => {
     safeStorage.keys.set('posting', 'posting-wif');
     safeStorage.keys.set('active', 'active-wif');
     safeStorage.unlocked = true;
-    const { asked, steps } = stepsFor(storage, safeStorage, { protect: false });
+    const { asked, steps } = stepsFor(storage, safeStorage, { choice: 'notNow' });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'moved');
 
@@ -234,7 +243,7 @@ describe('protectStoredKeys', () => {
     safeStorage.password = PASSWORD;
     safeStorage.keys.set('posting', 'posting-wif');
     safeStorage.unlocked = true;
-    const { asked, steps } = stepsFor(storage, safeStorage, { protect: false });
+    const { asked, steps } = stepsFor(storage, safeStorage, { choice: 'notNow' });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'snoozed');
 
@@ -242,11 +251,107 @@ describe('protectStoredKeys', () => {
     assert.deepEqual(storage.keys(), [wifCredentialKey(USERNAME, 'active'), wifCredentialKey('bob', 'posting')]);
   });
 
+  it('on a confirmed "Forget saved key" removes every saved key of the account and imports none', async () => {
+    const storage = storageWith({ posting: 'posting-wif', active: 'active-wif' });
+    const safeStorage = new FakeSafeStorage();
+    const { asked, steps } = stepsFor(storage, safeStorage, { choice: 'forget', confirmForget: true });
+
+    assert.equal(await protectStoredKeys(USERNAME, steps), 'forgotten');
+
+    assert.deepEqual(asked, ['protect', 'confirm forget']);
+    assert.deepEqual(storage.keys(), [wifCredentialKey('bob', 'posting')]);
+    assert.equal(safeStorage.password, null);
+  });
+
+  it('keeps the saved keys when forgetting them is not confirmed', async () => {
+    const storage = storageWith({ posting: 'posting-wif' });
+    const { asked, steps } = stepsFor(storage, new FakeSafeStorage(), { choice: 'forget', confirmForget: false });
+
+    assert.equal(await protectStoredKeys(USERNAME, steps), 'snoozed');
+
+    assert.deepEqual(asked, ['protect', 'confirm forget', 'snoozed']);
+    assert.equal(storage.getItem(wifCredentialKey(USERNAME, 'posting')), JSON.stringify('posting-wif'));
+  });
+
   it('does nothing for an account with no saved key', async () => {
-    const { asked, steps } = stepsFor(storageWith({}), new FakeSafeStorage(), { protect: true });
+    const { asked, steps } = stepsFor(storageWith({}), new FakeSafeStorage(), { choice: 'protect' });
 
     assert.equal(await protectStoredKeys(USERNAME, steps), 'none');
     assert.deepEqual(asked, []);
+  });
+});
+
+/** The steps settling saved keys before leaving, answering `choice` and recording what was asked */
+function leaveStepsFor(
+  storage: StubStorage,
+  choice: 'protect' | 'forget' | 'cancel',
+  protectOutcome: 'moved' | 'snoozed' = 'moved'
+) {
+  const asked: string[] = [];
+  return {
+    asked,
+    steps: {
+      storage,
+      askBeforeLeaving: async (usernames: string[]) => {
+        asked.push(`leave ${usernames.join('+')}`);
+        return choice;
+      },
+      protect: async (username: string) => {
+        asked.push(`protect ${username}`);
+        return protectOutcome;
+      }
+    }
+  };
+}
+
+describe('settleStoredKeysBeforeLeaving', () => {
+  it('goes on without asking when no account leaving has a saved key', async () => {
+    const storage = storageWith({});
+    const { asked, steps } = leaveStepsFor(storage, 'cancel');
+
+    assert.equal(await settleStoredKeysBeforeLeaving([USERNAME, 'carol'], steps), true);
+
+    assert.deepEqual(asked, []);
+    assert.deepEqual(storage.keys(), [wifCredentialKey('bob', 'posting')]);
+  });
+
+  it('on "Cancel" stays, keeping the saved keys', async () => {
+    const storage = storageWith({ posting: 'posting-wif' });
+    const { asked, steps } = leaveStepsFor(storage, 'cancel');
+
+    assert.equal(await settleStoredKeysBeforeLeaving([USERNAME], steps), false);
+
+    assert.deepEqual(asked, [`leave ${USERNAME}`]);
+    assert.deepEqual(storage.keys(), [wifCredentialKey(USERNAME, 'posting'), wifCredentialKey('bob', 'posting')]);
+  });
+
+  it('on "Forget" removes the saved keys of every account leaving, and of no other', async () => {
+    const storage = storageWith({ posting: 'posting-wif', active: 'active-wif' });
+    storage.setItem(wifCredentialKey('carol', 'active'), JSON.stringify('carol-active'));
+    const { asked, steps } = leaveStepsFor(storage, 'forget');
+
+    assert.equal(await settleStoredKeysBeforeLeaving([USERNAME, 'carol', 'dave'], steps), true);
+
+    assert.deepEqual(asked, [`leave ${USERNAME}+carol`]);
+    assert.deepEqual(storage.keys(), [wifCredentialKey('bob', 'posting')]);
+  });
+
+  it('on "Protect" moves the keys of each account and goes on', async () => {
+    const storage = storageWith({ posting: 'posting-wif' });
+    const { asked, steps } = leaveStepsFor(storage, 'protect');
+
+    assert.equal(await settleStoredKeysBeforeLeaving([USERNAME, 'bob'], steps), true);
+
+    assert.deepEqual(asked, [`leave ${USERNAME}+bob`, `protect ${USERNAME}`, 'protect bob']);
+  });
+
+  it('stays when the password prompt was closed, removing nothing', async () => {
+    const storage = storageWith({ posting: 'posting-wif' });
+    const { steps } = leaveStepsFor(storage, 'protect', 'snoozed');
+
+    assert.equal(await settleStoredKeysBeforeLeaving([USERNAME], steps), false);
+
+    assert.equal(storage.getItem(wifCredentialKey(USERNAME, 'posting')), JSON.stringify('posting-wif'));
   });
 });
 

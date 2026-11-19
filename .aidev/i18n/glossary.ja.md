@@ -42,6 +42,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | post / comment / reply | 投稿 / コメント / 返信 | unreviewed | |
 | wallet | ウォレット | unreviewed | |
 | log in / log out | ログイン / ログアウト | unreviewed | |
+| forget a saved key | 保存されたキーを消去 | unreviewed | As the existing "…消去されます": "消去してログアウト" (#1703). |
 | password | パスワード | unreviewed | |
 | passkey | パスキー | unreviewed | |
 | market / interest | マーケット / 利息 | unreviewed | |

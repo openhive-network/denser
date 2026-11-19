@@ -42,6 +42,7 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | post / comment / reply | 帖子 / 评论 / 回复 | unreviewed | 帖子 in 65 of 114 strings, 文章 in 27. |
 | wallet | 钱包 | unreviewed | |
 | log in / log out | 登录 / 退出登录 | unreviewed | |
+| forget a saved key | 忘记已保存的密钥 | unreviewed | As the existing "会将其遗忘": "忘记并退出登录" (#1703). |
 | password | 密码 | unreviewed | |
 | passkey | 通行密钥 | unreviewed | |
 | market / interest | 市场 / 利息 | unreviewed | |

@@ -44,12 +44,17 @@ export function forgetDriveEncryptionKey(username: string): void {
   driveEncryptionKeys.delete(username);
 }
 
-/** Forget every secret kept for `username` in this tab. */
-export function forgetTabCredentials(username: string): void {
+/** Forget the WIF keys of every role remembered for `username` in this tab. */
+export function forgetTabWifKeys(username: string): void {
   const prefix = wifEntry(username, '');
   for (const entry of [...wifKeys.keys()]) {
     if (entry.startsWith(prefix)) wifKeys.delete(entry);
   }
+}
+
+/** Forget every secret kept for `username` in this tab. */
+export function forgetTabCredentials(username: string): void {
+  forgetTabWifKeys(username);
   driveEncryptionKeys.delete(username);
 }
 

@@ -20,6 +20,7 @@ export class ProfileUserMenu {
     readonly languageTypeButton: Locator;
     readonly walletLink: Locator;
     readonly logoutLink: Locator;
+    readonly leaveSavedKeyDialog: Locator;
     readonly accountSwitcherItems: Locator;
     readonly accountSwitcherRemoveButtons: Locator;
     readonly addAccountItem: Locator;
@@ -43,6 +44,7 @@ export class ProfileUserMenu {
         this.languageTypeButton = page.locator('[data-testid="toggle-language"]');
         this.walletLink = page.locator('[data-testid="user-profile-menu-wallet-link"]');
         this.logoutLink = page.locator('[data-testid="user-profile-menu-logout-link"]');
+        this.leaveSavedKeyDialog = page.getByTestId('leave-saved-key-dialog');
         this.accountSwitcherItems = page.locator('[data-testid="account-switcher-item"]');
         this.accountSwitcherRemoveButtons = page.locator('[data-testid="account-switcher-remove"]');
         this.addAccountItem = page.locator('[data-testid="account-switcher-add"]');

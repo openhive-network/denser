@@ -218,7 +218,19 @@
     "password_description_existing": "Enter the Safe Storage password of @{{username}} to add your key to it.",
     "protect_button": "Protect key",
     "protected": "Your key is now in Safe Storage.",
-    "menu_notice": "Your key is saved unprotected in this browser. Protect it with Safe Storage. Signing out forgets it."
+    "menu_notice": "Your key is saved unprotected in this browser. Protect it with Safe Storage. Signing out forgets it.",
+    "forget_button": "Forget saved key",
+    "forget_title": "Forget the saved key?",
+    "forget_description": "This browser will no longer remember the key. Make sure you have another copy.",
+    "forget_confirm_button": "Forget key",
+    "cancel_button": "Cancel",
+    "forgotten": "This browser no longer remembers your key.",
+    "leave_title": "Your key is saved in this browser",
+    "leave_description_sign_out": "A key of {{accounts}} is saved unprotected in this browser. Signing out forgets it. Protect it with Safe Storage, or make sure you have another copy.",
+    "leave_description_remove_account": "A key of {{accounts}} is saved unprotected in this browser. Removing the account forgets it. Protect it with Safe Storage, or make sure you have another copy.",
+    "leave_protect_button": "Protect it with Safe Storage",
+    "leave_forget_sign_out_button": "Forget it and sign out",
+    "leave_forget_remove_account_button": "Forget it and remove the account"
   },
   "operation_summary": {
     "witness_vote": "Sign: vote for witness @{{witness}}",

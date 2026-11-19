@@ -6,6 +6,7 @@ import { User } from '@smart-signer/types/common';
 import { useAccounts } from '@smart-signer/lib/auth/use-accounts';
 import { useSwitchAccount } from '@smart-signer/lib/auth/use-switch-account';
 import { useRemoveAccount } from '@smart-signer/lib/auth/use-remove-account';
+import { useLeaveSavedKeys } from '@smart-signer/lib/auth/use-leave-saved-keys';
 import type { TFunction } from 'i18next';
 import AccountSwitcherItem from './account-switcher-item';
 
@@ -42,8 +43,17 @@ const AccountSwitcher = ({ user, onAddAccount, onSwitched, t }: AccountSwitcherP
   const { mutate: mutateSwitch } = switchAccount;
   const handleSwitch = useCallback((account: User) => mutateSwitch({ username: account.username }), [mutateSwitch]);
 
+  const leaveSavedKeys = useLeaveSavedKeys();
   const { mutate: mutateRemove } = removeAccount;
-  const handleRemove = useCallback((account: User) => mutateRemove({ account }), [mutateRemove]);
+  // Removing an account forgets the keys saved for it, so the user settles them first
+  const handleRemove = useCallback(
+    (account: User) => {
+      void leaveSavedKeys([account.username], 'removeAccount').then((goOn) => {
+        if (goOn) mutateRemove({ account });
+      });
+    },
+    [leaveSavedKeys, mutateRemove]
+  );
 
   return (
     <>

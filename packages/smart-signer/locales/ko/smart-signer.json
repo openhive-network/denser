@@ -218,7 +218,19 @@
     "password_description_existing": "키를 추가하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요.",
     "protect_button": "키 보호",
     "protected": "키가 이제 안전한 저장소에 있습니다.",
-    "menu_notice": "키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요. 로그아웃하면 지워집니다."
+    "menu_notice": "키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요. 로그아웃하면 지워집니다.",
+    "forget_button": "저장된 키 지우기",
+    "forget_title": "저장된 키를 지우시겠습니까?",
+    "forget_description": "이 브라우저는 더 이상 키를 기억하지 않습니다. 다른 사본이 있는지 확인하세요.",
+    "forget_confirm_button": "키 지우기",
+    "cancel_button": "취소",
+    "forgotten": "이 브라우저는 더 이상 키를 기억하지 않습니다.",
+    "leave_title": "키가 이 브라우저에 저장되어 있습니다",
+    "leave_description_sign_out": "{{accounts}}의 키가 이 브라우저에 보호 없이 저장되어 있습니다. 로그아웃하면 지워집니다. 안전 저장소로 보호하거나 다른 사본이 있는지 확인하세요.",
+    "leave_description_remove_account": "{{accounts}}의 키가 이 브라우저에 보호 없이 저장되어 있습니다. 계정을 제거하면 지워집니다. 안전 저장소로 보호하거나 다른 사본이 있는지 확인하세요.",
+    "leave_protect_button": "안전 저장소로 보호",
+    "leave_forget_sign_out_button": "지우고 로그아웃",
+    "leave_forget_remove_account_button": "지우고 계정 제거"
   },
   "operation_summary": {
     "witness_vote": "서명: 증인 @{{witness}}에게 투표",

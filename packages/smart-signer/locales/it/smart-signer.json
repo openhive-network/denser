@@ -218,7 +218,19 @@
     "password_description_existing": "Inserisci la password dell'archivio sicuro di @{{username}} per aggiungervi la tua chiave.",
     "protect_button": "Proteggi chiave",
     "protected": "La tua chiave ora è nell'archivio sicuro.",
-    "menu_notice": "La tua chiave è salvata senza protezione in questo browser. Proteggila con l'archivio sicuro. Disconnettendoti viene dimenticata."
+    "menu_notice": "La tua chiave è salvata senza protezione in questo browser. Proteggila con l'archivio sicuro. Disconnettendoti viene dimenticata.",
+    "forget_button": "Dimentica la chiave salvata",
+    "forget_title": "Dimenticare la chiave salvata?",
+    "forget_description": "Questo browser non ricorderà più la chiave. Assicurati di averne un'altra copia.",
+    "forget_confirm_button": "Dimentica chiave",
+    "cancel_button": "Annulla",
+    "forgotten": "Questo browser non ricorda più la tua chiave.",
+    "leave_title": "La tua chiave è salvata in questo browser",
+    "leave_description_sign_out": "Una chiave di {{accounts}} è salvata senza protezione in questo browser. Disconnettendoti viene dimenticata. Proteggila con l'archivio sicuro o assicurati di averne un'altra copia.",
+    "leave_description_remove_account": "Una chiave di {{accounts}} è salvata senza protezione in questo browser. Rimuovendo l'account viene dimenticata. Proteggila con l'archivio sicuro o assicurati di averne un'altra copia.",
+    "leave_protect_button": "Proteggila con l'archivio sicuro",
+    "leave_forget_sign_out_button": "Dimenticala ed esci",
+    "leave_forget_remove_account_button": "Dimenticala e rimuovi l'account"
   },
   "operation_summary": {
     "witness_vote": "Firma: vota il testimone @{{witness}}",

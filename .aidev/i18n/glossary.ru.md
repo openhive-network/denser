@@ -42,6 +42,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | post / comment / reply | пост / комментарий / ответ | unreviewed | "пост" in 92 of 114 strings. |
 | wallet | кошелёк | unreviewed | |
 | log in / log out | Войти / Выйти | unreviewed | |
+| forget a saved key | забыть сохранённый ключ | unreviewed | As the existing "он будет забыт": "Забыть и выйти" (#1703). |
 | password | пароль | unreviewed | |
 | passkey | ключ доступа | unreviewed | |
 | market / interest | биржа / проценты | unreviewed | |

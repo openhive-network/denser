@@ -43,6 +43,7 @@ No native speaker has reviewed the French strings yet, so every term is
 | post / comment / reply | article / commentaire / réponse | unreviewed | "article" in 58 of 114 strings; "publication" 23, "post" 20. |
 | wallet | portefeuille | unreviewed | |
 | log in / log out | Se connecter / Se déconnecter | unreviewed | |
+| forget a saved key | oublier la clé enregistrée | unreviewed | "Oublier la clé enregistrée", "L'oublier et se déconnecter" (#1703). |
 | password | mot de passe | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | marché / intérêts | unreviewed | |

@@ -94,7 +94,10 @@ Instead, `seedAuthCookie(context)` (in `fixture-auth/seeder.ts`):
 3. If `CI_TEST_USER_WIF_POSTING` is set, also writes
    `localStorage['wif.{username}@posting']` so `signer-wif.ts` signs
    without popping a password dialog. WIF just needs valid Hive format —
-   it does not need to match a real account.
+   it does not need to match a real account. A click on Logout removes that
+   entry first, so the sign-out does not ask about a saved key;
+   `test.use({ authenticatedUserAsksAboutSavedKey: true })` keeps it for specs
+   of that question (`keyProtection.spec.ts`).
 4. Seeds the answer of the login-time list check
    (`transaction/lib/observer-lists.ts`): `localStorage['observer-own-lists-{username}']`,
    only when absent, so a list change during the test sticks. By default the

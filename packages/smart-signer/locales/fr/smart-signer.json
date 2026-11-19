@@ -218,7 +218,19 @@
     "password_description_existing": "Saisissez le mot de passe du stockage sécurisé de @{{username}} pour y ajouter votre clé.",
     "protect_button": "Protéger la clé",
     "protected": "Votre clé est maintenant dans le stockage sécurisé.",
-    "menu_notice": "Votre clé est enregistrée sans protection dans ce navigateur. Protégez-la avec le stockage sécurisé. La déconnexion l'oublie."
+    "menu_notice": "Votre clé est enregistrée sans protection dans ce navigateur. Protégez-la avec le stockage sécurisé. La déconnexion l'oublie.",
+    "forget_button": "Oublier la clé enregistrée",
+    "forget_title": "Oublier la clé enregistrée ?",
+    "forget_description": "Ce navigateur ne se souviendra plus de la clé. Assurez-vous d'en avoir une autre copie.",
+    "forget_confirm_button": "Oublier la clé",
+    "cancel_button": "Annuler",
+    "forgotten": "Ce navigateur ne se souvient plus de votre clé.",
+    "leave_title": "Votre clé est enregistrée dans ce navigateur",
+    "leave_description_sign_out": "Une clé de {{accounts}} est enregistrée sans protection dans ce navigateur. La déconnexion l'oublie. Protégez-la avec le stockage sécurisé, ou assurez-vous d'en avoir une autre copie.",
+    "leave_description_remove_account": "Une clé de {{accounts}} est enregistrée sans protection dans ce navigateur. Retirer le compte l'oublie. Protégez-la avec le stockage sécurisé, ou assurez-vous d'en avoir une autre copie.",
+    "leave_protect_button": "La protéger avec le stockage sécurisé",
+    "leave_forget_sign_out_button": "L'oublier et se déconnecter",
+    "leave_forget_remove_account_button": "L'oublier et retirer le compte"
   },
   "operation_summary": {
     "witness_vote": "Signer : voter pour le témoin @{{witness}}",

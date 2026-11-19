@@ -218,7 +218,19 @@
     "password_description_existing": "Introduce la contraseña del almacenamiento seguro de @{{username}} para añadirle tu clave.",
     "protect_button": "Proteger clave",
     "protected": "Tu clave ya está en el almacenamiento seguro.",
-    "menu_notice": "Tu clave está guardada sin protección en este navegador. Protégela con el almacenamiento seguro. Al cerrar sesión se olvida."
+    "menu_notice": "Tu clave está guardada sin protección en este navegador. Protégela con el almacenamiento seguro. Al cerrar sesión se olvida.",
+    "forget_button": "Olvidar la clave guardada",
+    "forget_title": "¿Olvidar la clave guardada?",
+    "forget_description": "Este navegador ya no recordará la clave. Asegúrate de tener otra copia.",
+    "forget_confirm_button": "Olvidar clave",
+    "cancel_button": "Cancelar",
+    "forgotten": "Este navegador ya no recuerda tu clave.",
+    "leave_title": "Tu clave está guardada en este navegador",
+    "leave_description_sign_out": "Una clave de {{accounts}} está guardada sin protección en este navegador. Al cerrar sesión se olvida. Protégela con el almacenamiento seguro o asegúrate de tener otra copia.",
+    "leave_description_remove_account": "Una clave de {{accounts}} está guardada sin protección en este navegador. Al quitar la cuenta se olvida. Protégela con el almacenamiento seguro o asegúrate de tener otra copia.",
+    "leave_protect_button": "Protegerla con el almacenamiento seguro",
+    "leave_forget_sign_out_button": "Olvidarla y cerrar sesión",
+    "leave_forget_remove_account_button": "Olvidarla y quitar la cuenta"
   },
   "operation_summary": {
     "witness_vote": "Firmar: votar por el testigo @{{witness}}",

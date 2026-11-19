@@ -65,6 +65,26 @@ export function removeStoredWifKeys(storage: Storage, username: string, keyTypes
   for (const keyType of keyTypes) storage.removeItem(wifCredentialKey(username, keyType));
 }
 
+/** Remove every WIF key stored in plaintext for `username`, of any role. */
+export function forgetStoredWifKeys(storage: Storage, username: string): void {
+  const wifPrefix = wifCredentialKey(username, '');
+  for (const key of storageKeys(storage)) {
+    if (key.startsWith(wifPrefix)) storage.removeItem(key);
+  }
+}
+
+/** The accounts a WIF key is stored in plaintext for, as `storedWifKeys` reads them. */
+export function storedWifKeyOwners(storage: Storage): string[] {
+  const owners = new Set<string>();
+  for (const key of storageKeys(storage)) {
+    const separator = key.lastIndexOf('@');
+    if (!key.startsWith(WIF_KEY_PREFIX) || separator <= WIF_KEY_PREFIX.length) continue;
+    const username = key.slice(WIF_KEY_PREFIX.length, separator);
+    if (storedWifKeys(storage, username).length) owners.add(username);
+  }
+  return [...owners];
+}
+
 export function hiveAuthCredentialKey(username: string): CredentialKey {
   return { key: `${LEGACY_HIVEAUTH_KEY}.${username}`, legacyKey: LEGACY_HIVEAUTH_KEY };
 }

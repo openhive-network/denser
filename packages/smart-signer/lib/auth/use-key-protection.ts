@@ -8,7 +8,6 @@ import { getLogger } from '@ui/lib/logging';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { KeyType, LoginType, type User } from '@smart-signer/types/common';
 import { useProcessAuth } from '@smart-signer/components/auth/process';
-import { storedWifKeys } from '@smart-signer/lib/signer/credential-storage';
 import {
   SAFE_STORAGE_KEYS_CHANGED_EVENT,
   getSafeStorageKeyTypes,
@@ -19,10 +18,15 @@ import {
   SAFE_STORAGE_SESSION_REQUESTED_EVENT,
   takeSafeStorageSessionRequest
 } from '@smart-signer/lib/signer/key-protection-signals';
-import { protectStoredKeys, type KeyProtectionSteps } from '@smart-signer/lib/auth/key-protection';
-import { isKeyProtectionSnoozed, snoozeKeyProtection } from '@smart-signer/lib/auth/key-protection-reminder';
+import { protectStoredKeys } from '@smart-signer/lib/auth/key-protection';
+import {
+  browserSteps,
+  forgetSavedKeys,
+  forgetTabKeysOnceSavedForgotten,
+  hasSavedKeys
+} from '@smart-signer/lib/auth/key-protection-browser';
+import { isKeyProtectionSnoozed } from '@smart-signer/lib/auth/key-protection-reminder';
 import { recordSignInMethod } from '@smart-signer/lib/auth/last-safe-storage-user';
-import { getUnlockedSafeStorageUsers } from '@hive/common-hiveio-packages/safe-storage-lock';
 
 const logger = getLogger('app');
 
@@ -31,35 +35,8 @@ export interface KeyProtection {
   hasPlaintextKeys: boolean;
   /** Offers to move them into safe storage now, whether or not the user put it off */
   protect: () => void;
-}
-
-const hasStoredKeys = (username: string) => storedWifKeys(window.localStorage, username).length > 0;
-
-/** The steps of `protectStoredKeys` in the browser; the dialogs and hb-auth load only when used */
-function browserSteps(username: string): KeyProtectionSteps {
-  return {
-    storage: window.localStorage,
-    async findHeldKeys(keys) {
-      // Only safe storage this page already unlocked can tell; hb-auth and wax are not loaded for it
-      if (!getUnlockedSafeStorageUsers()?.has(username)) return [];
-      try {
-        const { findKeysHeldInSafeStorage } = await import('@smart-signer/lib/signer/safe-storage-import-prompt');
-        return await findKeysHeldInSafeStorage(username, keys);
-      } catch (error) {
-        logger.warn(error, 'Cannot tell whether safe storage holds the saved keys of %s', username);
-        return [];
-      }
-    },
-    async askToProtect() {
-      const { KeyProtectionDialogPromise } = await import('@smart-signer/components/key-protection-dialog');
-      return KeyProtectionDialogPromise({ isOpen: true, username });
-    },
-    async importKeys(keys) {
-      const { importWithSafeStoragePassword } = await import('@smart-signer/lib/signer/safe-storage-import-prompt');
-      return importWithSafeStoragePassword(username, keys);
-    },
-    snooze: () => snoozeKeyProtection(username)
-  };
+  /** Asks to confirm, then forgets them; the session stays and asks for the key when it signs */
+  forget: () => void;
 }
 
 /**
@@ -105,12 +82,17 @@ export function useKeyProtection(user: User): KeyProtection {
 
   const offer = useCallback(
     async (requested: boolean) => {
-      if (!isLoggedIn || isOffering.current || !hasStoredKeys(username)) return;
+      if (!isLoggedIn || isOffering.current || !hasSavedKeys(username)) return;
       if (!requested && (offeredOnThisPage.current.has(username) || isKeyProtectionSnoozed(username))) return;
       offeredOnThisPage.current.add(username);
       isOffering.current = true;
       try {
-        if ((await protectStoredKeys(username, browserSteps(username))) !== 'moved') return;
+        const outcome = await protectStoredKeys(username, browserSteps(username));
+        if (outcome === 'forgotten') {
+          forgetTabKeysOnceSavedForgotten(username);
+          toast({ description: t('key_protection.forgotten'), variant: 'success' });
+        }
+        if (outcome !== 'moved') return;
         notifySafeStorageKeysChanged();
         toast({ description: t('key_protection.protected'), variant: 'success' });
         if (isWifSession) switchToSafeStorage();
@@ -120,7 +102,7 @@ export function useKeyProtection(user: User): KeyProtection {
         handleError(error, { method: 'protectStoredKeys', params: { username } });
       } finally {
         isOffering.current = false;
-        setHasPlaintextKeys(hasStoredKeys(username));
+        setHasPlaintextKeys(hasSavedKeys(username));
       }
     },
     [isLoggedIn, isWifSession, switchToSafeStorage, t, username]
@@ -128,7 +110,7 @@ export function useKeyProtection(user: User): KeyProtection {
 
   useEffect(() => {
     if (!isLoggedIn) return;
-    const refresh = () => setHasPlaintextKeys(hasStoredKeys(username));
+    const refresh = () => setHasPlaintextKeys(hasSavedKeys(username));
     refresh();
     void offer(false);
     const onKeyUsed = (event: Event) => {
@@ -158,5 +140,12 @@ export function useKeyProtection(user: User): KeyProtection {
   }, [isWifSession, switchToSafeStorage, username]);
 
   const protect = useCallback(() => void offer(true), [offer]);
-  return { hasPlaintextKeys, protect };
+  const forget = useCallback(() => {
+    if (isOffering.current) return;
+    void forgetSavedKeys(username).then((isForgotten) => {
+      setHasPlaintextKeys(hasSavedKeys(username));
+      if (isForgotten) toast({ description: t('key_protection.forgotten'), variant: 'success' });
+    });
+  }, [t, username]);
+  return { hasPlaintextKeys, protect, forget };
 }
