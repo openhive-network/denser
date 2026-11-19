@@ -203,6 +203,12 @@
     "fresh_check_description": "Cette opération nécessite votre clé {{keyType}}. Saisissez le mot de passe de votre portefeuille pour la signer. Le mot de passe est redemandé avant chaque opération qui nécessite cette clé.",
     "fresh_check_sign_button": "Signer"
   },
+  "operation_summary": {
+    "witness_vote": "Signer : voter pour le témoin @{{witness}}",
+    "witness_unvote": "Signer : retirer le vote pour le témoin @{{witness}}",
+    "proposal_vote": "Signer : voter pour la proposition {{proposals}}",
+    "proposal_unvote": "Signer : retirer le vote pour la proposition {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "Le montant en {{token}} peut avoir au plus {{precision}} décimales.",
     "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner) et n'est pas disponible ici.",

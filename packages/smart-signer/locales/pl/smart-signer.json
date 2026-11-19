@@ -203,6 +203,12 @@
     "fresh_check_description": "Ta operacja wymaga klucza {{keyType}}. Wpisz hasło portfela, aby ją podpisać. Hasło jest wymagane ponownie przed każdą operacją, która potrzebuje tego klucza.",
     "fresh_check_sign_button": "Podpisz"
   },
+  "operation_summary": {
+    "witness_vote": "Podpisz: głos na świadka @{{witness}}",
+    "witness_unvote": "Podpisz: usunięcie głosu na świadka @{{witness}}",
+    "proposal_vote": "Podpisz: głos na propozycję {{proposals}}",
+    "proposal_unvote": "Podpisz: usunięcie głosu na propozycję {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "Maksymalna liczba miejsc po przecinku w kwocie {{token}}: {{precision}}.",
     "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner) i nie jest tu dostępna.",

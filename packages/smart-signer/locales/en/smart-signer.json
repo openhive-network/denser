@@ -203,6 +203,12 @@
     "fresh_check_description": "This operation needs your {{keyType}} key. Enter your wallet password to sign it. The password is asked for again before every operation that needs this key.",
     "fresh_check_sign_button": "Sign"
   },
+  "operation_summary": {
+    "witness_vote": "Sign: vote for witness @{{witness}}",
+    "witness_unvote": "Sign: remove witness vote for @{{witness}}",
+    "proposal_vote": "Sign: vote for proposal {{proposals}}",
+    "proposal_unvote": "Sign: remove vote for proposal {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "The {{token}} amount can have at most {{precision}} decimal places.",
     "missing_owner_authority": "This operation needs your owner key and is not available here.",

@@ -203,6 +203,12 @@
     "fresh_check_description": "이 작업에는 {{keyType}} 키가 필요합니다. 서명하려면 지갑 비밀번호를 입력하세요. 이 키가 필요한 작업마다 비밀번호를 다시 묻습니다.",
     "fresh_check_sign_button": "서명"
   },
+  "operation_summary": {
+    "witness_vote": "서명: 증인 @{{witness}}에게 투표",
+    "witness_unvote": "서명: 증인 @{{witness}}에 대한 투표 취소",
+    "proposal_vote": "서명: 제안 {{proposals}}에 투표",
+    "proposal_unvote": "서명: 제안 {{proposals}}에 대한 투표 취소"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "{{token}} 금액은 소수점 이하 {{precision}}자리까지 입력할 수 있습니다.",
     "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요하므로 여기서는 사용할 수 없습니다.",

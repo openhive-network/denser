@@ -203,6 +203,12 @@
     "fresh_check_description": "Для этой операции нужен ваш ключ {{keyType}}. Введите пароль кошелька, чтобы подписать её. Пароль запрашивается снова перед каждой операцией, которой нужен этот ключ.",
     "fresh_check_sign_button": "Подписать"
   },
+  "operation_summary": {
+    "witness_vote": "Подписать: голос за свидетеля @{{witness}}",
+    "witness_unvote": "Подписать: отмена голоса за свидетеля @{{witness}}",
+    "proposal_vote": "Подписать: голос за предложение {{proposals}}",
+    "proposal_unvote": "Подписать: отмена голоса за предложение {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "Максимальное число знаков после запятой в сумме {{token}}: {{precision}}.",
     "missing_owner_authority": "Для этой операции нужен ключ владельца (owner), поэтому здесь она недоступна.",

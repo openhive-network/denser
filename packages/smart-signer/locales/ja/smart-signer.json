@@ -203,6 +203,12 @@
     "fresh_check_description": "この操作には{{keyType}}キーが必要です。署名するにはウォレットのパスワードを入力してください。このキーが必要な操作のたびにパスワードを再度お尋ねします。",
     "fresh_check_sign_button": "署名"
   },
+  "operation_summary": {
+    "witness_vote": "署名: ウィットネス @{{witness}} に投票",
+    "witness_unvote": "署名: ウィットネス @{{witness}} への投票を取り消す",
+    "proposal_vote": "署名: プロポーザル {{proposals}} に投票",
+    "proposal_unvote": "署名: プロポーザル {{proposals}} への投票を取り消す"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "{{token}} の金額は小数点以下 {{precision}} 桁までです。",
     "missing_owner_authority": "この操作にはオーナーキー（owner）が必要なため、ここでは利用できません。",

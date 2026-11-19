@@ -87,6 +87,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     validatePassword,
     i18nKeysForCaptions,
     i18nValues,
+    operation,
     showSessionTime,
     autoComplete
   } = passwordFormOptions;
@@ -108,6 +109,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
           validatePassword={validatePassword}
           i18nKeysForCaptions={i18nKeysForCaptions}
           i18nValues={i18nValues}
+          operation={operation}
           titleId={titleId}
           showSessionTime={showSessionTime}
           autoComplete={autoComplete}

@@ -6,6 +6,7 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import SessionTimeNote from '@smart-signer/components/session-time-note';
+import type { OperationSummary } from '@smart-signer/lib/signer/operation-summary';
 
 const logger = getLogger('app');
 
@@ -82,6 +83,8 @@ export interface PasswordFormOptions {
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
   /** Interpolation values of the caption translations, e.g. `{ keyType: 'active' }` */
   i18nValues?: Record<string, string>;
+  /** The operation the entered password or key signs, stated under the title */
+  operation?: OperationSummary;
   /** Id given to the form's title, so a surrounding dialog can be labelled by it. */
   titleId?: string;
   /** Shows how long the safe-storage session the password unlocks stays unlocked while idle */
@@ -102,6 +105,7 @@ export function PasswordForm({
   validatePassword,
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nValues,
+  operation,
   titleId,
   showSessionTime = false,
   autoComplete = 'current-password'
@@ -165,6 +169,11 @@ export function PasswordForm({
     >
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <h2 id={titleId} className="w-full text-xl">{caption(captionKey.title)}</h2>
+        {operation && (
+          <p className="w-full font-semibold" data-testid="password-form-operation">
+            {t(operation.key, operation.values)}
+          </p>
+        )}
         {captionKey.description && <p className="w-full">{caption(captionKey.description)}</p>}
         {showSessionTime && <SessionTimeNote className="w-full text-sm text-muted-foreground" />}
 

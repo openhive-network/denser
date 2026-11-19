@@ -203,6 +203,12 @@
     "fresh_check_description": "Questa operazione richiede la tua chiave {{keyType}}. Inserisci la password del tuo portafoglio per firmarla. La password viene richiesta di nuovo prima di ogni operazione che necessita di questa chiave.",
     "fresh_check_sign_button": "Firma"
   },
+  "operation_summary": {
+    "witness_vote": "Firma: vota il testimone @{{witness}}",
+    "witness_unvote": "Firma: rimuovi il voto al testimone @{{witness}}",
+    "proposal_vote": "Firma: vota la proposta {{proposals}}",
+    "proposal_unvote": "Firma: rimuovi il voto alla proposta {{proposals}}"
+  },
   "broadcast_error": {
     "too_many_decimal_places": "L'importo in {{token}} può avere al massimo {{precision}} cifre decimali.",
     "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner) e non è disponibile qui.",
