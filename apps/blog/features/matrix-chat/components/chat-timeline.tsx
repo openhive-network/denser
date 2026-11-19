@@ -107,7 +107,7 @@ export function ChatTimeline(props: ChatTimelineProps) {
   };
 
   return (
-    <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto" onScroll={onScroll} data-testid="chat-timeline">
+    <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" onScroll={onScroll} data-testid="chat-timeline">
       <HistoryControl pagination={pagination} loadOlder={loadOlder} />
       <ol role="log" aria-live="polite" aria-label={t('chat_widget.messages')}>
         {withDaySeparators(

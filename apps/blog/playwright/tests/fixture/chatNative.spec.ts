@@ -1,4 +1,4 @@
-import type { Page, Request } from '@playwright/test';
+import type { Locator, Page, Request } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
@@ -68,6 +68,14 @@ const NO_WARM_UP_MS = 5_000;
 const SHORT_VIEWPORT_PX = 240;
 /** More Tab stops than one lap of the drawer has */
 const MAX_LAP_STOPS = 20;
+/** Where the page is scrolled to before the drawer opens, and how far each wheel turn asks */
+const PAGE_SCROLL_PX = 300;
+const WHEEL_DELTA_PX = 400;
+const WHEEL_TURNS = 10;
+const SCROLL_VIEWPORTS = [
+  { name: 'a phone', width: 393, height: 852 },
+  { name: 'a desktop', width: 1280, height: 900 }
+];
 
 test.use({
   fixtureTestName: 'accountSwitchLogout',
@@ -81,6 +89,8 @@ const panel = (page: Page) => page.getByTestId('matrix-chat-panel');
 const messages = (page: Page) => panel(page).getByTestId('chat-message');
 const signInFailed = (page: Page) => page.getByRole('dialog').getByRole('alert').getByText(EN.sign_in_failed);
 const composer = (page: Page) => panel(page).getByRole('textbox', { name: EN.composer_label });
+const timeline = (page: Page) => panel(page).getByTestId('chat-timeline');
+const pageScrollY = (page: Page) => page.evaluate(() => Math.round(window.scrollY));
 const focusInDrawer = (page: Page) =>
   page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null && document.hasFocus());
 
@@ -122,6 +132,15 @@ async function usesNativeChat(page: Page, settings: Record<string, string> = NAT
     return route.fulfill({ json: { loginToken: LOGIN_TOKEN } });
   });
   return routed;
+}
+
+/** Turns the mouse wheel down over `target`, letting each turn's scroll land */
+async function wheelDownOver(page: Page, target: Locator): Promise<void> {
+  await target.hover();
+  for (let turn = 0; turn < WHEEL_TURNS; turn++) {
+    await page.mouse.wheel(0, WHEEL_DELTA_PX);
+  }
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
 
 /** Answers of 400 and above to `page`'s requests from now on, as `METHOD url status` */
@@ -688,6 +707,35 @@ test.describe('Native Matrix chat client', () => {
     await expect(composer(page)).toBeFocused();
     await expect(panel(page).getByText(OLDER_GENERAL_MESSAGE)).toBeVisible();
   });
+
+  for (const { name, width, height } of SCROLL_VIEWPORTS) {
+    test(`CHAT-NATIVE-25: on ${name}, scrolling on past the end of the chat leaves the page under the drawer where it is`, async ({
+      page
+    }) => {
+      await page.setViewportSize({ width, height });
+      await usesNativeChat(page);
+      await openPage(page);
+      await page.evaluate((top) => window.scrollTo(0, top), PAGE_SCROLL_PX);
+      await expect.poll(() => pageScrollY(page)).toBe(PAGE_SCROLL_PX);
+      await chatButton(page).click();
+      await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+
+      await timeline(page).evaluate((element) => element.scrollTo(0, element.scrollHeight));
+      await wheelDownOver(page, timeline(page));
+      await wheelDownOver(page, composer(page));
+      expect(await pageScrollY(page)).toBe(PAGE_SCROLL_PX);
+      const atEnd = await timeline(page).evaluate(
+        (element) => element.scrollHeight - element.scrollTop - element.clientHeight < 1
+      );
+      expect(atEnd).toBe(true);
+
+      await composer(page).focus();
+      await page.keyboard.press('Escape');
+      await expect(chatButton(page)).toBeFocused();
+      await wheelDownOver(page, page.locator('body'));
+      await expect.poll(() => pageScrollY(page)).toBeGreaterThan(PAGE_SCROLL_PX);
+    });
+  }
 });
 
 test.describe('Native Matrix chat client: a client-only user', () => {

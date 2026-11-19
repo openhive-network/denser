@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { clsx } from "clsx";
 import { useModalFocus } from "@ui/hooks/use-modal-focus";
+import { useDocumentScrollLock } from "@ui/hooks/use-document-scroll-lock";
 
 const openClassNames = {
   right: "translate-x-0",
@@ -42,6 +43,7 @@ export const Drawer = ({
   children
 }: DrawerProps) => {
   const { containerRef, startGuardProps, endGuardProps } = useModalFocus(open, () => setOpen(false));
+  useDocumentScrollLock(open);
   return (
     <div
       className="relative z-50"
@@ -79,7 +81,7 @@ export const Drawer = ({
                 tabIndex={-1}
                 inert={!open}
                 className={clsx(
-                  "flex flex-col h-full overflow-y-scroll bg-background p-1 shadow-xl rounded-lg outline-hidden"
+                  "flex flex-col h-full overflow-y-scroll overscroll-contain bg-background p-1 shadow-xl rounded-lg outline-hidden"
                 )}
               >
                 <span {...startGuardProps} />
