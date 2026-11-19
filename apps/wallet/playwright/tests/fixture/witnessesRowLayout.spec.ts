@@ -6,7 +6,7 @@ import { HEAD_BLOCK, STUB_WITNESSES, WITNESS_RESULTS, stubWitness } from '../sup
 
 /**
  * The witness rows' texts fit, in Polish and English: at 1280 px each rank-up text fits its cell,
- * the longest one included ("+999.99K do miejsca 100"); at 390 px a row with a stale tag, a version
+ * the longest one included ("+999,99K do miejsca 100"); at 390 px a row with a stale tag, a version
  * tag and an announcement link does not make the page scroll sideways, and the line that wraps does
  * not start with a "·". At 844 px (a phone in landscape) no site link runs into the version column and
  * no rank-up text is cut short. At 1280 px a typical row keeps its name and site link on one line and
@@ -66,7 +66,7 @@ const witnesses = Array.from({ length: WITNESS_COUNT }, (_, index) => ({
 
 const EXPECTED = {
   pl: {
-    lastRankUp: '+999.99K do miejsca 100',
+    lastRankUp: '+999,99K do miejsca 100',
     disabled: 'Wyłączony 3 lata temu',
     disabledForAYear: 'Wyłączony 1 rok temu',
     voters: 'Głosujący'

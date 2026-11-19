@@ -1,28 +1,27 @@
 import { useId } from 'react';
+import Big from 'big.js';
 import env from '@beam-australia/react-env';
 import { Link } from '@hive/ui';
-import { numberWithCommas } from '@hive/ui/lib/utils';
+import { formatDecimal } from '@hive/ui/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
 import { Skeleton } from '@ui/components/skeleton';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { DHF_FAQ_ANCHOR } from '@/wallet/lib/dhf-faq';
 import type { DhfFunding } from './hooks/use-dhf-funding';
 
 const HBD_PRECISION = 3;
-const HBD_SATOSHIS_PER_UNIT = BigInt(10 ** HBD_PRECISION);
 
-/** `satoshis` HBD written exactly, with thousands separators, e.g. `23,223,141.076 HBD`. */
-const hbdText = (satoshis: bigint) => {
-  const whole = numberWithCommas((satoshis / HBD_SATOSHIS_PER_UNIT).toString());
-  const fraction = (satoshis % HBD_SATOSHIS_PER_UNIT).toString().padStart(HBD_PRECISION, '0');
-  return `${whole}.${fraction} HBD`;
-};
+/** `satoshis` HBD written exactly in `locale`'s separators, e.g. `23,223,141.076 HBD` in en. */
+const hbdText = (satoshis: bigint, locale: string) =>
+  `${formatDecimal(Big(satoshis.toString()).div(10 ** HBD_PRECISION), HBD_PRECISION, locale)} HBD`;
 
 function SummaryStat({ label, satoshis, testId }: { label: string; satoshis: bigint; testId: string }) {
+  const { locale } = useLocale();
   return (
     <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-1.5">
       <dt className="text-xs uppercase text-slate-600 dark:text-slate-300">{label}</dt>
       <dd className="font-semibold" data-testid={testId}>
-        {hbdText(satoshis)}
+        {hbdText(satoshis, locale)}
       </dd>
     </div>
   );

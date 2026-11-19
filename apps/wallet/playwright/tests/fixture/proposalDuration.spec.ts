@@ -61,8 +61,8 @@ test('WALLET-PROPOSAL-DURATION-01 — a one-day proposal shows its duration with
   baseURL
 }) => {
   await openProposalsPage(page, baseURL, 'pl');
-  await expect(page.getByTestId('proposal-total')).toHaveText('Łącznie 110.00 HBD przez 1 dzień');
+  await expect(page.getByTestId('proposal-total')).toHaveText('Łącznie 110 HBD przez 1 dzień');
 
   await openProposalsPage(page, baseURL, 'en');
-  await expect(page.getByTestId('proposal-total')).toHaveText('Total 110.00 HBD over 1 day');
+  await expect(page.getByTestId('proposal-total')).toHaveText('Total 110 HBD over 1 day');
 });

@@ -7,6 +7,7 @@ import Big from 'big.js';
 import { getRoundedAbbreveration } from '@ui/lib/utils';
 import { useTranslation } from '@/wallet/i18n/client';
 import { CHART_HEIGHT } from './chart-dimensions';
+import { useLocale } from '@ui/components/locale-context';
 
 export type PayloadOrder = {
   total: number;
@@ -112,11 +113,12 @@ const XTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
     );
   return <></>;
 };
-const YTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
+// Recharts clones the `tick` element with the tick's position and value.
+const YTick = ({ x = 0, y = 0, payload, locale }: { x?: number; y?: number; payload?: any; locale: string }) => {
   if (payload)
     return (
       <text x={x} y={y + 12} className="text-xs">
-        {getRoundedAbbreveration(new Big(payload.value), 0)}
+        {getRoundedAbbreveration(new Big(payload.value), locale, 0)}
       </text>
     );
   return <></>;
@@ -124,6 +126,7 @@ const YTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
 
 export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: OrdersItem[] }) {
   const windowWidth = useWindowWidth();
+  const { locale } = useLocale();
   const data = bids
     .map((e) => ({
       ...e,
@@ -175,7 +178,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
           type="number"
           tickCount={12}
           tickLine={false}
-          tick={YTick}
+          tick={<YTick locale={locale} />}
           domain={[0, maxY]}
           allowDataOverflow={true}
         />
