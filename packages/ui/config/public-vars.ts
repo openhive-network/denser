@@ -1,6 +1,7 @@
 import env from '@beam-australia/react-env';
 import { resolveSessionTimeConfig } from '@hive/ui/lib/session-time';
 import { parsePasskeySigners } from '../lib/passkey-signers';
+import { resolveHiveAuthConfig } from './hiveauth';
 
 /// Contains list of public variables which can have safely set defaults and allow application build without explicit env. definition
 
@@ -46,3 +47,5 @@ export const configuredApiSetPreferences = env('API_SET_PREFERENCES') || undefin
  * is used without asking; several: the guest picks one when securing the account.
  */
 export const configuredPasskeySigners = parsePasskeySigners(env('PASSKEY_SIGNERS'));
+/** HiveAuth sign-in (`HIVEAUTH_ENABLED`) and the HAS relay it talks to (`HIVEAUTH_SERVER`). */
+export const configuredHiveAuth = resolveHiveAuthConfig(env);

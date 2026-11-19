@@ -580,6 +580,7 @@
     "encrypt_memo_title": "Zaszyfruj wiadomość MEMO",
     "encrypt_memo_description": "Ta notatka zostanie zaszyfrowana przed wysłaniem. Podaj klucz prywatny MEMO.",
     "encrypt_memo_description_with_wallet": "Ta notatka zostanie zaszyfrowana przed wysłaniem. Podaj klucz prywatny MEMO lub użyj {{wallet}}.",
+    "memo_hiveauth_unsupported": "Aplikacje portfela HiveAuth nie mogą tu szyfrować ani odszyfrowywać notatek. Wpisz zamiast tego swój prywatny klucz MEMO.",
     "encrypt_memo_plaintext": "Wiadomość do zaszyfrowania",
     "encrypt_memo_with_private_key": "Zaszyfruj kluczem prywatnym",
     "encrypt_memo_with_keychain": "Zaszyfruj za pomocą Keychain",

@@ -125,9 +125,9 @@ export class LoginForm {
     // Note: Keychain/MetaMask/PeakVault/Google buttons are only enabled if browser extensions
     // or required configuration (e.g., GOOGLE_DRIVE_CLIENT_ID) are available.
     // On CI (headless), these will typically be disabled. Locally with extensions, they may be enabled.
-    // We only assert that WIF is always enabled (no extension/config required)
+    // We only assert that WIF and HiveAuth are always enabled (no extension/config required)
     await expect(this.signInWithWifButton).toBeEnabled();
-    await expect(this.hiveAuthButton).toBeDisabled();
+    await expect(this.hiveAuthButton).toBeEnabled();
     await expect(this.hiveSignerButton).toHaveCount(0);
     await expect(this.goBackButton).toBeEnabled();
   }

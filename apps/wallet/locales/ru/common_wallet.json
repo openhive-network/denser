@@ -580,6 +580,7 @@
     "encrypt_memo_title": "Зашифровать сообщение MEMO",
     "encrypt_memo_description": "Эта заметка будет зашифрована перед отправкой. Укажите приватный ключ MEMO.",
     "encrypt_memo_description_with_wallet": "Эта заметка будет зашифрована перед отправкой. Укажите приватный ключ MEMO или используйте {{wallet}}.",
+    "memo_hiveauth_unsupported": "Приложения-кошельки HiveAuth не могут шифровать или расшифровывать заметки здесь. Введите вместо этого свой приватный ключ MEMO.",
     "encrypt_memo_plaintext": "Сообщение для шифрования",
     "encrypt_memo_with_private_key": "Зашифровать с помощью приватного ключа",
     "encrypt_memo_with_keychain": "Зашифровать через Keychain",

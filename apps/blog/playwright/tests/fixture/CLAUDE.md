@@ -612,6 +612,20 @@ only after "Other sign in options" opens.
 
 ---
 
+## Recipe: the HiveAuth sign-in with a stubbed HAS relay
+
+HiveAuth is on by default (`REACT_APP_HIVEAUTH_ENABLED`), so the fixture build offers it and its
+CSP admits the default relay `wss://hive-auth.arcange.eu`. `loginHiveAuth.spec.ts` stands in for
+the relay with `page.routeWebSocket` (no server connection, so the socket counts as open at once):
+it sends `connected`, then answers each `auth_req` with `auth_wait` and an expiry, which is all the
+dialog needs to show the QR code and the `has://` link; an expiry a few seconds out plays a request
+no wallet app answers. A wallet app's approval is not played: its `auth_ack` is encrypted with the
+key the page puts in the link, and the server checks the signed challenge against the account.
+The request and answer mapping is unit-tested (`packages/smart-signer/lib/hiveauth/channel.test.ts`).
+None of it reaches the Hive API, so the spec reuses the `accountSwitchLogout` recording.
+
+---
+
 ## Recipe: the chat widget of a chat provider
 
 The chat provider and its URLs are client settings, so `chatWidget.spec.ts`

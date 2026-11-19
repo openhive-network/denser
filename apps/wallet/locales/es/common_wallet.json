@@ -566,6 +566,7 @@
     "encrypt_memo_title": "Cifrar mensaje MEMO",
     "encrypt_memo_description": "Este memo se cifrará antes de enviarlo. Proporciona la clave privada MEMO.",
     "encrypt_memo_description_with_wallet": "Este memo se cifrará antes de enviarlo. Proporciona la clave privada MEMO o usa {{wallet}}.",
+    "memo_hiveauth_unsupported": "Las aplicaciones de billetera HiveAuth no pueden cifrar ni descifrar memos aquí. Introduce tu clave privada MEMO.",
     "encrypt_memo_plaintext": "Mensaje a cifrar",
     "encrypt_memo_with_private_key": "Cifrar con clave privada",
     "encrypt_memo_with_keychain": "Cifrar con Keychain",

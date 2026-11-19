@@ -94,7 +94,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/locale-negotiation.test.ts \
     packages/ui/lib/month-year.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
-    packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts \
+    packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts packages/ui/config/hiveauth.test.ts \
     packages/ui/lib/passkey-signers.test.ts packages/ui/lib/sanitize-url.test.ts \
     packages/ui/lib/html-escape-json.test.ts packages/ui/lib/reputation.test.ts \
     packages/ui/lib/i18n-interpolation.test.ts packages/ui/lib/i18n-fallback-report.test.ts \
@@ -159,7 +159,10 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/signer/google-drive-missing-key.test.ts \
     packages/smart-signer/lib/signer/google-drive-sign-in-cancelled.test.ts \
     packages/smart-signer/lib/passkey/signer-client.test.ts \
-    packages/smart-signer/lib/passkey/posting-key-match.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/passkey/posting-key-match.test.ts \
+    packages/smart-signer/lib/hiveauth/session.test.ts \
+    packages/smart-signer/lib/hiveauth/channel.test.ts \
+    packages/smart-signer/lib/hiveauth/nonced-has-client.test.ts < /dev/null || status=1
 echo "== node --test packages/common-hiveio-packages" >&2
 junit="$PWD/test-results/unit/common-hiveio-packages.xml"
 run_with_junit_fallback "$junit" common-hiveio-packages node --test \

@@ -20,7 +20,12 @@ import {
   type TTransactionPackType
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
-import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
+import {
+  type BroadcastingSigner,
+  isBroadcastingSigner,
+  SignerOptions,
+  SignTransaction
+} from '@smart-signer/lib/signer/signer';
 import { Beneficiarie, Preferences } from '@hive/common-hiveio-packages/wax';
 import WorkerBee, { IWorkerBee, WorkerBeeError } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -41,6 +46,7 @@ import {
   type IInclusionWatch,
   INCLUSION_TIMEOUT_MS,
   inclusionLookupVia,
+  pollInclusion,
   recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
@@ -200,11 +206,13 @@ export class TransactionService {
 
     await this.unconfirmedBroadcasts.checkResend(serializedOperations(txBuilder));
 
-    const { signature, pack } = await this.signTransaction(
-      txBuilder,
-      singleSignKeyType,
-      resolveRequiredKeyType({ singleSignKeyType, requiredKeyType }, txBuilder.requiredAuthorities)
-    );
+    const keyType = resolveRequiredKeyType({ singleSignKeyType, requiredKeyType }, txBuilder.requiredAuthorities);
+    const signer = getSigner(this.signerOptions);
+    if (isBroadcastingSigner(signer)) {
+      return await this.broadcastThroughSigner(signer, txBuilder, keyType, { observe, confirmInBackground });
+    }
+
+    const { signature, pack } = await this.signTransaction(txBuilder, singleSignKeyType, keyType);
 
     // Add signature to transaction
     txBuilder.addSignature(signature);
@@ -217,6 +225,37 @@ export class TransactionService {
     } else {
       return await this.broadcastTransaction(txBuilder, transactionId);
     }
+  }
+
+  /**
+   * Has `signer`'s wallet sign and broadcast the transaction's operations (HiveAuth), resolving with
+   * the id of the transaction the wallet built of them. With `observe` it resolves once the node finds
+   * that transaction in a block, and rejects with `TransactionNotConfirmedError` when it does not in
+   * time; with `confirmInBackground`, `included` reports it. A wallet that named no id is not followed.
+   * Nothing is held as an unconfirmed broadcast: the wallet's transaction's expiration is not known here.
+   */
+  private async broadcastThroughSigner(
+    signer: BroadcastingSigner,
+    txBuilder: ITransaction,
+    requiredKeyType: SignTransaction['requiredKeyType'],
+    { observe, confirmInBackground }: Pick<TransactionOptions, 'observe' | 'confirmInBackground'>
+  ): Promise<TransactionBroadcastResult> {
+    const transactionId = await signer.broadcastTransaction({
+      digest: txBuilder.sigDigest,
+      transaction: txBuilder.transaction,
+      requiredKeyType
+    });
+    if (!transactionId || !(observe || confirmInBackground)) return { transactionId };
+    const included = pollInclusion(lookUpTransactionInclusion, [transactionId]);
+    if (confirmInBackground) return { transactionId, included };
+    let found: boolean;
+    try {
+      found = await included;
+    } catch (error) {
+      throw new TransactionNotConfirmedError(transactionId, error);
+    }
+    if (!found) throw new TransactionNotConfirmedError(transactionId);
+    return { transactionId };
   }
 
   /**

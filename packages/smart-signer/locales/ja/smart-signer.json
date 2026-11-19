@@ -34,7 +34,15 @@
     "tokenExpired": "HiveAuthトークンの有効期限が切れました。もう一度お試しください..",
     "unknownCommand": "不明なコマンド",
     "userRejectedRequest": "ユーザーがHiveAuthリクエストを拒否しました",
-    "verifyPostingKeyInstructions": "互換性のあるモバイルウォレットアプリを使用して投稿キーを確認してください。"
+    "verifyPostingKeyInstructions": "互換性のあるモバイルウォレットアプリを使用して投稿キーを確認してください。",
+    "title_sign_in": "HiveAuth でサインイン",
+    "title_sign": "HiveAuth で承認",
+    "approveOnPhone": "スマートフォンで承認してください…",
+    "openInWallet": "ウォレットアプリで開く",
+    "close": "閉じる",
+    "cancelled": "HiveAuth リクエストはキャンセルされました。",
+    "unreachable": "HiveAuth サーバーに接続できませんでした。接続を確認して、もう一度お試しください。",
+    "failed": "HiveAuth リクエストに失敗しました。もう一度お試しください。"
   },
   "login_form": {
     "private_key_placeholder": "あなたの{{keyType}}プライベートキー",

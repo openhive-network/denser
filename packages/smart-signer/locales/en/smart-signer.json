@@ -34,7 +34,15 @@
     "tokenExpired": "HiveAuth token expired, please try again..",
     "unknownCommand": "unknown command",
     "userRejectedRequest": "user has rejected the HiveAuth request",
-    "verifyPostingKeyInstructions": "'Please use your HiveAuth compatible mobile wallet app to verify your posting key.'"
+    "verifyPostingKeyInstructions": "'Please use your HiveAuth compatible mobile wallet app to verify your posting key.'",
+    "title_sign_in": "Sign in with HiveAuth",
+    "title_sign": "Approve with HiveAuth",
+    "approveOnPhone": "Approve on your phone…",
+    "openInWallet": "Open in wallet app",
+    "close": "Close",
+    "cancelled": "The HiveAuth request was cancelled.",
+    "unreachable": "The HiveAuth server could not be reached. Check your connection and try again.",
+    "failed": "The HiveAuth request failed. Try again."
   },
   "login_form": {
     "private_key_placeholder": "Your {{keyType}} private key",

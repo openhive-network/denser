@@ -34,7 +34,15 @@
     "tokenExpired": "HiveAuth令牌已过期，请重试..",
     "unknownCommand": "未知命令",
     "userRejectedRequest": "用户拒绝了HiveAuth请求",
-    "verifyPostingKeyInstructions": "请使用您的HiveAuth兼容移动钱包应用程序验证您的发帖密钥。"
+    "verifyPostingKeyInstructions": "请使用您的HiveAuth兼容移动钱包应用程序验证您的发帖密钥。",
+    "title_sign_in": "使用 HiveAuth 登录",
+    "title_sign": "使用 HiveAuth 批准",
+    "approveOnPhone": "请在手机上批准…",
+    "openInWallet": "在钱包应用中打开",
+    "close": "关闭",
+    "cancelled": "HiveAuth 请求已取消。",
+    "unreachable": "无法连接到 HiveAuth 服务器。请检查网络连接后重试。",
+    "failed": "HiveAuth 请求失败，请重试。"
   },
   "login_form": {
     "private_key_placeholder": "{{keyType}}私钥",

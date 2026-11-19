@@ -540,6 +540,7 @@
     "encrypt_memo_title": "메모 메시지 암호화",
     "encrypt_memo_description": "이 메모는 보내기 전에 암호화됩니다. 메모 개인 키를 입력하세요.",
     "encrypt_memo_description_with_wallet": "이 메모는 보내기 전에 암호화됩니다. 메모 개인 키를 입력하거나 {{wallet}}을(를) 사용하세요.",
+    "memo_hiveauth_unsupported": "HiveAuth 지갑 앱은 여기에서 메모를 암호화하거나 해독할 수 없습니다. 대신 MEMO 개인 키를 입력하세요.",
     "encrypt_memo_plaintext": "암호화할 메시지",
     "encrypt_memo_with_private_key": "개인 키로 암호화",
     "encrypt_memo_with_keychain": "Keychain으로 암호화",

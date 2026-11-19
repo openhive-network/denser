@@ -541,6 +541,7 @@
     "encrypt_memo_title": "MEMOメッセージを暗号化",
     "encrypt_memo_description": "このメモは送信前に暗号化されます。MEMO秘密鍵を入力してください。",
     "encrypt_memo_description_with_wallet": "このメモは送信前に暗号化されます。MEMO秘密鍵を入力するか、{{wallet}}を使用してください。",
+    "memo_hiveauth_unsupported": "HiveAuth のウォレットアプリはここでメモを暗号化・復号できません。代わりに MEMO 秘密鍵を入力してください。",
     "encrypt_memo_plaintext": "暗号化するメッセージ",
     "encrypt_memo_with_private_key": "秘密鍵で暗号化",
     "encrypt_memo_with_keychain": "Keychainで暗号化",

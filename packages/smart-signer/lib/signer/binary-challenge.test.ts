@@ -11,6 +11,10 @@ describe('canSignBinaryChallenge', () => {
     assert.equal(canSignBinaryChallenge(loginType('peakvault')), false);
   });
 
+  it('rejects HiveAuth, whose challenge requests carry strings only', () => {
+    assert.equal(canSignBinaryChallenge(loginType('hiveauth')), false);
+  });
+
   it('accepts signers that sign binary buffers', () => {
     for (const type of ['keychain', 'hbauth', 'wif', 'metamask']) {
       assert.equal(canSignBinaryChallenge(loginType(type)), true, type);

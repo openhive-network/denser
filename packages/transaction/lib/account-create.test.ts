@@ -22,6 +22,7 @@ const STUBS: Record<string, unknown> = {
   '@hiveio/wax': {},
   '@hiveio/workerbee': {},
   '@smart-signer/lib/signer/get-signer': {},
+  '@smart-signer/lib/signer/signer': {},
   '@smart-signer/lib/signer/signed-in-check': {},
   '@hive/ui/lib/logging': { getLogger: () => ({}) },
   './lib/utils': { getAsset: async (value: string, token: string) => ({ value, token }) },

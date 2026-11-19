@@ -20,6 +20,7 @@
     "@tanstack/react-query": "catalog:react-toolset",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "hive-auth-client": "^0.1.5",
     "http-errors": "^2.0.0",
     "iron-session": "^8.0.1",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.14",
+    "@types/crypto-js": "^4.2.2",
     "@types/http-errors": "^2.0.4",
     "@types/node": "^24",
     "@types/oidc-provider": "^8.4.2",
