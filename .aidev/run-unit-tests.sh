@@ -198,6 +198,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/components/hooks/use-auto-retry.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
+    apps/blog/features/layouts/lib/explorer-url.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/activity-log/lib/notification-source.test.ts \
     apps/blog/features/activity-log/lib/notification-message.test.ts \

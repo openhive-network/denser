@@ -6,9 +6,12 @@ import { Icons } from '@ui/components/icons';
 
 import env from '@beam-australia/react-env';
 import { useTranslation } from '../../i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { explorerUrl } from './lib/explorer-url';
 
 const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');
+  const { user } = useUserClient();
   const walletHost = env('WALLET_ENDPOINT');
   return (
     <Card
@@ -44,7 +47,7 @@ const ExploreHive: FC = () => {
           </li>
           <li>
             <Link
-              href="https://hiveblocks.com/"
+              href={explorerUrl(env('EXPLORER_DOMAIN'), user)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center hover:text-destructive"
