@@ -4,10 +4,12 @@ import {
   clearAccountCredentials,
   clearAllCredentials,
   clearStoredDriveEncryptionKeys,
+  forgetStoredWifKeys,
   googleRefreshTokenCredentialKey,
   hiveAuthCredentialKey,
   readCredential,
   removeStoredWifKeys,
+  storedWifKeyOwners,
   storedWifKeys,
   storedWifKeyTypes,
   wifCredentialKey
@@ -104,6 +106,34 @@ describe('clearAccountCredentials', () => {
       'wif.alice2@posting'
     ]);
     assert.equal(readCredential(storage, hiveAuthCredentialKey('alice2'), neverLegacyOwner), hiveAuthData('alice2', 'token'));
+  });
+});
+
+describe('forgetStoredWifKeys', () => {
+  it('removes the WIF keys of the account only, of every role', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), '"wif"');
+    storage.setItem(wifCredentialKey('alice', 'active'), '"wif"');
+    storage.setItem(wifCredentialKey('alice2', 'posting'), '"wif"');
+    storage.setItem(hiveAuthCredentialKey('alice').key, hiveAuthData('alice', 'token'));
+
+    forgetStoredWifKeys(storage, 'alice');
+
+    assert.deepEqual(storage.keys(), ['hiveAuthData.alice', 'wif.alice2@posting']);
+  });
+});
+
+describe('storedWifKeyOwners', () => {
+  it('names each account with a stored posting or active key once', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), '"wif"');
+    storage.setItem(wifCredentialKey('alice', 'active'), '"wif"');
+    storage.setItem(wifCredentialKey('bob', 'active'), '"wif"');
+    storage.setItem(wifCredentialKey('carol', 'owner'), '"wif"');
+    storage.setItem(wifCredentialKey('dave', 'posting'), 'not json');
+    storage.setItem('wif.@posting', '"wif"');
+
+    assert.deepEqual(storedWifKeyOwners(storage).sort(), ['alice', 'bob']);
   });
 });
 

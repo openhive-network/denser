@@ -67,7 +67,7 @@ test.describe.skip('Login', () => {
     await expect(profileMenu.profileMenuContent).toBeVisible();
     await profileMenu.validateUserNameInProfileMenu(credentials.username);
 
-    await profileMenu.logoutLink.click();
+    await profileMenu.signOut();
 
     await expect(profileMenu.profileMenuContent).not.toBeVisible();
     await expect(homePage.profileAvatarButton).not.toBeVisible();

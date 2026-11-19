@@ -7,6 +7,9 @@ import { clearStoredCredentials, destroyAccountSigner } from '@smart-signer/lib/
 import { LOGOUT_ANSWER_TIMEOUT_MS, announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
 import { notifyOwnLogout } from '@smart-signer/lib/auth/logout-notice';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
+import { storedWifKeyOwners } from '@smart-signer/lib/signer/credential-storage';
+import { useLeaveSavedKeys } from '@smart-signer/lib/auth/use-leave-saved-keys';
+import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { useRouter } from 'next/navigation';
 
 /** Whether `promise` settles within `ms`; never rejects */
@@ -23,13 +26,23 @@ export function useLogout(redirect?: string) {
   const { user } = useUser();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const leaveSavedKeys = useLeaveSavedKeys();
 
   /**
-   * @param leaveTo read once the server has ended the session (or the wait for it timed out):
-   *   where to take the reader from a page that has nothing to show a signed-out reader, or
-   *   undefined to stay, such as when the reader has meanwhile moved on
+   * Signs out, once the user settled the keys saved unprotected in this browser, which signing out
+   * forgets: asked only when one is saved, and nothing happens when the user cancels.
+   *
+   * @param startLeave called once the sign-out goes on; returns the function read once the server
+   *   has ended the session (or the wait for it timed out): where to take the reader from a page
+   *   that has nothing to show a signed-out reader, or undefined to stay, such as when the reader
+   *   has meanwhile moved on
    */
-  const onLogout = async (leaveTo?: () => string | undefined) => {
+  const onLogout = async (startLeave?: () => () => string | undefined) => {
+    // Signing out deletes the saved keys of every account, not only of those signed in
+    const keyOwners = isStorageAvailable('localStorage') ? storedWifKeyOwners(window.localStorage) : [];
+    if (!(await leaveSavedKeys(keyOwners, 'signOut'))) return;
+    const leaveTo = startLeave?.();
+
     // Read before signing out clears them
     const remembered = userLocalStorage.getAccounts();
     const accounts = user.isLoggedIn ? sessionAccounts(remembered, user) : remembered;

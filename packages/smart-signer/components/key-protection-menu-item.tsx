@@ -1,4 +1,4 @@
-/* The account menu's notice on keys saved unprotected in this browser, until they are moved into safe storage */
+/* The account menu's notice on keys saved unprotected in this browser, until they are moved into safe storage or forgotten */
 import { FC } from 'react';
 import { DropdownMenuItem } from '@ui/components/dropdown-menu';
 import { Icons } from '@ui/components/icons';
@@ -11,14 +11,23 @@ const KeyProtectionMenuItem: FC<{ keyProtection: KeyProtection }> = ({ keyProtec
 
   if (!keyProtection.hasPlaintextKeys) return null;
   return (
-    <DropdownMenuItem
-      className="flex cursor-pointer items-start gap-2 text-xs text-destructive"
-      onSelect={keyProtection.protect}
-      data-testid="key-protection-menu-item"
-    >
-      <Icons.warning className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-      <span>{t('key_protection.menu_notice')}</span>
-    </DropdownMenuItem>
+    <>
+      <DropdownMenuItem
+        className="flex cursor-pointer items-start gap-2 text-xs text-destructive"
+        onSelect={keyProtection.protect}
+        data-testid="key-protection-menu-item"
+      >
+        <Icons.warning className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+        <span>{t('key_protection.menu_notice')}</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className="cursor-pointer pl-8 text-xs"
+        onSelect={keyProtection.forget}
+        data-testid="key-protection-forget-menu-item"
+      >
+        {t('key_protection.forget_button')}
+      </DropdownMenuItem>
+    </>
   );
 };
 

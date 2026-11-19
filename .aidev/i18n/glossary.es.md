@@ -43,6 +43,7 @@ most as of 2026-11-19.
 | post / comment / reply | publicación / comentario / respuesta | unreviewed | "publicación" in 95 of 114 strings. |
 | wallet | billetera | unreviewed | 20 strings; 11 say "monedero" (see drift). |
 | log in / log out | Iniciar sesión / Cerrar sesión | unreviewed | |
+| forget a saved key | olvidar la clave guardada | unreviewed | "Olvidar la clave guardada", "Olvidarla y cerrar sesión" (#1703). |
 | password | contraseña | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | mercado / intereses | unreviewed | |

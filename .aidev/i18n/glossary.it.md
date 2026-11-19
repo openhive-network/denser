@@ -42,6 +42,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | post / comment / reply | post / commento / risposta | unreviewed | "post" in 93 of 114 strings. |
 | wallet | portafoglio | unreviewed | 24 strings; 18 keep "wallet". |
 | log in / log out | Accedi / Esci | unreviewed | |
+| forget a saved key | dimenticare la chiave salvata | unreviewed | "Dimentica la chiave salvata", "Dimenticala ed esci" (#1703). |
 | password | password | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | market / interest | mercato / interessi | unreviewed | |

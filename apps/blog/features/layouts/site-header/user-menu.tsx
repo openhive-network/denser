@@ -185,7 +185,7 @@ const UserMenu = ({
                 href=""
                 onClick={async (e) => {
                   e.preventDefault();
-                  await onLogout(startSignOutLeave(pathname));
+                  await onLogout(() => startSignOutLeave(pathname));
                 }}
                 className="flex w-full items-center"
                 data-testid="user-profile-menu-logout-link"

@@ -218,7 +218,19 @@
     "password_description_existing": "キーを追加するには @{{username}} の安全なストレージのパスワードを入力してください。",
     "protect_button": "キーを保護",
     "protected": "キーは安全なストレージに移されました。",
-    "menu_notice": "キーがこのブラウザに保護されずに保存されています。安全なストレージで保護してください。サインアウトすると消去されます。"
+    "menu_notice": "キーがこのブラウザに保護されずに保存されています。安全なストレージで保護してください。サインアウトすると消去されます。",
+    "forget_button": "保存されたキーを消去",
+    "forget_title": "保存されたキーを消去しますか？",
+    "forget_description": "このブラウザはキーを記憶しなくなります。別のコピーがあることを確認してください。",
+    "forget_confirm_button": "キーを消去",
+    "cancel_button": "キャンセル",
+    "forgotten": "このブラウザはキーを記憶しなくなりました。",
+    "leave_title": "キーがこのブラウザに保存されています",
+    "leave_description_sign_out": "{{accounts}} のキーがこのブラウザに保護されずに保存されています。ログアウトすると消去されます。安全なストレージで保護するか、別のコピーがあることを確認してください。",
+    "leave_description_remove_account": "{{accounts}} のキーがこのブラウザに保護されずに保存されています。アカウントを削除すると消去されます。安全なストレージで保護するか、別のコピーがあることを確認してください。",
+    "leave_protect_button": "安全なストレージで保護",
+    "leave_forget_sign_out_button": "消去してログアウト",
+    "leave_forget_remove_account_button": "消去してアカウントを削除"
   },
   "operation_summary": {
     "witness_vote": "署名: ウィットネス @{{witness}} に投票",

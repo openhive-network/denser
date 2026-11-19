@@ -218,7 +218,19 @@
     "password_description_existing": "Podaj hasło bezpiecznego magazynu @{{username}}, by dodać do niego swój klucz.",
     "protect_button": "Chroń klucz",
     "protected": "Twój klucz jest teraz w bezpiecznym magazynie.",
-    "menu_notice": "Twój klucz jest zapisany bez ochrony w tej przeglądarce. Chroń go bezpiecznym magazynem. Wylogowanie go usuwa."
+    "menu_notice": "Twój klucz jest zapisany bez ochrony w tej przeglądarce. Chroń go bezpiecznym magazynem. Wylogowanie go usuwa.",
+    "forget_button": "Zapomnij zapisany klucz",
+    "forget_title": "Zapomnieć zapisany klucz?",
+    "forget_description": "Ta przeglądarka nie będzie już pamiętać klucza. Upewnij się, że masz inną kopię.",
+    "forget_confirm_button": "Zapomnij klucz",
+    "cancel_button": "Anuluj",
+    "forgotten": "Ta przeglądarka nie pamięta już Twojego klucza.",
+    "leave_title": "Twój klucz jest zapisany w tej przeglądarce",
+    "leave_description_sign_out": "Klucz {{accounts}} jest zapisany bez ochrony w tej przeglądarce. Wylogowanie go usuwa. Chroń go bezpiecznym magazynem albo upewnij się, że masz inną kopię.",
+    "leave_description_remove_account": "Klucz {{accounts}} jest zapisany bez ochrony w tej przeglądarce. Usunięcie konta go usuwa. Chroń go bezpiecznym magazynem albo upewnij się, że masz inną kopię.",
+    "leave_protect_button": "Chroń go bezpiecznym magazynem",
+    "leave_forget_sign_out_button": "Zapomnij go i wyloguj",
+    "leave_forget_remove_account_button": "Zapomnij go i usuń konto"
   },
   "operation_summary": {
     "witness_vote": "Podpisz: głos na świadka @{{witness}}",

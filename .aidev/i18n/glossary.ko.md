@@ -44,6 +44,7 @@ markup and plural keys, not their wording.
 | post / comment / reply | 게시물 / 댓글 / 답글 | unreviewed | |
 | wallet | 지갑 | unreviewed | |
 | log in / log out | 로그인 / 로그아웃 | unreviewed | |
+| forget a saved key | 저장된 키 지우기 | unreviewed | As the existing "…지워집니다": "지우고 로그아웃" (#1703). |
 | password | 비밀번호 | unreviewed | |
 | passkey | 패스키 | unreviewed | |
 | market / interest | 마켓 / 이자 | unreviewed | |

@@ -84,7 +84,7 @@ test('TABSYNC-02 — logging out in one tab logs out the other tab', async ({ co
 
   const headerA = new HomePage(pageA);
   await headerA.profileAvatarButton.click();
-  await new ProfileUserMenu(pageA).logoutLink.click();
+  await new ProfileUserMenu(pageA).signOut();
   await expect(headerA.loginBtn).toBeVisible();
 
   await expect(headerB.loginBtn).toBeVisible();

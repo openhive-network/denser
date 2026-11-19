@@ -20,6 +20,7 @@ export class ProfileUserMenu {
     readonly languageTypeButton: Locator;
     readonly walletLink: Locator;
     readonly logoutLink: Locator;
+    readonly leaveSavedKeyDialog: Locator;
     readonly accountSwitcherItems: Locator;
     readonly accountSwitcherRemoveButtons: Locator;
     readonly addAccountItem: Locator;
@@ -43,6 +44,7 @@ export class ProfileUserMenu {
         this.languageTypeButton = page.locator('[data-testid="toggle-language"]');
         this.walletLink = page.locator('[data-testid="user-profile-menu-wallet-link"]');
         this.logoutLink = page.locator('[data-testid="user-profile-menu-logout-link"]');
+        this.leaveSavedKeyDialog = page.getByTestId('leave-saved-key-dialog');
         this.accountSwitcherItems = page.locator('[data-testid="account-switcher-item"]');
         this.accountSwitcherRemoveButtons = page.locator('[data-testid="account-switcher-remove"]');
         this.addAccountItem = page.locator('[data-testid="account-switcher-add"]');
@@ -56,6 +58,18 @@ export class ProfileUserMenu {
 
     async validateUserNameInProfileMenu(username: string){
         await expect(this.profileUserName).toHaveText(username);
+    }
+
+    /**
+     * Clicks Logout in the open menu. A sign-out first asks about the keys saved in plaintext, as
+     * the fixture seeder saves the user's posting key: answered "Forget it and sign out".
+     */
+    async signOut() {
+      const hasSavedKey = await this.page.evaluate(() =>
+        Object.keys(window.localStorage).some((key) => /^wif\..+@(posting|active)$/.test(key))
+      );
+      await this.logoutLink.click();
+      if (hasSavedKey) await this.leaveSavedKeyDialog.getByTestId('leave-saved-key-forget').click();
     }
 
     async clickCloseProfileMenu() {

@@ -4,6 +4,7 @@ import {
   forgetAllTabCredentials,
   forgetDriveEncryptionKey,
   forgetTabCredentials,
+  forgetTabWifKeys,
   getDriveEncryptionKey,
   getTabWif,
   rememberDriveEncryptionKey,
@@ -50,6 +51,19 @@ describe('forgetting', () => {
     assert.equal(getDriveEncryptionKey('alice'), null);
     assert.equal(getTabWif('alice2', 'posting'), 'alice2-key');
     assert.equal(getDriveEncryptionKey('alice2'), 'alice2-drive');
+  });
+
+  it('forgets the WIF keys of one account alone, keeping its Drive key', () => {
+    rememberTabWif('alice', ['posting', 'active'], 'alice-key');
+    rememberDriveEncryptionKey('alice', 'alice-drive');
+    rememberTabWif('alice2', ['posting'], 'alice2-key');
+
+    forgetTabWifKeys('alice');
+
+    assert.equal(getTabWif('alice', 'posting'), null);
+    assert.equal(getTabWif('alice', 'active'), null);
+    assert.equal(getDriveEncryptionKey('alice'), 'alice-drive');
+    assert.equal(getTabWif('alice2', 'posting'), 'alice2-key');
   });
 
   it('forgets the Drive key alone, or everything of every account', () => {

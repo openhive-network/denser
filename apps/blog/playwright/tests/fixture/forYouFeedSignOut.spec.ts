@@ -85,7 +85,8 @@ async function watchForYouWhileSigningOut(page: Page): Promise<void> {
       'click',
       (event) => {
         const target = event.target instanceof Element ? event.target : null;
-        if (target?.closest('[data-testid="user-profile-menu-logout-link"]')) {
+        // The sign-out goes on at the logout click, or at "Forget it and sign out" for the seeded saved key
+        if (target?.closest('[data-testid="user-profile-menu-logout-link"], [data-testid="leave-saved-key-forget"]')) {
           state.clickedAt = performance.now();
         }
       },
@@ -195,7 +196,7 @@ async function hangLogout(page: Page): Promise<void> {
 
 async function signOutFromHeader(page: Page, homePage: HomePage): Promise<void> {
   await homePage.profileAvatarButton.click();
-  await new ProfileUserMenu(page).logoutLink.click();
+  await new ProfileUserMenu(page).signOut();
 }
 
 /** Expects the /trending page data was loaded once, after `answeredAt`, for a signed-out reader */
@@ -239,7 +240,7 @@ test.describe('For You feed — signing out', () => {
 
     await homePage.profileAvatarButton.click();
     await watchForYouWhileSigningOut(page);
-    await new ProfileUserMenu(page).logoutLink.click();
+    await new ProfileUserMenu(page).signOut();
 
     await expect(homePage.loginBtn).toBeVisible();
     await expect(page).toHaveURL(/\/trending$/);
@@ -257,7 +258,7 @@ test.describe('For You feed — signing out', () => {
 
     await homePage.profileAvatarButton.click();
     await watchForYouWhileSigningOut(page);
-    await new ProfileUserMenu(page).logoutLink.click();
+    await new ProfileUserMenu(page).signOut();
 
     await expect(page.getByTestId('post-list-skeleton')).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);

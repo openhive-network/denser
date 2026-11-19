@@ -57,6 +57,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | post / comment / reply | post / komentarz / odpowiedź | unreviewed | „post” in 85 of 114 strings. |
 | wallet | portfel | unreviewed | |
 | log out | Wyloguj | agreed (#1188) | Never „Wylogowuj”. |
+| forget a saved key | zapomnieć zapisany klucz | unreviewed | „Zapomnij zapisany klucz”, „Zapomnij go i wyloguj” (#1703). |
 | log in | Zaloguj się | unreviewed | |
 | password / master password | hasło / hasło główne | agreed (#1188) | |
 | passkey | klucz dostępu | unreviewed | |
