@@ -27,7 +27,7 @@
 // any other tsconfig `paths` alias some app or Playwright source imports through
 // selects everything, the import graph missing its importers. Rules, first match:
 //   - docs (docs/**, root *.md, CLAUDE.md/AGENTS.md anywhere, *.md under a
-//     playwright/ directory): nothing;
+//     playwright/ directory, the .aidev/i18n/ glossaries): nothing;
 //   - apps/wallet/playwright** (the wallet's Playwright code, configs and
 //     recordings): wallet_fixture, plus what the files importing it reach;
 //   - a blog recording, apps/blog/playwright/tests/mock/fixtures/<set>/**: what the
@@ -83,7 +83,13 @@ const BLOG_SNAPSHOTS = /^(apps\/blog\/playwright\/tests\/.+\.spec\.ts)-snapshots
 export const LIGHTHOUSE_SET = 'lighthouse';
 const CONFIG = /^apps\/([^/]+)\/playwright[^/]*\.config\.ts$/;
 const CONFIG_PATH = /(['"`])(playwright\/[^'"`\n$]+)\1/g;
-const DOCS = [/^docs\//, /^[^/]+\.md$/, /(^|\/)(CLAUDE|AGENTS)\.md$/, /(^|\/)playwright\/(.+\/)?[^/]+\.md$/];
+const DOCS = [
+  /^docs\//,
+  /^[^/]+\.md$/,
+  /(^|\/)(CLAUDE|AGENTS)\.md$/,
+  /(^|\/)playwright\/(.+\/)?[^/]+\.md$/,
+  /^\.aidev\/i18n\/[^/]+\.md$/
+];
 const WALLET_PLAYWRIGHT = /^apps\/wallet\/playwright(\/|\.[^/]*$)/;
 const BLOG_PLAYWRIGHT = /^apps\/blog\/playwright(\/|\.[^/]*$)/;
 const SHARED_PLAYWRIGHT = /^playwright\//;

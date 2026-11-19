@@ -1,0 +1,90 @@
+# Glossary: French (fr)
+
+Applies to `apps/blog/locales/fr/common_blog.json`,
+`apps/wallet/locales/fr/common_wallet.json` and
+`packages/smart-signer/locales/fr/smart-signer.json`. Status values and how to
+use this file: `.aidev/i18n/README.md`.
+
+No native speaker has reviewed the French strings yet, so every term is
+`unreviewed`: the rendering the locale files use most as of 2026-11-19.
+
+## Terms
+
+| English | French | Status | Notes |
+|---|---|---|---|
+| Safe Storage | stockage sécurisé | unreviewed | 37 of 37 strings. Label: "Stockage sécurisé". |
+| Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Utiliser Keychain". |
+| witness / witnesses | témoin / témoins | unreviewed | 35 of 37 strings. |
+| voters | votants | unreviewed | |
+| proposal / proposals | proposition / propositions | unreviewed | |
+| Unfunded | Non financé | unreviewed | |
+| Up to … left | Jusqu'à <amount/> restants | unreviewed | |
+| refund (proposal) | remboursement | unreviewed | |
+| delegation / delegate | délégation / déléguer | unreviewed | |
+| power up / power down | Power Up / Power Down | unreviewed | Kept in English in buttons. |
+| HIVE, HBD, HIVE POWER, HP | unchanged | unreviewed | Token symbols. |
+| payout / after payout | paiement / après le paiement | unreviewed | 15 of 23 strings; 7 say "gains" (see drift). |
+| rewards | gains | unreviewed | 23 strings against 22 for "récompenses": a near tie for a reviewer to settle. |
+| claim rewards | Réclamer les gains | unreviewed | |
+| curation rewards | gains de curation | unreviewed | |
+| beneficiary | bénéficiaire | unreviewed | |
+| posting / active / owner / memo key | clé de publication / clé active / clé propriétaire / clé mémo | unreviewed | |
+| Keys & Permissions / Authorities | Clés et permissions / Autorités | unreviewed | |
+| memo | mémo | unreviewed | 18 of 28 strings; the rest "memo". |
+| transfer | transférer / transfert | unreviewed | |
+| savings | épargne | unreviewed | |
+| price feed | flux de prix | unreviewed | |
+| proxy | proxy | unreviewed | 6 strings; 5 say "procuration". |
+| Resource Credits (RC) | crédits de ressources (RC) | unreviewed | |
+| upvote / downvote | vote positif / vote négatif | unreviewed | |
+| follow / mute | suivre / masquer | unreviewed | Mute: 23 of 31 strings use "masquer". |
+| reblog | rebloguer | unreviewed | |
+| community | communauté | unreviewed | |
+| post / comment / reply | article / commentaire / réponse | unreviewed | "article" in 58 of 114 strings; "publication" 23, "post" 20. |
+| wallet | portefeuille | unreviewed | |
+| log in / log out | Se connecter / Se déconnecter | unreviewed | |
+| password | mot de passe | unreviewed | |
+| passkey | passkey | unreviewed | Kept as the product term. |
+| market / interest | marché / intérêts | unreviewed | |
+
+## Register
+
+Formal "vous": "Votre brouillon", "votre vote" (162 "votre", no "tu").
+
+## Plural forms
+
+Categories: `one`, `many`, `other`. `one` covers 0 and 1 (and fractions
+below 2).
+
+| Category | Numbers | Example |
+|---|---|---|
+| one | 0, 1, 1,5 | 0 votant / 1 votant |
+| many | 1 000 000, 2 000 000, … | 1 000 000 de votants |
+| other | 2–999 999 | 5 votants |
+
+## Numbers, dates and times
+
+- Decimal comma, narrow no-break space grouping: "1 234,5".
+- Abbreviated amounts: the app's K/M suffix with the decimal comma, "651,7K".
+- Dates: "15 mai 2026". Month names lower case.
+- Times: 24-hour, "14:05".
+- Relative times (`Intl.RelativeTimeFormat`): "il y a 5 heures", "hier".
+- Percent and colon take a space before them: "12,5 %", "Niveau : 12 %".
+
+## Untranslated names
+
+Hive, Hive Keychain, HiveAuth, Hivesigner, PeakVault, MetaMask, Google Drive,
+Hive Bridge, Ecency, PeakD, Hive.blog, Blocktrades, Ionomy, OpenHive; FAQ,
+NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER; passkey, blog, spoiler.
+
+## Known drift
+
+- mute: blog `user_profile.mute_button` "Muet" and `unmute_button` "Un muet"
+  (should use "masquer").
+- redeem: blog `navigation.profile_notifications_tab_navbar.redeem`
+  "Racheter" (buy back) against "Réclamer les gains".
+- payout/rewards: "paiement", "gains" and "récompenses" alternate for the
+  same concepts.
+- log out: blog "Déconnexion", wallet "Se déconnecter".
+- wallet `profile.savings_title` "EPARGNE" (capitals, no accent).
+- "Stockage Sécurisé" in title case in the login-method labels.
