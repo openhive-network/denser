@@ -12,6 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { explorerUrl } from './lib/explorer-url';
 
 const ITEM_CONTENT_CLASS = 'flex h-full w-full items-center gap-1 p-4 text-sm font-semibold';
 
@@ -69,7 +70,6 @@ const Sidebar = () => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const walletHost = env('WALLET_ENDPOINT');
-  const expolorerHost = env('EXPLORER_DOMAIN');
   return (
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
@@ -116,8 +116,8 @@ const Sidebar = () => {
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
             <Item href="/welcome">{t('navigation.sidebar.welcome')}</Item>
             <Item href="/faq.html">{t('navigation.sidebar.faq')}</Item>
-            <Item href={expolorerHost} target>
-              Block Explorer
+            <Item href={explorerUrl(env('EXPLORER_DOMAIN'), user)} target>
+              {t('navigation.explore_nav.blockexplorer')}
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />

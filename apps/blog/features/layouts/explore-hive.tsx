@@ -6,6 +6,7 @@ import { Icons } from '@ui/components/icons';
 
 import env from '@beam-australia/react-env';
 import { useTranslation } from '../../i18n/client';
+import { explorerUrl } from './lib/explorer-url';
 
 const ExploreHive: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -44,7 +45,7 @@ const ExploreHive: FC = () => {
           </li>
           <li>
             <Link
-              href="https://hiveblocks.com/"
+              href={explorerUrl(env('EXPLORER_DOMAIN'))}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center hover:text-destructive"
