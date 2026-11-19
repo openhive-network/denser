@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "パスワード",
     "password_form_title": "パスワードを入力してください",
-    "store_key_label": "キーを保存",
-    "store_password_label": "パスワードを保存",
     "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード",
     "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。",
-    "fresh_check_title": "パスワードで確認",
-    "fresh_check_description": "この操作には{{keyType}}キーが必要です。署名するにはウォレットのパスワードを入力してください。このキーが必要な操作のたびにパスワードを再度お尋ねします。",
-    "fresh_check_sign_button": "署名"
+    "remember_key_tab_label": "このタブで記憶する",
+    "remember_key_device_label": "このデバイスで記憶する（安全なストレージ）",
+    "remember_key_hint": "このタブで記憶したキーは再読み込みで消去されます。安全なストレージはパスワードで暗号化してこのデバイスに保存します。"
+  },
+  "key_protection": {
+    "dialog_title": "キーが保護されずに保存されています",
+    "dialog_description": "@{{username}} のキーがこのブラウザに保護されずに保存されています。安全なストレージで保護してください。",
+    "set_password_button": "パスワードを設定",
+    "not_now_button": "今はしない",
+    "password_title": "安全なストレージでキーを保護",
+    "password_description_new": "@{{username}} の安全なストレージのパスワードを決めてください。このデバイスでキーを使って署名するときに入力します。",
+    "password_description_existing": "キーを追加するには @{{username}} の安全なストレージのパスワードを入力してください。",
+    "protect_button": "キーを保護",
+    "protected": "キーは安全なストレージに移されました。",
+    "menu_notice": "キーがこのブラウザに保護されずに保存されています。安全なストレージで保護してください。サインアウトすると消去されます。"
   },
   "operation_summary": {
     "witness_vote": "署名: ウィットネス @{{witness}} に投票",

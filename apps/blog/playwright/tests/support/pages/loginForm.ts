@@ -27,7 +27,8 @@ export class LoginForm {
 
   readonly headerEnterYourKey: Locator;
   readonly postingPrivateKeyInput: Locator;
-  readonly storeKeyCheckbox: Locator;
+  readonly rememberKeyForTabCheckbox: Locator;
+  readonly rememberKeyOnDeviceCheckbox: Locator;
   readonly postingPrivateKeySubmitButton: Locator;
   readonly postingPrivateKeyCancelButton: Locator;
 
@@ -74,7 +75,8 @@ export class LoginForm {
 
     this.headerEnterYourKey = page.getByText(/^Enter your (posting|active) key$/);
     this.postingPrivateKeyInput = page.getByTestId('posting-private-key-input');
-    this.storeKeyCheckbox = page.getByLabel('Store key');
+    this.rememberKeyForTabCheckbox = page.getByTestId('remember-key-tab');
+    this.rememberKeyOnDeviceCheckbox = page.getByTestId('remember-key-device');
     this.postingPrivateKeySubmitButton = page.getByTestId('password-submit-button');
     this.postingPrivateKeyCancelButton = page.getByTestId('password-cancel-button');
 
@@ -163,7 +165,8 @@ export class LoginForm {
     await this.page.waitForSelector(locatorSelector(this.headerEnterYourKey));
     await expect(this.headerEnterYourKey).toBeVisible();
     await expect(this.postingPrivateKeyInput).toBeVisible();
-    await expect(this.storeKeyCheckbox).not.toBeChecked();
+    await expect(this.rememberKeyForTabCheckbox).not.toBeChecked();
+    await expect(this.rememberKeyOnDeviceCheckbox).not.toBeChecked();
     await expect(this.postingPrivateKeySubmitButton).toBeVisible();
     await expect(this.postingPrivateKeyCancelButton).toBeVisible();
   }

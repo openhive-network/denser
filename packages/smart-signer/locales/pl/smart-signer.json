@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "Hasło",
     "password_form_title": "Wprowadź swoje hasło",
-    "store_key_label": "Zapisz klucz",
-    "store_password_label": "Zapisz hasło",
     "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive",
     "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie.",
-    "fresh_check_title": "Potwierdź hasłem",
-    "fresh_check_description": "Ta operacja wymaga klucza {{keyType}}. Wpisz hasło portfela, aby ją podpisać. Hasło jest wymagane ponownie przed każdą operacją, która potrzebuje tego klucza.",
-    "fresh_check_sign_button": "Podpisz"
+    "remember_key_tab_label": "Zapamiętaj w tej karcie",
+    "remember_key_device_label": "Zapamiętaj na tym urządzeniu (bezpieczny magazyn)",
+    "remember_key_hint": "Klucz zapamiętany w tej karcie znika po przeładowaniu. Bezpieczny magazyn przechowuje go na tym urządzeniu, zaszyfrowany hasłem."
+  },
+  "key_protection": {
+    "dialog_title": "Twój klucz jest zapisany bez ochrony",
+    "dialog_description": "Klucz @{{username}} jest zapisany bez ochrony w tej przeglądarce. Chroń go bezpiecznym magazynem.",
+    "set_password_button": "Ustaw hasło",
+    "not_now_button": "Nie teraz",
+    "password_title": "Chroń swój klucz bezpiecznym magazynem",
+    "password_description_new": "Wybierz hasło bezpiecznego magazynu dla @{{username}}. Podasz je, by podpisywać swoim kluczem na tym urządzeniu.",
+    "password_description_existing": "Podaj hasło bezpiecznego magazynu @{{username}}, by dodać do niego swój klucz.",
+    "protect_button": "Chroń klucz",
+    "protected": "Twój klucz jest teraz w bezpiecznym magazynie.",
+    "menu_notice": "Twój klucz jest zapisany bez ochrony w tej przeglądarce. Chroń go bezpiecznym magazynem. Wylogowanie go usuwa."
   },
   "operation_summary": {
     "witness_vote": "Podpisz: głos na świadka @{{witness}}",

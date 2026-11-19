@@ -287,6 +287,8 @@ export const startWalletApiStub = (
 ): Promise<Server> =>
   startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: { ...REST_RESULTS, ...rest } }, port);
 
+const KEY_PROTECTION_SNOOZE_MS = 24 * 60 * 60 * 1000;
+
 /**
  * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what
  * `useUser` starts from. Pass a key type (`'posting'`/`'active'`) or options
@@ -328,11 +330,22 @@ export const logInAsStubAccount = (
 };
 
 /**
- * Stores `wif` as STUB_ACCOUNT's `keyType` key where the WIF signer reads it
- * (`wif.{username}@{keyType}`, smart-signer's signer-wif.ts), so signing asks for no key.
+ * Stores `wif` as STUB_ACCOUNT's `keyType` key in plaintext, as earlier versions did, where the WIF
+ * signer still reads it (`wif.{username}@{keyType}`, smart-signer's credential-storage.ts), so
+ * signing asks for no key. The dialog asking to move it into safe storage is answered "Not now"
+ * (`keyProtectionSnoozed.{username}`, smart-signer's key-protection-reminder.ts), so it does not
+ * cover the page.
  */
 export const storeStubAccountKey = (page: Page, keyType: 'posting' | 'active', wif: string) =>
   page.context().addInitScript(
-    ({ storageKey, value }) => window.localStorage.setItem(storageKey, value),
-    { storageKey: `wif.${STUB_ACCOUNT}@${keyType}`, value: JSON.stringify(wif) }
+    ({ storageKey, value, snoozeKey, snoozeValue }) => {
+      window.localStorage.setItem(storageKey, value);
+      window.localStorage.setItem(snoozeKey, snoozeValue);
+    },
+    {
+      storageKey: `wif.${STUB_ACCOUNT}@${keyType}`,
+      value: JSON.stringify(wif),
+      snoozeKey: `keyProtectionSnoozed.${STUB_ACCOUNT}`,
+      snoozeValue: JSON.stringify({ value: true, expiresAt: Date.now() + KEY_PROTECTION_SNOOZE_MS, createdAt: Date.now() })
+    }
   );

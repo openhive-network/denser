@@ -194,13 +194,23 @@
   "password_form": {
     "password_placeholder": "Password",
     "password_form_title": "Inserisci la tua password",
-    "store_key_label": "Conserva chiave",
-    "store_password_label": "Conserva password",
     "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive",
     "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio.",
-    "fresh_check_title": "Conferma con la tua password",
-    "fresh_check_description": "Questa operazione richiede la tua chiave {{keyType}}. Inserisci la password del tuo portafoglio per firmarla. La password viene richiesta di nuovo prima di ogni operazione che necessita di questa chiave.",
-    "fresh_check_sign_button": "Firma"
+    "remember_key_tab_label": "Ricorda per questa scheda",
+    "remember_key_device_label": "Ricorda su questo dispositivo (archivio sicuro)",
+    "remember_key_hint": "Una chiave ricordata per questa scheda viene dimenticata al ricaricamento. L'archivio sicuro la conserva su questo dispositivo, cifrata con una password."
+  },
+  "key_protection": {
+    "dialog_title": "La tua chiave è salvata senza protezione",
+    "dialog_description": "Una chiave di @{{username}} è salvata senza protezione in questo browser. Proteggila con l'archivio sicuro.",
+    "set_password_button": "Imposta una password",
+    "not_now_button": "Non ora",
+    "password_title": "Proteggi la tua chiave con l'archivio sicuro",
+    "password_description_new": "Scegli una password dell'archivio sicuro per @{{username}}. La inserirai per firmare con la tua chiave su questo dispositivo.",
+    "password_description_existing": "Inserisci la password dell'archivio sicuro di @{{username}} per aggiungervi la tua chiave.",
+    "protect_button": "Proteggi chiave",
+    "protected": "La tua chiave ora è nell'archivio sicuro.",
+    "menu_notice": "La tua chiave è salvata senza protezione in questo browser. Proteggila con l'archivio sicuro. Disconnettendoti viene dimenticata."
   },
   "operation_summary": {
     "witness_vote": "Firma: vota il testimone @{{witness}}",

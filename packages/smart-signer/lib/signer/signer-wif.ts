@@ -1,7 +1,7 @@
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { TTransactionPackType, THexString, transaction } from '@hiveio/wax';
-import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
+import { PasswordFormMode, PasswordFormOptions, type RememberKey } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { isUserCancelled } from '@hive/ui/lib/user-cancelled';
@@ -9,11 +9,12 @@ import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
-import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
+import { parseStoredWif, wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
+import { getTabWif, rememberTabWif } from '@smart-signer/lib/signer/tab-credentials';
+import { notifyPlaintextKeyUsed, requestSafeStorageSession } from '@smart-signer/lib/signer/key-protection-signals';
 import { signDigestWithWif, warmEphemeralBeekeeper } from '@smart-signer/lib/ephemeral-beekeeper';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { SignedOutError } from '@transaction/lib/signed-out';
-import { TRANSACTION_EXPIRATION } from '@transaction/lib/transaction-expiration';
 import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
@@ -59,52 +60,86 @@ export class SignerWif extends SignerHbauth {
     await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, signingKeyType, 'WIF');
     // Kept only once the node's authority check took it as the key it was asked for, and for a user
     // still signed in: the check awaited the node, during which the user may have signed out
-    if (otherKey?.store) {
+    if (otherKey?.rememberKey) {
       requireStillSignedInAs(this.username);
-      this.storeOtherKey(signingKeyType, otherKey.wif);
+      await this.rememberKey(signingKeyType, otherKey.wif, otherKey.rememberKey, operation);
     }
 
     return signature;
   }
 
   /**
-   * The WIF key of `keyType`, another than the session's: the stored one, or, for the active key,
-   * the one the user enters for `operation`, stated in the prompt, then kept when they ask for it. An operation
+   * The WIF key of `keyType`, another than the session's: the remembered one, or, for the active key,
+   * the one the user enters for `operation`, stated in the prompt, with how long to remember it. An operation
    * needing another key the session lacks is refused instead of letting the node reject it.
    *
-   * @throws {MissingAuthorityError} when no key of `keyType` is stored and it is not the active key
+   * @throws {MissingAuthorityError} when no key of `keyType` is remembered and it is not the active key
    * @throws {SignedOutError} when the user signed out, or switched account, while asked for the key
    */
   private async getOtherKey(
     keyType: KeyAuthorityType,
     operation?: OperationSummary
-  ): Promise<{ wif: string; store: boolean }> {
+  ): Promise<{ wif: string; rememberKey: RememberKey }> {
     const storedWif = this.getStoredWif(keyType);
-    if (storedWif) return { wif: storedWif, store: false };
+    if (storedWif) return { wif: storedWif, rememberKey: '' };
     if (keyType !== 'active') throw new MissingAuthorityError(keyType);
     const { username } = this;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
-      showInputStorePassword: true,
+      showRememberKey: true,
       validatePassword: (wif) => validateKeyAuthority(username, KeyType.active, wif),
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
-        inputStorePasswordLabel: 'password_form.store_key_label',
         title: 'login_form.enter_key_title_active',
         description: 'login_form.this_operation_requires_your_key_for_single_sign_active'
       },
       i18nValues: { keyType },
       operation
     };
-    const { password: wif, storePassword } = await askWhileSignedIn(username, () =>
+    const { password: wif, rememberKey = '' } = await askWhileSignedIn(username, () =>
       this.getKeyFromUser(passwordFormOptions)
     );
-    return { wif, store: !!storePassword };
+    return { wif, rememberKey };
   }
 
-  private storeOtherKey(keyType: KeyAuthorityType, wif: string): void {
-    window.localStorage.setItem(wifCredentialKey(this.username, keyType), JSON.stringify(wif));
+  /**
+   * Keeps `wif`, the `keyType` key, as the user chose in the prompt: in this tab's memory, also as
+   * the key of every other key type it is the key of, so operations needing those sign without
+   * asking until a reload. On this device, it is then imported into safe storage too, in the
+   * background, and the session asked to sign in through it.
+   */
+  private async rememberKey(
+    keyType: KeyAuthorityType,
+    wif: string,
+    rememberKey: Exclude<RememberKey, ''>,
+    operation?: OperationSummary
+  ): Promise<void> {
+    const keyTypes = [keyType, ...(await findSharedKeyTypes(this.username, keyType, wif))];
+    rememberTabWif(this.username, keyTypes, wif);
     notifySafeStorageKeysChanged();
+    if (rememberKey === 'device') void this.importIntoSafeStorage(keyTypes, wif, operation);
+  }
+
+  /**
+   * Asks for the safe storage password and imports `wif`, the key of `keyTypes`, into safe storage,
+   * with the session's own key when this tab remembers it, then asks for the session to sign in
+   * through it. A closed prompt or a failed import leaves the keys remembered for this tab only; a
+   * failure is reported to the user.
+   */
+  private async importIntoSafeStorage(keyTypes: KeyAuthorityType[], wif: string, operation?: OperationSummary) {
+    const { username, keyType: sessionKeyType } = this;
+    try {
+      const { importWithSafeStoragePassword } = await import('@smart-signer/lib/signer/safe-storage-import-prompt');
+      const keys = keyTypes.map((keyType) => ({ keyType, wif }));
+      const sessionWif = getTabWif(username, sessionKeyType);
+      if (sessionWif && !keyTypes.includes(sessionKeyType)) keys.push({ keyType: sessionKeyType, wif: sessionWif });
+      if (await importWithSafeStoragePassword(username, keys, operation)) requestSafeStorageSession(username);
+    } catch (error) {
+      if (error instanceof SignedOutError) return;
+      logger.error(error, 'The key of %s was not imported into safe storage; it is remembered for this tab', username);
+      const { handleError } = await import('@ui/lib/handle-error');
+      handleError(error, { method: 'importIntoSafeStorage', params: { username } });
+    }
   }
 
   override async signDigest(
@@ -143,10 +178,10 @@ export class SignerWif extends SignerHbauth {
   }
 
   /**
-   * Displays dialog and asks user to enter password (WIF key). Also
-   * triggers storing this password, if user wants this. Asked of a
-   * signed-in user, rejects with `SignedOutError`, storing nothing, when
-   * the user signed out or switched account while asked.
+   * Displays dialog and asks user to enter password (WIF key), and
+   * remembers it as the user chose there. Asked of a signed-in user,
+   * rejects with `SignedOutError`, remembering nothing, when the user
+   * signed out or switched account while asked.
    *
    * @returns {Promise<string>}
    * @memberof SignerWif
@@ -155,11 +190,10 @@ export class SignerWif extends SignerHbauth {
     const { username, keyType } = this;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
-      showInputStorePassword: true,
+      showRememberKey: true,
       validatePassword: (wif) => validateKeyAuthority(username, keyType, wif),
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
-        inputStorePasswordLabel: 'password_form.store_key_label',
         title: `login_form.enter_key_title_${keyType}`,
         description: `login_form.this_operation_requires_your_key_for_single_sign_${keyType}`
       },
@@ -171,14 +205,11 @@ export class SignerWif extends SignerHbauth {
       if (!this.passwordPromise) {
         const resolvePassword = async () => {
           // Kept only for a user still signed in: one signing out in another tab while asked would
-          // have the key stored for the signed-out account
-          const { password: wif, storePassword: storeKey } = await askWhileSignedInIfSo(username, () =>
+          // have the key remembered for the signed-out account
+          const { password: wif, rememberKey } = await askWhileSignedInIfSo(username, () =>
             this.getKeyFromUser(passwordFormOptions)
           );
-          if (storeKey) {
-            await this.storePassword(wif);
-            await this.storeSharedKey(wif);
-          }
+          if (rememberKey) await this.rememberKey(keyType, wif, rememberKey, operation);
           return wif;
         };
         this.passwordPromise = resolvePassword();
@@ -193,86 +224,16 @@ export class SignerWif extends SignerHbauth {
   }
 
   /**
-   * Stores `wif`, just stored as the session's key, as the key of every other key type it is also
-   * the key of, so operations needing those sign with it without asking.
+   * The WIF key of `keyType` remembered for this account: in this tab, else stored in plaintext by
+   * an earlier version, which still signs until the user moves it into safe storage, as they are
+   * asked to. '' when there is none.
    */
-  private async storeSharedKey(wif: string): Promise<void> {
-    const sharedKeyTypes = await findSharedKeyTypes(this.username, this.keyType, wif);
-    if (!sharedKeyTypes.length) return;
-    for (const keyType of sharedKeyTypes) {
-      window.localStorage.setItem(wifCredentialKey(this.username, keyType), JSON.stringify(wif));
-    }
-    notifySafeStorageKeysChanged();
-  }
-
-  /** The WIF key of `keyType` stored for this account, or '' when none is stored. */
   private getStoredWif(keyType: string): string {
-    const stored = window.localStorage.getItem(wifCredentialKey(this.username, keyType));
-    return stored ? JSON.parse(stored) : '';
-  }
-
-  private get storageKey() {
-    return wifCredentialKey(this.username, this.keyType);
-  }
-
-  /**
-   * Stores password (WIF key) in storage for future use.
-   *
-   * @param {string} wif
-   * @memberof SignerWif
-   */
-  async storePassword(wif: string) {
-    const storageKey = this.storageKey;
-
-    // Check if we have the same key already stored (means also already
-    // verified).
-    const wifInStorage = window.localStorage.getItem(storageKey);
-    if (wifInStorage) {
-      logger.info('Found key in storage under key: %s', storageKey);
-      if (JSON.parse(wifInStorage) === wif) {
-        logger.info('Wif is already stored under key: %s', storageKey);
-        return;
-      } else {
-        logger.info('Stored wif is different');
-      }
-    } else {
-      logger.info('No wif in storage under key: %s', storageKey);
-    }
-
-    // Verify key before storing it.
-    logger.info('Starting to verify wif');
-    let valid = false;
-    try {
-      const wax = await getChain();
-
-      const tx = await wax.createTransaction(TRANSACTION_EXPIRATION);
-      tx.pushOperation({
-        custom_json_operation: {
-          id: 'test',
-          json: '{}',
-          required_auths: this.keyType === 'posting' ? [] : [this.username],
-          required_posting_auths: this.keyType === 'posting' ? [this.username] : []
-        }
-      });
-      const signature = await this.signDigest(tx.sigDigest, wif);
-      tx.addSignature(signature);
-
-      const result = await wax.api.database_api.verify_authority({ pack: this.pack, trx: tx.toApiJson() });
-
-      valid = result.valid;
-    } catch (error) {
-      logger.error('Cannot verify private key: %s', error instanceof Error ? error.message : String(error));
-      throw error;
-    }
-
-    // Throw error if key is invalid.
-    if (!valid) {
-      throw new Error('login_form.zod_error.invalid_wif');
-    }
-
-    // Store key if it is valid.
-    window.localStorage.setItem(storageKey, JSON.stringify(wif));
-
-    logger.info('Stored valid wif under key: %s', storageKey);
+    const tabWif = getTabWif(this.username, keyType);
+    if (tabWif) return tabWif;
+    const plaintextWif = parseStoredWif(window.localStorage.getItem(wifCredentialKey(this.username, keyType)));
+    if (!plaintextWif) return '';
+    notifyPlaintextKeyUsed(this.username);
+    return plaintextWif;
   }
 }

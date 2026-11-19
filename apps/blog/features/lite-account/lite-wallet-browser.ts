@@ -42,7 +42,6 @@ async function askPassword(identity: StoredLiteIdentity, keyType: LiteKeyRole): 
       isOpen: true,
       passwordFormOptions: {
         mode: PasswordFormMode.HBAUTH,
-        showInputStorePassword: false,
         showSessionTime: true,
         i18nKeysForCaptions: {
           title: 'login_form.title_hbauth_dialog_password',

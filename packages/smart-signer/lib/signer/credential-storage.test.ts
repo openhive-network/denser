@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import {
   clearAccountCredentials,
   clearAllCredentials,
-  clearOtherSessionWifKeys,
-  googleEncryptionKeyWifCredentialKey,
+  clearStoredDriveEncryptionKeys,
   googleRefreshTokenCredentialKey,
   hiveAuthCredentialKey,
   readCredential,
+  removeStoredWifKeys,
+  storedWifKeys,
   storedWifKeyTypes,
   wifCredentialKey
 } from './credential-storage.ts';
@@ -88,7 +89,7 @@ describe('clearAccountCredentials', () => {
       storage.setItem(wifCredentialKey(username, 'active'), '"wif"');
       storage.setItem(hiveAuthCredentialKey(username).key, hiveAuthData(username, 'token'));
       storage.setItem(googleRefreshTokenCredentialKey(username).key, 'refresh');
-      storage.setItem(googleEncryptionKeyWifCredentialKey(username).key, 'wif');
+      storage.setItem(`gdrive_encryption_key_wif.${username}`, 'wif');
     }
     storage.setItem('user', '{}');
 
@@ -154,44 +155,45 @@ describe('storedWifKeyTypes', () => {
   });
 });
 
-describe('clearOtherSessionWifKeys', () => {
-  it('removes the active key stored before signing in with the posting key', () => {
+describe('storedWifKeys', () => {
+  it('reads the plaintext keys of the account only, posting first, skipping an entry that is no key', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
+    storage.setItem(wifCredentialKey('alice', 'owner'), JSON.stringify('owner-wif'));
+    storage.setItem(wifCredentialKey('alice2', 'posting'), JSON.stringify('other-wif'));
+    storage.setItem(wifCredentialKey('bob', 'posting'), 'not json');
+
+    assert.deepEqual(storedWifKeys(storage, 'alice'), [
+      { keyType: 'posting', wif: 'posting-wif' },
+      { keyType: 'active', wif: 'active-wif' }
+    ]);
+    assert.deepEqual(storedWifKeys(storage, 'bob'), []);
+  });
+
+  it('removes only the named key types of the account', () => {
     const storage = new StubStorage();
     storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
     storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
+    storage.setItem(wifCredentialKey('bob', 'posting'), JSON.stringify('bob-wif'));
 
-    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), true);
+    removeStoredWifKeys(storage, 'alice', ['posting']);
 
-    assert.deepEqual(storage.keys(), [wifCredentialKey('alice', 'posting')]);
+    assert.deepEqual(storage.keys(), [wifCredentialKey('alice', 'active'), wifCredentialKey('bob', 'posting')]);
   });
+});
 
-  it('removes the other key when the session key is not stored', () => {
+describe('clearStoredDriveEncryptionKeys', () => {
+  it('removes the encryption key of every account and the shared entry, and keeps the WIF keys and tokens', () => {
     const storage = new StubStorage();
+    storage.setItem('gdrive_encryption_key_wif', 'shared');
+    storage.setItem('gdrive_encryption_key_wif.alice', 'alice-key');
+    storage.setItem('gdrive_encryption_key_wif.bob', 'bob-key');
+    storage.setItem(googleRefreshTokenCredentialKey('alice').key, 'refresh');
     storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
 
-    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'active'), true);
+    clearStoredDriveEncryptionKeys(storage);
 
-    assert.deepEqual(storage.keys(), []);
-  });
-
-  it('keeps a key stored for another key type that is the session key too', () => {
-    const storage = new StubStorage();
-    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('shared-wif'));
-    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('shared-wif'));
-
-    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), false);
-
-    assert.deepEqual(storage.keys(), [wifCredentialKey('alice', 'active'), wifCredentialKey('alice', 'posting')]);
-  });
-
-  it("leaves other accounts' keys and other credentials", () => {
-    const storage = new StubStorage();
-    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
-    storage.setItem(wifCredentialKey('bob', 'active'), JSON.stringify('bob-wif'));
-    storage.setItem(hiveAuthCredentialKey('alice').key, hiveAuthData('alice', 'token-a'));
-
-    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), true);
-
-    assert.deepEqual(storage.keys(), [hiveAuthCredentialKey('alice').key, wifCredentialKey('bob', 'active')]);
+    assert.deepEqual(storage.keys(), ['google_refresh_token.alice', wifCredentialKey('alice', 'posting')]);
   });
 });

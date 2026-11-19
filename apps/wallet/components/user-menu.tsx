@@ -25,6 +25,8 @@ import DialogLogin from './dialog-login';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
+import { useKeyProtection } from '@smart-signer/lib/auth/use-key-protection';
+import KeyProtectionMenuItem from '@smart-signer/components/key-protection-menu-item';
 import AccountSwitcher from '@smart-signer/components/account-switcher';
 import { useRouter } from 'next/navigation';
 
@@ -40,6 +42,7 @@ type LoginDialogTarget = { username?: string; keyType?: KeyType };
 const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User; tooltip?: ReactNode }) => {
   const onLogout = useLogout('/');
   useSafeStorageLockNotice(user);
+  const keyProtection = useKeyProtection(user);
   const blogHost = env('BLOG_DOMAIN');
   const { t } = useTranslation('common_wallet');
   const { authority, chip } = useLoginAuthorityLabels(user);
@@ -98,6 +101,7 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
             <Icons.walletlogo className=" w-20" />
           </DropdownMenuLabel>
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
+          <KeyProtectionMenuItem keyProtection={keyProtection} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} onSwitched={showSwitchedWallet} t={t} />
 

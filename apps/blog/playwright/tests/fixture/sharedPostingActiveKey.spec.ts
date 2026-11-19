@@ -12,8 +12,9 @@ import enBlog from '../../../locales/en/common_blog.json';
 
 /**
  * An account using one key pair as both its posting and its active key: a WIF session signed in
- * with it holds both keys. The WIF sign-in that stores its key stores it as both, and the header
- * names both keys and offers no other key, whichever of them the session signed in as.
+ * with it holds both keys. The WIF sign-in that remembers its key for the tab remembers it as both,
+ * writing no key to storage, and the header names both keys and offers no other key, whichever of
+ * them the session signed in as.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose WIF sign-in of SHARED_KEY_ACCOUNT
  * it repeats; the account's recorded posting and active authorities are answered with the public
@@ -62,11 +63,10 @@ async function shareAccountKey(page: Page): Promise<void> {
   );
 }
 
-async function storedWifKeys(page: Page): Promise<string[]> {
-  return page.evaluate(() =>
-    Object.keys(window.localStorage)
-      .filter((key) => key.startsWith('wif.'))
-      .sort()
+async function storedWifKeys(page: Page, username: string): Promise<string[]> {
+  return page.evaluate(
+    (prefix) => Object.keys(window.localStorage).filter((key) => key.startsWith(prefix)),
+    `wif.${username}@`
   );
 }
 
@@ -83,7 +83,7 @@ async function expectBothKeysHeld(page: Page, username: string) {
 }
 
 test.describe('A WIF sign-in with a key that is both the posting and the active key', () => {
-  test('SHARED-KEY-01 — stores the key as both, and the header names both keys', async ({ page }) => {
+  test('SHARED-KEY-01 — remembers the key for the tab as both, and the header names both keys', async ({ page }) => {
     // The sign-in signs with a key that is not the account's: verify_authority is stubbed
     await installBroadcastInterceptor(page);
     await shareAccountKey(page);
@@ -97,19 +97,17 @@ test.describe('A WIF sign-in with a key that is both the posting and the active 
     await loginForm.otherSignInOptionsUsernameInput.fill(SHARED_KEY_ACCOUNT);
     await loginForm.signInWithWifButton.click();
     await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
-    await loginForm.storeKeyCheckbox.check();
+    await loginForm.rememberKeyForTabCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(FIXTURE_POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
     await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
 
     await expectBothKeysHeld(page, SHARED_KEY_ACCOUNT);
-    expect(await storedWifKeys(page)).toEqual(
-      expect.arrayContaining([`wif.${SHARED_KEY_ACCOUNT}@active`, `wif.${SHARED_KEY_ACCOUNT}@posting`])
-    );
+    expect(await storedWifKeys(page, SHARED_KEY_ACCOUNT)).toEqual([]);
   });
 });
 
-test.describe('An active-key WIF session whose key is stored as the posting key too', () => {
+test.describe('An active-key WIF session whose key an earlier version stored as the posting key too', () => {
   test.use({ authenticatedUser: { authenticateOnBackend: true, keyType: KeyType.active } });
 
   test('SHARED-KEY-02 — the header names both keys instead of offering the posting key', async ({ page }) => {

@@ -25,6 +25,10 @@ export const DEFAULT_USER: User = {
 const OWN_LISTS_STORAGE_PREFIX = 'observer-own-lists-';
 const NO_OWN_LISTS_COOKIE = 'observer-no-own-lists';
 const OWN_LISTS_TTL_MS = 24 * 60 * 60 * 1000;
+// Must match `smart-signer/lib/auth/key-protection-reminder.ts`: the "Not now" answer to the dialog
+// asking to move the seeded plaintext posting key into safe storage, so it does not cover the page.
+const KEY_PROTECTION_SNOOZE_PREFIX = 'keyProtectionSnoozed.';
+const KEY_PROTECTION_SNOOZE_MS = 24 * 60 * 60 * 1000;
 
 /**
  * Pre-seeds logged-in state for the blog app without running the real login
@@ -102,9 +106,9 @@ export async function seedAuthCookie(
   // Key and shape must match `smart-signer/lib/auth/user-localstore.ts`.
   const userJson = JSON.stringify(user);
 
-  // Posting WIF — lets broadcast-style operations (e.g. upvote) sign
-  // without popping the password dialog. Storage key must match
-  // `signer-wif.ts#storageKey`: `wif.{username}@{keyType}`. The test account's
+  // Posting WIF, as earlier versions stored it in plaintext — lets broadcast-style operations
+  // (e.g. upvote) sign without popping the password dialog. Storage key must match
+  // `credential-storage.ts#wifCredentialKey`: `wif.{username}@{keyType}`. The test account's
   // real key comes from env when set; otherwise a throwaway key, which is
   // enough because broadcasts are intercepted (see FIXTURE_POSTING_WIF).
   const postingWif = process.env.CI_TEST_USER_WIF_POSTING || FIXTURE_POSTING_WIF;
@@ -120,12 +124,20 @@ export async function seedAuthCookie(
     createdAt: Date.now()
   });
 
+  const snoozeKey = `${KEY_PROTECTION_SNOOZE_PREFIX}${user.username}`;
+  const snoozeValue = JSON.stringify({
+    value: true,
+    expiresAt: Date.now() + KEY_PROTECTION_SNOOZE_MS,
+    createdAt: Date.now()
+  });
+
   await context.addInitScript(
-    ({ userJson, wifKey, wifValue, ownListsKey, ownListsValue }) => {
+    ({ userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue }) => {
       try {
         window.localStorage.setItem('user', userJson);
         if (wifValue) {
           window.localStorage.setItem(wifKey, wifValue);
+          window.localStorage.setItem(snoozeKey, snoozeValue);
         }
         if (window.localStorage.getItem(ownListsKey) === null) {
           window.localStorage.setItem(ownListsKey, ownListsValue);
@@ -134,7 +146,7 @@ export async function seedAuthCookie(
         /* storage may be unavailable in some edge contexts — ignore */
       }
     },
-    { userJson, wifKey, wifValue, ownListsKey, ownListsValue }
+    { userJson, wifKey, wifValue, ownListsKey, ownListsValue, snoozeKey, snoozeValue }
   );
 
   return user;
