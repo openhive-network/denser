@@ -19,7 +19,7 @@ const KEY_TYPES: readonly KeyTypeName[] = ['posting', 'active'];
 // `requireOtherKey`), wif with the session's key, which signs for every key type it is stored as
 // (signer-wif.ts), passkey with the posting key its signer derives, and nothing else
 // (signer-passkey.ts). Every other signer either asks for the operation's required key (keychain,
-// peakvault, metamask, google) or leaves the choice to the external app (hiveauth, hivesigner).
+// peakvault, metamask, google) or leaves the choice to the external app (hiveauth).
 const SAFE_STORAGE_LOGIN_TYPE: `${LoginType}` = 'hbauth';
 const KEY_LOGIN_TYPES: ReadonlySet<string> = new Set<`${LoginType}`>([SAFE_STORAGE_LOGIN_TYPE, 'wif', 'passkey']);
 

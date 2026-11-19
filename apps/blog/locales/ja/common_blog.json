@@ -174,8 +174,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIFキー",
-        "hivesigner": "HiveSigner"
+        "wif": "WIFキー"
       },
       "key_type": {
         "posting": "投稿キー",

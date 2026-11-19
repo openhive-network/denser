@@ -14,7 +14,6 @@ export class LoginToVoteDialog {
   readonly getKeepMeLoggedInCheckbox: Locator;
   readonly getSubmitButton: Locator;
   readonly getResetButton: Locator;
-  readonly getHiveSignerButton: Locator;
   readonly getCloseDialogButton: Locator;
 
   constructor(page: Page) {
@@ -30,7 +29,6 @@ export class LoginToVoteDialog {
     this.getKeepMeLoggedInCheckbox = this.getLoginDialog.locator('input[name="remember"]');
     this.getSubmitButton = page.locator('[data-testid="login-submit-button"]');
     this.getResetButton = page.locator('[data-testid="login-reset-button"]');
-    this.getHiveSignerButton = page.locator('[data-testid="hivesigner-button"]');
     this.getCloseDialogButton = page.locator('[data-testid="close-dialog"]');
   }
 
@@ -46,7 +44,6 @@ export class LoginToVoteDialog {
     await expect(this.getKeepMeLoggedInCheckbox).not.toBeChecked();
     await expect(this.getSubmitButton).toBeVisible();
     await expect(this.getResetButton).toBeVisible();
-    await expect(this.getHiveSignerButton).toBeVisible();
   }
 
   async validateLoginDialogInPolishIsVisible() {
@@ -64,7 +61,6 @@ export class LoginToVoteDialog {
     await expect(this.getResetButton).toBeVisible();
     await expect(this.getResetButton).toHaveText('Wyczyść formularz');
     await expect(this.page.getByText('więcej opcji logowania')).toBeVisible();
-    await expect(this.getHiveSignerButton).toBeVisible();
   }
 
   async closeLoginDialog() {

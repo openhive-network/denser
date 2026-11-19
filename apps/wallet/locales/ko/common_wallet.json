@@ -128,8 +128,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF 키",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF 키"
       }
     }
   },

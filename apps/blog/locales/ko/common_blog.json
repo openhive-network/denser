@@ -174,8 +174,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF 키",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF 키"
       },
       "key_type": {
         "posting": "포스팅 키",

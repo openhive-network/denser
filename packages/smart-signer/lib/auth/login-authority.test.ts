@@ -11,7 +11,7 @@ const session = (loginType: string, keyType: string) =>
     keyType: keyType as User['keyType']
   }) as User;
 
-const SIGNERS = ['keychain', 'peakvault', 'metamask', 'google', 'hiveauth', 'hivesigner'];
+const SIGNERS = ['keychain', 'peakvault', 'metamask', 'google', 'hiveauth'];
 
 describe('getLoginAuthority', () => {
   for (const keyType of ['posting', 'active']) {

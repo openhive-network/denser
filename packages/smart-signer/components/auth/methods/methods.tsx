@@ -54,7 +54,7 @@ const formSchema = z.object({
 });
 type MethodsFormValues = z.infer<typeof formSchema>;
 
-type MethodInfoKey = 'metamask' | 'google' | 'keychain' | 'peakvault' | 'wif' | 'hiveauth' | 'hivesigner' | 'passkey';
+type MethodInfoKey = 'metamask' | 'google' | 'keychain' | 'peakvault' | 'wif' | 'hiveauth' | 'passkey';
 
 const Methods: FC<MethodsProps> = ({
   onSetStep,
@@ -329,22 +329,6 @@ const Methods: FC<MethodsProps> = ({
                 </div>
               </Button>
               {renderMethodInfo('hiveauth', 'HiveAuth')}
-            </div>
-
-            <Separator className="my-1 w-full" />
-
-            <div className="flex w-full items-center">
-              <Button
-                disabled
-                className="flex flex-1 justify-start py-6"
-                type="button"
-                variant="ghost"
-                data-testid="hive-signer-button"
-              >
-                <Icons.hivesigner className="mr-4 h-8 w-8" />
-                {t('login_form.signin_with_hivesigner')}
-              </Button>
-              {renderMethodInfo('hivesigner', 'HiveSigner')}
             </div>
 
             <Button

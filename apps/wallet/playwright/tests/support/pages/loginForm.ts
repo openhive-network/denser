@@ -111,7 +111,7 @@ export class LoginForm {
     await expect(this.hiveKeychainExtensionButton).toBeDisabled();
     await expect(this.signInWithWifButton).toBeDisabled();
     await expect(this.hiveAuthButton).toBeDisabled();
-    await expect(this.hiveSignerButton).toBeDisabled();
+    await expect(this.hiveSignerButton).toHaveCount(0);
     await expect(this.goBackButton).toBeEnabled();
   }
 
@@ -128,7 +128,7 @@ export class LoginForm {
     // We only assert that WIF is always enabled (no extension/config required)
     await expect(this.signInWithWifButton).toBeEnabled();
     await expect(this.hiveAuthButton).toBeDisabled();
-    await expect(this.hiveSignerButton).toBeDisabled();
+    await expect(this.hiveSignerButton).toHaveCount(0);
     await expect(this.goBackButton).toBeEnabled();
   }
 

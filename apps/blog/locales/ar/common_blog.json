@@ -184,8 +184,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "مفتاح WIF",
-        "hivesigner": "HiveSigner"
+        "wif": "مفتاح WIF"
       },
       "key_type": {
         "posting": "مفتاح النشر",

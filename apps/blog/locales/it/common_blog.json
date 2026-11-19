@@ -178,8 +178,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "Chiave WIF",
-        "hivesigner": "HiveSigner"
+        "wif": "Chiave WIF"
       },
       "key_type": {
         "posting": "Chiave di pubblicazione",

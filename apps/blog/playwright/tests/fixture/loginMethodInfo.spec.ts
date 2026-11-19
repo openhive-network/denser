@@ -19,7 +19,7 @@ import plBlog from '../../../locales/pl/common_blog.json';
 test.use({ fixtureTestName: 'homeMainPage' });
 
 const EN_METHOD_INFO = enSmartSigner.login_form.method_info;
-const OTHER_METHODS = ['metamask', 'google', 'keychain', 'peakvault', 'wif', 'hiveauth', 'hivesigner'] as const;
+const OTHER_METHODS = ['metamask', 'google', 'keychain', 'peakvault', 'wif', 'hiveauth'] as const;
 
 const openLoginDialog = async (page: Page): Promise<LoginForm> => {
   const homePage = new HomePage(page);
@@ -58,6 +58,9 @@ test.describe('Login dialog — sign-in method info', () => {
     for (const method of OTHER_METHODS) {
       await expect(await openMethodInfo(page, method), method).toHaveText(EN_METHOD_INFO[method]);
     }
+    // HiveSigner is not offered
+    await expect(page.getByTestId('method-info-hivesigner')).toHaveCount(0);
+    await expect(page.getByRole('dialog')).not.toContainText(/hivesigner/i);
 
     // The trigger sits beside the WIF button, not in it: clicking it must not start the WIF sign-in.
     await loginForm.otherSignInOptionsUsernameInput.fill('guest4test');

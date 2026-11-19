@@ -128,8 +128,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIFキー",
-        "hivesigner": "HiveSigner"
+        "wif": "WIFキー"
       }
     }
   },

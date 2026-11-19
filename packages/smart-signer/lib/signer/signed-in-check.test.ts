@@ -13,7 +13,8 @@ const STUBS: Record<string, string> = {
 const MODULES: Record<string, string> = {
   '@transaction/lib/signed-out': new URL('../../../transaction/lib/signed-out.ts', import.meta.url).href,
   '@smart-signer/lib/auth/user-localstore': new URL('../auth/user-localstore.ts', import.meta.url).href,
-  '@smart-signer/lib/safe-json-parse': new URL('../safe-json-parse.ts', import.meta.url).href
+  '@smart-signer/lib/safe-json-parse': new URL('../safe-json-parse.ts', import.meta.url).href,
+  '@smart-signer/lib/auth/known-login-type': new URL('../auth/known-login-type.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {

@@ -62,6 +62,7 @@ const REAL: Record<string, string> = {
   '@smart-signer/lib/session-uid-cookie': '../../session-uid-cookie.ts',
   '@smart-signer/lib/auth/accounts': '../../auth/accounts.ts',
   '@smart-signer/lib/auth/chat-session': '../../auth/chat-session.ts',
+  '@smart-signer/lib/auth/known-login-type': '../../auth/known-login-type.ts',
   '@smart-signer/lib/api-handlers/auth/challenge': './challenge.ts',
   './set-cookie': '../../set-cookie.ts'
 };
@@ -163,14 +164,14 @@ async function call(jar: CookieJar, handler: NextApiHandler, body?: unknown): Pr
   return answer;
 }
 
-/** Signs `username` in through `app`'s login dialog, authenticating on the server */
-async function signIn(jar: CookieJar, app: AppHandlers, username: string): Promise<Answer> {
+/** Signs `username` in through `app`'s login dialog with `loginType`, authenticating on the server */
+async function signIn(jar: CookieJar, app: AppHandlers, username: string, loginType = 'keychain'): Promise<Answer> {
   const { body } = await call(jar, app.challenge);
   const { loginChallenge } = body as { loginChallenge: string };
   const tx = { challenge: loginChallenge, operations: [{ value: { required_posting_auths: [username] } }] };
   return call(jar, app.login, {
     username,
-    loginType: 'keychain',
+    loginType,
     keyType: 'posting',
     authenticateOnBackend: true,
     signatures: {},
@@ -211,6 +212,15 @@ describe('blog and wallet on one origin', () => {
       assert.deepEqual(
         { isLoggedIn: (answer.body as User).isLoggedIn, username: usernameOf(answer) },
         { isLoggedIn: true, username: 'alice' }
+      );
+    });
+
+    it('a session of a login type the app no longer has reads as signed out', async () => {
+      assert.equal((await signIn(jar, wallet, 'alice', 'hivesigner')).status, 200);
+      const answer = await call(jar, blog.user);
+      assert.deepEqual(
+        { isLoggedIn: (answer.body as User).isLoggedIn, username: usernameOf(answer) },
+        { isLoggedIn: false, username: '' }
       );
     });
 

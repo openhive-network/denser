@@ -38,7 +38,6 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
     logger.debug('onSubmit form data: %o', data);
     const { loginType, username, keyType } = data;
     const signatures: Signatures = { posting: '', active: '' };
-    let hivesignerToken = '';
     let signInData: PostLoginSchema;
 
     const loginSignerOptions: SignerOptions = {
@@ -84,7 +83,6 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
       signInData = {
         username,
         loginType,
-        hivesignerToken,
         keyType,
         txJSON: txBuilder.toApi(),
         pack,

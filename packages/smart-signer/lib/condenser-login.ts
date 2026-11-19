@@ -80,7 +80,6 @@ export async function loginCondenserUser(
     await signIn({
       username,
       loginType,
-      hivesignerToken: '',
       keyType: KeyType.posting,
       txJSON: txBuilder.toApi(),
       pack: signer.pack,
