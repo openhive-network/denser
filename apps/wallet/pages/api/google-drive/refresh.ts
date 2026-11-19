@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getGoogleDriveOAuth2Client } from '@/wallet/lib/google-drive-client';
-import { getLogger } from '@ui/lib/logging';
+import { googleDriveTokenRequest } from '@/wallet/lib/google-drive-token-request';
+import { answerGoogleDriveRefresh, type IGoogleDriveTokenAnswer } from '@smart-signer/lib/google-drive-token-request';
 
-const logger = getLogger('google-drive-auth');
-
-type ResponseData = {
-  accessToken?: string;
-  error?: string;
-};
+async function refreshAccessToken(refreshToken: string): Promise<string | null | undefined> {
+  const oauth2Client = getGoogleDriveOAuth2Client();
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  const { credentials } = await oauth2Client.refreshAccessToken();
+  return credentials.access_token;
+}
 
 /**
  * Proxy endpoint for exchanging Google Drive refresh token to new access token
@@ -15,32 +16,16 @@ type ResponseData = {
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<IGoogleDriveTokenAnswer['body']>
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const refreshToken = req.body['refreshToken'];
-
-    if (!refreshToken || typeof refreshToken !== 'string') {
-      logger.debug('Received invalid Google Drive refresh token format');
-      return res.status(400).json({ error: 'Invalid refresh token format' });
-    }
-
-    const oauth2Client = getGoogleDriveOAuth2Client();
-
-    // Exchange authorization code for access and refresh tokens
-    oauth2Client.setCredentials({ refresh_token: refreshToken });
-
-    const { credentials } = await oauth2Client.refreshAccessToken();
-
-    return res.status(200).json({
-      accessToken: credentials.access_token!
-    });
-  } catch (error) {
-    logger.error('Error refreshing Google Drive access token: %s', error instanceof Error ? error.message : 'Unknown error');
-    return res.status(500).json({ error: 'Internal server error' });
-  }
+  const { status, body } = await answerGoogleDriveRefresh(
+    await googleDriveTokenRequest(req, res),
+    req.body,
+    refreshAccessToken
+  );
+  return res.status(status).json(body);
 }

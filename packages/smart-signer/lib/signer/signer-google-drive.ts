@@ -45,6 +45,7 @@ import {
   googleDriveApiUrl,
   googleDriveCallbackUri
 } from '@smart-signer/lib/google-drive-urls';
+import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { LoginType } from '@smart-signer/types/common';
 import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
 import { SignedOutError } from '@transaction/lib/signed-out';
@@ -139,7 +140,7 @@ export class SignerGoogleDrive extends Signer {
   private getAccessTokenForRefreshToken = async (refreshToken: string): Promise<string> => {
     const response = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_REFRESH_PATH), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', [csrfHeaderName]: '1' },
       body: JSON.stringify({ refreshToken }),
     });
 
@@ -306,7 +307,7 @@ export class SignerGoogleDrive extends Signer {
 
     const res = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_AUTH_PATH), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', [csrfHeaderName]: '1' },
       body: JSON.stringify(body),
     });
 
