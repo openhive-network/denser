@@ -19,8 +19,7 @@ const POLICY = {
   identicalToEnglishAllowed: {
     '*': new Set([
       // Signing service names
-      'login_form.signin_with_hiveauth',
-      'login_form.signin_with_hivesigner'
+      'login_form.signin_with_hiveauth'
     ]),
     it: new Set([
       // Italian uses the same word

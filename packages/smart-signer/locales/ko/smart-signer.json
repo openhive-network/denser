@@ -80,7 +80,6 @@
       "keychain": "Hive Keychain은 키를 보관하고 트랜잭션에 대신 서명해 주는 브라우저 확장 프로그램입니다.",
       "peakvault": "PeakVault는 키를 보관하고 트랜잭션에 대신 서명해 주는 브라우저 확장 지갑입니다.",
       "hiveauth": "HiveAuth를 사용하면 모바일 지갑 앱에서 로그인과 트랜잭션을 승인하므로 키가 휴대폰에만 보관됩니다.",
-      "hivesigner": "HiveSigner는 이 앱을 승인한 후 사용자를 대신해 트랜잭션에 서명하는 외부 서비스입니다.",
       "wif": "개인 키(WIF)를 직접 입력합니다. 서명에만 사용되며, 저장을 선택하지 않으면 보관되지 않습니다.",
       "metamask": "MetaMask 확장 프로그램의 Hive Snap이 관리하는 Hive 키로 서명합니다.",
       "google": "암호화된 키를 Google 드라이브에 보관하고 어느 기기에서든 해당 키로 서명합니다.",
@@ -142,7 +141,6 @@
     "signin_with_peakvault": "PeakVault 확장",
     "signin_with_wif": "WIF로 로그인 (구버전)",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner",
     "extension_sign_in": {
       "keychain": "Hive Keychain으로 로그인",
       "peakvault": "PeakVault로 로그인",

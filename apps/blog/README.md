@@ -15,7 +15,6 @@
 - Static Types with [TypeScript](https://typescriptlang.org)
 - UI Component library [Radix UI](https://www.radix-ui.com/)
 - Javascript library for talking to Hive API [Wax](https://hive.pages.syncad.com/wax-doc/)
-- [Hivesigner](https://hivesigner.com/) option for authentication
 
 ## Getting Started
 

@@ -11,7 +11,7 @@ const logger = getLogger('page-visit-logger');
  */
 const VALID_LOGIN_TYPES = new Set([
   'hbauth', 'keychain', 'peakvault', 'metamask',
-  'google', 'hiveauth', 'wif', 'hivesigner'
+  'google', 'hiveauth', 'wif'
 ]);
 
 /** Hive account name: lowercase alphanumeric + dots/dashes, 1-16 chars */

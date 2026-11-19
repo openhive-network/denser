@@ -2,6 +2,7 @@ import { User } from '@smart-signer/types/common';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
+import { hasKnownLoginType } from '@smart-signer/lib/auth/known-login-type';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
 const ACCOUNTS_LOCAL_STORAGE_KEY = 'accounts';
@@ -12,10 +13,15 @@ export function saveUser(user: User): void {
   }
 }
 
+/** The stored user, signed out when it was stored by a sign-in method this app no longer has */
+function parseUser(json: string | null): User {
+  const user = safeJsonParse(json, defaultUser, USER_LOCAL_STORAGE_KEY);
+  return hasKnownLoginType(user) ? user : defaultUser;
+}
+
 export function getUser(): User {
   if (isStorageAvailable('localStorage')) {
-    const user = localStorage.getItem(USER_LOCAL_STORAGE_KEY);
-    return safeJsonParse(user, defaultUser, USER_LOCAL_STORAGE_KEY);
+    return parseUser(localStorage.getItem(USER_LOCAL_STORAGE_KEY));
   }
   return defaultUser;
 }
@@ -36,7 +42,7 @@ export function getAccounts(): User[] {
   if (isStorageAvailable('localStorage')) {
     const accounts = localStorage.getItem(ACCOUNTS_LOCAL_STORAGE_KEY);
     const parsed = safeJsonParse<unknown>(accounts, [], ACCOUNTS_LOCAL_STORAGE_KEY);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? parsed.filter(hasKnownLoginType) : [];
   }
   return [];
 }
@@ -49,5 +55,5 @@ export function isLogoutStorageEvent(event: StorageEvent): boolean {
   if (!isStorageAvailable('localStorage') || event.storageArea !== localStorage) return false;
   if (event.key !== null && event.key !== USER_LOCAL_STORAGE_KEY) return false;
   if (event.newValue === null) return true;
-  return !safeJsonParse(event.newValue, defaultUser, USER_LOCAL_STORAGE_KEY).isLoggedIn;
+  return !parseUser(event.newValue).isLoggedIn;
 }

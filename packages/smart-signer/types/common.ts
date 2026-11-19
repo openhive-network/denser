@@ -6,7 +6,6 @@ export enum LoginType {
     google = 'google',
     hiveauth = 'hiveauth',
     wif = 'wif',
-    hivesigner = 'hivesigner',
     passkey = 'passkey',
 }
 

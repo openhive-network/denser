@@ -25,7 +25,6 @@ const POLICY = {
       'navigation.user_menu.login_method.metamask',
       'navigation.user_menu.login_method.google',
       'navigation.user_menu.login_method.hiveauth',
-      'navigation.user_menu.login_method.hivesigner',
       'login_form.title_hbauth_form',
       'user_profile.social.platforms.ig',
       'user_profile.social.platforms.yt',

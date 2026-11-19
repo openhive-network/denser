@@ -2,6 +2,7 @@ import { NextApiHandler } from "next";
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
+import { hasKnownLoginType } from '@smart-signer/lib/auth/known-login-type';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { getLogger } from "@hive/ui/lib/logging";
@@ -10,7 +11,7 @@ const logger = getLogger('app');
 
 export const getUser: NextApiHandler<User> = async (req, res) => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-  if (session.user) {
+  if (session.user && hasKnownLoginType(session.user)) {
     res.json({
       ...session.user,
       isLoggedIn: true,

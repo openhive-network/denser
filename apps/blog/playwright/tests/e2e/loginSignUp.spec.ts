@@ -402,9 +402,6 @@ test.describe('Login and Sign Up tests', () =>{
     // HiveAuth button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'color')).toBe("rgb(15, 23, 42)");
     await expect(loginForm.hiveAuthButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-    // HiveSigner button
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'color')).toBe("rgb(15, 23, 42)");
-    await expect(loginForm.hiveSignerButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   });
 
   test('Check if Other sign in options styles are correct in the dark mode', async ({ page, browserName }) => {
@@ -439,9 +436,6 @@ test.describe('Login and Sign Up tests', () =>{
     // HiveAuth button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'color')).toBe("rgb(255, 255, 255)");
     await expect(loginForm.hiveAuthButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-    // HiveSigner button
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'color')).toBe("rgb(255, 255, 255)");
-    await expect(loginForm.hiveSignerButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   });
 
 

@@ -26,10 +26,6 @@ export const postLoginSchema = z.object({
         invalid_type_error: 'Invalid loginType',
         required_error: 'loginType is required',
     }),
-    hivesignerToken: z.string({
-        invalid_type_error: "hivesignerToken must be a string",
-        required_error: "hivesignerToken is required",
-    }),
     signatures: z.object({
         posting: z.string(),
         active: z.string(),

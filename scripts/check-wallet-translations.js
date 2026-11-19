@@ -30,7 +30,6 @@ const POLICY = {
       'navigation.user_menu.login_method.metamask',
       'navigation.user_menu.login_method.google',
       'navigation.user_menu.login_method.hiveauth',
-      'navigation.user_menu.login_method.hivesigner',
       // Abbreviations
       'navigation.sidebar.faq',
       'communities.nsfw',

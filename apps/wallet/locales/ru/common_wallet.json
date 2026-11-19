@@ -128,8 +128,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF ключ",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF ключ"
       }
     }
   },

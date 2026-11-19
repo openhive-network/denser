@@ -128,8 +128,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF密钥",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF密钥"
       }
     }
   },

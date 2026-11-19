@@ -176,8 +176,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF Key",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF Key"
       },
       "key_type": {
         "posting": "Posting key",

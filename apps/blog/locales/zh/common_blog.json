@@ -174,8 +174,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "WIF密钥",
-        "hivesigner": "HiveSigner"
+        "wif": "WIF密钥"
       },
       "key_type": {
         "posting": "发帖密钥",

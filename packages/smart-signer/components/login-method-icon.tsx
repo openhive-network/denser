@@ -13,8 +13,6 @@ const LoginMethodIcon = ({ loginType }: { loginType: LoginType }) => {
       return <Icons.metamask className="h-4 w-4" />;
     case LoginType.hiveauth:
       return <Icons.hiveauth className="h-4 w-4" />;
-    case LoginType.hivesigner:
-      return <Icons.hivesigner className="h-4 w-4" />;
     case LoginType.hbauth:
     case LoginType.wif:
     default:

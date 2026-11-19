@@ -128,8 +128,7 @@
         "metamask": "MetaMask",
         "google": "Google Drive",
         "hiveauth": "HiveAuth",
-        "wif": "Klucz WIF",
-        "hivesigner": "HiveSigner"
+        "wif": "Klucz WIF"
       }
     }
   },
