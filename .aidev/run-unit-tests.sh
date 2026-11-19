@@ -91,7 +91,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/math-utils.test.ts \
     packages/ui/lib/memo-secret-check.test.ts packages/ui/lib/common-instrumentation.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
-    packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
+    packages/ui/lib/locale-cookie.test.ts packages/ui/lib/locale-negotiation.test.ts \
+    packages/ui/lib/month-year.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
     packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts \
     packages/ui/lib/passkey-signers.test.ts packages/ui/lib/sanitize-url.test.ts \
@@ -172,7 +173,7 @@ run_with_junit_fallback "$junit" middleware node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/middleware/lib/matcher.test.ts packages/middleware/lib/csp.test.ts \
-    packages/middleware/lib/public-cache.test.ts < /dev/null || status=1
+    packages/middleware/lib/public-cache.test.ts packages/middleware/lib/locale-detection.test.ts < /dev/null || status=1
 echo "== node --test apps/blog" >&2
 junit="$PWD/test-results/unit/blog.xml"
 run_with_junit_fallback "$junit" blog node --test \

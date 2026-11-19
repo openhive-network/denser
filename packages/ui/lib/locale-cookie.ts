@@ -4,12 +4,14 @@
  */
 export const LOCALE_COOKIE = 'NEXT_LOCALE';
 /**
- * The language every app renders without a cookie. A visitor on it carries no cookie, or one with this
+ * The language every app renders without a cookie, unless the browser asks for another language the
+ * app has (which is then stored in the cookie). A visitor on it carries no cookie, or one with this
  * value, so the page stays the one a shared cache serves every anonymous visitor.
  */
 export const DEFAULT_LOCALE = 'en';
 
-const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
+/** How long a language cookie is kept, in seconds: a year. */
+export const LOCALE_COOKIE_MAX_AGE_S = 365 * 24 * 60 * 60;
 const EXPIRED = 'Thu, 01 Jan 1970 00:00:00 GMT';
 /**
  * Paths that can go into a cookie's `path` attribute as they are: RFC 3986 path characters other than
@@ -58,7 +60,7 @@ export function writeLocaleCookie(locale: string): void {
   for (const path of pathScopes(window.location.pathname)) {
     document.cookie = `${LOCALE_COOKIE}=; path=${path}; expires=${EXPIRED}`;
   }
-  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${ONE_YEAR_SECONDS}; SameSite=Lax`;
+  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE_S}; SameSite=Lax`;
 }
 
 /**

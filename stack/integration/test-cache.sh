@@ -55,29 +55,35 @@ fetch() {
     retry_after=$(sed -n 's/^[Rr]etry-[Aa]fter: //p' <<< "$headers" | tail -n 1)
 }
 
-# run_challenge SCRIPT refuse|keep [LANGUAGES]: runs the challenge page's script against a
-# browser whose cookie jar refuses or keeps denser_human and whose navigator.languages is
-# the comma-separated LANGUAGES (en-US by default); prints its reloads, <html lang> and the
-# page's text.
+# run_challenge SCRIPT refuse|keep [LANGUAGES [COOKIES]]: runs the challenge page's script
+# against a browser whose cookie jar refuses or keeps the cookies it sets, already holds
+# COOKIES (name=value pairs joined by "; ", none by default) and whose navigator.languages
+# is the comma-separated LANGUAGES (en-US by default); prints its reloads, <html lang> and
+# the page's text. With CHALLENGE_PRINT=cookies it prints the jar instead.
 run_challenge() {
     node -e '
         const vm = require("vm");
-        const [script, mode, languages] = process.argv.slice(1);
+        const [script, mode, languages, cookies, print] = process.argv.slice(1);
         const message = { textContent: "" };
         const html = { lang: "en" };
-        let jar = "", reloads = 0;
+        const jar = new Map(cookies ? cookies.split("; ").map((pair) => pair.split("=")) : []);
+        const cookieHeader = () => [...jar].map((pair) => pair.join("=")).join("; ");
+        let reloads = 0;
         vm.runInNewContext(script, {
             document: {
-                get cookie() { return jar; },
-                set cookie(value) { if (mode === "keep") jar = value.split(";")[0]; },
+                get cookie() { return cookieHeader(); },
+                set cookie(value) {
+                    const [name, cookieValue] = value.split(";")[0].split("=");
+                    if (mode === "keep") jar.set(name, cookieValue);
+                },
                 getElementById: (id) => (id === "gate" ? message : null),
                 documentElement: html,
             },
             navigator: { languages: languages.split(","), language: languages.split(",")[0] },
             location: { protocol: "https:", reload: () => reloads++ },
         });
-        console.log(`${reloads} ${html.lang} ${message.textContent}`);
-    ' "$1" "$2" "${3:-en-US}"
+        console.log(print === "cookies" ? cookieHeader() : `${reloads} ${html.lang} ${message.textContent}`);
+    ' "$1" "$2" "${3:-en-US}" "${4:-}" "${CHALLENGE_PRINT:-page}"
 }
 
 start_stub_stack() {
@@ -88,7 +94,7 @@ start_stub_stack() {
     docker network create "$network" > /dev/null
 
     # The stub blog, and wallet: every page public, with the page's own s-maxage, and a
-    # body naming the render, the URL and the cookies it got. /blog/sets-cookie sets a cookie and
+    # body naming the render, the URL, the Accept-Language and the cookies it got. /blog/sets-cookie sets a cookie and
     # /blog/error is a 500; both still say public.
     dir=$(mktemp -d)
     cat > "$dir/Caddyfile" <<'STUB'
@@ -98,7 +104,7 @@ start_stub_stack() {
 	header Cache-Control "public, s-maxage=30, stale-while-revalidate=60, stale-if-error=300"
 	header /blog/sets-cookie Set-Cookie "stub=1; Path=/"
 	respond /blog/error "render={http.request.uuid}" 500
-	respond "render={http.request.uuid} uri={http.request.uri} cookie={http.request.header.Cookie}" 200
+	respond "render={http.request.uuid} uri={http.request.uri} lang={http.request.header.Accept-Language} cookie={http.request.header.Cookie}" 200
 }
 STUB
     docker create --name "$tag-blog" --network "$network" --network-alias blog --network-alias wallet \
@@ -194,6 +200,10 @@ if $stub; then
     check "NEXT_LOCALE=pl: the blog got only the locale" "cookie=NEXT_LOCALE=pl" "${pl##* }"
     fetch "$page" -H 'Cookie: theme=dark; NEXT_LOCALE=pl'
     check "NEXT_LOCALE=pl: own object, repeated" "HIT $pl" "$x_cache $body"
+    fetch "/blog/trending?chosen=en&cachetest=$run" -H 'Cookie: NEXT_LOCALE=en' -H 'Accept-Language: pl-PL,pl;q=0.9'
+    holds "NEXT_LOCALE=en with a Polish browser: the blog got neither" "${body#*' lang= cookie='}" != "$body"
+    fetch "$page" -H 'Accept-Language: pl-PL,pl;q=0.9'
+    check "a Polish browser without NEXT_LOCALE: the en object" "HIT $first" "$x_cache $body"
 
     fetch "/blog/sets-cookie?cachetest=$run"
     check "Set-Cookie response, first" BYPASS "$x_cache"
@@ -255,6 +265,14 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
             "$(run_challenge "$script" refuse sw,pl)"
         check "gate: only unsupported languages: the English message" "0 en $cookies_message" \
             "$(run_challenge "$script" refuse sw-KE,tlh)"
+        check "gate: cookie stored, Polish first: NEXT_LOCALE=pl too" "denser_human=1; NEXT_LOCALE=pl" \
+            "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep pl-PL,en-US)"
+        check "gate: cookie stored, English: no NEXT_LOCALE" "denser_human=1" \
+            "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep en-US,pl)"
+        check "gate: a NEXT_LOCALE already chosen is kept" "NEXT_LOCALE=en; denser_human=1" \
+            "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep pl-PL "NEXT_LOCALE=en")"
+        check "gate: cookie refused: no NEXT_LOCALE" "" \
+            "$(CHALLENGE_PRINT=cookies run_challenge "$script" refuse pl-PL)"
     else
         echo "skip gate: the challenge's script (no node)"
     fi

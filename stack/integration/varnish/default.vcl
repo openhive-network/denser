@@ -62,6 +62,10 @@ sub vcl_recv {
 	} else {
 		set req.http.Cookie = "NEXT_LOCALE=" + req.http.X-Cache-Locale;
 	}
+	# Without a cookie the blog would render the browser's language (and set the cookie),
+	# also for a reader whose NEXT_LOCALE=en was dropped above: the key alone decides. The
+	# bot gate and the blog's client set NEXT_LOCALE from the browser's language instead.
+	unset req.http.Accept-Language;
 
 	# Campaign parameters never change the page; the rest of the query is sorted.
 	set req.url = regsuball(req.url, "(?<=[?&])(utm_[^=&]*|fbclid|gclid)(=[^&]*)?(&|$)", "");

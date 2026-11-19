@@ -6,7 +6,8 @@ import { STUB_PROPOSAL_SUBJECT, startWalletApiStub } from '../support/walletApiS
 /**
  * The wallet keeps the UI language in the one origin-wide `NEXT_LOCALE` cookie (`path=/`), the
  * cookie the blog reads on the shared origin too: a switch under `/wallet` replaces it rather than
- * adding a second cookie scoped to the wallet's path (#1205).
+ * adding a second cookie scoped to the wallet's path (#1205). Without the cookie, a first visit is
+ * rendered in the browser's language when the wallet has it, and stores it.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -81,5 +82,48 @@ test.describe('Language cookie', () => {
     await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/ left$/, { timeout: HYDRATION_TIMEOUT });
     await expect(page.getByTestId('toggle-language').first()).toHaveText('🇬🇧');
     expect(await localeCookies(context)).toEqual([{ value: 'en', path: '/' }]);
+  });
+});
+
+test.describe('Browser language on a first visit', () => {
+  test.describe('Polish first', () => {
+    test.use({ locale: 'pl-PL' });
+
+    test('WALLET-LANG-COOKIE-03 — no cookie: Polish from the server, stored in the cookie', async ({
+      page,
+      context
+    }) => {
+      const response = await page.goto(`${WALLET_BASE_PATH}/proposals`);
+      await expect(page.getByTestId('proposal-title')).toContainText(STUB_PROPOSAL_SUBJECT, {
+        timeout: HYDRATION_TIMEOUT
+      });
+
+      expect(await response?.text()).toContain('<html lang="pl"');
+      await expect(page.locator('html')).toHaveAttribute('lang', 'pl');
+      await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/^Pozosta/);
+      expect(await localeCookies(context)).toEqual([{ value: 'pl', path: '/' }]);
+    });
+
+    test('WALLET-LANG-COOKIE-04 — English chosen explicitly stays English', async ({ page, context, baseURL }) => {
+      await context.addCookies([{ name: LOCALE_COOKIE, value: 'en', url: baseURL }]);
+
+      await openProposals(page);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+      await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/ left$/);
+      expect(await localeCookies(context)).toEqual([{ value: 'en', path: '/' }]);
+    });
+  });
+
+  test.describe('an unsupported language', () => {
+    test.use({ locale: 'sw-KE' });
+
+    test('WALLET-LANG-COOKIE-05 — English, and no cookie', async ({ page, context }) => {
+      await openProposals(page);
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+      await expect(page.getByTestId('proposal-remaining-days')).toHaveText(/ left$/);
+      expect(await localeCookies(context)).toEqual([]);
+    });
   });
 });

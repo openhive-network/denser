@@ -113,6 +113,15 @@ const resolvedRoute = (pathname: string): string | null => {
 };
 
 /**
+ * Whether a path (without the app's base path) is served by a page, not an API route or Next itself,
+ * also through the apps' rewrites. False for a path that does not decode.
+ */
+export function isPageRoute(pathname: string): boolean {
+  const route = resolvedRoute(pathname);
+  return route !== null && !NON_PAGE_PREFIXES.test(route);
+}
+
+/**
  * Whether the response to a request may be marked public: a GET or HEAD for a page document (not
  * an API route, also one reached through a rewrite, nor a client router request), sent without
  * `Authorization` and without any cookie outside the non-personalizing allow list, so the page
@@ -121,8 +130,7 @@ const resolvedRoute = (pathname: string): string | null => {
  */
 export function isPublicCacheableRequest(request: PageRequest): boolean {
   if (request.method !== 'GET' && request.method !== 'HEAD') return false;
-  const route = resolvedRoute(request.pathname);
-  if (route === null || NON_PAGE_PREFIXES.test(route)) return false;
+  if (!isPageRoute(request.pathname)) return false;
   // Next removes `_rsc` from the URL the middleware gets, unless __NEXT_NO_MIDDLEWARE_URL_NORMALIZE
   // is set; `installPublicCacheGuard` checks the raw request.
   if (request.searchParams.has(RSC_QUERY_PARAM)) return false;

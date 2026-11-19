@@ -1,12 +1,15 @@
 import { createMiddleware } from '@hive/middleware/lib/common';
 import { readPublicCacheConfig } from '@hive/middleware/lib/public-cache';
+import { languages } from '@/blog/i18n/settings';
 
 // Blog-specific middleware: serves /trending at the root path (rewrite, no redirect),
 // applies a per-request nonce CSP at runtime, and marks anonymous pages cacheable by shared
-// caches (instrumentation.ts installs the guard that takes that back for other statuses)
+// caches (instrumentation.ts installs the guard that takes that back for other statuses), and
+// renders a first visit in the browser's language
 export const proxy = createMiddleware({
   rootRewrite: '/trending',
   publicCache: readPublicCacheConfig(process.env),
+  locales: languages,
   csp: {
     // Embedded content whitelist for blog posts
     // Note: 3speak.online/co removed (compromised/spam). Embeds render via play.3speak.tv,
