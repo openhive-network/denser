@@ -57,7 +57,11 @@ export class OnlineClient {
     globalThis.fakeHbAuthFiles = new Set(worker.keys);
     globalThis.fakeHbAuthAliases.add(alias(username, keyType));
   }
-  async initialize() { this.worker; return this; }
+  async initialize() {
+    if (globalThis.fakeHbAuthInitError) throw globalThis.fakeHbAuthInitError;
+    this.worker;
+    return this;
+  }
   async getRegisteredUsers() { await this.startBeekeeper(); return []; }
   async getRegisteredUserByUsername(username) {
     const worker = await this.startBeekeeper();
@@ -337,6 +341,7 @@ async function openPage(basePath: string) {
       options?: Parameters<HbAuthService['withOnlineClient']>[1]
     ) => onPage(() => service.withOnlineClient(operation, options)),
     SupersededKeyWriteError: service.SupersededKeyWriteError,
+    SafeStorageStartError: service.SafeStorageStartError,
     logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username)),
     logoutStarted: (username: string) => onPage(() => service.logoutFromStartedWorkers(username)),
     logoutEveryoneStarted: () => onPage(() => service.logoutEveryoneFromStartedWorkers())
@@ -367,7 +372,24 @@ describe('hb-auth online client', () => {
     fakeHbAuth.fakeHbAuthAliases = new Set();
     fakeHbAuth.fakeHbAuthPasswords = new Map();
     setBeforeEveryWrite(undefined);
-    Object.assign(globalThis, { fakeHbAuthChainLags: false, fakeHbAuthLogout: undefined });
+    Object.assign(globalThis, { fakeHbAuthChainLags: false, fakeHbAuthLogout: undefined, fakeHbAuthInitError: undefined });
+  });
+
+  it("reports a client that did not initialize as safe storage not starting, keeping hb-auth's error, and starts anew on the next call", async () => {
+    const page = await openPage(BLOG);
+    const timeout = new Error('Auth initialization timed out after 30000ms. The WASM module may have failed to load.');
+    Object.assign(globalThis, { fakeHbAuthInitError: timeout });
+
+    await assert.rejects(page.getOnlineClient(), (error: unknown) => {
+      assert.ok(error instanceof page.SafeStorageStartError);
+      assert.equal(error.message, 'Safe storage could not start; reload the page');
+      assert.equal(error.cause, timeout);
+      return true;
+    });
+
+    Object.assign(globalThis, { fakeHbAuthInitError: undefined });
+    const client = await page.getOnlineClient();
+    assert.equal(workerOf(client).url, 'https://hive.blog/blog/auth/releasable-worker.js?idle=900');
   });
 
   it('starts no generation when there is none, so apps loading together keep their workers', async () => {

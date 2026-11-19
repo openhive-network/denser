@@ -29,6 +29,8 @@ const CLIENT_ONLY_USERNAME = 'gtg';
 const PAGE_WITH_HEADER = '/faq.html';
 // The sign-in loads the signing stack (wax, the hb-auth worker) first
 const SIGN_IN_TIMEOUT_MS = 30_000;
+// Well under hb-auth's 30 s init timeout, which a worker that does not answer its handshake runs into
+const SAFE_STORAGE_READY_TIMEOUT_MS = 10_000;
 
 test.use({
   fixtureTestName: 'accountSwitchLogout',
@@ -115,5 +117,25 @@ test.describe('Account switching and the server session', () => {
     await page.reload();
     expect((await readServerUser(context)).isLoggedIn).toBe(false);
     expect(await readCookie(context, FIXTURE_COOKIE_NAME)).toBeFalsy();
+  });
+
+  test('ACCOUNT-SWITCH-14: the sign-in dialog opened after a logout in the same tab has the safe storage form ready, empty', async ({
+    page
+  }) => {
+    const homePage = new HomePage(page);
+    const profileMenu = new ProfileUserMenu(page);
+    const loginForm = new LoginForm(page);
+    await addClientOnlyAccount(page);
+    await homePage.profileAvatarButton.click();
+    await profileMenu.validateUserNameInProfileMenu(CLIENT_ONLY_USERNAME);
+    const loggedOut = page.waitForResponse('**/api/auth/logout');
+    await profileMenu.logoutLink.click();
+    expect((await loggedOut).ok()).toBe(true);
+
+    await homePage.loginBtn.click();
+
+    await expect(loginForm.usernameInput).toBeVisible({ timeout: SAFE_STORAGE_READY_TIMEOUT_MS });
+    // The account last signed in with a WIF, not safe storage
+    await expect(loginForm.usernameInput).toHaveValue('');
   });
 });

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { useProcessAuth } from '@smart-signer/components/auth/process';
 import { KeyType, LoginType } from '@smart-signer/types/common';
+import { recordSignInMethod } from '@smart-signer/lib/auth/last-safe-storage-user';
 
 /**
  * Signs in to a Hive account through its passkey signer in one click: the account's signer and
@@ -17,6 +18,7 @@ export function usePasskeySignIn(authenticateOnBackend: boolean) {
       await signAuth({ loginType: LoginType.passkey, username, keyType: KeyType.posting, remember: false });
       await submitAuth();
       setLastLoggedInUser(username);
+      recordSignInMethod(username, LoginType.passkey);
     },
     [signAuth, submitAuth, setLastLoggedInUser]
   );

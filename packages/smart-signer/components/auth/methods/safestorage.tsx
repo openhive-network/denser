@@ -7,6 +7,7 @@ import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
 import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
+import { SafeStorageStartError } from '@hive/common-hiveio-packages';
 import PasskeyPrompt from '../passkey-prompt';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -354,7 +355,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           }
         } catch (error) {
           const errorMessage = handleAuthError(error, 'SafeStorage.useEffect');
-          setError(errorMessage);
+          setError(
+            error instanceof SafeStorageStartError
+              ? t('login_form.signin_safe_storage.start_failed', { ns: SMART_SIGNER_NAMESPACE })
+              : errorMessage
+          );
         } finally {
           setLoading(false);
         }

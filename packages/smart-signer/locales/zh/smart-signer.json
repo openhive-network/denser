@@ -109,6 +109,7 @@
       "add_key_info_posting": "此密钥必须已属于该账户的 Posting 权限。新密钥请在钱包的“密钥与权限”标签页中添加。",
       "add_key_info_active": "此密钥必须已属于该账户的 Active 权限。新密钥请在钱包的“密钥与权限”标签页中添加。",
       "user_not_found": "在安全存储中未找到用户",
+      "start_failed": "无法启动安全存储。请重新加载页面后重试。",
       "back": "返回",
       "authenticated_title": "认证成功",
       "authenticated_description": "您已成功通过认证"

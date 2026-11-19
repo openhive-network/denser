@@ -109,6 +109,7 @@
       "add_key_info_posting": "Esta clave ya debe pertenecer a la autoridad de publicación de la cuenta. Puede agregar una clave nueva en la billetera, en la pestaña Claves y permisos.",
       "add_key_info_active": "Esta clave ya debe pertenecer a la autoridad activa de la cuenta. Puede agregar una clave nueva en la billetera, en la pestaña Claves y permisos.",
       "user_not_found": "Usuario no encontrado en el almacenamiento seguro",
+      "start_failed": "No se pudo iniciar el almacenamiento seguro. Recarga la página e inténtalo de nuevo.",
       "back": "Atrás",
       "authenticated_title": "Autenticación exitosa",
       "authenticated_description": "Ha sido autenticado exitosamente"

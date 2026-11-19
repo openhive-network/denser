@@ -12,6 +12,7 @@ import {
   SignInCancelledError,
   SignInPendingError
 } from '@smart-signer/lib/auth/sign-in-lock';
+import { getLastSafeStorageUser, recordSignInMethod } from '@smart-signer/lib/auth/last-safe-storage-user';
 import { awaitWalletExtensionAnswer, WalletExtensionTimeoutError } from '@smart-signer/lib/auth/wallet-extension-answer';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -40,7 +41,7 @@ export interface SignInFormProps {
   onComplete: (arg0: any) => Promise<any>;
   authenticateOnBackend?: boolean;
   i18nNamespace?: string;
-  /** The account to sign in; defaults to the last one signed in */
+  /** The account to sign in; defaults to the last one signed in with safe storage, on the passkey step any */
   username?: string;
   /** Opens on the "Passkey signer" sign-in instead of safe storage, when a signer is configured */
   passkey?: boolean;
@@ -76,7 +77,10 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const safeStorageKeyUpdateRef = useRef<SafeStorageKeyUpdateRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
-    const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
+    // Not an account that last signed in with another method, as one logged out of to switch accounts
+    const [username, setUsername] = useState<string>(
+      () => initialUsername ?? (passkeyStep ? lastLoggedInUser : getLastSafeStorageUser())
+    );
     const [safeStorageError, setSafeStorageError] = useState<string | null>(null);
     const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
 
@@ -107,9 +111,10 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       await signAuth(schema);
     }
 
-    async function submit(username: string): Promise<void> {
+    async function submit(loginType: LoginType, username: string): Promise<void> {
       await submitAuth();
       setLastLoggedInUser(username);
+      recordSignInMethod(username, loginType);
       await onComplete(username);
     }
 
@@ -145,7 +150,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
           await (walletName ? awaitWalletExtensionAnswer(signing) : signing);
           // The dialog that started this sign-in was closed: another may have completed meanwhile
           cancelled.throwIfAborted();
-          await submit(username);
+          await submit(loginType, username);
         }, walletName !== undefined);
         return true;
       } catch (error) {

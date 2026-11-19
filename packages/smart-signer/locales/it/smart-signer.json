@@ -109,6 +109,7 @@
       "add_key_info_posting": "Questa chiave deve già appartenere all'autorità di pubblicazione dell'account. Una nuova chiave si aggiunge nel portafoglio, nella scheda Chiavi e permessi.",
       "add_key_info_active": "Questa chiave deve già appartenere all'autorità attiva dell'account. Una nuova chiave si aggiunge nel portafoglio, nella scheda Chiavi e permessi.",
       "user_not_found": "Utente non trovato nella conservazione sicura",
+      "start_failed": "Impossibile avviare l'archiviazione sicura. Ricarica la pagina e riprova.",
       "back": "Indietro",
       "authenticated_title": "Autenticazione riuscita",
       "authenticated_description": "L'autenticazione è avvenuta con successo"

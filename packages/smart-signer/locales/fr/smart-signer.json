@@ -109,6 +109,7 @@
       "add_key_info_posting": "Cette clé doit déjà appartenir à l'autorité de publication du compte. Vous ajoutez une nouvelle clé dans le portefeuille, dans l'onglet Clés et permissions.",
       "add_key_info_active": "Cette clé doit déjà appartenir à l'autorité active du compte. Vous ajoutez une nouvelle clé dans le portefeuille, dans l'onglet Clés et permissions.",
       "user_not_found": "Utilisateur non trouvé dans le stockage sécurisé",
+      "start_failed": "Le stockage sécurisé n'a pas pu démarrer. Rechargez la page et réessayez.",
       "back": "Retour",
       "authenticated_title": "Authentification réussie",
       "authenticated_description": "Vous avez été authentifié avec succès"

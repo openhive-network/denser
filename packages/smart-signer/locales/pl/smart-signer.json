@@ -109,6 +109,7 @@
       "add_key_info_posting": "Ten klucz musi już należeć do uprawnienia posting konta. Nowy klucz dodasz w portfelu, w zakładce Klucze i uprawnienia.",
       "add_key_info_active": "Ten klucz musi już należeć do uprawnienia active konta. Nowy klucz dodasz w portfelu, w zakładce Klucze i uprawnienia.",
       "user_not_found": "Nie znaleziono użytkownika w bezpiecznym magazynie",
+      "start_failed": "Nie udało się uruchomić bezpiecznego magazynu. Odśwież stronę i spróbuj ponownie.",
       "back": "Wróć",
       "authenticated_title": "Uwierzytelnianie zakończone pomyślnie",
       "authenticated_description": "Zostałeś pomyślnie uwierzytelniony"

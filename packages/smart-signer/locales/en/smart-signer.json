@@ -117,6 +117,7 @@
       "add_key_info_posting": "This key must already belong to the account's posting authority. You add a new key in the wallet, on the Keys & Permissions tab.",
       "add_key_info_active": "This key must already belong to the account's active authority. You add a new key in the wallet, on the Keys & Permissions tab.",
       "user_not_found": "User not found in safe storage",
+      "start_failed": "Safe storage could not start. Reload the page and try again.",
       "back": "Back",
       "authenticated_title": "Authentication Successful",
       "authenticated_description": "You have been authenticated successfully"
