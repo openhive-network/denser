@@ -13,6 +13,7 @@ import { SettingsPage } from '../support/pages/settingsPage';
 import { TagCommunityFeedsPage } from '../support/pages/tagCommunityFeedsPage';
 import { gotoLoggedIn } from '../support/postDisplayContext';
 import { TIMEOUTS } from '../support/constants';
+import { TINY_PNG } from '../support/fixture-auth/image-upload-stub';
 import {
   NSFW_FEED_URL,
   SETTINGS_USER,
@@ -34,9 +35,9 @@ import {
  * and SET-07..13 (NSFW / blog rewards / comment rewards / referral system
  * preferences → user-preferences-{username} localStorage, no broadcast).
  *
- * SET-05 covers the profile image URL-text path only; the signed-upload
- * path (and SET-06, cover image) requires stubbing the image-endpoint POST
- * and is not yet in scope.
+ * SET-05 covers the profile image URL-text path; SET-15/16 the signed-upload
+ * path up to the new URL in the field (uploading state, failure), with the
+ * imagehoster POST page-routed. SET-06 (cover image) is not yet in scope.
  *
  * Settings page is gated on `user.isLoggedIn && user.username === username`
  * (apps/blog/app/[param]/(user-profile)/(profile-skeleton)/settings/content.tsx:12), so all
@@ -73,6 +74,30 @@ async function openPostReplyEditor(page: Page): Promise<CommentEditorPage> {
 /** The logged-in user's avatar in the site header (AvatarImage or its fallback). */
 const headerAvatar = (page: Page) => page.getByTestId('profile-avatar-button').locator('img').first();
 const VERSIONED_AVATAR_SRC = /\/u\/[^/]+\/avatar\/small\?v=\d+$/;
+
+const IMAGEHOSTER_UPLOAD = /https?:\/\/(www\.)?images\.hive\.blog\/[^/]+\/[^/?#]+/;
+const UPLOADED_IMAGE_URL = 'https://images.hive.blog/p/QmSettingsUploadTest';
+
+/**
+ * Holds the imagehoster upload POST until `release()` answers it with `reply`, so a
+ * spec can see the form while the upload is in flight.
+ */
+async function holdImageUpload(
+  page: Page,
+  reply: { status: number; body: object }
+): Promise<{ requested: Promise<void>; release: () => void }> {
+  let markRequested = () => {};
+  const requested = new Promise<void>((resolve) => (markRequested = resolve));
+  let release = () => {};
+  const released = new Promise<void>((resolve) => (release = resolve));
+  await page.route(IMAGEHOSTER_UPLOAD, async (route) => {
+    if (route.request().method() !== 'POST') return route.continue();
+    markRequested();
+    await released;
+    return route.fulfill({ status: reply.status, contentType: 'application/json', body: JSON.stringify(reply.body) });
+  });
+  return { requested, release };
+}
 
 test.describe('§8 User Profile & Settings', () => {
   let settings: SettingsPage;
@@ -217,6 +242,42 @@ test.describe('§8 User Profile & Settings', () => {
     await expect(headerAvatar(page)).toHaveAttribute('src', savedSrc ?? VERSIONED_AVATAR_SRC, {
       timeout: TIMEOUTS.HYDRATION
     });
+  });
+
+  test('SET-15 — Upload a profile image: uploading state, save blocked, then the new URL', async ({ page }) => {
+    const upload = await holdImageUpload(page, { status: 200, body: { url: UPLOADED_IMAGE_URL } });
+    await gotoLoggedIn(page, `/@${SETTINGS_USER}/settings`);
+    await settings.waitForReady();
+    await settings.nameInput.fill(TEST_DISPLAY_NAME);
+    await expect(settings.updateButton).toBeEnabled();
+
+    await settings.profileImageFileInput.setInputFiles({ name: 'avatar.png', mimeType: 'image/png', buffer: TINY_PNG });
+    await upload.requested;
+    await expect(settings.profileImageUploadProgress).toBeVisible();
+    await expect(settings.updateButton).toBeDisabled();
+
+    upload.release();
+    await expect(settings.profileImageInput).toHaveValue(UPLOADED_IMAGE_URL);
+    await expect(settings.profileImageUploadProgress).toBeHidden();
+    await expect(settings.updateButton).toBeEnabled();
+    await expect(settings.nameInput).toHaveValue(TEST_DISPLAY_NAME);
+  });
+
+  test('SET-16 — Failed profile image upload: error shown, form values kept', async ({ page }) => {
+    const upload = await holdImageUpload(page, { status: 500, body: { error: { name: 'internal_error' } } });
+    await gotoLoggedIn(page, `/@${SETTINGS_USER}/settings`);
+    await settings.waitForReady();
+    const imageBefore = await settings.profileImageInput.inputValue();
+    await settings.nameInput.fill(TEST_DISPLAY_NAME);
+
+    await settings.profileImageFileInput.setInputFiles({ name: 'avatar.png', mimeType: 'image/png', buffer: TINY_PNG });
+    await upload.requested;
+    upload.release();
+
+    await expect(settings.profileImageUploadError).toBeVisible();
+    await expect(settings.profileImageInput).toHaveValue(imageBefore);
+    await expect(settings.nameInput).toHaveValue(TEST_DISPLAY_NAME);
+    await expect(settings.updateButton).toBeEnabled();
   });
 
   test('SET-14 — Set X handle, keeping metadata other apps wrote', async ({ page }) => {

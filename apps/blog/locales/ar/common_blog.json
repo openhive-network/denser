@@ -929,6 +929,8 @@
     "update": "تحديث",
     "upload_image": "تحميل صورة",
     "uploading_image": "جارٍ تحميل الصورة",
+    "uploading_image_percent": "جارٍ تحميل الصورة {{percent}}%",
+    "image_upload_failed": "فشل تحميل الصورة. حاول مرة أخرى أو الصق رابط صورة.",
     "profile_image_url": "عنوان URL لصورة الملف الشخصي",
     "cover_image_url": "عنوان URL لصورة الغلاف (الأمثل: 2048 × 512 بكسل)",
     "profile_name": "اسم العرض",

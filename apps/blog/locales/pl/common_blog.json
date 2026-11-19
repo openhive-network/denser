@@ -919,6 +919,8 @@
     "update": "Aktualizuj",
     "upload_image": "Prześlij obraz",
     "uploading_image": "Przesyłanie obrazu",
+    "uploading_image_percent": "Przesyłanie obrazu {{percent}}%",
+    "image_upload_failed": "Nie udało się przesłać obrazu. Spróbuj ponownie lub wklej adres URL obrazu.",
     "profile_image_url": "Adres URL obrazu profilowego",
     "cover_image_url": "Adres URL obrazu na okładce (optymalny: 2048 x 512 px)",
     "profile_name": "Nazwa wyświetlana",

@@ -23,6 +23,9 @@ export class SettingsPage {
 
   // Profile fields (SET-01..06)
   readonly profileImageInput: Locator;
+  readonly profileImageFileInput: Locator;
+  readonly profileImageUploadProgress: Locator;
+  readonly profileImageUploadError: Locator;
   readonly coverImageInput: Locator;
   readonly nameInput: Locator;
   readonly aboutInput: Locator;
@@ -49,6 +52,9 @@ export class SettingsPage {
     this.publicProfileSettingsContainer = page.getByTestId('public-profile-settings');
 
     this.profileImageInput = page.locator('#profileImage');
+    this.profileImageFileInput = page.locator('#profilePicture');
+    this.profileImageUploadProgress = page.getByTestId('profileImage-upload-progress');
+    this.profileImageUploadError = page.getByTestId('profileImage-upload-error');
     this.coverImageInput = page.locator('#coverImage');
     this.nameInput = page.locator('#name');
     this.aboutInput = page.locator('#about');

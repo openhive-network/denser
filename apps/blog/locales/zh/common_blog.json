@@ -904,6 +904,8 @@
     "update": "更新",
     "upload_image": "上传图片",
     "uploading_image": "正在上传图片",
+    "uploading_image_percent": "正在上传图片 {{percent}}%",
+    "image_upload_failed": "图片上传失败。请重试或粘贴图片链接。",
     "profile_image_url": "个人资料图片URL",
     "cover_image_url": "封面图片URL（最佳尺寸：2048 x 512 像素）",
     "profile_name": "显示名称",

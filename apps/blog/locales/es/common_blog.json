@@ -914,6 +914,8 @@
     "update": "Actualizar",
     "upload_image": "Subir una imagen",
     "uploading_image": "Subiendo imagen",
+    "uploading_image_percent": "Subiendo imagen {{percent}}%",
+    "image_upload_failed": "No se pudo subir la imagen. Inténtalo de nuevo o pega la URL de una imagen.",
     "profile_image_url": "URL de la imagen de perfil",
     "cover_image_url": "URL de la imagen de portada (Óptimo: 2048 x 512 px)",
     "profile_name": "Nombre de visualización",

@@ -3,6 +3,7 @@ import { TFunction } from 'i18next';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@ui/lib/logging';
 import { processImageForUpload } from '@/blog/features/post-editor/lib/image-processing';
+import { postImageWithProgress } from './post-with-progress';
 import {
   SOCIAL_KEYS,
   type SocialHandles,
@@ -108,53 +109,55 @@ export function socialHandlesToSave(social: Settings['social']): SocialHandles {
   return handles;
 }
 
-export const uploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {
-  try {
-    if (!file)
-      throw new Error("No file provided");
+const SIGNING_CHALLENGE_PREFIX = 'ImageSigningChallenge';
 
-    const data = await new Promise<Uint8Array>((resolve) => {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        // reader.result is an ArrayBuffer
-        resolve(new Uint8Array(reader.result as ArrayBuffer));
-      });
-      reader.readAsArrayBuffer(file);
-    });
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // 3. Create the prefix as a Uint8Array
-    const encoder = new TextEncoder();
-    const prefix = encoder.encode('ImageSigningChallenge');
-
-    // 4. Concatenate without Buffer.concat
-    // We create a new array of the total length and "set" the parts into it
-    const buf = new Uint8Array(prefix.length + data.length);
-    buf.set(prefix);
-    buf.set(data, prefix.length);
-
-    // 5. Sign (Works natively with Uint8Array)
-    const signer = await loadSigner();
-    const sig = await signer.signChallenge({
-      message: buf,
-      password: ''
-    });
-
-    const postUrl = `${configuredImagesEndpoint}/${username}/${sig}`;
-
-    const response = await fetch(postUrl, { method: 'POST', body: formData });
-    const resJSON = await response.json();
-    return resJSON.url;
-  } catch (error) {
-    logger.error('Error when uploading file %s: %o', file.name, error);
-  }
-  return '';
+/** Longest side, in pixels, an uploaded image is downscaled to before upload. */
+export const IMAGE_MAX_DIMENSION: Record<'profile_image' | 'cover_image', number> = {
+  profile_image: 1024,
+  cover_image: 2048
 };
 
-/** Process image (convert HEIC, resize, compress) then upload. Always optimizes for avatars/covers. */
-export const processAndUploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {
-  const result = await processImageForUpload(file, { optimize: true });
-  return uploadImg(result.file, username, loadSigner);
+/**
+ * Signs `file` with the user's key and uploads it to the imagehoster, reporting the
+ * percentage sent through `onProgress`. Resolves to the uploaded image's URL.
+ *
+ * @throws ImageUploadError when the upload fails; signing errors propagate as thrown by the signer
+ */
+const uploadImg = async (
+  file: File,
+  username: string,
+  loadSigner: LoadSigner,
+  onProgress: (percent: number) => void
+): Promise<string> => {
+  const data = new Uint8Array(await file.arrayBuffer());
+  const prefix = new TextEncoder().encode(SIGNING_CHALLENGE_PREFIX);
+  const challenge = new Uint8Array(prefix.length + data.length);
+  challenge.set(prefix);
+  challenge.set(data, prefix.length);
+
+  const signer = await loadSigner();
+  const sig = await signer.signChallenge({ message: challenge, password: '' });
+
+  const formData = new FormData();
+  formData.append('file', file);
+  return postImageWithProgress(`${configuredImagesEndpoint}/${username}/${sig}`, formData, onProgress);
+};
+
+/**
+ * Processes the image (converts HEIC, downscales to `maxDimension`, compresses), then uploads it.
+ * Errors are logged and rethrown for the caller to show.
+ */
+export const processAndUploadImg = async (
+  file: File,
+  username: string,
+  loadSigner: LoadSigner,
+  { maxDimension, onProgress }: { maxDimension: number; onProgress: (percent: number) => void }
+): Promise<string> => {
+  try {
+    const result = await processImageForUpload(file, { optimize: true, maxDimension });
+    return await uploadImg(result.file, username, loadSigner, onProgress);
+  } catch (error) {
+    logger.error('Error when uploading file %s: %o', file.name, error);
+    throw error;
+  }
 };
