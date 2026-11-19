@@ -904,6 +904,8 @@
     "update": "更新",
     "upload_image": "画像をアップロード",
     "uploading_image": "画像をアップロード中",
+    "uploading_image_percent": "画像をアップロード中 {{percent}}%",
+    "image_upload_failed": "画像のアップロードに失敗しました。もう一度試すか、画像のURLを貼り付けてください。",
     "profile_image_url": "プロフィール画像URL",
     "cover_image_url": "カバー画像URL（最適：2048 x 512 px）",
     "profile_name": "表示名",

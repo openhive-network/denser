@@ -914,6 +914,8 @@
     "update": "Aggiorna",
     "upload_image": "Carica un'immagine",
     "uploading_image": "Caricamento immagine",
+    "uploading_image_percent": "Caricamento immagine {{percent}}%",
+    "image_upload_failed": "Il caricamento dell'immagine non è riuscito. Riprova o incolla l'URL di un'immagine.",
     "profile_image_url": "URL dell'immagine del profilo",
     "cover_image_url": "URL dell'immagine di copertina (Ottimale: 2048 x 512 px)",
     "profile_name": "Nome visualizzato",

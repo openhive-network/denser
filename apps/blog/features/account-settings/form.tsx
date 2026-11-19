@@ -5,17 +5,18 @@ import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   DEFAULT_SETTINGS,
   Settings,
-  processAndUploadImg,
   socialHandlesToSave,
   socialSettingsFromMetadata,
   socialValidation,
   validation
 } from './lib/utils';
 import SocialLinksFields from './social-links-fields';
+import ImageUrlField from './image-url-field';
+import { type ImageField, useImageFieldUpload } from './hooks/use-image-field-upload';
 import { SOCIAL_KEYS, type SocialKey } from '@/blog/features/layouts/user-profile/lib/social-links';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -33,7 +34,6 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { useImageUploadAvailability } from '@/blog/components/hooks/use-image-upload-availability';
 
 const SettingsForm = ({ username }: { username: string }) => {
@@ -50,12 +50,13 @@ const SettingsForm = ({ username }: { username: string }) => {
   );
   const profileData = data?.profile;
 
-  const { loadSigner } = useSignerContext();
   const { preventFilePicker } = useImageUploadAvailability();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [insertImg, setInsertImg] = useState('');
-  const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
-  const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const setImageField = useCallback(
+    (field: ImageField, url: string) => setSettings((prev) => ({ ...prev, [field]: url })),
+    []
+  );
+  const { upload, failedField, uploadImage } = useImageFieldUpload(username, setImageField);
   const validationCheck = validation(settings, t);
   const socialErrors = socialValidation(settings.social, t);
   const profileSettings: Settings = {
@@ -119,26 +120,6 @@ const SettingsForm = ({ username }: { username: string }) => {
     }
   }
 
-  const inputProfileHandler = async (event: { target: { files: FileList } }) => {
-    if (event.target.files && event.target.files.length === 1) {
-      setInsertImg('');
-      const url = await onImageUpload(event.target.files[0], username);
-      setSettings((prev) => ({ ...prev, profile_image: url }));
-    }
-  };
-
-  const onImageUpload = async (file: File, username: string) => {
-    const url = await processAndUploadImg(file, username, loadSigner);
-    return url;
-  };
-  const inputCoverHandler = async (event: { target: { files: FileList } }) => {
-    if (event.target.files && event.target.files.length === 1) {
-      setInsertImg('');
-      const url = await onImageUpload(event.target.files[0], username);
-      setSettings((prev) => ({ ...prev, cover_image: url }));
-    }
-  };
-
   useEffect(() => {
     setSettings(profileSettings);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,69 +130,33 @@ const SettingsForm = ({ username }: { username: string }) => {
       <div className="py-8">
         <h2 className="py-4 text-lg font-semibold leading-5">{t('settings_page.public_profile_settings')}</h2>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div>
-            <Label htmlFor="profileImage">{t('settings_page.profile_image_url')}</Label>
-            <Input
-              type="text"
-              id="profileImage"
-              name="profileImage"
-              value={settings.profile_image}
-              onChange={(e) => setSettings((prev) => ({ ...prev, profile_image: e.target.value }))}
-            />
-            <span>
-              <Label
-                className="text-sm font-normal text-destructive hover:cursor-pointer"
-                htmlFor="profilePicture"
-              >
-                {t('settings_page.upload_image')}
-              </Label>
-              <Input
-                id="profilePicture"
-                type="file"
-                className="hidden"
-                ref={inputProfileRef}
-                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
-                name="avatar"
-                value={insertImg}
-                onClick={preventFilePicker}
-                //@ts-expect-error
-                onChange={inputProfileHandler}
-              />
-            </span>
-            <span className="pt-2 text-xs text-destructive">{validationCheck.profile_image}</span>
-          </div>
+          <ImageUrlField
+            id="profileImage"
+            fileInputId="profilePicture"
+            label={t('settings_page.profile_image_url')}
+            value={settings.profile_image}
+            validationError={validationCheck.profile_image}
+            uploadPercent={upload?.field === 'profile_image' ? upload.percent : undefined}
+            uploadFailed={failedField === 'profile_image'}
+            uploadBlocked={upload !== null}
+            onChange={(value) => setImageField('profile_image', value)}
+            onFileSelected={(file) => uploadImage('profile_image', file)}
+            onFilePickerClick={preventFilePicker}
+          />
 
-          <div>
-            <Label htmlFor="coverImage">{t('settings_page.cover_image_url')}</Label>
-            <Input
-              type="text"
-              id="coverImage"
-              name="coverImage"
-              value={settings.cover_image}
-              onChange={(e) => setSettings((prev) => ({ ...prev, cover_image: e.target.value }))}
-            />
-            <span>
-              <Label
-                className="text-sm font-normal text-destructive hover:cursor-pointer"
-                htmlFor="coverPicture"
-              >
-                {t('settings_page.upload_image')}
-              </Label>
-              <Input
-                id="coverPicture"
-                type="file"
-                className="hidden"
-                ref={inputCoverRef}
-                accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
-                name="avatar"
-                value={insertImg}
-                onClick={preventFilePicker}
-                //@ts-expect-error
-                onChange={inputCoverHandler}
-              />
-            </span>
-            <span className="pt-2 text-xs text-destructive">{validationCheck.cover_image}</span>
-          </div>
+          <ImageUrlField
+            id="coverImage"
+            fileInputId="coverPicture"
+            label={t('settings_page.cover_image_url')}
+            value={settings.cover_image}
+            validationError={validationCheck.cover_image}
+            uploadPercent={upload?.field === 'cover_image' ? upload.percent : undefined}
+            uploadFailed={failedField === 'cover_image'}
+            uploadBlocked={upload !== null}
+            onChange={(value) => setImageField('cover_image', value)}
+            onFileSelected={(file) => uploadImage('cover_image', file)}
+            onFilePickerClick={preventFilePicker}
+          />
 
           <div>
             <Label htmlFor="name">{t('settings_page.profile_name')}</Label>
@@ -290,7 +235,9 @@ const SettingsForm = ({ username }: { username: string }) => {
           onClick={() => onSubmit()}
           className="my-4 w-44"
           data-testid="pps-update-button"
-          disabled={sameData || disabledBtn || updateProfileMutation.isPending || data?._temporary}
+          disabled={
+            sameData || disabledBtn || upload !== null || updateProfileMutation.isPending || data?._temporary
+          }
         >
           {updateProfileMutation.isPending ? (
             <span className="flex items-center justify-center">

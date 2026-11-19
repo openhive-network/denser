@@ -914,6 +914,8 @@
     "update": "Mettre à jour",
     "upload_image": "Télécharger une image",
     "uploading_image": "Téléchargement de l'image",
+    "uploading_image_percent": "Téléchargement de l'image {{percent}} %",
+    "image_upload_failed": "Le téléchargement de l'image a échoué. Réessayez ou collez l'URL d'une image.",
     "profile_image_url": "URL de l'image de profil",
     "cover_image_url": "URL de l'image de couverture (Optimal : 2048 x 512 px)",
     "profile_name": "Nom d'affichage",

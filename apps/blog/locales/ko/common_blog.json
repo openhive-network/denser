@@ -904,6 +904,8 @@
     "update": "업데이트",
     "upload_image": "이미지 업로드",
     "uploading_image": "이미지 업로드 중",
+    "uploading_image_percent": "이미지 업로드 중 {{percent}}%",
+    "image_upload_failed": "이미지 업로드에 실패했습니다. 다시 시도하거나 이미지 URL을 붙여넣으세요.",
     "profile_image_url": "프로필 사진 URL",
     "cover_image_url": "커버 이미지 URL (권장: 2048 x 512 px)",
     "profile_name": "표시 이름",
