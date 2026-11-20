@@ -8,7 +8,8 @@ const STUBS: Record<string, string> = {
 };
 // Under node's type stripping the `@smart-signer/` alias does not resolve
 const MODULES: Record<string, string> = {
-  '@smart-signer/lib/wrong-safe-storage-password': new URL('./wrong-safe-storage-password.ts', import.meta.url).href
+  '@smart-signer/lib/wrong-safe-storage-password': new URL('./wrong-safe-storage-password.ts', import.meta.url).href,
+  '@smart-signer/lib/auth-failure': new URL('./auth-failure.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -20,7 +21,8 @@ registerHooks({
   }
 });
 
-const { AuthFailureError, findAuthFailureKey, toAuthFailure } = await import('./auth-error.ts');
+const { toAuthFailure } = await import('./auth-error.ts');
+const { AuthFailureError, findAuthFailureKey } = await import('./auth-failure.ts');
 
 const LOCALES_DIR = new URL('../locales/', import.meta.url);
 

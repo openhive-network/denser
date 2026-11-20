@@ -30,7 +30,7 @@ import { EarlierBroadcastPendingMessage } from '@smart-signer/components/earlier
 import { WrongSafeStoragePasswordMessage } from '@smart-signer/components/wrong-safe-storage-password-message';
 import { SafeStorageKeyNotAuthorizedMessage } from '@smart-signer/components/safe-storage-key-not-authorized-message';
 import { AuthFailureMessage } from '@smart-signer/components/auth-failure-message';
-import { findAuthFailureKey } from '@smart-signer/lib/auth-error';
+import { findAuthFailureKey } from '@smart-signer/lib/auth-failure';
 import {
   findSafeStorageKeyNotAuthorized,
   findWrongSafeStoragePassword

@@ -12,7 +12,8 @@ const MODULES: Record<string, string> = {
   '@smart-signer/lib/wrong-safe-storage-password': new URL(
     '../../../../packages/smart-signer/lib/wrong-safe-storage-password.ts',
     import.meta.url
-  ).href
+  ).href,
+  '@smart-signer/lib/auth-failure': new URL('../../../../packages/smart-signer/lib/auth-failure.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {

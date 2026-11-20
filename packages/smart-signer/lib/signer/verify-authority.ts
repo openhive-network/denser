@@ -1,7 +1,7 @@
 import { TTransactionPackType, ApiTransaction } from '@hiveio/wax';
 import { findChunkLoadError } from '@hive/ui/lib/chunk-load-error';
 import { getLogger } from '@hive/ui/lib/logging';
-import { AuthFailureError } from '@smart-signer/lib/auth-error';
+import { AuthFailureError } from '@smart-signer/lib/auth-failure';
 import { getChain } from '@transaction/lib/chain';
 import { isNodeNetworkFailure } from '@transaction/lib/transaction-inclusion';
 

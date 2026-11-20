@@ -6,7 +6,8 @@ import { PasswordDialogModalPromise } from '@smart-signer/components/password-di
 import { PasswordFormMode, PasswordFormOptions, type RememberKey } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
-import { AuthFailureError, AuthStorageMissingError, isIgnorableError, toAuthFailure } from '@smart-signer/lib/auth-error';
+import { AuthStorageMissingError, isIgnorableError, toAuthFailure } from '@smart-signer/lib/auth-error';
+import { AuthFailureError } from '@smart-signer/lib/auth-failure';
 import {
   classifyUnlockRefusal,
   SafeStorageKeyNotAuthorizedError,
