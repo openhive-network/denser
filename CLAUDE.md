@@ -375,6 +375,8 @@ pnpm --filter @hive/blog lint -- --fix
 
 **IMPORTANT: Never use inline strings for user-facing text!**
 
+AIDEV now injects translation rules into its prompts and runs a machine translation review for changes touching locale files, configured by the `i18n:` section of `.aidev/project.yaml`.
+
 All user-visible text must use translation keys via the `t()` function. This ensures:
 - Proper internationalization (i18n) support
 - Consistent text management
