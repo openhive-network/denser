@@ -19,7 +19,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 import { useLocale } from '@ui/components/locale-context';
-import { hasPublishedFeed, isVersionBelow } from '@/wallet/lib/witness-row';
+import { hasPublishedFeed, isVersionBelow, parseWitnessOwners } from '@/wallet/lib/witness-row';
 import WitnessVoteButton from './witness-vote-button';
 import WitnessSiteLink from './witness-site-link';
 import type { VestingTotals } from '@/wallet/lib/voters';
@@ -68,7 +68,7 @@ function WitnessListItem({
   const { locale } = useLocale();
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
   const witnessDescription = witnessProfile?.witnessDescription;
-  const witnessOwner = witnessProfile?.witnessOwner;
+  const witnessOwners = parseWitnessOwners(witnessProfile?.witnessOwner);
   const isStale = data.witnessLastBlockAgeInSecs > ONE_WEEK_IN_SEC;
   const isOutdated = majorityVersion !== undefined && isVersionBelow(data.running_version, majorityVersion);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -164,9 +164,9 @@ function WitnessListItem({
                     {data.owner}
                   </div>
                 </Link>
-                {witnessOwner && (
+                {witnessOwners.length > 0 && (
                   <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
-                    {t('witnesses_page.by', { owners: formatList(witnessOwner.split(','), locale) })}
+                    {t('witnesses_page.by', { owners: formatList(witnessOwners, locale) })}
                   </span>
                 )}
                 <Link

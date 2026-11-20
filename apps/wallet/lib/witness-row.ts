@@ -64,6 +64,13 @@ export const parseWitnessSite = (url: unknown): WitnessSite | null => {
   return { kind: 'external', href: encodeURI(url), label: truncate(hostname + path, MAX_LABEL_LENGTH) };
 };
 
+/** The names in a witness's free-text, comma-separated `witness_owner` profile field, trimmed, without empty ones. */
+export const parseWitnessOwners = (witnessOwner: string | undefined): string[] =>
+  (witnessOwner ?? '')
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+
 /**
  * Whether a witness has published a price feed: `lastUpdate`, a Hive timestamp (UTC, usually without a
  * zone designator), is set and later than the epoch the chain gives a witness that never published.

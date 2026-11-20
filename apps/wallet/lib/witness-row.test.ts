@@ -1,6 +1,24 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasPublishedFeed, isVersionBelow, majorityVersion, parseWitnessSite } from './witness-row.ts';
+import { registerHooks } from 'node:module';
+import {
+  hasPublishedFeed,
+  isVersionBelow,
+  majorityVersion,
+  parseWitnessOwners,
+  parseWitnessSite
+} from './witness-row.ts';
+
+// Repo-style extensionless relative imports need the `.ts` spelled out for node.
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith('./') && !specifier.endsWith('.ts'))
+      return nextResolve(`${specifier}.ts`, context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const { formatList } = await import('../../../packages/ui/lib/locale-format.ts');
 
 describe('parseWitnessSite', () => {
   it('opens a post on a Hive front end on our blog as an announcement', () => {
@@ -106,5 +124,20 @@ describe('majorityVersion', () => {
     assert.equal(majorityVersion(['1.28.9', '1.27.11', '1.28.9']), '1.28.9');
     assert.equal(majorityVersion(['1.27.11', '1.28.9']), '1.28.9');
     assert.equal(majorityVersion([]), undefined);
+  });
+});
+
+describe('parseWitnessOwners', () => {
+  it('trims the comma-separated names and drops empty ones', () => {
+    assert.deepEqual(parseWitnessOwners('alice, bob'), ['alice', 'bob']);
+    assert.deepEqual(parseWitnessOwners(' alice ,, bob ,'), ['alice', 'bob']);
+    assert.equal(formatList(parseWitnessOwners('alice, bob'), 'en'), 'alice and bob');
+    assert.equal(formatList(parseWitnessOwners('alice,'), 'en'), 'alice');
+  });
+
+  it('gives no names for an empty, blank or missing field', () => {
+    assert.deepEqual(parseWitnessOwners(undefined), []);
+    assert.deepEqual(parseWitnessOwners(''), []);
+    assert.deepEqual(parseWitnessOwners(' , ,'), []);
   });
 });
