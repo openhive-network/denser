@@ -81,13 +81,13 @@ sub vcl_recv {
 	if (vsthrottle.is_denied(req.http.X-Gate-Client, 60, 60s, 300s)) {
 		return (synth(429, "Too Many Requests"));
 	}
-	# Signed-in readers (the cookies varnish/default.vcl passes) have run the app already;
-	# everyone else proves a JS engine and some work once per address and 30 days. The
-	# cookie is not part of the HTML cache's key.
+	# Every reader, signed in or not, proves a JS engine and some work once per address and
+	# 30 days. The signed-in cookies varnish/default.vcl passes are no exemption: any client
+	# can send them, and their values are not checked here. The cookie is not part of the
+	# HTML cache's key.
 	call gate_work_bound;
 	call gate_proven;
-	if (!req.http.X-Gate-Proven
-	    && req.http.Cookie !~ "(^|;)\s*([^=;]*_session(\.[^=;]*)?|observer|observer-no-own-lists|account_info)\s*=") {
+	if (!req.http.X-Gate-Proven) {
 		set req.http.X-Gate-Issued = std.integer(time=now);
 		call gate_seed;
 		return (synth(200, "Challenge"));
