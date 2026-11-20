@@ -168,7 +168,9 @@
       "description": "使用指纹、面容 ID 或设备 PIN 解锁，无需输入密码。",
       "enable": "启用",
       "not_now": "以后再说",
-      "never_ask_again": "不再询问"
+      "never_ask_again": "不再询问",
+      "failed": "无法启用生物识别解锁。你仍可使用密码登录。",
+      "unsupported": "此设备不支持生物识别解锁。你仍可使用密码登录。"
     },
     "passkey": {
       "method": "通行密钥签名服务",

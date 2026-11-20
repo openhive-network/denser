@@ -168,7 +168,9 @@
       "description": "Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.",
       "enable": "Enable",
       "not_now": "Not now",
-      "never_ask_again": "Never ask again"
+      "never_ask_again": "Never ask again",
+      "failed": "Biometric unlock was not enabled. You can keep signing in with your password.",
+      "unsupported": "This device cannot use biometric unlock. You can keep signing in with your password."
     },
     "passkey": {
       "method": "Passkey signer",

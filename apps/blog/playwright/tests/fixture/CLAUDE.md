@@ -615,6 +615,19 @@ only after "Other sign in options" opens.
 
 ---
 
+## Recipe: a platform passkey (WebAuthn) with a virtual authenticator
+
+The safe-storage biometric unlock asks `navigator.credentials` for a platform passkey with the PRF
+extension. `safeStoragePasskeyUnlock.spec.ts` adds Chromium's virtual authenticator over CDP
+(`WebAuthn.addVirtualAuthenticator`: `ctap2`, `internal`, `hasPrf`, `isUserVerified`,
+`automaticPresenceSimulation`), so creation and unlock answer without a touch, and counts the
+passkeys with `WebAuthn.getCredentials`. `WebAuthn.setUserVerified` false makes a creation fail
+with NotAllowedError, as Cancel in the browser's prompt does; `WebAuthn.clearCredentials` plays a
+passkey deleted from the password manager. Add the authenticator before the ceremony; it lives
+as long as the page's CDP session.
+
+---
+
 ## Recipe: the HiveAuth sign-in with a stubbed HAS relay
 
 HiveAuth is on by default (`REACT_APP_HIVEAUTH_ENABLED`), so the fixture build offers it and its

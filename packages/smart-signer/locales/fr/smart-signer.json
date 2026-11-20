@@ -168,7 +168,9 @@
       "description": "Utilisez votre empreinte digitale, Face ID ou le code PIN de l’appareil pour déverrouiller au lieu de saisir votre mot de passe.",
       "enable": "Activer",
       "not_now": "Pas maintenant",
-      "never_ask_again": "Ne plus demander"
+      "never_ask_again": "Ne plus demander",
+      "failed": "Le déverrouillage biométrique n’a pas pu être activé. Vous pouvez continuer à vous connecter avec votre mot de passe.",
+      "unsupported": "Cet appareil ne prend pas en charge le déverrouillage biométrique. Vous pouvez continuer à vous connecter avec votre mot de passe."
     },
     "passkey": {
       "method": "Signataire à passkey",

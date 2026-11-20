@@ -168,7 +168,9 @@
       "description": "Odblokowuj odciskiem palca, Face ID lub kodem PIN urządzenia zamiast wpisywać hasło.",
       "enable": "Włącz",
       "not_now": "Nie teraz",
-      "never_ask_again": "Nie pytaj więcej"
+      "never_ask_again": "Nie pytaj więcej",
+      "failed": "Nie udało się włączyć odblokowywania biometrycznego. Możesz dalej logować się hasłem.",
+      "unsupported": "To urządzenie nie obsługuje odblokowywania biometrycznego. Możesz dalej logować się hasłem."
     },
     "passkey": {
       "method": "Podpisywanie kluczem dostępu",

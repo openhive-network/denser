@@ -43,6 +43,7 @@ translate the terms below. Status values and how to use this file:
 | log in / log out | unreviewed | Labels: "Login", "Logout". |
 | forget a saved key | unreviewed | Removes a key saved in this browser without signing out: "Forget saved key", "Forget it and sign out" (#1703). |
 | passkey | unreviewed | |
+| biometric unlock | unreviewed | Safe storage unlocked with a passkey (`login_form.passkey_prompt.*`). |
 | This session (key badge) | unreviewed | Marks the keys the signed-in session signs with. |
 | recovery account | unreviewed | |
 

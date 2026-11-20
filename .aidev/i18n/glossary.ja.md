@@ -47,6 +47,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | forget a saved key | 保存されたキーを消去 | unreviewed | As the existing "…消去されます": "消去してログアウト" (#1703). |
 | password | パスワード | unreviewed | |
 | passkey | パスキー | unreviewed | |
+| biometric unlock | 生体認証によるロック解除 | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | マーケット / 利息 | unreviewed | |
 | this session (key badge) | このセッション | unreviewed | |
 | recovery account | リカバリーアカウント | unreviewed | |

@@ -17,6 +17,7 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
+import { unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
@@ -170,8 +171,8 @@ export class SignerHbauth extends Signer {
             // Use minimal verification for posting (blog), full verification for active/owner (wallet)
             const uv = keyType === 'posting' ? 'discouraged' : 'required';
             logger.info('Attempting biometric unlock for %s (uv=%s)', username, uv);
-            authStatus = await authClient.biometricUnlock(
-              username, keyType, uv as UserVerificationRequirement
+            authStatus = await unlockWithPasskey(
+              authClient, username, keyType, uv as UserVerificationRequirement
             );
           }
         } catch (error) {

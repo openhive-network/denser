@@ -49,6 +49,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | forget a saved key | dimenticare la chiave salvata | unreviewed | "Dimentica la chiave salvata", "Dimenticala ed esci" (#1703). |
 | password | password | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
+| biometric unlock | sblocco biometrico | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | mercato / interessi | unreviewed | |
 | this session (key badge) | Questa sessione | unreviewed | |
 | recovery account | account di recupero | unreviewed | |

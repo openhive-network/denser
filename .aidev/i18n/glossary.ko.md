@@ -49,6 +49,7 @@ markup and plural keys, not their wording.
 | forget a saved key | 저장된 키 지우기 | unreviewed | As the existing "…지워집니다": "지우고 로그아웃" (#1703). |
 | password | 비밀번호 | unreviewed | |
 | passkey | 패스키 | unreviewed | |
+| biometric unlock | 생체 인식 잠금 해제 | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | 마켓 / 이자 | unreviewed | |
 | this session (key badge) | 이 세션 | unreviewed | |
 | recovery account | 복구 계정 | unreviewed | |
