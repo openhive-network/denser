@@ -3,6 +3,7 @@ import { baseConfig, ownWebServerOptions, standaloneServerCommand } from '../../
 import { FIXTURE_API_PORT } from './playwright/tests/support/apiStub';
 import { FIXTURE_BLOG_URL, WALLET_BASE_PATH } from './playwright/tests/support/basePath';
 import { FIXTURE_COOKIE_PASSWORD } from '../blog/playwright/tests/support/fixture-auth/constants';
+import { localeStorageState, selectTests } from '../../playwright/support/i18n-layout';
 
 /**
  * Playwright config for the wallet's offline specs (playwright/tests/fixture): a production build
@@ -18,6 +19,28 @@ import { FIXTURE_COOKIE_PASSWORD } from '../blog/playwright/tests/support/fixtur
 
 const PORT = 4000;
 const FIXTURE_API = `http://127.0.0.1:${FIXTURE_API_PORT}`;
+/**
+ * The i18n checks (#1696), run only with DENSER_I18N_CHECKS=1, as the advisory pass of
+ * .aidev/run-wallet-fixture-e2e.sh runs them: `i18n-layout` renders key routes in the pseudo-locale and
+ * in Polish (playwright/support/i18n-layout.ts), `pl-locale` runs PL_RUN_TESTS with `NEXT_LOCALE=pl`.
+ */
+const I18N_CHECKS = process.env.DENSER_I18N_CHECKS === '1';
+const I18N_LAYOUT_SPECS = /i18nLayout\w*\.spec\.ts$/;
+/**
+ * Existing tests run again in Polish by `pl-locale`, by spec file and test ID: the ones that find their
+ * elements by test id or role, not by English text.
+ */
+const PL_RUN_TESTS = {
+  'incomingDelegations.spec.ts': ['WALLET-INCOMING-02', 'WALLET-INCOMING-05'],
+  'proposalsSearch.spec.ts': ['WALLET-PROPOSALS-SEARCH-02'],
+  'delegateRcDialog.spec.ts': ['WALLET-RC-06'],
+  'proposalVoteBroadcast.spec.ts': [
+    'WALLET-TX-PROPOSAL-VOTE-01',
+    'WALLET-TX-PROPOSAL-VOTE-04',
+    'WALLET-TX-PROPOSAL-UNVOTE-01',
+    'WALLET-TX-PROPOSAL-UNVOTE-04'
+  ]
+};
 
 export default defineConfig({
   ...baseConfig(),
@@ -38,8 +61,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium-fixture',
+      testIgnore: I18N_LAYOUT_SPECS,
       use: { ...devices['Desktop Chrome'] }
-    }
+    },
+    ...(I18N_CHECKS
+      ? [
+          { name: 'i18n-layout', testMatch: I18N_LAYOUT_SPECS, use: { ...devices['Desktop Chrome'] } },
+          {
+            name: 'pl-locale',
+            ...selectTests(PL_RUN_TESTS),
+            use: { ...devices['Desktop Chrome'], storageState: localeStorageState('pl') }
+          }
+        ]
+      : [])
   ],
   webServer: {
     // The standalone build, with react-env writing __ENV.js from this environment.
@@ -57,6 +91,8 @@ export default defineConfig({
       DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD,
       // The API set engine's probes are no recorded calls: it learns from real calls only.
       DENSER_API_SETS_PROBING: 'off',
+      // The pseudo-locale (packages/ui/lib/pseudo-locale.ts) the `i18n-layout` project renders pages in.
+      REACT_APP_PSEUDO_LOCALE: 'true',
       HOSTNAME: '0.0.0.0',
       PORT: String(PORT)
     }

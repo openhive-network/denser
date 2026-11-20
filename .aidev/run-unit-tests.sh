@@ -100,7 +100,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/memo-secret-check.test.ts packages/ui/lib/common-instrumentation.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/locale-negotiation.test.ts \
-    packages/ui/lib/month-year.test.ts \
+    packages/ui/lib/month-year.test.ts packages/ui/lib/pseudo-locale.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
     packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts packages/ui/config/hiveauth.test.ts \
     packages/ui/lib/passkey-signers.test.ts packages/ui/lib/sanitize-url.test.ts \

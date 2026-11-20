@@ -1,7 +1,9 @@
 import { DEFAULT_LOCALE } from '@hive/ui/lib/locale-cookie.ts';
+import { withPseudoLocale } from '@hive/ui/lib/pseudo-locale.ts';
 
 export const defaultLocale = DEFAULT_LOCALE;
-export const languages = ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh'];
+/** The UI languages, and the pseudo-locale where it is enabled (`@hive/ui/lib/pseudo-locale`). */
+export const languages = withPseudoLocale(['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh']);
 export const defaultNS = 'common_blog';
 export const cookieName = 'NEXT_LOCALE';
 

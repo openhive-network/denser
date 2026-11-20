@@ -46,7 +46,12 @@ function UserInfo({
         blacklist={blacklist}
       />
       {author_title && (
-        <Badge variant="outline" className="border-destructive text-slate-500" translate="no">
+        <Badge
+          variant="outline"
+          className="border-destructive text-slate-500"
+          translate="no"
+          data-testid="post-user-affiliation-tag"
+        >
           <span className="mr-1">{author_title}</span>
           <ChangeTitleDialog
             permlink={permlink}

@@ -3,6 +3,7 @@ import { createInstance, type InitOptions, type TFunction } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import env from '@beam-australia/react-env';
 import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { withPseudoLocaleLoader } from '@ui/lib/pseudo-locale';
 import { reportFallbacks } from '@ui/lib/i18n-fallback-report';
 import { reportFallbackToSentry } from '@ui/lib/i18n-fallback-sentry';
 
@@ -39,7 +40,7 @@ export function createI18nServer(
       // carries the request the SDK has in scope rather than a route of its own.
       const fallbackReport = env('SENTRY_DSN') ? reportFallbacks(instance, (fallback) => reportFallbackToSentry(fallback)) : {};
       pending = instance
-        .use(resourcesToBackend(loadNamespace))
+        .use(resourcesToBackend(withPseudoLocaleLoader(loadNamespace)))
         .init({
           ...getOptions(lng, ns),
           ...fallbackReport,

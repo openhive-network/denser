@@ -19,16 +19,31 @@
 # Arguments are passed to `playwright test`, so a run can be narrowed:
 #
 #   .aidev/run-wallet-fixture-e2e.sh playwright/tests/fixture/transferMemoSecret.spec.ts
+#
+# A run without arguments then runs the advisory i18n checks against the same build
+# (.aidev/i18n-checks.sh); a run naming `--project=i18n-layout` or `--project=pl-locale`
+# runs just those.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source .aidev/pnpm-deps.sh
 source .aidev/junit-helpers.sh
+# shellcheck source=i18n-checks.sh
+source .aidev/i18n-checks.sh
 
 rm -rf test-results/wallet-fixture
 mkdir -p test-results/wallet-fixture
 junit="$PWD/test-results/wallet-fixture/junit.xml"
 export CI=1
 
+if i18n_checks_named "$@"; then export DENSER_I18N_CHECKS=1; fi
+i18n_results="$PWD/test-results/wallet-fixture/i18n"
+
 cd apps/wallet
+status=0
 PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" run_with_junit_fallback "$junit" wallet_fixture \
-    sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && date -u +%Y-%m-%dT%H:%M:%SZ > .next/aidev-build-complete && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null' sh "$@"
+    sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && date -u +%Y-%m-%dT%H:%M:%SZ > .next/aidev-build-complete && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null' sh "$@" \
+    || status=$?
+if [ "$#" -eq 0 ] && [ -f .next/aidev-build-complete ]; then
+    run_i18n_checks "$i18n_results" --config=playwright.fixture.config.ts --output=test-results/i18n
+fi
+exit "$status"

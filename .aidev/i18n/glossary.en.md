@@ -83,5 +83,5 @@ HIVE POWER, HIVE DOLLARS. These names stay as they
 are in every locale (`identicalToEnglishAllowed` in
 `scripts/check-blog-translations.js` and `scripts/check-wallet-translations.js`
 lists the keys that may equal English). The ESLint guard against hard-coded
-text (`packages/eslint-config-custom/index.js`, `UNTRANSLATED_NAMES`) lets
+text (`packages/eslint-config-custom/untranslated-names.js`) lets
 these names stand alone in source.

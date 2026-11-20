@@ -377,6 +377,26 @@ timeout `fixture-shard-build`), runs its share against its copy, and writes
 change n, add or drop shard entries and rewrite every `k/n`.
 `.aidev/fixture-shards.test.mjs` (in `unit`) checks that the entries are 1..n.
 
+**The i18n checks run inside `fixture_e2e` and `wallet_fixture`, advisory** (#1696).
+The slot is at AIDEV's eight-suite ceiling, so they are no suite of their own: two
+Playwright projects of each app's `playwright.fixture.config.ts`, present only with
+`DENSER_I18N_CHECKS=1` (`.aidev/i18n-checks.sh`). `i18n-layout` (`i18nLayout*.spec.ts`)
+renders the key routes and dialogs in the pseudo-locale `xx` (`packages/ui/lib/pseudo-locale.ts`:
+every `en` string accented, ~40 % longer, in `[` `]`) and in Polish, at 1280x900, 844x390 and
+390x844, in DejaVu Sans (`playwright/support/fonts/`), and fails on visible words that bypass
+the translations, on text an element cuts off without a `title`, and on a sideways page
+scroll (`playwright/support/i18n-layout.ts`). `pl-locale` runs a list of existing specs that
+find their elements by test id again with `NEXT_LOCALE=pl` (`PL_RUN_TESTS`). A run without
+arguments runs both after the suite's own pass, against the same build (the blog's in the last
+shard), and their result never changes the suite's verdict: it is in the log and in
+`test-results/<suite results>/i18n/` (`playwright.json`, `log.txt`), not in `junit.xml`. A run
+naming `--project=i18n-layout` (`aidev test run --slot full --suite wallet_fixture --
+--project=i18n-layout`) runs just that, and is judged by it; on the dev stack:
+`DENSER_I18N_CHECKS=1 .aidev/dev-stack-spec.sh playwright/tests/fixture/i18nLayoutFeed.spec.ts
+--project=i18n-layout`. Findings waiting for a fix are listed, with their issue, in each app's
+`playwright/tests/support/i18nLayout.ts`. Make the checks blocking after a week of clean runs:
+run the two projects in the suite's own pass and drop the separate one.
+
 **`live_e2e`** (`.aidev/run-live-e2e.sh`; declared `mode: advisory` with a fixed `memory: 6g` cap, so neither a
 failing spec nor an OOM kill of its container fails the slot) runs the e2e specs the
 candidate's change reaches, `--retries=0`, each app's against its stack server:
