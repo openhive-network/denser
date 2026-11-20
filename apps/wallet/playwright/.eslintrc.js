@@ -12,6 +12,8 @@ module.exports = {
     // Playwright fixtures call their `use` argument, which this rule mistakes for a React hook.
     'react-hooks/rules-of-hooks': 'warn',
     // Test data (post titles, toast texts to expect) is not text the app shows.
-    'no-restricted-syntax': 'off'
+    '@hive/i18n/no-untranslated-text': 'off',
+    '@hive/i18n/no-adhoc-format': 'off',
+    '@hive/i18n/no-joined-translation': 'off'
   }
 };

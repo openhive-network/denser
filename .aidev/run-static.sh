@@ -7,7 +7,7 @@
 # ESLint runs with --quiet: the rules added for gradual adoption are warnings, and
 # the existing ~200 of them must not fail a change; an error does. It lints both
 # apps and the packages/ui and packages/smart-signer components they render, whose
-# hard-coded user-facing text is an error (no-restricted-syntax in
+# hard-coded user-facing text is an error (@hive/i18n/no-untranslated-text in
 # @hive/eslint-config-custom). The locale key/placeholder sync checks of the blog,
 # the wallet and the smart-signer package run here, with the translation usage
 # checks of both apps and both packages (every t('key') names an existing key) and

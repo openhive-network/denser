@@ -11,7 +11,7 @@ const MONTH_YEAR_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 const monthYearFormats = createLocaleFormatCache(
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   (lang) => new Intl.DateTimeFormat(lang, MONTH_YEAR_FORMAT_OPTIONS)
 );
 

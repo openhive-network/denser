@@ -43,8 +43,11 @@ const CommunitiesListItem = ({
           data-testid="community-list-item-footer"
         >
           <p className="text-sm font-medium leading-5 text-primary/80">
+            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {community.subscribers} {t('communities.subscribers')} <span className="mx-1">•</span>{' '}
+            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {community.num_authors} {t('communities.authors')} <span className="mx-1">•</span>
+            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {community.num_pending} {t('communities.posts')}
           </p>
           {community.admins && community.admins?.length > 0 ? (

@@ -339,7 +339,9 @@ export function ReplyTextbox({
           />
           <div className="border-border bg-background-secondary/50 text-muted-foreground flex items-center rounded-b-md border-x border-b px-3 py-1.5 text-xs">
             <span>
+              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
               {t('post_content.footer.comment.insert_images')}{' '}
+              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
               {t('post_content.footer.comment.selecting_them')}
             </span>
             <TooltipProvider>
@@ -417,6 +419,7 @@ export function ReplyTextbox({
           <div className="flex items-center gap-3 text-xs">
             {editMode || preferences.comment_rewards === '50%' ? null : (
               <span className="text-muted-foreground">
+                {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                 {t('post_content.footer.comment.rewards')}
                 {preferences.comment_rewards === '0%'
                   ? t('post_content.footer.comment.decline_payout')

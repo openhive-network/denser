@@ -26,12 +26,11 @@ const {
   billionsToRawRc,
   delegatableRawRc,
   formatRcInput,
-  formatRcMinimum,
-  formatRcSummary,
   parseRcBillions,
   rawRcToBillions,
   rcForPercent,
-  rcPercentOf
+  rcPercentOf,
+  roundRcMinimum
 } = await import('./rc-amount.ts');
 
 const MAX = rawRcToBillions('5797055662');
@@ -43,27 +42,18 @@ describe('RC amounts in billions', () => {
     assert.equal(billionsToRawRc(new Big('0.0000000019')), '1');
   });
 
-  it('keeps every raw digit in the input value and two decimals in the summary', () => {
+  it('keeps every raw digit in the input value', () => {
     assert.equal(formatRcInput(MAX), '5.797055662');
     assert.equal(formatRcInput(new Big('100')), '100');
     assert.equal(formatRcInput(new Big('0')), '0');
-    assert.equal(formatRcSummary(MAX, 'en'), '5.80');
-  });
-
-  it('states the summary in the reader’s locale and the minimum in the input’s machine format', () => {
-    const amount = rawRcToBillions('1449263915');
-    assert.equal(formatRcSummary(amount, 'pl'), '1,45');
-    assert.equal(formatRcSummary(new Big('1000'), 'en'), '1,000.00');
-    assert.equal(formatRcMinimum(amount), '1.45');
   });
 
   it('states a minimum rounded up, so the stated amount is never below it', () => {
     const minimum = rawRcToBillions('1604473654');
-    assert.equal(formatRcSummary(minimum, 'en'), '1.60');
-    assert.equal(formatRcMinimum(minimum), '1.61');
-    assert.ok(parseRcBillions(formatRcMinimum(minimum)).gte(minimum));
-    assert.equal(formatRcMinimum(rawRcToBillions('1600000000')), '1.60');
-    assert.equal(formatRcMinimum(rawRcToBillions('1609999999')), '1.61');
+    assert.equal(roundRcMinimum(minimum).toFixed(2), '1.61');
+    assert.ok(roundRcMinimum(minimum).gte(minimum));
+    assert.equal(roundRcMinimum(rawRcToBillions('1600000000')).toFixed(2), '1.60');
+    assert.equal(roundRcMinimum(rawRcToBillions('1609999999')).toFixed(2), '1.61');
   });
 
   it('reads an empty or malformed amount as zero', () => {

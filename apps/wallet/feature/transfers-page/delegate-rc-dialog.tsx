@@ -29,13 +29,12 @@ import {
   RC_INPUT_DECIMALS,
   billionsToRawRc,
   formatRcInput,
-  formatRcMinimum,
-  formatRcSummary,
   parseRcBillions,
   rawRcToBillions,
   rcForPercent,
   rcPercentOf
 } from './lib/rc-amount';
+import { formatRcMinimum, formatRcSummary } from './lib/rc-display';
 
 const logger = getLogger('app');
 
@@ -128,7 +127,7 @@ const DelegateRCDialog = ({
         logger.error(error, 'Delegating %s RC to %s fell below the minimum delegation', rawToSend, toAccount);
         toast({
           description: t('transfers_page.delegate_rc.below_minimum_error', {
-            min: formatRcMinimum(rawRcToBillions(minimum.toString()))
+            min: formatRcMinimum(rawRcToBillions(minimum.toString()), locale)
           }),
           variant: 'destructive'
         });
@@ -238,10 +237,10 @@ const DelegateRCDialog = ({
                   >
                     {isMinimumUnreachable
                       ? t('transfers_page.delegate_rc.minimum_unreachable', {
-                          min: formatRcMinimum(minBillions),
+                          min: formatRcMinimum(minBillions, locale),
                           max: summary.max
                         })
-                      : t('transfers_page.delegate_rc.minimum_note', { min: formatRcMinimum(minBillions) })}
+                      : t('transfers_page.delegate_rc.minimum_note', { min: formatRcMinimum(minBillions, locale) })}
                   </p>
                 ) : null}
                 {existingBillions.gt(0) ? (

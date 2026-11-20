@@ -172,6 +172,7 @@ const PostListItem = memo(
                   {authorDisplayName(post.reblogged_by[0])}
                 </Link>
                 {isLiteDid(post.reblogged_by[0]) ? <LiteDidBadge /> : ' '}
+                {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                 {t('cards.reblogged')}
               </span>
             </div>

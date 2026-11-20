@@ -421,20 +421,21 @@ export async function generateMetadata(): Promise<Metadata> {
 
 **Shared packages** (`@hive/ui`) don't own locale files: take the app's `t` as a prop (see `ModeSwitchInput`) or the translated text (see `Toaster`'s `label`).
 
-ESLint (`no-restricted-syntax` in `@hive/eslint-config-custom`, an error) rejects hard-coded user-facing text in the apps, `packages/ui` and `packages/smart-signer`:
-- JSX text children, and strings, `?:`/`||` branches and templates with words rendered as JSX children;
-- string literals or worded templates in `aria-label`, `placeholder`, `title` and `alt`;
+ESLint (`@hive/i18n/no-untranslated-text` of `packages/eslint-plugin-i18n`, an error in `@hive/eslint-config-custom`) rejects hard-coded user-facing text in the apps, `packages/ui` and `packages/smart-signer`:
+- JSX text children, and strings, `?:`/`||` branches (nested to any depth) and templates with words rendered as JSX children;
+- string literals or worded templates in `aria-label`, `placeholder`, `title`, `alt` and the attributes and props that name text (`label`, `content`, `description`, `tooltip`, `*Label`, `*Text`, `*Title`, ...), and prose (a capitalised word followed by another) or non-Latin script in any other attribute but `className`, `style`, `href`, `src`, `id`, `key` and `data-*`;
 - the `title`, `description` and `label` of any object (toasts and their builders, select options, page metadata), and `message` in a `toast()`/`handleError()` argument;
 - string defaults of `label`, `text`, `title` and `*Label`/`*Text`/`*Title` parameters (take the translated text as a prop, or use `DefaultCloseLabel`).
 
-It lets through text without Latin letters (punctuation, numbers), bare URLs, dotted translation keys handed on to a later `t()`, and the untranslated names of `.aidev/i18n/glossary.en.md` (`UNTRANSLATED_NAMES` in the config: Hive, HBD, HP, RC, NSFW, ...). Unit tests may build objects with titles; Playwright code is not checked. Text that truly is not for translation (a dev-only overlay, an English legal page, Hive entry data) takes an `// eslint-disable-next-line no-restricted-syntax -- <why>` comment.
+Text is a letter of any script (a CJK or Cyrillic literal is text). It lets through text without letters (punctuation, numbers, emoji), bare URLs, hex colours, dotted translation keys handed on to a later `t()`, and the untranslated names of `.aidev/i18n/glossary.en.md` (`UNTRANSLATED_NAMES` in the config: Hive, HBD, HP, RC, NSFW, ...). Unit tests may build objects with titles; Playwright code is not checked. Text that truly is not for translation (a dev-only overlay, an English legal page, Hive entry data) takes an `// eslint-disable-next-line @hive/i18n/no-untranslated-text -- <why>` comment. Disable only the rule the line needs: the formatting and sentence rules below have their own names and stay on.
 
-**Formatting:** numbers, amounts, dates, relative times, durations and lists shown to the user come from `@ui/lib/locale-format` with the active locale (`useLocale().locale`, `i18n.language`, or the `locale` of the server's `getTranslation`): `formatNumber`, `formatAmount` (`"1,234.500 HBD"`), `formatAbbreviatedAmount`, `formatDollars`, `formatPercent`, `formatDateTime` (named formats, `'UTC'` for chain dates rendered on the server), `getTimeAgoString`, `formatDuration`, `formatList` and `joinSentences`; a NaiAsset is `formatAsset(asset, { locale })` (`@ui/lib/asset-format`). The same ESLint rule rejects, outside that module:
-- `toFixed()` digits that are rendered, put in a template or a `+` concatenation, or handed to `t()` (a value for an input or for the chain may still use it);
-- `toLocaleString`, `toLocaleDateString`, `toLocaleTimeString` and `new Intl.*Format`;
-- a `t()` joined to other text with `+`, in a template holding more than it (a page title's `- Hive` affix is fine) or in an array `.join()`: put the sentence in one key with `{{placeholders}}`, use `<Trans>`, `formatList()` or, for whole sentences, `joinSentences()`.
+**Formatting:** numbers, amounts, dates, relative times, durations and lists shown to the user come from `@ui/lib/locale-format` with the active locale (`useLocale().locale`, `i18n.language`, or the `locale` of the server's `getTranslation`): `formatNumber`, `formatAmount` (`"1,234.500 HBD"`), `formatAbbreviatedAmount`, `formatDollars`, `formatPercent`, `formatDateTime` (named formats, `'UTC'` for chain dates rendered on the server), `getTimeAgoString`, `formatDuration`, `formatList` and `joinSentences`; a NaiAsset is `formatAsset(asset, { locale })` (`@ui/lib/asset-format`). `@hive/i18n/no-adhoc-format` rejects, outside that module:
+- `toFixed()` digits, and a dayjs or moment `.format()`, that are rendered, put in a DOM attribute or a text prop (`title={x.toFixed(3)}`), a template, a `+` concatenation, the values of `t()` or `<Trans values>`, or returned by a display helper (`format*`, `display*`, `*Label`, `*Text`, `*Summary`, `*Title`), also through `String()` or `.replace()` and other string methods (an input's `value`, a component's value prop, a `format*Input`/`*Value` helper or the chain may still use it);
+- `toLocaleString`, `toLocaleDateString`, `toLocaleTimeString` and `Intl.*Format`, with or without `new`.
 
-`lint:translations:usage` also fails a key with plural forms (`_one`/`_few`/`_many`/`_other`) called without a `count` option.
+`@hive/i18n/no-joined-translation` rejects a `t()` joined to other text with `+`, in a template holding more than it (a page title's `- Hive` affix is fine), in an array `.join()`, or rendered in JSX beside another expression that gives text (`{t('a.claim')}{formatList(items)}`; markup beside it is fine): put the sentence in one key with `{{placeholders}}`, use `<Trans>`, `formatList()` or, for whole sentences, `joinSentences()`.
+
+`lint:translations:usage` also fails a key with plural forms (`_one`/`_few`/`_many`/`_other`) called without a `count` option (a `count` property: `{ value: item.count }` is not one).
 
 **Glossaries:** before writing or changing a string in any locale (blog, wallet or smart-signer), read `.aidev/i18n/glossary.<lang>.md` and follow it: its terms, register (formal or informal address), plural forms, number/date conventions and untranslated names. An `agreed` term was settled by the tester; keep it unless a new tester decision changes it. A term the glossary lacks: use the locale's most frequent rendering and add it as `unreviewed` in the same change. Don't copy a string listed under "Known drift". `.aidev/i18n/README.md` explains the format.
 
@@ -467,7 +468,7 @@ pnpm --filter @hive/blog lint:translations:usage
 pnpm --filter @hive/blog lint:translations:usage -- --unused
 ```
 
-The same check covers the wallet (`pnpm --filter @hive/wallet lint:translations:usage`), `packages/smart-signer` (`node scripts/check-smart-signer-translation-usage.js`: its own `smart-signer.json` or the apps' namespace) and `packages/ui` (`node scripts/check-ui-translation-usage.js`: the blog's or the wallet's namespace, since the package owns no locales).
+The same check covers the wallet (`pnpm --filter @hive/wallet lint:translations:usage`), `packages/smart-signer` (`node scripts/check-smart-signer-translation-usage.js`: its own `smart-signer.json` or the apps' namespace) and `packages/ui` (`node scripts/check-ui-translation-usage.js`: the package owns no locales). A shared package's key must resolve in every app that renders it: the blog's and the wallet's English file both (for smart-signer, its own `smart-signer.json` does for both). A component only one app renders names that app's namespace in the call, `t('search_mode.sort_by', { ns: 'common_blog' })`, and is checked against that app alone.
 
 **What it checks:**
 - All `t('key')` function calls reference existing keys

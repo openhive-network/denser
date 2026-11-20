@@ -9,7 +9,7 @@ import { getTranslation } from '@/blog/i18n/server';
  */
 export async function getPageNotFoundMetadata(): Promise<Metadata> {
   const { t } = await getTranslation('common_blog');
-  // eslint-disable-next-line no-restricted-syntax -- the title's "Hive Blog" wordmark affix
+  // eslint-disable-next-line @hive/i18n/no-joined-translation -- the title's "Hive Blog" wordmark affix
   const title = `${t('page_titles.page_not_found')} - Hive Blog`;
   return { title: { absolute: title, template: title } };
 }

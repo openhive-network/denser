@@ -40,6 +40,7 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
           <TooltipContent data-testid="post-card-responses">
             <p>
               {responsesText}
+              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
               {t('cards.post_card.click_to_respond')}
             </p>
           </TooltipContent>

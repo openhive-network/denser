@@ -1,0 +1,5 @@
+{
+  "name": "@hive/eslint-plugin-i18n",
+  "main": "index.js",
+  "version": "1.0.0"
+}

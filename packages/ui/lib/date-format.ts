@@ -46,7 +46,7 @@ const getFormat = (lang: string, name: DateTimeFormatName, zone: DateTimeZone): 
       ...DATE_TIME_FORMATS[name],
       ...(zone === 'UTC' ? { timeZone: 'UTC' } : {})
     };
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     cache = createLocaleFormatCache((locale) => new Intl.DateTimeFormat(locale, options));
     caches.set(key, cache);
   }

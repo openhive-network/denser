@@ -65,9 +65,9 @@ type RelativeFormat = Pick<Intl.RelativeTimeFormat, 'format' | 'resolvedOptions'
 const SHORT_STYLE_UNITS: Record<string, readonly Intl.RelativeTimeFormatUnit[]> = { pl: ['hour'] };
 
 const createNarrowFormat = (lang: string): RelativeFormat => {
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   const narrow = new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'always' });
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   const short = new Intl.RelativeTimeFormat(lang, { style: 'short', numeric: 'always' });
   if (!hasDirectionWords(narrow)) return short;
 
@@ -80,14 +80,14 @@ const createNarrowFormat = (lang: string): RelativeFormat => {
 };
 
 const relativeFormats = {
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   long: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })),
   narrow: createLocaleFormatCache(createNarrowFormat),
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   numeric: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'always' }))
 };
 const titleFormats = createLocaleFormatCache(
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   (lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS)
 );
 

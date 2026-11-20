@@ -37,7 +37,7 @@ export function formatAsset(
   const absolute = negative ? -satoshis : satoshis;
   const scale = BigInt(10) ** BigInt(asset.precision);
 
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   const parts = new Intl.NumberFormat(locale, { minimumFractionDigits: 1 }).formatToParts(absolute / scale);
   const decimalIndex = parts.findIndex((part) => part.type === 'decimal');
   const integer = parts

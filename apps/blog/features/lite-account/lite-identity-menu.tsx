@@ -165,6 +165,7 @@ export default function LiteIdentityMenu() {
               <Link href={`/@${did}/notifications`} className="flex w-full items-center" data-testid="lite-identity-notifications">
                 <Icons.clock className="mr-2" />
                 <span className="w-full">
+                  {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                   {t('navigation.user_menu.notifications')}
                   {unread > 0 ? ` (${unread})` : null}
                 </span>

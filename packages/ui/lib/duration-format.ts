@@ -22,7 +22,7 @@ const ACCUSATIVE_UNIT_NAMES: Readonly<Record<string, Readonly<Record<string, str
 
 const unitFormats = new Map<TimeUnit, LocaleFormatCache<Intl.NumberFormat>>();
 const unitListFormats = createLocaleFormatCache(
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   (lang) => new Intl.ListFormat(lang, { type: 'unit', style: 'long' })
 );
 
@@ -30,7 +30,7 @@ const formatUnit = (count: number, unit: TimeUnit, lang: string, grammaticalCase
   let cache = unitFormats.get(unit);
   if (!cache) {
     cache = createLocaleFormatCache(
-      // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+      // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
       (locale) => new Intl.NumberFormat(locale, { style: 'unit', unit, unitDisplay: 'long' })
     );
     unitFormats.set(unit, cache);

@@ -102,6 +102,7 @@ const SignInFormShell: FC<SignInFormShellProps> = ({ t }) => {
               </span>
             </div>
             <p className="text-muted-foreground text-xs">
+              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
               {t('session_time.locks_after_sentence', { duration })} {t('session_time.activity')}
             </p>
           </div>

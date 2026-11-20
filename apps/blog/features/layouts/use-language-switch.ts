@@ -5,6 +5,7 @@ import { useLocale } from '@ui/components/locale-context';
 import { setLanguage } from '../../utils/language';
 
 export const LANGUAGES = [
+  // eslint-disable-next-line @hive/i18n/no-untranslated-text -- the language's own name, like the flags of the others
   { locale: 'ar', label: 'عر' },
   { locale: 'en', label: '🇬🇧' },
   { locale: 'es', label: '🇪🇸' },

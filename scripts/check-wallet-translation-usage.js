@@ -16,6 +16,8 @@ validateTranslationUsage({
   name: 'Wallet',
   rootDir: WALLET_DIR,
   sourceDirs: ['app', 'components', 'feature', 'lib', 'pages'],
-  referenceFiles: [path.join(WALLET_DIR, 'locales/en/common_wallet.json')],
+  renderers: [
+    { name: 'wallet', namespaces: { common_wallet: path.join(WALLET_DIR, 'locales/en/common_wallet.json') } }
+  ],
   fixHint: 'Add missing keys to apps/wallet/locales/en/common_wallet.json'
 });
