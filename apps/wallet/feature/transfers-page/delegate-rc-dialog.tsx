@@ -19,7 +19,7 @@ import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
 import { findInsufficientDelegatableRc, findRcDelegationMinimum } from '@transaction/lib/not-enough-rc';
 import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
-import { toDecimalInput, withDecimalPoint } from '@/wallet/lib/decimal-input';
+import { withDecimalPoint } from '@/wallet/lib/decimal-input';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import { Autocompleter } from '@/wallet/components/autocompleter';
@@ -35,7 +35,7 @@ import {
   rcForPercent,
   rcPercentOf
 } from './lib/rc-amount';
-import { formatRcMinimum, formatRcSummary } from './lib/rc-display';
+import { formatRcMinimum, formatRcSummary, toRcInputText } from './lib/rc-display';
 
 const logger = getLogger('app');
 
@@ -223,7 +223,7 @@ const DelegateRCDialog = ({
                 id="amount"
                 aria-invalid={isBelowMinimum || isAmountMisread}
                 aria-describedby={amountDescribedBy}
-                value={form.misreadAmount ?? toDecimalInput(form.amount, locale)}
+                value={form.misreadAmount ?? toRcInputText(form.amount, locale)}
                 onChange={(e) => onAmountInput(e.target.value)}
               />
               {isAmountMisread ? (
