@@ -3,13 +3,16 @@
 import { useId, useState } from 'react';
 import { Input } from '@ui/components/input';
 import { useLocale } from '@ui/components/locale-context';
-import { withDecimalPoint } from '@/wallet/lib/decimal-input';
+import { toDecimalInput, withDecimalPoint } from '@/wallet/lib/decimal-input';
 import { useTranslation } from '@/wallet/i18n/client';
 
 const TYPED_AMOUNT_PATTERN = /^\d*\.?\d*$/;
 
+const PLACEHOLDER_AMOUNT = '0.0';
+
 /**
- * One numeric field of the market order form. Its accessible name joins the form heading
+ * One numeric field of the market order form, holding `value` in machine format ("1.5") and showing
+ * it as the locale reads it back (es "1,5"). Its accessible name joins the form heading
  * (`headingId`, the order side), the visible label and the unit, e.g. "Buy HIVE Price HBD/HIVE".
  */
 export default function OrderFormField({
@@ -67,8 +70,8 @@ export default function OrderFormField({
             aria-invalid={describedBy ? true : undefined}
             aria-describedby={describedBy}
             className="h-8 rounded-none text-end focus-visible:ring-0"
-            placeholder="0.0"
-            value={misread ?? value}
+            placeholder={toDecimalInput(PLACEHOLDER_AMOUNT, locale)}
+            value={misread ?? toDecimalInput(value, locale)}
             type="text"
             inputMode="decimal"
             data-testid={`${testId}-input`}

@@ -167,6 +167,54 @@ test.describe('Transfer dialog validation', () => {
     await expect(confirmation.locator('input').nth(2)).toHaveValue('1,500 HIVE');
   });
 
+  test.describe('in Spanish, where "." groups thousands', () => {
+    const SPANISH = { amountLabel: 'Cantidad', next: 'Siguiente' };
+    const openSpanishDialog = async (page: Page, baseURL: string | undefined) => {
+      await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'es', url: baseURL }]);
+      return openTransferDialog(page, { item: 'Transferir', dialogName: 'Transferir a cuenta' });
+    };
+    // The read-only amount, after its From and To rows.
+    const confirmedAmount = (page: Page) =>
+      page.getByRole('dialog', { name: 'Confirmar la transferencia a la cuenta' }).locator('input').nth(2);
+
+    test('WALLET-TX-VALIDATE-08 — "1.000" is refused as an amount, not read as 1, and no confirmation opens', async ({
+      page,
+      baseURL
+    }) => {
+      const dialog = await openSpanishDialog(page, baseURL);
+      await submit(dialog, KNOWN_ACCOUNT, '1.000', SPANISH);
+
+      await expectFieldError(
+        dialog.getByLabel(SPANISH.amountLabel, { exact: true }),
+        'La cantidad no es un número válido.'
+      );
+      await expect(confirmedAmount(page)).toBeHidden();
+    });
+
+    test('WALLET-TX-VALIDATE-09 — "1,5" is the decimal comma: the confirmation states 1,500 HIVE', async ({
+      page,
+      baseURL
+    }) => {
+      const dialog = await openSpanishDialog(page, baseURL);
+      await submit(dialog, KNOWN_ACCOUNT, '1,5', SPANISH);
+
+      await expect(confirmedAmount(page)).toHaveValue('1,500 HIVE');
+    });
+
+    test('WALLET-TX-VALIDATE-10 — the balance button fills the amount with a decimal comma and confirms it', async ({
+      page,
+      baseURL
+    }) => {
+      const dialog = await openSpanishDialog(page, baseURL);
+      await recipientInput(dialog).fill(KNOWN_ACCOUNT);
+      await dialog.getByRole('button', { name: /^Saldo:/ }).click();
+      await expect(dialog.getByLabel(SPANISH.amountLabel, { exact: true })).toHaveValue('1234,567');
+      await dialog.getByRole('button', { name: SPANISH.next }).click();
+
+      await expect(confirmedAmount(page)).toHaveValue('1234,567 HIVE');
+    });
+  });
+
   test('WALLET-TX-VALIDATE-04 — From, Amount and Memo are labelled, and Tab moves from Amount to its currency', async ({
     page
   }) => {

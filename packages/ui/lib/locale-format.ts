@@ -136,6 +136,15 @@ export const getDecimalSeparator = (lang: string): string =>
     .formatToParts(1.1)
     .find((part) => part.type === 'decimal')?.value ?? '.';
 
+// A million: es and it leave a four-digit number ungrouped ("1000").
+const GROUPED_NUMBER = 1_000_000;
+
+/** The separator `lang` groups thousands with: "," in en, "." in es, a space in pl; "" where it groups none. */
+export const getGroupSeparator = (lang: string): string =>
+  getFormatOrEnglish(plainNumberFormats, lang)
+    .formatToParts(GROUPED_NUMBER)
+    .find((part) => part.type === 'group')?.value ?? '';
+
 /** A file size in kilobytes below a megabyte, else megabytes, one decimal: "12.3 kB", fr "12,3 ko". */
 export const formatFileSize = (bytes: number, lang: string): string => {
   const kilobytes = bytes / BYTES_PER_KILOBYTE;
