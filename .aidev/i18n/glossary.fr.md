@@ -52,6 +52,7 @@ No native speaker has reviewed the French strings yet, so every term is
 | this session (key badge) | Cette session | unreviewed | |
 | recovery account | compte de récupération | unreviewed | |
 | unmute | ne plus masquer | unreviewed | Button "Ne plus masquer" (#1698). |
+| notification / notifications | notification / notifications | unreviewed | Same word as English: toast announcement label "Notification" (#1739). |
 
 ## Register
 

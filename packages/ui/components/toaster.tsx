@@ -10,12 +10,15 @@ import {
 } from '@ui/components/toast';
 import { useToast } from './hooks/use-toast';
 
-/** `label`: the notification region's accessible name; Radix replaces `{hotkey}` in it with the focus hotkey (F8). */
-export function Toaster({ label }: { label: string }) {
+/**
+ * `label`: the notification region's accessible name; Radix replaces `{hotkey}` in it with the focus hotkey (F8).
+ * `announcementLabel`: the word screen readers hear before each toast's text (Radix's default is English "Notification").
+ */
+export function Toaster({ label, announcementLabel }: { label: string; announcementLabel: string }) {
   const { toasts } = useToast();
 
   return (
-    <ToastProvider>
+    <ToastProvider label={announcementLabel}>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props} className="w-full">

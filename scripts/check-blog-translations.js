@@ -84,6 +84,7 @@ const POLICY = {
       'global.time.minutes_count_many',
       'global.time.minutes_count_other',
       'global.notifications_region',
+      'global.toast_announcement',
       'navigation.profile_navbar.social',
       'navigation.profile_navbar.notifications',
       'navigation.user_menu.notifications',

@@ -42,6 +42,7 @@
     },
     "profile_picture": "Zdjęcie profilowe",
     "notifications_region": "Powiadomienia ({hotkey})",
+    "toast_announcement": "Powiadomienie",
     "profile_picture_of": "Zdjęcie profilowe {{username}}",
     "loading_more": "Wczytywanie...",
     "no_data_available": "Brak danych",

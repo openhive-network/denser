@@ -66,6 +66,7 @@ const POLICY = {
       // French uses the same words
       'global.time.minutes',
       'global.notifications_region',
+      'global.toast_announcement',
       'market_page.total',
       'market_page.date',
       'market_page.type',

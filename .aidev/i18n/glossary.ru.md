@@ -51,6 +51,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | this session (key badge) | Эта сессия | unreviewed | |
 | recovery account | аккаунт восстановления | unreviewed | |
 | unmute | снять заглушение | unreviewed | Buttons "Заглушить" / "Снять заглушение" (#1698). |
+| notification / notifications | уведомление / уведомления | unreviewed | Toast announcement label "Уведомление", region "Уведомления ({hotkey})" (#1739). |
 
 ## Register
 

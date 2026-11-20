@@ -26,6 +26,7 @@
     "close": "Chiudi",
     "profile_picture": "Immagine del profilo",
     "notifications_region": "Notifiche ({hotkey})",
+    "toast_announcement": "Notifica",
     "offline_notice": "Sei offline. Il portafoglio si aggiornerà quando la connessione tornerà disponibile.",
     "select_placeholder": "Seleziona...",
     "unexpected_error": "Si è verificato un errore imprevisto. Riprova.",

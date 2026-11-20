@@ -46,6 +46,7 @@
     },
     "profile_picture": "صورة الملف الشخصي",
     "notifications_region": "الإشعارات ({hotkey})",
+    "toast_announcement": "إشعار",
     "profile_picture_of": "صورة الملف الشخصي لـ {{username}}",
     "loading_more": "جارٍ التحميل...",
     "no_data_available": "لا توجد بيانات",

@@ -6,8 +6,9 @@ import { rejectBroadcasts } from '../support/rejectBroadcasts';
 /**
  * A broadcast the node rejects because the transaction expired before the signer returned it
  * (`transaction_expiration_exception`, e.g. a Peak Vault approval given too late) says nothing was
- * sent and to try again, in the UI language, with none of wax's error text. Reuses MUTE-01's
- * recording (`socialMute`) and flow, like AUTH-ERR-01.
+ * sent and to try again, in the UI language, with none of wax's error text; screen readers hear the
+ * toast announced in that language too. Reuses MUTE-01's recording (`socialMute`) and flow, like
+ * AUTH-ERR-01.
  */
 
 /** hived's rejection of a transaction broadcast after its expiration, trimmed of its stack. */
@@ -20,11 +21,13 @@ const TRANSACTION_EXPIRED_ERROR = {
 const MESSAGES = [
   {
     locale: 'en',
+    announcement: 'Notification',
     message:
       'Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within 10 minutes.'
   },
   {
     locale: 'pl',
+    announcement: 'Powiadomienie',
     message:
       'Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu 10 minut.'
   }
@@ -35,7 +38,7 @@ test.use({
   authenticatedUser: {}
 });
 
-for (const { locale, message } of MESSAGES) {
+for (const { locale, announcement, message } of MESSAGES) {
   test(`TX-EXPIRED-01-${locale} — a transaction that expired before approval reads as nothing sent`, async ({
     page,
     baseURL
@@ -46,6 +49,10 @@ for (const { locale, message } of MESSAGES) {
 
     await new ProfilePage(page).muteButton.click();
 
+    // Radix's live region announces the toast with the provider's label in front, for 1 s only
+    await expect(page.locator('[role="status"][aria-live]').filter({ hasText: message })).toHaveText(
+      new RegExp(`^${announcement} `)
+    );
     await expect(page.getByTestId('transaction-expired-message')).toHaveText(message);
     expect(broadcasts.count).toBeGreaterThan(0);
     await expect(page.getByText(/Wax\w*Error|transaction expiration exception/)).toHaveCount(0);

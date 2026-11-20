@@ -54,7 +54,10 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
         <ModalContainer />
-        <Toaster label={t('global.notifications_region')} />
+        <Toaster
+          label={t('global.notifications_region')}
+          announcementLabel={t('global.toast_announcement')}
+        />
         <BroadcastSettlementToasts />
         <SocialSyncListener />
       </QueryClientProvider>

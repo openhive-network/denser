@@ -26,6 +26,7 @@
     "close": "Zamknij",
     "profile_picture": "Zdjęcie profilowe",
     "notifications_region": "Powiadomienia ({hotkey})",
+    "toast_announcement": "Powiadomienie",
     "offline_notice": "Jesteś offline. Portfel odświeży się po przywróceniu połączenia.",
     "select_placeholder": "Wybierz...",
     "unexpected_error": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.",

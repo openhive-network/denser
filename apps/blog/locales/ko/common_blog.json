@@ -36,6 +36,7 @@
     },
     "profile_picture": "프로필 사진",
     "notifications_region": "알림 ({hotkey})",
+    "toast_announcement": "알림",
     "profile_picture_of": "{{username}}님의 프로필 사진",
     "loading_more": "불러오는 중...",
     "no_data_available": "데이터 없음",

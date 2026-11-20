@@ -26,6 +26,7 @@
     "close": "Закрыть",
     "profile_picture": "Фото профиля",
     "notifications_region": "Уведомления ({hotkey})",
+    "toast_announcement": "Уведомление",
     "offline_notice": "Нет подключения к сети. Кошелёк обновится, когда соединение восстановится.",
     "select_placeholder": "Выберите...",
     "unexpected_error": "Произошла непредвиденная ошибка. Попробуйте ещё раз.",
