@@ -237,6 +237,7 @@ export default function PostForm({
                     </div>
                   </FormControl>
                   <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
+                    {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                     {t("submit_page.insert_images_by_dragging")} {t("submit_page.selecting_them")}
                     <TooltipProvider>
                       <Tooltip>

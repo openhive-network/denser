@@ -38,6 +38,7 @@ const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
         </Select>
       </div>
       <p className="text-xs text-muted-foreground" data-testid="session-time-caption" data-seconds={value}>
+        {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
         {t('session_time.locks_after_sentence', { duration: formatSessionTime(t, value) })} {t('session_time.activity')}
       </p>
     </div>

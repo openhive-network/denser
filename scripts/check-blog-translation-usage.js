@@ -18,6 +18,8 @@ validateTranslationUsage({
   name: 'Blog',
   rootDir: BLOG_DIR,
   sourceDirs: ['app', 'components', 'features', 'lib', 'pages'],
-  referenceFiles: [path.join(BLOG_DIR, 'locales/en/common_blog.json')],
+  renderers: [
+    { name: 'blog', namespaces: { common_blog: path.join(BLOG_DIR, 'locales/en/common_blog.json') } }
+  ],
   fixHint: 'Add missing keys to apps/blog/locales/en/common_blog.json'
 });

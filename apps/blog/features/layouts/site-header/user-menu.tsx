@@ -118,7 +118,7 @@ const UserMenu = ({
                     <LoginMethodIcon loginType={user.loginType} />
                     <div className="flex flex-col text-sm font-semibold">
                       <span>Hive</span>
-                      {/* eslint-disable-next-line no-restricted-syntax -- the "Hive Blog" wordmark */}
+                      {/* eslint-disable-next-line @hive/i18n/no-untranslated-text -- the "Hive Blog" wordmark */}
                       <span className="text-destructive">Blog</span>
                     </div>
                   </div>
@@ -150,6 +150,7 @@ const UserMenu = ({
               <DropdownMenuItem className="cursor-pointer">
                 <Icons.clock className="mr-2" />
                 <span className="w-full">
+                  {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                   {t('navigation.user_menu.notifications')}
                   {notifications ? `(${notifications})` : null}
                 </span>

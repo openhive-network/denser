@@ -12,7 +12,7 @@ interface ModeInputProps {
   className?: string;
   searchPage?: boolean;
   aiAvailable: boolean;
-  /** The app's translation function; the search box texts are under `search_mode` in its default namespace. */
+  /** The blog's t: only the blog renders the search box, whose texts are common_blog's `search_mode`. */
   t: TFunction;
 }
 
@@ -99,8 +99,8 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
             <input
               ref={topicInputRef}
               type="text"
-              placeholder={t('search_mode.placeholder.topic')}
-              aria-label={t('search_mode.input_label.topic')}
+              placeholder={t('search_mode.placeholder.topic', { ns: 'common_blog' })}
+              aria-label={t('search_mode.input_label.topic', { ns: 'common_blog' })}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               className="z-10 block h-8 w-full bg-transparent p-2 pl-0 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
@@ -113,7 +113,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
           onClick={onSearchClick}
           disabled={!aiAvailable && mode === 'ai'}
           className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground ring-offset-background transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label={t('search_mode.search')}
+          aria-label={t('search_mode.search', { ns: 'common_blog' })}
         >
           <Search className="h-4 w-4" aria-hidden="true" />
         </button>

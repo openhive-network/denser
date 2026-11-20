@@ -34,14 +34,14 @@ function SearchSortSelect({
   };
   return (
     <Select value={sortQuery ?? 'relevance'} onValueChange={onValueChange}>
-      <Label>{t('search_mode.sort_by')}</Label>
+      <Label>{t('search_mode.sort_by', { ns: 'common_blog' })}</Label>
       <SelectTrigger className="w-[180px]" data-testid="search-sort-by-dropdown-list">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="created">{t('select_sort.search_sorter.newest')}</SelectItem>
-          <SelectItem value="relevance">{t('select_sort.search_sorter.relevance')}</SelectItem>
+          <SelectItem value="created">{t('select_sort.search_sorter.newest', { ns: 'common_blog' })}</SelectItem>
+          <SelectItem value="relevance">{t('select_sort.search_sorter.relevance', { ns: 'common_blog' })}</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

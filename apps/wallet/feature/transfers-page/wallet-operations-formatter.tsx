@@ -70,8 +70,12 @@ export function createWalletOperationsFormatter(
   const renderers: OperationRenderers = {
     claim_reward_balance_operation: (op) => (
       <span>
-        {t('profile.claim_rewards')}
-        {formatList([formatAsset(op.reward_hbd), formatAsset(op.reward_hive), formatHivePower(op.reward_vests)], locale)}
+        {t('profile.claim_rewards', {
+          rewards: formatList(
+            [formatAsset(op.reward_hbd), formatAsset(op.reward_hive), formatHivePower(op.reward_vests)],
+            locale
+          )
+        })}
       </span>
     ),
     transfer_from_savings_operation: (op) => (

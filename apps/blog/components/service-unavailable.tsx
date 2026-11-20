@@ -4,10 +4,15 @@ import { FC, ReactNode } from 'react';
 import { Icons } from '@ui/components/icons';
 import { AlertTriangle, Activity, Home, RefreshCw } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
+import { SERVICE_UNAVAILABLE_ENGLISH, type ServiceUnavailableKey } from '@/blog/lib/service-unavailable-english';
 
-/** `children`: extra actions (e.g. a retry button) shown before the navigation links. */
+/**
+ * The 503 page. `children`: extra actions (e.g. a retry button) shown before the navigation links.
+ * Its text falls back to English when the locale file does not load.
+ */
 const ServiceUnavailable: FC<{ children?: ReactNode }> = ({ children }) => {
-  const { t } = useTranslation('common_blog');
+  const { t: translate } = useTranslation('common_blog');
+  const t = (key: ServiceUnavailableKey) => translate(key, { defaultValue: SERVICE_UNAVAILABLE_ENGLISH[key] });
   return (
     <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 py-20 text-center">
       <div className="mb-6 flex items-end gap-2 relative">

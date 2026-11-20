@@ -1,12 +1,17 @@
 /**
  * Translation usage validator, shared by the blog, the wallet, packages/smart-signer and
  * packages/ui (scripts/check-*-translation-usage.js): every literal key passed to t('key') or
- * <Trans i18nKey="key"> in the scanned sources must exist in one of the English reference files
- * the code can resolve it in. With --unused it also lists reference keys no source names.
+ * <Trans i18nKey="key"> in the scanned sources must resolve in every app that renders them. Each
+ * renderer lists the English files of the namespaces the code's t() can resolve keys in there (its
+ * own, and the namespace i18next falls back to); a shared package has one renderer per app, so a
+ * blog-only key used by a component the wallet renders fails. A call naming its namespace with a
+ * literal (t('key', { ns: 'common_blog' }), <Trans ns="common_blog">) is checked only in the
+ * renderers that load that namespace. With --unused it also lists reference keys no source names.
  *
  * A key with plural forms (`key_one`, `key_few`, `key_other`, ...) must be called with a `count`
  * option, which picks the form: t('key', { count }) or <Trans i18nKey="key" count={n}>. A call whose
- * options are not an object literal (t('key', options)) cannot be checked and passes.
+ * options are not an object literal (t('key', options)) cannot be checked and passes; in an object
+ * literal only a `count` property counts, not a value read from one ({ value: item.count }).
  *
  * Keys built at run time (t(`a.${b}`), t(prefix + 'x')) cannot be checked and are skipped.
  * Unit test files are not scanned: their t() calls name keys of their own fixtures.
@@ -19,13 +24,25 @@ const SOURCE_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js'];
 const TEST_FILE = /\.test\.[jt]sx?$/;
 const PLURAL_OTHER_SUFFIX = '_other';
 const PLURAL_SUFFIX = /_(zero|one|two|few|many|other)$/;
-const COUNT_OPTION = /\bcount\b/;
+// A `count` property of an object literal: { count }, { count: n }, { ...rest, 'count': n }.
+const COUNT_PROPERTY = /[{,]\s*(['"]?)count\1\s*[:,}]/;
+// The count={n} attribute of a <Trans>.
+const COUNT_ATTRIBUTE = /\scount\s*=/;
+// A namespace named by a literal: { ns: 'common_blog' } in t()'s options, ns="common_blog" on a <Trans>.
+const NS_OPTION = /[{,]\s*ns\s*:\s*(['"])([^'"\n]+)\1/;
+const NS_ATTRIBUTE = /\sns\s*=\s*\{?\s*(['"])([^'"\n]+)\1/;
 
 // t('key' and <Trans ... i18nKey="key", with where the call's arguments or the tag's attributes start.
-const PLURAL_CALL_PATTERNS = [/\bt\(\s*(['"`])([^'"`\n]+?)\1/g, /<Trans\b[^>]*?i18nKey\s*=\s*(['"`])([^'"`\n]+?)\1/g];
+const PLURAL_CALL_PATTERNS = [
+  /\bt\(\s*(['"`])([^'"`\n]+?)\1/g,
+  /<Trans\b[^>]*?i18nKey\s*=\s*(['"`])([^'"`\n]+?)\1/g
+];
 
-// Matches: t('key'), t("key"), t(`key`), <Trans i18nKey="key">
-const TRANSLATION_PATTERNS = [/\bt\(\s*['"`]([^'"`\n]+?)['"`]\s*(?:,|\))/g, /i18nKey\s*=\s*['"`]([^'"`\n]+?)['"`]/g];
+// Matches: t('key'), t("key"), t(`key`), <Trans i18nKey="key">; the second group is the key.
+const TRANSLATION_PATTERNS = [
+  /\bt\(\s*(['"`])([^'"`\n]+?)\1\s*(?=,|\))/g,
+  /i18nKey\s*=\s*(['"`])([^'"`\n]+?)\1/g
+];
 
 /**
  * The dotted keys of a locale object. i18next resolves t('base', { count }) to the plural forms
@@ -51,24 +68,37 @@ function collectKeys(messages) {
 }
 
 /**
+ * The literal translation keys a source text names, each with its 1-based line and the namespace
+ * the call names with a literal, if any.
+ * @param {string} content
+ * @returns {{ key: string, line: number, ns: string | undefined }[]}
+ */
+function extractKeyUsages(content) {
+  const usages = [];
+  TRANSLATION_PATTERNS.forEach((pattern, index) => {
+    pattern.lastIndex = 0;
+    let match;
+    while ((match = pattern.exec(content)) !== null) {
+      const key = match[2];
+      if (key.includes('${') || key.includes('{') || key.includes('+')) continue;
+      const line = content.slice(0, match.index).split('\n').length;
+      usages.push({ key, line, ns: namedNamespace(content, match, index === 1) });
+    }
+  });
+  return usages.sort((a, b) => a.line - b.line);
+}
+
+/**
  * The literal translation keys a source text names, each with the 1-based lines it is on.
  * @param {string} content
  * @returns {Map<string, number[]>}
  */
 function extractKeys(content) {
   const keys = new Map();
-  content.split('\n').forEach((line, index) => {
-    for (const pattern of TRANSLATION_PATTERNS) {
-      pattern.lastIndex = 0;
-      let match;
-      while ((match = pattern.exec(line)) !== null) {
-        const key = match[1];
-        if (key.includes('${') || key.includes('{') || key.includes('+')) continue;
-        if (!keys.has(key)) keys.set(key, []);
-        keys.get(key).push(index + 1);
-      }
-    }
-  });
+  for (const { key, line } of extractKeyUsages(content)) {
+    if (!keys.has(key)) keys.set(key, []);
+    keys.get(key).push(line);
+  }
   return keys;
 }
 
@@ -96,17 +126,44 @@ function closingIndex(content, start, close) {
 }
 
 /**
+ * The text of a call's arguments after the key, or of a <Trans>'s attributes.
+ * @param {string} rest the text after the key: `, { count })` or (for a <Trans>) ` count={n} />`
+ * @param {boolean} isTrans
+ * @returns {string}
+ */
+function callRest(rest, isTrans) {
+  if (isTrans) return rest.slice(0, closingIndex(rest, 0, '>'));
+  return rest.slice(0, closingIndex(rest, 0, ')')).replace(/^\s*,?\s*/, '');
+}
+
+/**
  * Whether the arguments of a t() call, or the attributes of a <Trans>, give a `count`: false only
- * when they certainly do not (no options, or an object literal without it).
+ * when they certainly do not (no options, or an object literal without a `count` property).
  * @param {string} rest the text after the key: `, { count })` or ` count={n} />`
  * @param {boolean} isTrans
  * @returns {boolean}
  */
 function givesCount(rest, isTrans) {
-  if (isTrans) return COUNT_OPTION.test(rest.slice(0, closingIndex(rest, 0, '>')));
-  const args = rest.slice(0, closingIndex(rest, 0, ')')).replace(/^\s*,?\s*/, '');
+  const args = callRest(rest, isTrans);
+  if (isTrans) return COUNT_ATTRIBUTE.test(args) || COUNT_PROPERTY.test(args);
   if (args === '') return false;
-  return !args.startsWith('{') || COUNT_OPTION.test(args);
+  return !args.startsWith('{') || COUNT_PROPERTY.test(args);
+}
+
+/**
+ * The namespace a t() call or <Trans> names with a literal, after the key `match` found.
+ * @param {string} content
+ * @param {RegExpExecArray} match
+ * @param {boolean} isTrans
+ * @returns {string | undefined}
+ */
+function namedNamespace(content, match, isTrans) {
+  if (isTrans) {
+    const tagStart = content.lastIndexOf('<', match.index);
+    const attributes = callRest(content.slice(tagStart + 1), true);
+    return attributes.match(NS_ATTRIBUTE)?.[2];
+  }
+  return callRest(content.slice(match.index + match[0].length), false).match(NS_OPTION)?.[2];
 }
 
 /**
@@ -135,17 +192,38 @@ function extractPluralKeysWithoutCount(content, pluralBases) {
   return found;
 }
 
+/** Every reference key of the renderers. */
+const allKeys = (renderers) =>
+  new Set(renderers.flatMap((renderer) => [...renderer.namespaces.values()].flatMap((keys) => [...keys])));
+
 /**
- * Checks the keys `sources` name against `validKeys`.
- * @param {{ file: string, content: string }[]} sources
- * @param {Set<string>} validKeys
- * @returns {{ missing: Map<string, { file: string, lines: number[] }[]>, withoutCount: Map<string, { file: string, lines: number[] }[]>, used: Set<string>, usages: number }}
+ * The renderers a usage must resolve in: those loading the namespace it names, else all of them.
+ * @param {{ ns: string | undefined }} usage
+ * @param {{ name: string, namespaces: Map<string, Set<string>> }[]} renderers
  */
-function checkUsage(sources, validKeys) {
+const renderersFor = (usage, renderers) =>
+  usage.ns === undefined ? renderers : renderers.filter((renderer) => renderer.namespaces.has(usage.ns));
+
+/**
+ * Whether a renderer resolves `key`: i18next looks in the named namespace and falls back to the
+ * app's own, so a key of any of its namespaces does.
+ */
+const resolves = (renderer, key) => [...renderer.namespaces.values()].some((keys) => keys.has(key));
+
+/**
+ * Checks the keys `sources` name against the reference keys of each renderer.
+ * @param {{ file: string, content: string }[]} sources
+ * @param {{ name: string, namespaces: Map<string, Set<string>> }[]} renderers each app that renders
+ *   the sources, with the keys of each namespace its t() can resolve them in
+ * @returns {{ missing: Map<string, { file: string, lines: number[], renderers: string[] }[]>, withoutCount: Map<string, { file: string, lines: number[] }[]>, used: Set<string>, usages: number }}
+ */
+function checkUsage(sources, renderers) {
   const missing = new Map();
   const withoutCount = new Map();
   const pluralBases = new Set(
-    [...validKeys].filter((key) => key.endsWith(PLURAL_OTHER_SUFFIX)).map((key) => key.slice(0, -PLURAL_OTHER_SUFFIX.length))
+    [...allKeys(renderers)]
+      .filter((key) => key.endsWith(PLURAL_OTHER_SUFFIX))
+      .map((key) => key.slice(0, -PLURAL_OTHER_SUFFIX.length))
   );
   const used = new Set();
   let usages = 0;
@@ -154,12 +232,23 @@ function checkUsage(sources, validKeys) {
       if (!withoutCount.has(key)) withoutCount.set(key, []);
       withoutCount.get(key).push({ file, lines });
     }
-    for (const [key, lines] of extractKeys(content)) {
-      usages += lines.length;
-      used.add(key);
-      if (validKeys.has(key)) continue;
+    const missingHere = new Map();
+    for (const usage of extractKeyUsages(content)) {
+      usages++;
+      used.add(usage.key);
+      const applicable = renderersFor(usage, renderers);
+      const lacking =
+        applicable.length === 0 ? renderers : applicable.filter((renderer) => !resolves(renderer, usage.key));
+      if (lacking.length === 0) continue;
+      const names = lacking.map((renderer) => renderer.name);
+      const id = `${usage.key}\0${names.join(',')}`;
+      if (!missingHere.has(id))
+        missingHere.set(id, { key: usage.key, location: { file, lines: [], renderers: names } });
+      missingHere.get(id).location.lines.push(usage.line);
+    }
+    for (const { key, location } of missingHere.values()) {
       if (!missing.has(key)) missing.set(key, []);
-      missing.get(key).push({ file, lines });
+      missing.get(key).push(location);
     }
   }
   return { missing, withoutCount, used, usages };
@@ -177,16 +266,19 @@ function findSourceFiles(dir) {
   });
 }
 
-function loadReferenceKeys(referenceFiles) {
-  const keys = new Set();
-  for (const file of referenceFiles) {
-    if (!fs.existsSync(file)) {
-      console.error(`Reference locale file not found: ${file}`);
-      process.exit(1);
-    }
-    collectKeys(JSON.parse(fs.readFileSync(file, 'utf8'))).forEach((key) => keys.add(key));
+function loadKeys(file) {
+  if (!fs.existsSync(file)) {
+    console.error(`Reference locale file not found: ${file}`);
+    process.exit(1);
   }
-  return keys;
+  return collectKeys(JSON.parse(fs.readFileSync(file, 'utf8')));
+}
+
+function loadRenderers(renderers) {
+  return renderers.map(({ name, namespaces }) => ({
+    name,
+    namespaces: new Map(Object.entries(namespaces).map(([ns, file]) => [ns, loadKeys(file)]))
+  }));
 }
 
 function reportUnused(validKeys, used) {
@@ -209,30 +301,39 @@ function reportUnused(validKeys, used) {
 
 /**
  * Runs the check for one code base and exits 1 when a used key is missing.
- * @param {{ name: string, rootDir: string, sourceDirs: string[], referenceFiles: string[], fixHint: string }} target
- *   sourceDirs are relative to rootDir; referenceFiles are the English locale files the code's
- *   t() can resolve keys in; fixHint says where a missing key belongs.
+ * @param {{ name: string, rootDir: string, sourceDirs: string[], renderers: { name: string, namespaces: Record<string, string> }[], fixHint: string }} target
+ *   sourceDirs are relative to rootDir; renderers are the apps that render the code, each with the
+ *   English locale file of every namespace its t() can resolve keys in there; fixHint says where a
+ *   missing key belongs.
  */
-function validateTranslationUsage({ name, rootDir, sourceDirs, referenceFiles, fixHint }) {
+function validateTranslationUsage({ name, rootDir, sourceDirs, renderers: rendererFiles, fixHint }) {
   const showUnused = process.argv.includes('--unused');
 
   console.log(`\n📋 Translation Usage Validator (${name})`);
-  console.log(`   Reference: ${referenceFiles.map((file) => path.relative(process.cwd(), file)).join(', ')}`);
+  for (const renderer of rendererFiles) {
+    const files = Object.values(renderer.namespaces).map((file) => path.relative(process.cwd(), file));
+    console.log(`   Reference (${renderer.name}): ${files.join(', ')}`);
+  }
   console.log(`   Scanning: ${sourceDirs.join(', ')}\n`);
 
-  const validKeys = loadReferenceKeys(referenceFiles);
+  const renderers = loadRenderers(rendererFiles);
+  const validKeys = allKeys(renderers);
   const sources = sourceDirs
     .flatMap((dir) => findSourceFiles(path.join(rootDir, dir)))
     .map((file) => ({ file: path.relative(rootDir, file), content: fs.readFileSync(file, 'utf8') }));
   console.log(`   Found ${validKeys.size} translation keys; scanning ${sources.length} source files...\n`);
 
-  const { missing, withoutCount, used, usages } = checkUsage(sources, validKeys);
+  const { missing, withoutCount, used, usages } = checkUsage(sources, renderers);
 
   if (missing.size > 0) {
-    console.log(`❌ Missing translation keys (${missing.size} keys not found in the reference):\n`);
+    console.log(
+      `❌ Missing translation keys (${missing.size} keys not found in the reference of an app that renders them):\n`
+    );
     for (const [key, locations] of [...missing.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
       console.log(`   "${key}"`);
-      for (const { file, lines } of locations) console.log(`      └─ ${file}:${lines.join(', ')}`);
+      for (const { file, lines, renderers: lacking } of locations) {
+        console.log(`      └─ ${file}:${lines.join(', ')} (missing in ${lacking.join(', ')})`);
+      }
     }
     console.log('');
   } else {
@@ -240,7 +341,9 @@ function validateTranslationUsage({ name, rootDir, sourceDirs, referenceFiles, f
   }
 
   if (withoutCount.size > 0) {
-    console.log(`❌ Plural keys called without a count (${withoutCount.size} keys): pass { count } to pick the form\n`);
+    console.log(
+      `❌ Plural keys called without a count (${withoutCount.size} keys): pass { count } to pick the form\n`
+    );
     for (const [key, locations] of [...withoutCount.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
       console.log(`   "${key}"`);
       for (const { file, lines } of locations) console.log(`      └─ ${file}:${lines.join(', ')}`);
@@ -262,4 +365,11 @@ function validateTranslationUsage({ name, rootDir, sourceDirs, referenceFiles, f
   console.log(`\n✅ Translation usage validation passed!\n`);
 }
 
-module.exports = { collectKeys, extractKeys, extractPluralKeysWithoutCount, checkUsage, validateTranslationUsage };
+module.exports = {
+  collectKeys,
+  extractKeys,
+  extractKeyUsages,
+  extractPluralKeysWithoutCount,
+  checkUsage,
+  validateTranslationUsage
+};

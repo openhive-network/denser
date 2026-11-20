@@ -13,7 +13,7 @@ const abbreviationFormat = (locale: string, maxDecimals: number) => {
   let cache = abbreviationFormats.get(maxDecimals);
   if (!cache) {
     cache = createLocaleFormatCache(
-      // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+      // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
       (lang) => new Intl.NumberFormat(lang, { maximumFractionDigits: maxDecimals, useGrouping: false })
     );
     abbreviationFormats.set(maxDecimals, cache);
@@ -24,7 +24,7 @@ const abbreviationFormat = (locale: string, maxDecimals: number) => {
 // `minimumFractionDigits: 1` makes the formatter print the locale's decimal separator after the
 // integer part, which `formatDecimal` takes and pairs with the exact fraction.
 const integerFormats = createLocaleFormatCache(
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   (lang) => new Intl.NumberFormat(lang, { minimumFractionDigits: 1 })
 );
 

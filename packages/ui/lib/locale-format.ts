@@ -1,7 +1,7 @@
 /**
  * Display formatting in the active locale: every number, amount, date, relative time, duration and
  * list the apps show goes through this module, with the locale the page renders in
- * (`useLocale().locale`, `i18n.language`). ESLint (`no-restricted-syntax` in
+ * (`useLocale().locale`, `i18n.language`). ESLint (`@hive/i18n/no-adhoc-format` in
  * @hive/eslint-config-custom) rejects `toFixed()` digits shown to the user, `toLocale*String()` and
  * Intl formatters built outside it. A NaiAsset formats with `formatAsset(asset, { locale })` of
  * ./asset-format, kept apart so this module loads without the asset constants.
@@ -36,15 +36,15 @@ export type AmountSymbol = 'HIVE' | 'HBD' | 'HP' | 'HIVE POWER' | 'VESTS';
 
 const listFormats = {
   conjunction: createLocaleFormatCache(
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     (lang) => new Intl.ListFormat(lang, { type: 'conjunction' })
   ),
   disjunction: createLocaleFormatCache(
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     (lang) => new Intl.ListFormat(lang, { type: 'disjunction' })
   ),
   unit: createLocaleFormatCache(
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     (lang) => new Intl.ListFormat(lang, { type: 'unit', style: 'long' })
   )
 };
@@ -61,7 +61,7 @@ const fixedFormat = (lang: string, style: 'percent' | 'dollars', decimals: numbe
         ? { style: 'percent' }
         : { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol' })
     };
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     cache = createLocaleFormatCache((locale) => new Intl.NumberFormat(locale, options));
     fixedFormats.set(key, cache);
   }
@@ -70,11 +70,11 @@ const fixedFormat = (lang: string, style: 'percent' | 'dollars', decimals: numbe
 
 const fileSizeFormats = {
   kilobyte: createLocaleFormatCache(
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     (lang) => new Intl.NumberFormat(lang, { style: 'unit', unit: 'kilobyte', maximumFractionDigits: 1 })
   ),
   megabyte: createLocaleFormatCache(
-    // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+    // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
     (lang) => new Intl.NumberFormat(lang, { style: 'unit', unit: 'megabyte', maximumFractionDigits: 1 })
   )
 };
@@ -82,7 +82,7 @@ const fileSizeFormats = {
 const BYTES_PER_KILOBYTE = 1024;
 
 const plainNumberFormats = createLocaleFormatCache(
-  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the locale formatting module's own formatter
   (lang) => new Intl.NumberFormat(lang)
 );
 

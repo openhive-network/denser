@@ -1,5 +1,4 @@
 import Big from 'big.js';
-import { formatNumber } from '@ui/lib/locale-format';
 
 /** The Resource Credits section shows RC in billions: the delegate form uses the same unit. */
 const RC_PER_BILLION = new Big(1_000_000_000);
@@ -23,16 +22,8 @@ export const billionsToRawRc = (billions: Big): string => billions.times(RC_PER_
 export const formatRcInput = (billions: Big): string =>
   billions.toFixed(RC_INPUT_DECIMALS).replace(/\.?0+$/, '');
 
-/** Rounded for reading in `locale`, e.g. `1.45`, pl `1,45`. */
-export const formatRcSummary = (billions: Big, locale: string): string =>
-  formatNumber(billions, locale, RC_SUMMARY_DECIMALS);
-
-/**
- * A minimum rounded for reading, but up, so that typing the stated amount meets it: `1.604473654` is
- * `1.61`. In machine format, as the amount input takes it.
- */
-export const formatRcMinimum = (billions: Big): string =>
-  billions.round(RC_SUMMARY_DECIMALS, Big.roundUp).toFixed(RC_SUMMARY_DECIMALS);
+/** A minimum rounded up to the decimals shown, so typing the stated amount meets it: `1.604473654` is `1.61`. */
+export const roundRcMinimum = (billions: Big): Big => billions.round(RC_SUMMARY_DECIMALS, Big.roundUp);
 
 /** `percent` of `maxBillions`, rounded down to a whole RC so it never exceeds the maximum. */
 export const rcForPercent = (maxBillions: Big, percent: number): Big =>

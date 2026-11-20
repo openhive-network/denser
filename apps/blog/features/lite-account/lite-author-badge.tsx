@@ -17,6 +17,7 @@ export default function LiteAuthorBadge({ jsonMetadata }: { jsonMetadata: unknow
       title={t('lite_account.badge_tooltip')}
       data-testid="lite-author-badge"
     >
+      {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
       {t('lite_account.badge_prefix')} {attribution.attester}
     </Badge>
   );

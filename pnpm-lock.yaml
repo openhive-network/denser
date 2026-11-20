@@ -491,6 +491,9 @@ importers:
 
   packages/eslint-config-custom:
     dependencies:
+      '@hive/eslint-plugin-i18n':
+        specifier: workspace:*
+        version: link:../eslint-plugin-i18n
       '@hive/prettier-config-custom':
         specifier: workspace:*
         version: link:../prettier-config-custom
@@ -519,6 +522,8 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^7.0.1
         version: 7.0.1(eslint@8.57.1)
+
+  packages/eslint-plugin-i18n: {}
 
   packages/middleware:
     dependencies:

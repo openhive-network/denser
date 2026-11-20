@@ -31,6 +31,7 @@ const ModeSelect = ({
       <SelectTrigger
         className="w-fit rounded-full"
         aria-label={t('search_mode.select_label', {
+          ns: 'common_blog',
           mode: t(MODE_LABEL_KEYS[mode]),
           interpolation: { escapeValue: false }
         })}

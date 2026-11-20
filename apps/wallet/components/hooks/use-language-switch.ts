@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
 
 export const LANGUAGES = [
+  // eslint-disable-next-line @hive/i18n/no-untranslated-text -- the language's own name, like the flags of the others
   { locale: 'ar', label: 'عر' },
   { locale: 'en', label: '🇬🇧' },
   { locale: 'es', label: '🇪🇸' },

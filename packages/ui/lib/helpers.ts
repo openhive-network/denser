@@ -43,6 +43,6 @@ export function formatNaiAsset(asset: NaiAsset, overrideSymbol?: string): string
   const amount = Big(asset.amount).div(Big(10).pow(asset.precision));
   const naiSymbols = getNaiSymbols();
   const symbol = overrideSymbol || naiSymbols[asset.nai] || '';
-  // eslint-disable-next-line no-restricted-syntax -- the chain's own asset string, not display text
+  // eslint-disable-next-line @hive/i18n/no-adhoc-format -- the chain's own asset string, not display text
   return `${amount.toFixed(asset.precision)} ${symbol}`;
 }

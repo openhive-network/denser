@@ -1,70 +1,5 @@
+// Names every locale keeps as they are (.aidev/i18n/glossary.en.md, "Untranslated names").
 const UNTRANSLATED_NAMES = require('./untranslated-names');
-// esquery regexes cannot contain "/", so the patterns below use character classes instead.
-const NAMES_ONLY = `/^[^A-Za-z]*((${UNTRANSLATED_NAMES.join('|').replace(/\./g, '[.]')})[^A-Za-z]*)*$/i`;
-// A bare URL is an address, not text.
-const TEXT = `[value=/[A-Za-z]/]:not([value=${NAMES_ONLY}]):not([value=/^\\s*https?:[^\\s]*\\s*$/])`;
-// A dotted translation key handed on to a later t(), e.g. label: 'account_keys.this_session'.
-const STRING_TEXT = `Literal${TEXT}:not([value=/^[A-Za-z0-9_]+([.][A-Za-z0-9_-]+)+$/])`;
-// A template part is text when a word stands beside a space; key fragments like `login_form.title_${type}` have none.
-const TEMPLATE_TEXT = `TemplateLiteral[expressions.length>0] > TemplateElement[value.raw=/[A-Za-z][^\\s]*\\s|\\s[^\\s]*[A-Za-z]/]:not([value.raw=${NAMES_ONLY}])`;
-const TRANSLATE_MESSAGE = 'Translate user-facing text with t() instead of a string literal.';
-
-/** Selectors for the text an expression in `context` renders: a string, either branch of a ?: or ||, a template. */
-const textIn = (context) =>
-  [
-    `${context} > ${STRING_TEXT}`,
-    `${context} > :matches(ConditionalExpression, LogicalExpression) > ${STRING_TEXT}`,
-    `${context} > ${TEMPLATE_TEXT}`,
-    `${context} > TemplateLiteral[expressions.length=0] > TemplateElement${TEXT.replace(/value/g, 'value.raw')}`
-  ].map((selector) => ({ selector, message: TRANSLATE_MESSAGE }));
-
-const TRANSLATED_ATTRIBUTE = 'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/]';
-
-const JSX_TEXT_SELECTORS = [
-  { selector: `${TRANSLATED_ATTRIBUTE} > Literal${TEXT}`, message: TRANSLATE_MESSAGE },
-  ...textIn(`${TRANSLATED_ATTRIBUTE} > JSXExpressionContainer`),
-  { selector: `JSXText${TEXT}`, message: TRANSLATE_MESSAGE },
-  ...textIn(':matches(JSXElement, JSXFragment) > JSXExpressionContainer')
-];
-
-const TRANSLATION_SELECTORS = [
-  ...JSX_TEXT_SELECTORS,
-  // An object's title, description or label: a toast and its builders' results, a select option, page metadata.
-  ...textIn('Property[key.name=/^(title|description|label)$/]'),
-  ...textIn('CallExpression[callee.name=/^(toast|handleError)$/] Property[key.name="message"]'),
-  // A default label of a shared component (closeLabel = 'Close'): take the translated text as a prop instead.
-  ...textIn('AssignmentPattern[left.name=/^(label|text|title)$|(Label|Text|Title)$/]')
-];
-
-// Display formatting goes through @ui/lib/locale-format, which formats in the active locale.
-const FORMAT_MESSAGE =
-  'Format numbers, amounts and dates for display with @ui/lib/locale-format (formatNumber, formatAmount, formatDate, …) and the active locale.';
-const TO_FIXED = 'CallExpression[callee.property.name="toFixed"]';
-const RENDERED_CHILD = ':matches(JSXElement, JSXFragment) > JSXExpressionContainer';
-// A t() call, also as i18n.t().
-const TRANSLATE_CALL = ':matches(CallExpression[callee.name="t"], CallExpression[callee.property.name="t"])';
-const SENTENCE_MESSAGE =
-  'Do not join translated fragments into a sentence: put the whole sentence in one key with {{placeholders}}, use <Trans>, or formatList() from @ui/lib/locale-format.';
-
-const FORMAT_SELECTORS = [
-  // toFixed() whose digits are shown: rendered, put in a template or a concatenation, or handed to t().
-  `${RENDERED_CHILD} > ${TO_FIXED}`,
-  `${RENDERED_CHILD} > :matches(ConditionalExpression, LogicalExpression) > ${TO_FIXED}`,
-  `TemplateLiteral > ${TO_FIXED}`,
-  `BinaryExpression[operator="+"] > ${TO_FIXED}`,
-  `${TRANSLATE_CALL} > ObjectExpression > Property > ${TO_FIXED}`,
-  // The runtime's default locale, or whichever the caller happened to pass.
-  'CallExpression[callee.property.name=/^toLocale(Date|Time)?String$/]',
-  'NewExpression[callee.object.name="Intl"][callee.property.name=/Format$/]'
-].map((selector) => ({ selector, message: FORMAT_MESSAGE }));
-
-const SENTENCE_SELECTORS = [
-  `BinaryExpression[operator="+"] > ${TRANSLATE_CALL}`,
-  // A template that holds more than the translation, or words of its own; a title's site name affix
-  // (`${t('page_titles.market')} - Hive`) is neither.
-  `TemplateLiteral:matches([expressions.length>1], :has(> TemplateElement${TEXT.replace(/value/g, 'value.raw')})) > ${TRANSLATE_CALL}`,
-  `CallExpression[callee.property.name="join"] > MemberExpression.callee > ArrayExpression.object > ${TRANSLATE_CALL}`
-].map((selector) => ({ selector, message: SENTENCE_MESSAGE }));
 
 module.exports = {
   extends: ['prettier'],
@@ -76,7 +11,7 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', '@hive/i18n'],
   rules: {
     // Prevent raw localStorage usage - use storage-with-ttl utilities instead
     // Use setStorageItem/getStorageItem from @ui/lib/storage-with-ttl
@@ -111,8 +46,7 @@ module.exports = {
         paths: [
           {
             name: 'next/link',
-            message:
-              'Use { Link } from "@hive/ui" instead for prefetch={false} by default'
+            message: 'Use { Link } from "@hive/ui" instead for prefetch={false} by default'
           }
         ]
       }
@@ -123,15 +57,23 @@ module.exports = {
     'prefer-const': 'warn',
     // Discourage console.log in production code - use logger instead
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    // User-facing text must come from t() so every locale can translate it
-    'no-restricted-syntax': ['error', ...TRANSLATION_SELECTORS, ...FORMAT_SELECTORS, ...SENTENCE_SELECTORS]
+    // User-facing text must come from t() so every locale can translate it, display formatting from
+    // @ui/lib/locale-format, and a sentence from one key (@hive/eslint-plugin-i18n)
+    '@hive/i18n/no-untranslated-text': ['error', { untranslatedNames: UNTRANSLATED_NAMES }],
+    '@hive/i18n/no-adhoc-format': 'error',
+    '@hive/i18n/no-joined-translation': ['error', { untranslatedNames: UNTRANSLATED_NAMES }]
   },
   overrides: [
     {
       // Test data (post titles, option labels) is not shown to users.
       files: ['*.test.ts', '*.test.tsx', '*.test.js'],
       rules: {
-        'no-restricted-syntax': ['error', ...JSX_TEXT_SELECTORS]
+        '@hive/i18n/no-untranslated-text': [
+          'error',
+          { untranslatedNames: UNTRANSLATED_NAMES, jsxOnly: true }
+        ],
+        '@hive/i18n/no-adhoc-format': 'off',
+        '@hive/i18n/no-joined-translation': 'off'
       }
     },
     {

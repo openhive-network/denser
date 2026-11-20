@@ -147,7 +147,9 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
         <>
           <p className="font-medium">{t('lite_account.root_post.queue.ended_title')}</p>
           <p data-testid="lite-queue-ended">
+            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {t(`lite_account.root_post.errors.${endedKey(view)}`)}{' '}
+            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {t('lite_account.gateway.draft_kept')}
           </p>
         </>

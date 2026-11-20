@@ -3,6 +3,7 @@
   "main": "index.js",
   "version": "1.0.0",
   "dependencies": {
+    "@hive/eslint-plugin-i18n": "workspace:*",
     "@hive/prettier-config-custom": "workspace:*",
     "eslint": "^8.56.0",
     "eslint-config-next": "catalog:react-toolset",

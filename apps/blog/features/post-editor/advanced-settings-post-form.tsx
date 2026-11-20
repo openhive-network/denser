@@ -358,6 +358,7 @@ export function AdvancedSettingsPostForm({
               testIdPrefix="autor-rewards"
             />
             <span>
+              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
               {t('submit_page.advanced_settings_dialog.default')}
               {authorRewardsText(preferences.blog_rewards)}
             </span>

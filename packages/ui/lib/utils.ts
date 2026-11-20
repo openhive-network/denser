@@ -98,8 +98,8 @@ export const blockGap = (
   if (!last_block || last_block < 1) return 'forever';
   const secs = (head_block - last_block) * 3;
 
-  if (secs < 60) return t('witnesses_page.bock_gap.just_now');
-  if (secs < 120) return t('witnesses_page.bock_gap.recently');
+  if (secs < 60) return t('witnesses_page.bock_gap.just_now', { ns: 'common_wallet' });
+  if (secs < 120) return t('witnesses_page.bock_gap.recently', { ns: 'common_wallet' });
   const [count, unit] = blockGapCount(secs);
   return getUnitsAgoString(count, unit, lang);
 };

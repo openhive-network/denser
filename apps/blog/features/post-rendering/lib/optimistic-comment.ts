@@ -55,7 +55,7 @@ export function withOptimisticReply(
     promoted: '',
     replies: [],
     stats: { hide: false, gray: false, total_votes: 0, flag_weight: 0 },
-    // eslint-disable-next-line no-restricted-syntax -- entry data: Hive titles a reply "Re: <parent title>"
+    // eslint-disable-next-line @hive/i18n/no-untranslated-text -- entry data: Hive titles a reply "Re: <parent title>"
     title: `Re: ${parentPost?.title ?? 'No title'}`,
     updated: now,
     url: `/${parentPost?.category ?? ''}/@${username}/${tempPermlink}`,

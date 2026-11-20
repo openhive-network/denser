@@ -168,6 +168,7 @@ function WitnessListItem({
                 </Link>
                 {witnessOwner && (
                   <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
+                    {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                     {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
                   </span>
                 )}
@@ -210,6 +211,7 @@ function WitnessListItem({
               >
                 {disableUser ? (
                   <span className="truncate">
+                    {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
                     {t('witnesses_page.disabled')}
                     {blockGap(headBlock, data.last_confirmed_block_num, t, locale)}
                   </span>

@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-syntax -- Tailwind breakpoint names in a development-only overlay, not user text. */
+/* eslint-disable @hive/i18n/no-untranslated-text -- Tailwind breakpoint names in a development-only overlay, not user text. */
 export function TailwindIndicator() {
   if (process.env.NODE_ENV === 'production') return null;
 
