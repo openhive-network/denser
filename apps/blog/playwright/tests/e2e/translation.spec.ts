@@ -474,7 +474,7 @@ test.describe.skip('Translation tests', () => {
       'HBauth',
       'Witaj',
       'FAQ',
-      'Block Explorer',
+      'Eksplorator bloków',
       'Odzyskiwanie skradzionego konta',
       'Zmiana hasła konta',
       'Głosuj na świadków',
