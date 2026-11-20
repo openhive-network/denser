@@ -35,7 +35,11 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
         </ThemeProvider>
       </SignerProviderClient>
       <ModalContainer />
-      <Toaster label={t('global.notifications_region')} announcementLabel={t('global.toast_announcement')} />
+      <Toaster
+        label={t('global.notifications_region')}
+        announcementLabel={t('global.toast_announcement')}
+        closeLabel={t('global.close')}
+      />
       <BroadcastSettlementToasts />
       <OfflineNotice message={t('global.offline_notice')} />
       <ReactQueryDevtools initialIsOpen={false} />

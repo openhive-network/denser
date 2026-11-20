@@ -13,8 +13,17 @@ import { useToast } from './hooks/use-toast';
 /**
  * `label`: the notification region's accessible name; Radix replaces `{hotkey}` in it with the focus hotkey (F8).
  * `announcementLabel`: the word screen readers hear before each toast's text (Radix's default is English "Notification").
+ * `closeLabel`: the accessible name of each toast's icon-only close button.
  */
-export function Toaster({ label, announcementLabel }: { label: string; announcementLabel: string }) {
+export function Toaster({
+  label,
+  announcementLabel,
+  closeLabel
+}: {
+  label: string;
+  announcementLabel: string;
+  closeLabel: string;
+}) {
   const { toasts } = useToast();
 
   return (
@@ -27,7 +36,7 @@ export function Toaster({ label, announcementLabel }: { label: string; announcem
               {description && <ToastDescription className="w-full min-w-0">{description}</ToastDescription>}
             </div>
             {action}
-            <ToastClose />
+            <ToastClose aria-label={closeLabel} />
           </Toast>
         );
       })}
