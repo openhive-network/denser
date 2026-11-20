@@ -216,7 +216,7 @@ const NotificationActivities = ({
         <div className="flex flex-col items-center">
           <button
             disabled={markAllRead.isPending}
-            className="w-100 mb-4 font-bold"
+            className="mb-4 w-100 max-w-full font-bold"
             onClick={markAllRead.markAll}
             data-testid="notifications-mark-all-read"
           >
