@@ -178,7 +178,9 @@ test.describe('Lite account keys in Safe Storage (fixture-based, mocked gateway)
     await follow.button.click();
     await unlockWith(page, 'not the password');
     await expect(page.getByText('Safe Storage did not unlock', { exact: true })).toBeVisible({ timeout: 30_000 });
-    await expect(page.getByText('Invalid credentials', { exact: true })).toBeVisible();
+    // hb-auth's refusal ("Invalid credentials") in the page's language: smart-signer's auth_error.authentication_failed
+    await expect(page.getByText('Authentication failed.', { exact: true })).toBeVisible();
+    await expect(page.getByText('Invalid credentials', { exact: true })).toHaveCount(0);
     await expect(follow.button).toHaveText(follow.label);
     expect(gateway.relayed).toEqual([]);
 
