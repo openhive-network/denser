@@ -6,7 +6,7 @@ import { PasswordDialogModalPromise } from '@smart-signer/components/password-di
 import { PasswordFormMode, PasswordFormOptions, type RememberKey } from '@smart-signer/components/password-form';
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
-import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
+import { AuthFailureError, AuthStorageMissingError, isIgnorableError, toAuthFailure } from '@smart-signer/lib/auth-error';
 import {
   classifyUnlockRefusal,
   SafeStorageKeyNotAuthorizedError,
@@ -204,7 +204,7 @@ export class SignerHbauth extends Signer {
 
       logger.debug('authStatus: %o', authStatus);
       if (!authStatus.ok) {
-        throw new Error(`Unlocking key failed`);
+        throw new AuthFailureError('Unlocking key failed', 'auth_error.unlock_failed');
       }
     }
 
@@ -271,10 +271,8 @@ export class SignerHbauth extends Signer {
       case 'key-not-stored':
         logger.error('Safe storage no longer holds %s while unlocking its %s key', username, keyType);
         return new AuthStorageMissingError(username, keyType);
-      default: {
-        const { message } = parseAuthError(error);
-        return new Error(message, { cause: error });
-      }
+      default:
+        return toAuthFailure(error);
     }
   }
 
@@ -332,7 +330,7 @@ export class SignerHbauth extends Signer {
     operation?: OperationSummary
   ): Promise<string> {
     const auths = await authClient.getRegisteredUserByUsername(username);
-    if (!auths) throw new Error('User not found');
+    if (!auths) throw new AuthStorageMissingError(username, keyType);
 
     // If key is not registered in safe storage, ask user to enter it
     if (!auths.registeredKeyTypes.includes(keyType)) {
@@ -402,9 +400,7 @@ export class SignerHbauth extends Signer {
     } catch (error) {
       if (error instanceof SignedOutError) throw error;
       logger.error('Error in registerKey: %s', error instanceof Error ? error.message : String(error));
-      // Preserve the actual error message instead of generic "Invalid key"
-      const { message } = parseAuthError(error, 'Invalid key');
-      throw new Error(message, { cause: error });
+      throw toAuthFailure(error);
     }
     notifySafeStorageKeysChanged();
   }

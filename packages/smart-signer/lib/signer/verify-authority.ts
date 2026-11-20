@@ -1,6 +1,7 @@
 import { TTransactionPackType, ApiTransaction } from '@hiveio/wax';
 import { findChunkLoadError } from '@hive/ui/lib/chunk-load-error';
 import { getLogger } from '@hive/ui/lib/logging';
+import { AuthFailureError } from '@smart-signer/lib/auth-error';
 import { getChain } from '@transaction/lib/chain';
 import { isNodeNetworkFailure } from '@transaction/lib/transaction-inclusion';
 
@@ -55,8 +56,11 @@ export async function verifyAuthorityOrThrow(
     }
 
     if (/unknown key/i.test(msg)) {
-      throw new Error('Account not found on the blockchain');
+      throw new AuthFailureError('Account not found on the blockchain', 'auth_error.account_not_found');
     }
-    throw new Error(`The provided key does not have ${keyType} authority for this account`);
+    throw new AuthFailureError(
+      `The provided key does not have ${keyType} authority for this account`,
+      'auth_error.missing_authority'
+    );
   }
 }

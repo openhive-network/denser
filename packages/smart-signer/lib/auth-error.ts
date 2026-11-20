@@ -1,4 +1,5 @@
 import { getLogger } from '@ui/lib/logging';
+import { findInCauses } from '@smart-signer/lib/wrong-safe-storage-password';
 
 const logger = getLogger('app');
 
@@ -17,6 +18,27 @@ export class AuthStorageMissingError extends Error {
     this.username = username;
     this.keyType = keyType;
   }
+}
+
+/**
+ * A signing step refused by safe storage (hb-auth) or by the key's authority check. Its message stays
+ * English, for the log and the patterns matched on it; `messageKey`, the smart-signer translation key
+ * of a well-known failure, is what the error toast shows.
+ */
+export class AuthFailureError extends Error {
+  readonly messageKey?: string;
+
+  constructor(message: string, messageKey?: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = 'AuthFailureError';
+    this.messageKey = messageKey;
+  }
+}
+
+/** The smart-signer translation key of the AuthFailureError `error` is or was caused by, if it has one */
+export function findAuthFailureKey(error: unknown): string | undefined {
+  const found = findInCauses(error, (candidate) => candidate instanceof AuthFailureError);
+  return found instanceof AuthFailureError ? found.messageKey : undefined;
 }
 
 /**
@@ -215,6 +237,15 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
     originalError: error,
     isKnownError: false
   };
+}
+
+/**
+ * `error`, hb-auth's failure, as an AuthFailureError caused by it, with parseAuthError's message and
+ * the translation key of a well-known failure; an unknown one keeps hb-auth's own message and no key.
+ */
+export function toAuthFailure(error: unknown): AuthFailureError {
+  const { message, messageKey } = parseAuthError(error);
+  return new AuthFailureError(message, messageKey, { cause: error });
 }
 
 /**
