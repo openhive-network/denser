@@ -540,7 +540,7 @@
   },
   "communities": {
     "set_title_for_user": "Définir le titre pour @{{username}}",
-    "mute": "Muet",
+    "mute": "Masquer",
     "save": "Enregistrer",
     "unmute": "Ne plus masquer",
     "mute_post_comment": "Masquer la publication/le commentaire",

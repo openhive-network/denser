@@ -540,7 +540,7 @@
   },
   "communities": {
     "set_title_for_user": "Imposta il titolo per @{{username}}",
-    "mute": "Disattiva audio",
+    "mute": "Silenzia",
     "save": "Salva",
     "unmute": "Riattiva",
     "mute_post_comment": "Silenzia post/commento",
