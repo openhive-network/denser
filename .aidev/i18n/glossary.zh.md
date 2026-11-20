@@ -6,7 +6,9 @@ Applies to `apps/blog/locales/zh/common_blog.json`,
 use this file: `.aidev/i18n/README.md`.
 
 No native speaker has reviewed the Chinese strings yet, so every term is
-`unreviewed`: the rendering the locale files use most as of 2026-11-19.
+`unreviewed`: the rendering the locale files use most as of 2026-11-19. The
+`agreed` rows were decided for #1727 after comparing hive.blog, the Hive
+wallet, Ecency and PeakD; a native speaker may still refine them.
 
 ## Terms
 
@@ -14,18 +16,19 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 |---|---|---|---|
 | Safe Storage | 安全存储 | unreviewed | 34 of 37 strings. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "使用 Keychain". |
-| witness / witnesses | 见证人 | unreviewed | 34 of 37 strings. |
+| witness / witnesses | 见证人 | agreed (#1727) | Every string. |
 | voters | 投票者 | unreviewed | |
 | proposal / proposals | 提案 | unreviewed | |
 | Unfunded | 未资助 | unreviewed | "never funded" 从未获得资助. |
 | Up to … left | 最多剩余 <amount/> | unreviewed | |
 | refund (proposal) | 退款 | unreviewed | |
-| delegation / delegate | 代理 | unreviewed | 24 of 33 strings; 8 say 委托, including the wallet's navigation and page title. Needs review first: 代理 is also the witness-voting proxy (投票代理), so the two concepts share a word. |
+| delegation / delegate | 委托 | agreed (#1727) | "委托", "委托 RC", "委托给账户", "收到的委托"; delegator 委托人, delegatee 受托人. Never 代理, which names the witness-voting proxy. |
 | power up / power down | Power Up / Power Down | unreviewed | Kept in English in most strings; the wallet buttons say 增加 Hive Power / 降低 Hive Power. |
 | HIVE, HBD, HIVE POWER, HP | unchanged | unreviewed | Token symbols. |
-| payout / after payout | 支付 / 支付后 | unreviewed | 12 of 23 strings; the rest mix 赏金, 收益, 付款 and 奖励 (see drift). |
+| payout (amount earned) | 收益 | agreed (#1727) | Author, curation and beneficiary earnings: tabs "收益", "待结算收益：", "累计收益：", "作者收益：", "策展收益：", "最高可接受收益", "拒绝收益". Never 赏金, 支付 or 付款. |
+| payout (the moment) / after payout | 结算 / 结算后 | agreed (#1727) | "7天后结算", "结算后 +1 票（未计入）", "没有待结算的收益". 支付 stays for paying in general (proposal payments, fees, power-down installments), not for the post payout. |
 | rewards / claim rewards | 奖励 / 领取奖励 | unreviewed | 45 of 48 strings. |
-| curation rewards | 审查奖励 | unreviewed | 9 of 12 strings; 3 say 策展奖励. Needs review: 审查 reads as "inspection, censorship". |
+| curation rewards | 策展奖励 | agreed (#1727) | The established Steem/Ecency term; 点赞收益 is fine in explanatory text. Never 审查, which reads as "inspection, censorship". |
 | beneficiary | 受益人 | unreviewed | |
 | posting / active / owner / memo key | 发帖密钥 / 活动密钥 / Owner 密钥 / Memo 密钥 | unreviewed | Posting and Active are also kept in English in about 16 strings each; owner is 所有者密钥 in 9. |
 | Keys & Permissions / Authorities | 密钥与权限 / 权限 | unreviewed | |
@@ -33,7 +36,7 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | transfer | 转账 | unreviewed | |
 | savings | 储蓄 | unreviewed | |
 | price feed | 喂价 | unreviewed | |
-| proxy | 投票代理 / 代理 | unreviewed | See delegation. |
+| proxy | 投票代理 / 代理 | agreed (#1727) | The witness-voting proxy only; never for delegation. |
 | Resource Credits (RC) | 资源积分（RC） | unreviewed | |
 | upvote / downvote | 赞成票 / 反对票 | unreviewed | 4 strings say 点赞. |
 | vote weight / downvote power | 投票权重 / 反对票能量 | unreviewed | |
@@ -63,7 +66,7 @@ One category, `other`. Use a measure word: "{{count}} 票", "{{count}} 条回复
 
 | Category | Example |
 |---|---|
-| other | 支付后 +1 票（未计入） / 5小时前 |
+| other | 结算后 +1 票（未计入） / 5小时前 |
 
 ## Numbers, dates and times
 
@@ -83,7 +86,4 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER, Power Up, Power Down.
 
 ## Known drift
 
-Strings that do not follow the glossary yet:
-
-- payout: 支付, 赏金, 收益, 付款 and 奖励 for the same concept outside the decline-payout buttons (拒绝支付 since #1698).
-- delegation: 代理 against 委托 (wallet navigation, page title); the term needs a tester decision (see Terms).
+None known. #1727 settled the delegation, payout and curation terms listed here before.

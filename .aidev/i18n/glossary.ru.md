@@ -6,7 +6,9 @@ Applies to `apps/blog/locales/ru/common_blog.json`,
 use this file: `.aidev/i18n/README.md`.
 
 No native speaker has reviewed the Russian strings yet, so every term is
-`unreviewed`: the rendering the locale files use most as of 2026-11-19.
+`unreviewed`: the rendering the locale files use most as of 2026-11-19. The
+`agreed` rows were decided for #1727 after comparing hive.blog, the Hive
+wallet, Ecency and PeakD; a native speaker may still refine them.
 
 ## Terms
 
@@ -14,7 +16,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 |---|---|---|---|
 | Safe Storage | безопасное хранилище | unreviewed | Label "Безопасное хранилище". Every string since #1698. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Использовать Keychain". |
-| witness / witnesses | делегат / делегаты | unreviewed | 29 of 37 strings; 6 say "свидетель". Needs review first: "делегат" collides with delegation ("делегирование"), the same clash the Polish tester removed in #1188. |
+| witness / witnesses | свидетель / свидетели | agreed (#1727) | Everywhere, wallet and blog: "Проголосовать за свидетелей", "Топ свидетелей", "голос за свидетеля @{{witness}}". As Ecency. Never "делегат" (a Golos-era term that collides with delegation, "делегирование") or "валидатор". |
 | voters | проголосовавшие | unreviewed | A counted list counts votes: "1 голос", "3 голоса", "5 голосов". |
 | proposal / proposals | предложение / предложения | unreviewed | |
 | Unfunded | Не профинансировано; phone "Не профин." | unreviewed | |
@@ -93,5 +95,4 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER, MEMO.
 
 Strings that do not follow the glossary yet:
 
-- witness: "свидетель" in 6 strings against "делегат"; the term itself needs a tester decision (see Terms).
 - "е" for "ё" in inflected forms (#1698 fixed the bare words "Кошелёк", "счёт", "ещё").
