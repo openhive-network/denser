@@ -33,12 +33,6 @@ export const BLOG_NAMES = ['Hive Blog'];
 /** Each finding the check lets through, with the issue that fixes it; remove an entry with its fix. */
 export const BLOG_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [
   {
-    kind: 'page-scroll',
-    viewport: 'phone',
-    match: /notifications-mark-all-read/,
-    issue: '#1711'
-  },
-  {
     kind: 'clipped',
     locale: 'xx',
     viewport: 'phone',
