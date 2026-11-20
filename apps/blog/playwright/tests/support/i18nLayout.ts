@@ -37,12 +37,5 @@ export const BLOG_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [
     viewport: 'phone',
     match: /notifications-mark-all-read/,
     issue: '#1711'
-  },
-  {
-    kind: 'clipped',
-    locale: 'xx',
-    viewport: 'phone',
-    match: /^\[Ţŕéñðîñĝ/,
-    issue: '#1712'
   }
 ];

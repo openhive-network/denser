@@ -44,7 +44,11 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
   };
   return (
     <Select value={currentPath} onValueChange={onValueChange}>
-      <SelectTrigger className="bg-background" data-testid="posts-filter">
+      {/* A narrow phone row leaves the trigger little room: a longer translation wraps instead of being cut off */}
+      <SelectTrigger
+        className="h-auto min-h-10 gap-2 bg-background text-left [&>span]:line-clamp-none [&>span]:[overflow-wrap:anywhere] [&>svg]:shrink-0"
+        data-testid="posts-filter"
+      >
         <SelectValue placeholder={t('select_sort.posts_sort.trending')} />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">
