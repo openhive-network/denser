@@ -28,10 +28,10 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - blog post_content.footer.comment.resource_credits: "Resource Credits (RC) level: {{value}} %" → "Poziom punktów zasobów (RC): {{value}}%"
 - blog submit_page.resource_credits: "Resource Credits (RC) level: {{value}} %" → "Poziom punktów zasobów (RC): {{value}}%"
 - blog lite_account.graduation.steps.delegating: "Delegowanie kredytów zasobów" → "Delegowanie punktów zasobów (RC)"
-- blog post_content.footer.comment.power_up: "Wzmocnij 100%" → "100% w HIVE POWER"
-- blog submit_page.power_up: "Wzmocnij o 100%" → "100% w HIVE POWER"
-- blog submit_page.advanced_settings_dialog.power_up: "Wzmocnij o 100%" → "100% w HIVE POWER"
-- blog settings_page.power_up: "Zasilanie 100%" → "100% w HIVE POWER"
+- blog post_content.footer.comment.power_up: "Wzmocnij 100%" → "Zwiększ moc 100%"
+- blog submit_page.power_up: "Wzmocnij o 100%" → "Zwiększ moc 100%"
+- blog submit_page.advanced_settings_dialog.power_up: "Wzmocnij o 100%" → "Zwiększ moc 100%"
+- blog settings_page.power_up: "Zasilanie 100%" → "Zwiększ moc 100%"
 - blog cards.post_card.you_reblogged: "Zreblogowałeś" → "Zreblogowano"
 - blog post_content.footer.you_reblogged: "Zreblogowałeś" → "Zreblogowano"
 - blog user_profile.notifications_tab.voted_on_your_post: "@{{username}} zagłosował na twój post {{amount}}" → "@{{username}} zagłosował na Twój post {{amount}}"
@@ -229,7 +229,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - wallet page_titles.delegations: "委任" → "委託"
 - wallet resource_credits.no_delegations: "委任が見つかりません" → "委託が見つかりません"
 - wallet delegations_page.revoke_rc_confirm: "@{{account}} への RC の委任を取り消してもよろしいですか？" → "@{{account}} への RC の委託を取り消してもよろしいですか？"
-- wallet delegations_page.confirm_revoke: "Vesting Shares の委任を確認" → "Vesting Shares の委託を確認"
+- wallet delegations_page.confirm_revoke: "Vesting Shares の委任を確認" → "HIVE POWER の委託を確認"
 - wallet resource_credits.description: "コンテンツへの投票とキュレーション報酬は、自分の Hive Power であるかのように計算されます。ただし、委任された Hive Power は元の所有者に属したままなので、パワーダウンや換金はできません。" → "コンテンツへの投票とキュレーション報酬は、自分の Hive Power であるかのように計算されます。ただし、委託された Hive Power は元の所有者に属したままなので、パワーダウンや換金はできません。"
 - wallet profile.savings_description: "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)" → "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBDの利率：年{{rate}}%（<0>証人</0>の投票で決定）"
 - wallet witnesses_page.by: "作成者: {{owners}}" → "運営者: {{owners}}"
@@ -273,8 +273,9 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## Russian (ru)
 
-54 strings.
+55 strings.
 
+- wallet delegations_page.confirm_revoke: "Подтвердите делегирование Vesting Shares" → "Подтвердите делегирование HIVE POWER"
 - blog user_profile.mute_button: "немой" → "Заглушить"
 - blog user_profile.unmute_button: "включить звук" → "Снять заглушение"
 - blog user_profile.lists.list.unmute: "отменить заглушку" → "снять заглушение"

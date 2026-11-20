@@ -507,7 +507,7 @@
     "revoke": "取り消す",
     "revoke_rc_confirm": "@{{account}} への RC の委託を取り消してもよろしいですか？",
     "revoke_rc_success": "@{{account}} へのRC委託を取り消しました。",
-    "confirm_revoke": "Vesting Shares の委託を確認"
+    "confirm_revoke": "HIVE POWER の委託を確認"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "申し訳ありません。このページは存在しません。",

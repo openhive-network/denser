@@ -65,7 +65,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na twój post” (#1609). |
 | this session (key badge) | Ta sesja | unreviewed | |
 | recovery account | konto odzyskiwania | unreviewed | |
-| Power up 100% (payout option) | 100% w HIVE POWER | unreviewed | Blog payout options and settings (#1698). Never „Wzmocnij”, „Zasilanie”. |
+| Power up 100% (payout option) | Zwiększ moc 100% | unreviewed | Blog payout options and settings, with the agreed power-up term (#1698). Never „Wzmocnij”, „Zasilanie”. |
 | pending payout | oczekująca wypłata | unreviewed | „Oczekująca wypłata: $1,23”, „Brak oczekujących wypłat.” (#1698). |
 | proxied (vote weight) | od pełnomocnictw | unreviewed | „+5 HP od pełnomocnictw”, „głosuje przez pełnomocnika @gtg” (#1698). |
 | block explorer | eksplorator bloków | unreviewed | „Otwórz w eksploratorach bloków” (#1698). |
