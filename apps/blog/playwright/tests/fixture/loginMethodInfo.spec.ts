@@ -166,6 +166,21 @@ test.describe('Login dialog — sign-in method info', () => {
     }
   });
 
+  test('LOGIN-INFO-08 — in Polish a short username and password are refused in Polish', async ({ page, baseURL }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL ?? '' }]);
+    const loginForm = await openLoginDialog(page);
+
+    await loginForm.usernameInput.fill('ab');
+    await loginForm.passwordInput.fill('abc');
+
+    const shortName = plSmartSigner.chainvalidation_js.account_name_should_be_longer;
+    const shortPassword = plSmartSigner.login_form.zod_error.password_length;
+    expect(shortName).not.toBe(enSmartSigner.chainvalidation_js.account_name_should_be_longer);
+    expect(shortPassword).not.toBe(enSmartSigner.login_form.zod_error.password_length);
+    await expect(loginForm.usernameErrorMessage).toHaveText(shortName);
+    await expect(loginForm.passwordErrorMessage).toHaveText(shortPassword);
+  });
+
   test('LOGIN-INFO-04 — the tooltip shows outside the scrolling sign-in form, on focus and on click', async ({
     page
   }) => {
