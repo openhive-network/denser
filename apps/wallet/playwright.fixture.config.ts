@@ -31,7 +31,7 @@ const I18N_LAYOUT_SPECS = /i18nLayout\w*\.spec\.ts$/;
  * elements by test id or role, not by English text.
  */
 const PL_RUN_TESTS = {
-  'incomingDelegations.spec.ts': ['WALLET-INCOMING-02', 'WALLET-INCOMING-05'],
+  'incomingDelegations.spec.ts': ['WALLET-INCOMING-02'],
   'proposalsSearch.spec.ts': ['WALLET-PROPOSALS-SEARCH-02'],
   'delegateRcDialog.spec.ts': ['WALLET-RC-06'],
   'proposalVoteBroadcast.spec.ts': [
