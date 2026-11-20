@@ -13,15 +13,19 @@
 # them inside the suite's pass (drop the env gate and the separate pass) and list their cases in
 # junit.xml.
 #
-# A run whose arguments name one of the projects (`--project=i18n-layout`) runs just what it names,
-# as any narrowed run, and is judged by it.
+# A run whose arguments name one of the projects (`--project=i18n-layout`), or an
+# i18nLayout*.spec.ts file that only those projects run (the gate's repeat of new tests names
+# files, not projects), runs just what it names, as any narrowed run, and is judged by it.
 
 I18N_PROJECTS=(i18n-layout pl-locale)
 
-# i18n_checks_named ARGS... — whether ARGS name an i18n project.
+# i18n_checks_named ARGS... — whether ARGS name an i18n project or an i18n-layout spec file.
 i18n_checks_named() {
     local arg project
     for arg in "$@"; do
+        case "${arg##*/}" in
+            i18nLayout*.spec.ts) return 0 ;;
+        esac
         for project in "${I18N_PROJECTS[@]}"; do
             [ "$arg" != "--project=$project" ] || return 0
         done
