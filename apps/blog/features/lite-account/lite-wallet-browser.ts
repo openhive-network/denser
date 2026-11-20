@@ -1,6 +1,7 @@
 import { parseAuthError } from '@smart-signer/lib/auth-error';
 import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { getLogger } from '@ui/lib/logging';
 import type { LiteKeyRole, StoredLiteIdentity } from './lite-identity-record';
 import { liteWalletUsername, type LiteWallet } from './lite-wallet';
@@ -23,7 +24,7 @@ async function biometricUnlock(username: string, keyType: LiteKeyRole): Promise<
   const client = await liteWalletClient();
   if (!(await client.hasPasskey(username))) return false;
   try {
-    await client.biometricUnlock(username, keyType, userVerification(keyType));
+    await unlockWithPasskey(client, username, keyType, userVerification(keyType));
     return true;
   } catch (error) {
     logger.info('Lite wallet passkey unlock failed, asking for the password: %s', error instanceof Error ? error.message : String(error));

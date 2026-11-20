@@ -50,6 +50,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | forget a saved key | 忘记已保存的密钥 | unreviewed | As the existing "会将其遗忘": "忘记并退出登录" (#1703). |
 | password | 密码 | unreviewed | |
 | passkey | 通行密钥 | unreviewed | |
+| biometric unlock | 生物识别解锁 | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | 市场 / 利息 | unreviewed | |
 | this session (key badge) | 当前会话 | unreviewed | |
 | recovery account | 恢复账户 | unreviewed | |

@@ -168,7 +168,9 @@
       "description": "Usa l’impronta digitale, Face ID o il PIN del dispositivo per sbloccare invece di digitare la password.",
       "enable": "Attiva",
       "not_now": "Non ora",
-      "never_ask_again": "Non chiedere più"
+      "never_ask_again": "Non chiedere più",
+      "failed": "Non è stato possibile attivare lo sblocco biometrico. Puoi continuare ad accedere con la password.",
+      "unsupported": "Questo dispositivo non supporta lo sblocco biometrico. Puoi continuare ad accedere con la password."
     },
     "passkey": {
       "method": "Firmatario con passkey",

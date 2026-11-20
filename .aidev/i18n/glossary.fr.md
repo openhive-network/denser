@@ -50,6 +50,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | forget a saved key | oublier la clé enregistrée | unreviewed | "Oublier la clé enregistrée", "L'oublier et se déconnecter" (#1703). |
 | password | mot de passe | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
+| biometric unlock | déverrouillage biométrique | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | marché / intérêts | unreviewed | |
 | this session (key badge) | Cette session | unreviewed | |
 | recovery account | compte de récupération | unreviewed | |

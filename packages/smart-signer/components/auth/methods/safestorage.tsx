@@ -6,6 +6,8 @@ import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
+import { registerPasskeyUnlock, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { toast } from '@ui/components/hooks/use-toast';
 import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
 import { SafeStorageStartError } from '@hive/common-hiveio-packages';
 import PasskeyPrompt from '../passkey-prompt';
@@ -56,6 +58,9 @@ import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-stora
 import { chooseSessionTime } from '@ui/lib/session-time-choice';
 import { useSessionTime } from '@ui/hooks/use-session-time';
 import SessionTimeSelect from './session-time-select';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 function getFormSchema() {
   return z
@@ -300,6 +305,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
+    /** In a toast: the sign-in goes on with the password and closes the dialog */
+    function reportPasskeyFailure(message: string) {
+      toast({ description: message, variant: 'destructive' });
+    }
+
     async function signInWithExtension(loginType: LoginType.keychain | LoginType.peakvault) {
       // Cover the form before validating, or a second click lands while validation is pending
       setLoading(true);
@@ -346,12 +356,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   const keyType = form.getValues().keyType;
                   const uv = keyType === 'posting' ? 'discouraged' : 'required';
                   setLoading(true);
-                  await authClient.current.biometricUnlock(targetUser.username, keyType, uv);
+                  await unlockWithPasskey(authClient.current, targetUser.username, keyType, uv);
                   await finalize(form.getValues());
                   return;
                 }
-              } catch {
-                // Biometric failed — show normal password form
+              } catch (error) {
+                // Cancelled, or the passkey is gone: the password form, without a message
+                logger.info('Passkey unlock of %s failed, asking for the password: %s', targetUser.username, error instanceof Error ? error.message : String(error));
               }
             }
           }
@@ -418,8 +429,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         <Step title={stepTitle} description={stepDescription} loading={loading}>
           <PasskeyPrompt
             username={form.getValues().username}
-            onEnable={async () => (await getAuthClient()).registerPasskey(form.getValues().username, lastAuthPassword)}
-            onError={setError}
+            onEnable={() => registerPasskeyUnlock(form.getValues().username, lastAuthPassword)}
+            onError={reportPasskeyFailure}
             onDone={async () => {
               setShowPasskeyPrompt(false);
               setLastAuthPassword('');

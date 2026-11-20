@@ -168,7 +168,9 @@
       "description": "Usa tu huella dactilar, Face ID o el PIN del dispositivo para desbloquear en lugar de escribir tu contraseña.",
       "enable": "Activar",
       "not_now": "Ahora no",
-      "never_ask_again": "No volver a preguntar"
+      "never_ask_again": "No volver a preguntar",
+      "failed": "No se pudo activar el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña.",
+      "unsupported": "Este dispositivo no admite el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña."
     },
     "passkey": {
       "method": "Firmante con passkey",

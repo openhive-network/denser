@@ -7,6 +7,7 @@ import { z } from 'zod';
 import PasskeyPrompt from '@smart-signer/components/auth/passkey-prompt';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
+import { registerPasskeyUnlock } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
@@ -73,7 +74,7 @@ export default function LiteSafeStorageForm({ onDone }: { onDone: () => void }) 
 
   const registerPasskey = async () => {
     if (!offer) return;
-    await (await liteWalletClient()).registerPasskey(offer.username, offerPassword.current);
+    await registerPasskeyUnlock(offer.username, offerPassword.current);
   };
 
   if (offer) {

@@ -48,6 +48,7 @@ most as of 2026-11-19.
 | forget a saved key | olvidar la clave guardada | unreviewed | "Olvidar la clave guardada", "Olvidarla y cerrar sesión" (#1703). |
 | password | contraseña | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
+| biometric unlock | desbloqueo biométrico | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | mercado / intereses | unreviewed | |
 | this session (key badge) | Esta sesión | unreviewed | |
 | recovery account | cuenta de recuperación | unreviewed | |

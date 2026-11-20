@@ -49,6 +49,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | forget a saved key | забыть сохранённый ключ | unreviewed | As the existing "он будет забыт": "Забыть и выйти" (#1703). |
 | password | пароль | unreviewed | |
 | passkey | ключ доступа | unreviewed | |
+| biometric unlock | биометрическая разблокировка | unreviewed | As in `login_form.passkey_prompt.*`. |
 | market / interest | биржа / проценты | unreviewed | |
 | this session (key badge) | Эта сессия | unreviewed | |
 | recovery account | аккаунт восстановления | unreviewed | |
