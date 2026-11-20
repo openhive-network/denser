@@ -80,8 +80,21 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## Spanish (es)
 
-54 strings.
+67 strings.
 
+- smart-signer chainvalidation_js.badactor: "Use con precaución al enviar a esta cuenta. Por favor, verifique la ortografía para posibles ataques de phishing." → "Ten cuidado al enviar a esta cuenta. Comprueba la ortografía por si se trata de phishing."
+- smart-signer chainvalidation_js.memo_has_privatekey: "Por favor, no incluya lo que parece ser una clave privada o contraseña." → "No incluyas lo que parece ser una clave privada o una contraseña."
+- smart-signer chainvalidation_js.memo_is_password: "No use contraseñas en las notas." → "No uses contraseñas en las notas."
+- smart-signer chainvalidation_js.memo_is_privatekey: "No use claves privadas en las notas." → "No uses claves privadas en las notas."
+- smart-signer chainvalidation_js.verified_exchange_no_memo: "Debe incluir una nota para su transferencia de intercambio." → "Debes incluir una nota en tu transferencia al exchange."
+- smart-signer hiveauthservices.broadcastInstructions: "Transmitiendo su operación a través de HiveAuth, por favor revise y apruebe desde su aplicación móvil compatible." → "Transmitiendo tu operación a través de HiveAuth. Revísala y apruébala en tu aplicación móvil compatible."
+- smart-signer hiveauthservices.pleaseWait: "Por favor, espere" → "Espera, por favor"
+- smart-signer hiveauthservices.qrInstructions: "Por favor, toque o escanee el siguiente código QR con su aplicación móvil compatible con HiveAuth" → "Toca o escanea el siguiente código QR con tu aplicación móvil compatible con HiveAuth"
+- smart-signer hiveauthservices.requestExpired: "La solicitud de HiveAuth ha expirado, por favor intente nuevamente..." → "La solicitud de HiveAuth ha expirado. Inténtalo de nuevo."
+- smart-signer hiveauthservices.tokenExpired: "El token de HiveAuth ha expirado, por favor intente nuevamente..." → "El token de HiveAuth ha expirado. Inténtalo de nuevo."
+- smart-signer login_form.username_placeholder: "Ingrese su nombre de usuario" → "Introduce tu nombre de usuario"
+- smart-signer login_form.other_signing_options_description: "Ingrese su nombre de usuario y seleccione un método de inicio de sesión" → "Introduce tu nombre de usuario y elige un método de inicio de sesión"
+- smart-signer password_form.password_form_title: "Ingrese su contraseña" → "Introduce tu contraseña"
 - blog user_profile.mute_button: "Mudo" → "Silenciar"
 - blog user_profile.unmute_button: "Un mudo" → "Dejar de silenciar"
 - blog user_profile.lists.list.unmute: "desmutear" → "dejar de silenciar"
@@ -94,7 +107,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - wallet navigation.user_menu.wallet: "Monedero" → "Billetera"
 - wallet change_password_page.backup_password_by_storing_it: "Haz una copia de seguridad guardándolo en tu monedero de contraseñas o en un archivo de texto" → "Haz una copia de seguridad guardándola en tu gestor de contraseñas o en un archivo de texto"
 - wallet transfers_page.decode_memo_auto_trying: "Intentando descifrar con tu monedero conectado..." → "Intentando descifrar con tu billetera conectada..."
-- wallet permissions.active_key.use: "Al realizar una acción relacionada con el monedero, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quedarse con tus tokens. Hazte un favor y guarda esta clave en un lugar seguro para no perder tokens en el futuro." → "Al realizar una acción relacionada con la billetera, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quitarte tus tokens. Guárdala en un lugar seguro."
+- wallet permissions.active_key.use: "Al realizar una acción relacionada con el monedero, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quedarse con tus tokens. Hazte un favor y guarda esta clave en un lugar seguro para no perder tokens en el futuro." → "Al realizar una acción relacionada con la billetera, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quitarte tus tokens. Guárdala en un lugar seguro para no perder tus tokens en el futuro."
 - wallet page_titles.healthchecker_description: "Comprobador de estado de las API del monedero" → "Comprobador de estado de las API de la billetera"
 - wallet profile.account_history_description: "Tenga cuidado con los enlaces de spam y phishing en los memos de transferencia. No abra enlaces de usuarios en los que no confíe. No proporcione sus claves privadas a sitios web de terceros. Las transacciones no aparecerán hasta que se confirmen en la blockchain, lo que puede tardar unos minutos." → "Ten cuidado con los enlaces de spam y phishing en los memos de transferencia. No abras enlaces de usuarios en los que no confíes. No compartas tus claves privadas con sitios web de terceros. Las transacciones no aparecerán hasta que se confirmen en la blockchain, lo que puede tardar unos minutos."
 - wallet witnesses_page.witness: "Testigos" → "Testigo"
@@ -185,7 +198,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - smart-signer login_form.signin_safe_storage.title: "Accedi con conservazione sicura" → "Accedi con l'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.placeholder_password: "Password di conservazione sicura" → "Password dell'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.strict_mode_scope: "(solo conservazione sicura)" → "(solo archivio sicuro)"
-- smart-signer login_form.signin_safe_storage.strict_mode_tooltip: "Si applica solo alle chiavi salvate nella conservazione sicura. Quando è abilitato, la conservazione sicura accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati." → "Si applica solo alle chiavi salvate nell'archivio sicuro. Quando è abilitato, l'archivio sicuro accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati."
+- smart-signer login_form.signin_safe_storage.strict_mode_tooltip: "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactive este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión." → "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactiva este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión."
 - smart-signer login_form.signin_safe_storage.update_key_title: "Aggiungi nuova chiave alla conservazione sicura" → "Aggiungi nuova chiave all'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.user_not_found: "Utente non trovato nella conservazione sicura" → "Utente non trovato nell'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.start_failed: "Impossibile avviare l'archiviazione sicura. Ricarica la pagina e riprova." → "Impossibile avviare l'archivio sicuro. Ricarica la pagina e riprova."
@@ -343,10 +356,10 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - blog settings_page.decline_payout: "不接受奖励" → "拒绝支付"
 - blog post_content.footer.comment.decline_payout: "拒绝付款" → "拒绝支付"
 - wallet witnesses_page.witness: "Делегаты" → "见证人"
-- smart-signer google_drive_error.wallet_not_found_description: "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。" → "在您的 Google Drive中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。"
-- smart-signer google_drive_error.key_not_found_description: "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。" → "在您的 Google Drive钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。"
-- smart-signer google_drive_error.account_not_found_description: "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。" → "您的 Google Drive钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。"
-- smart-signer google_drive_error.bridge_info: "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。" → "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google Drive中。"
+- smart-signer google_drive_error.wallet_not_found_description: "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。" → "在您的 Google Drive 中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。"
+- smart-signer google_drive_error.key_not_found_description: "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。" → "在您的 Google Drive 钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。"
+- smart-signer google_drive_error.account_not_found_description: "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。" → "您的 Google Drive 钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。"
+- smart-signer google_drive_error.bridge_info: "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。" → "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google Drive 中。"
 - wallet profile.savings_description: "余额取决于3天的提款等待期，HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)" → "余额取决于3天的提款等待期。HBD 利率：年化 {{rate}}%（由<0>见证人</0>投票决定）"
 
 ## Arabic (ar)

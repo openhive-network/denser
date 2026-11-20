@@ -747,7 +747,7 @@
     "active_key": {
       "name": "Clave activa",
       "info": "Esta clave tiene permisos adicionales para acciones monetarias más delicadas, como transferir e intercambiar tokens.",
-      "use": "Al realizar una acción relacionada con la billetera, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quitarte tus tokens. Guárdala en un lugar seguro.",
+      "use": "Al realizar una acción relacionada con la billetera, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quitarte tus tokens. Guárdala en un lugar seguro para no perder tus tokens en el futuro.",
       "private": "Tu clave privada activa",
       "permissions": "Permisos de la clave activa",
       "to": "Usa tu clave activa para:",
