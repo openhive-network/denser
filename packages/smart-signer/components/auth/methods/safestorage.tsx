@@ -395,26 +395,46 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     if (loading === undefined) return placeholder ?? <Step loading={true}></Step>;
 
+    const stepTitle = (
+      <span className="flex items-center gap-1">
+        {t('login_form.signin_safe_storage.title')}
+        <MethodInfo
+          label={t('login_form.method_info.label', { method: t('login_form.safe_storage_name') })}
+          info={t('login_form.method_info.safe_storage')}
+          testId="method-info-safe_storage"
+        />
+      </span>
+    );
+    const stepDescription = (
+      <div>
+        <div data-testid="login-form-description">{description}</div>
+        {error && <div className="text-sm text-destructive">{error}</div>}
+      </div>
+    );
+
+    // In place of the form, not under its buttons, where a phone's viewport ends before it
+    if (showPasskeyPrompt) {
+      return (
+        <Step title={stepTitle} description={stepDescription} loading={loading}>
+          <PasskeyPrompt
+            username={form.getValues().username}
+            onEnable={async () => (await getAuthClient()).registerPasskey(form.getValues().username, lastAuthPassword)}
+            onError={setError}
+            onDone={async () => {
+              setShowPasskeyPrompt(false);
+              setLastAuthPassword('');
+              if (pendingFinalizeRef.current) {
+                await finalize(pendingFinalizeRef.current);
+                pendingFinalizeRef.current = null;
+              }
+            }}
+          />
+        </Step>
+      );
+    }
+
     return (
-      <Step
-        title={
-          <span className="flex items-center gap-1">
-            {t('login_form.signin_safe_storage.title')}
-            <MethodInfo
-              label={t('login_form.method_info.label', { method: t('login_form.safe_storage_name') })}
-              info={t('login_form.method_info.safe_storage')}
-              testId="method-info-safe_storage"
-            />
-          </span>
-        }
-        description={
-          <div>
-            <div data-testid="login-form-description">{description}</div>
-            {error && <div className="text-sm text-destructive">{error}</div>}
-          </div>
-        }
-        loading={loading}
-      >
+      <Step title={stepTitle} description={stepDescription} loading={loading}>
         <Form {...form}>
           <form className="space-y-4" name="register" onSubmit={form.handleSubmit(() => null)}>
             {/* Username */}
@@ -681,23 +701,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         </form>
                     ) */}
         </Form>
-
-        {/* Passkey enrollment prompt — shown after successful password login */}
-        {showPasskeyPrompt && (
-          <PasskeyPrompt
-            username={form.getValues().username}
-            onEnable={async () => (await getAuthClient()).registerPasskey(form.getValues().username, lastAuthPassword)}
-            onError={setError}
-            onDone={async () => {
-              setShowPasskeyPrompt(false);
-              setLastAuthPassword('');
-              if (pendingFinalizeRef.current) {
-                await finalize(pendingFinalizeRef.current);
-                pendingFinalizeRef.current = null;
-              }
-            }}
-          />
-        )}
       </Step>
     );
   }
