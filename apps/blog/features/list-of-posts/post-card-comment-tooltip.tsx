@@ -28,7 +28,7 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
           <TooltipTrigger asChild>
             <Link
               href={url}
-              aria-label={t('cards.post_card.open_comments', { responses: responsesText })}
+              aria-label={joinSentences([responsesText, t('cards.post_card.open_comments')], locale)}
               className="flex cursor-pointer items-center hover:text-destructive"
               data-testid="post-card-response-link"
             >

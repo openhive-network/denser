@@ -259,7 +259,7 @@
       "response": "1个回复。",
       "responses": "{{responses}}个回复。",
       "click_to_respond": "点击回复。",
-      "open_comments": "{{responses}}打开评论",
+      "open_comments": "打开评论",
       "reblog": "转发",
       "you_reblogged": "你已转发",
       "no_reblogs": "暂无转发",
