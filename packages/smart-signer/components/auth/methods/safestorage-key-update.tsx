@@ -113,7 +113,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
-    const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);
+    // undefined until safe storage answers the lookup, null when it holds no such user
+    const [registeredUser, setRegisteredUser] = useState<AuthUser | null | undefined>(undefined);
     const [strictSettings, setStrictSettings] = useState<StrictModeSettings | null>(null);
     const [availableKeyTypes, setAvailableKeyTypes] = useState<KeyType[]>([]);
     const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -142,9 +143,9 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
           // Check if user exists in hbauth
           const user = await authClient.current.getRegisteredUserByUsername(username);
+          setRegisteredUser(user);
 
           if (user) {
-            setRegisteredUser(user);
             setStrictSettings(await authClient.current.getUserSettings(username));
 
             // Filter preferred key types to only those registered in hbauth
@@ -301,12 +302,12 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         description={
           <div>
             <div data-testid="login-form-description">
-              {registeredUser
-                ? t('login_form.signin_safe_storage.update_key_description', {
-                    keyType: form.getValues().keyType,
-                    username
-                  })
-                : t('login_form.signin_safe_storage.user_not_found')}
+              {registeredUser &&
+                t('login_form.signin_safe_storage.update_key_description', {
+                  keyType: form.getValues().keyType,
+                  username
+                })}
+              {registeredUser === null && t('login_form.signin_safe_storage.user_not_found')}
             </div>
             {registeredUser && (
               <div className="text-xs text-muted-foreground">
