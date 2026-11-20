@@ -3,8 +3,9 @@
 # are stored, bypassed and shared, from its X-Cache header and the bodies it returns.
 # Then the bot gate (varnish/bot-gate.vcl, caddy/Caddyfile.bot-gate): this client is
 # a LAN address, so it sees real pages, and with X-Gate-Test: 1 the challenge, the
-# fingerprint's 403 and, on the throwaway stack only, the rate limit's 429 and the
-# pages still served while the gate is stopped.
+# page for the proof its script solves (with node), the fingerprint's 403 and, on the
+# throwaway stack only, the proof's binding to its address, issue time and the gate's
+# secret, the rate limit's 429 and the pages still served while the gate is stopped.
 #
 #   ./test-cache.sh              # a throwaway caddy (caddy/, Caddyfile.session with
 #                                # the gate on), varnish and the gate in front of a
@@ -59,7 +60,8 @@ fetch() {
 # against a browser whose cookie jar refuses or keeps the cookies it sets, already holds
 # COOKIES (name=value pairs joined by "; ", none by default) and whose navigator.languages
 # is the comma-separated LANGUAGES (en-US by default); prints its reloads, <html lang> and
-# the page's text. With CHALLENGE_PRINT=cookies it prints the jar instead.
+# the page's text. With CHALLENGE_PRINT=cookies it prints the jar instead, the proof it
+# solved as denser_human=PROOF; with CHALLENGE_PRINT=proof that proof.
 run_challenge() {
     node -e '
         const vm = require("vm");
@@ -69,7 +71,9 @@ run_challenge() {
         const jar = new Map(cookies ? cookies.split("; ").map((pair) => pair.split("=")) : []);
         const cookieHeader = () => [...jar].map((pair) => pair.join("=")).join("; ");
         let reloads = 0;
-        vm.runInNewContext(script, {
+        // In a function, so its variables are not the context'"'"'s slow globals.
+        vm.runInNewContext(`(function () {${script}\n})()`, {
+            setTimeout: (run) => run(),
             document: {
                 get cookie() { return cookieHeader(); },
                 set cookie(value) {
@@ -82,8 +86,43 @@ run_challenge() {
             navigator: { languages: languages.split(","), language: languages.split(",")[0] },
             location: { protocol: "https:", reload: () => reloads++ },
         });
-        console.log(print === "cookies" ? cookieHeader() : `${reloads} ${html.lang} ${message.textContent}`);
+        const proof = jar.get("denser_human") || "";
+        if (print === "proof") console.log(proof);
+        else if (print === "cookies") console.log(cookieHeader().replace(`denser_human=${proof}`, "denser_human=PROOF"));
+        else console.log(`${reloads} ${html.lang} ${message.textContent}`);
     ' "$1" "$2" "${3:-en-US}" "${4:-}" "${CHALLENGE_PRINT:-page}"
+}
+
+# challenge_script: the script of the challenge page in $body.
+challenge_script() {
+    local script=${body#*<script>}
+    echo "${script%%</script>*}"
+}
+
+# gate_direct CLIENT [COOKIE]: asks the throwaway stack's gate (from caddy's container, as
+# caddy does) about a blog page for client address CLIENT; sets status and body.
+gate_direct() {
+    local response
+    # The headers (wget's stderr) before the body, not interleaved with it.
+    response=$(docker exec "$network-caddy" sh -c 'wget -q -S -O /tmp/gate-body --header "X-Gate-Client: $0" \
+        --header "X-Gate-Test: 1" --header "Cookie: $1" http://bot-gate/blog/trending 2>&1; cat /tmp/gate-body' \
+        "$1" "${2:-}" || true)
+    status=$(sed -n 's/^ *HTTP\/[0-9.]* \([0-9]*\).*/\1/p' <<< "$response" | tail -n 1)
+    body=$response
+}
+
+# mint_proof ISSUED HOLDER: a proof the gate would have issued HOLDER (an address, or an
+# IPv6 /64 as <four groups>::/64) at unix time ISSUED, with its work done; needs $gate_secret.
+mint_proof() {
+    node -e '
+        const crypto = require("crypto");
+        const [secret, issued, holder, bound] = process.argv.slice(1);
+        const key = (text) => crypto.createHash("sha256").update(text).digest().readUInt32LE(28);
+        const seed = [issued, key(`1|${secret}|${holder}|${issued}`), key(`2|${secret}|${holder}|${issued}`)].join(".");
+        let nonce = 0;
+        while (key(`${seed}.${nonce}`) >= Number(bound)) nonce++;
+        console.log(`${seed}.${nonce}`);
+    ' "$gate_secret" "$1" "$2" "$(sed -n 's/.*X-Gate-Work-Bound = "\([0-9]*\)".*/\1/p' varnish/bot-gate.vcl)"
 }
 
 start_stub_stack() {
@@ -120,8 +159,10 @@ STUB
     docker create --name "$tag-varnish" --network "$network" --network-alias varnish \
         -e VARNISH_SIZE=64M varnish:7.7-alpine > /dev/null
     docker cp varnish/. "$tag-varnish:/etc/varnish/"
+    gate_secret=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
     docker create --name "$tag-bot-gate" --network "$network" --network-alias bot-gate \
-        -e VARNISH_SIZE=16M -e VARNISH_VCL_FILE=/etc/varnish/bot-gate.vcl varnish:7.7-alpine > /dev/null
+        -e VARNISH_SIZE=16M -e VARNISH_VCL_FILE=/etc/varnish/bot-gate.vcl -e GATE_SECRET="$gate_secret" \
+        varnish:7.7-alpine > /dev/null
     docker cp varnish/. "$tag-bot-gate:/etc/varnish/"
 
     docker start "$tag-blog" "$tag-caddy" "$tag-bot-gate" > /dev/null
@@ -222,12 +263,11 @@ if $stub; then
     check "POST" BYPASS "$x_cache"
 fi
 # The bot gate. Every X-Gate-Test request below that gets no 403 counts toward this
-# address's 60 page documents a minute.
+# address's 60 page documents a minute (gated).
 if [ "${DENSER_BOT_GATE:-on}" != off ]; then
     gate=(-H 'X-Gate-Test: 1')
-    human=(-H 'Cookie: denser_human=1')
     crawler=(-H 'Sec-Fetch-Site: none' -H "Referer: $base")
-    challenge_marker='document.cookie="denser_human=1'
+    challenge_marker='document.cookie="denser_human="+proof'
     cookies_message='This site needs cookies to continue. Please allow cookies for this site and reload.'
     cookies_message_pl='Ta strona potrzebuje plików cookie, aby kontynuować. Zezwól na pliki cookie dla tej strony i odśwież ją.'
 
@@ -240,8 +280,6 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
 
     fetch "$page" "${gate[@]}" "${crawler[@]}"
     check "gate: the crawler's headers: 403 no-store" "403 no-store" "$status $cache_control"
-    fetch "$page" "${gate[@]}" "${human[@]}" -H 'Sec-Fetch-Site: none' -H "Referer: $base/blog/trending"
-    check "gate: typed navigation with a page Referer passes" 200 "$status"
 
     fetch "$page" "${gate[@]}"
     check "gate: anonymous, no cookie: challenge, no-store" "200 no-store" "$status $cache_control"
@@ -249,13 +287,16 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
         -a "${body#*'content="noindex"'}" != "$body"
     holds "gate: the challenge fits phones" "${body#*'<meta name="viewport" content="width=device-width,initial-scale=1">'}" != "$body"
     holds "gate: the challenge explains refused cookies" "${body#*"$cookies_message"}" != "$body"
+    script=$(challenge_script)
+    holds "gate: the challenge carries a signed seed" -n "$(grep -oE 'var seed="[0-9]{10}\.[0-9]+\.[0-9]+",bound=[0-9]+;' <<< "$script")"
     fetch "$page" "${gate[@]}" -H 'Accept-Language: pl-PL,pl;q=0.9'
     holds "gate: a Polish Accept-Language: the same page, in Polish once its script runs" \
         "$status $cache_control" = "200 no-store" -a "${body#*"$cookies_message_pl"}" != "$body" \
         -a "${body#*'<html lang="en">'}" != "$body" -a "${body#*'<noscript>This site needs JavaScript.</noscript>'}" != "$body"
+    fetch "$page" "${gate[@]}" -H 'Cookie: denser_human=1'
+    holds "gate: a forged denser_human=1: challenge" "$status" = 200 -a "${body#*"$challenge_marker"}" != "$body"
+    gated=3
     if command -v node > /dev/null; then
-        script=${body#*<script>}
-        script=${script%%</script>*}
         check "gate: cookie refused: the message, no reload" "0 en $cookies_message" \
             "$(run_challenge "$script" refuse)"
         check "gate: cookie stored: Loading…, one reload" "1 en Loading…" "$(run_challenge "$script" keep)"
@@ -265,24 +306,32 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
             "$(run_challenge "$script" refuse sw,pl)"
         check "gate: only unsupported languages: the English message" "0 en $cookies_message" \
             "$(run_challenge "$script" refuse sw-KE,tlh)"
-        check "gate: cookie stored, Polish first: NEXT_LOCALE=pl too" "denser_human=1; NEXT_LOCALE=pl" \
+        check "gate: cookie stored, Polish first: NEXT_LOCALE=pl too" "denser_human=PROOF; NEXT_LOCALE=pl" \
             "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep pl-PL,en-US)"
-        check "gate: cookie stored, English: no NEXT_LOCALE" "denser_human=1" \
+        check "gate: cookie stored, English: no NEXT_LOCALE" "denser_human=PROOF" \
             "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep en-US,pl)"
-        check "gate: a NEXT_LOCALE already chosen is kept" "NEXT_LOCALE=en; denser_human=1" \
+        check "gate: a NEXT_LOCALE already chosen is kept" "NEXT_LOCALE=en; denser_human=PROOF" \
             "$(CHALLENGE_PRINT=cookies run_challenge "$script" keep pl-PL "NEXT_LOCALE=en")"
         check "gate: cookie refused: no NEXT_LOCALE" "" \
             "$(CHALLENGE_PRINT=cookies run_challenge "$script" refuse pl-PL)"
+
+        proof=$(CHALLENGE_PRINT=proof run_challenge "$script" keep)
+        fetch "$page" "${gate[@]}" -H "Cookie: theme=dark; denser_human=$proof"
+        check "gate: the solved proof: the cached page" "200 HIT $first" "$status $x_cache $body"
+        fetch "$page" "${gate[@]}" -H "Cookie: denser_human=$proof" -H 'Sec-Fetch-Site: none' -H "Referer: $base/blog/trending"
+        check "gate: typed navigation with a page Referer passes" 200 "$status"
+        fetch "$page" "${gate[@]}" -H "Cookie: denser_human=${proof%.*}.$((${proof##*.} + 1))"
+        holds "gate: the proof with another nonce: challenge" "${body#*"$challenge_marker"}" != "$body"
+        gated=$((gated + 3))
     else
-        echo "skip gate: the challenge's script (no node)"
+        echo "skip gate: the challenge's script and its proof (no node)"
     fi
     fetch "/wallet/@guest4test/transfers?gatetest=$run" "${gate[@]}"
     holds "gate: a wallet page: challenge" "${body#*"$challenge_marker"}" != "$body" \
         -a "${body#*"$cookies_message"}" != "$body"
-    fetch "$page" "${gate[@]}" "${human[@]}"
-    check "gate: denser_human=1: the cached page" "200 HIT $first" "$status $x_cache $body"
     fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
     check "gate: a session cookie passes" 200 "$status"
+    gated=$((gated + 2))
     fetch "/blog/api/health" "${gate[@]}"
     check "gate: API route not gated" "200 ok" "$status $body"
     fetch "$page" "${gate[@]}" -H 'RSC: 1'
@@ -298,17 +347,39 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
 fi
 
 if $stub && [ "${DENSER_BOT_GATE:-on}" != off ]; then
-    # 6 counted above (3 challenges, 3 passed page documents); fill the minute's 60.
-    for _ in $(seq 54); do
-        fetch "$page" "${gate[@]}" "${human[@]}"
+    # The proof's binding, asked of the gate directly for other client addresses.
+    gate_direct 203.0.113.7
+    proof=$(CHALLENGE_PRINT=proof run_challenge "$(challenge_script)" keep)
+    gate_direct 203.0.113.7 "denser_human=$proof"
+    check "gate: the proof from the address it was solved for passes" 204 "$status"
+    gate_direct 203.0.113.8 "denser_human=$proof"
+    check "gate: the proof from another address: challenge" 200 "$status"
+    gate_direct 2001:db8:1:2::a
+    proof=$(CHALLENGE_PRINT=proof run_challenge "$(challenge_script)" keep)
+    gate_direct 2001:db8:1:2:bbbb::2 "denser_human=$proof"
+    check "gate: an IPv6 proof from another address of its /64 passes" 204 "$status"
+    gate_direct 2001:db8:1:3::a "denser_human=$proof"
+    check "gate: an IPv6 proof from another /64: challenge" 200 "$status"
+    now=$(date +%s)
+    gate_direct 203.0.113.9 "denser_human=$(mint_proof "$now" 203.0.113.9)"
+    check "gate: a proof minted with the gate's secret passes" 204 "$status"
+    gate_direct 203.0.113.9 "denser_human=$(mint_proof $((now - 2592000 - 60)) 203.0.113.9)"
+    check "gate: a proof issued over 30 days ago: challenge" 200 "$status"
+    gate_direct 203.0.113.9 "denser_human=$(mint_proof $((now + 3600)) 203.0.113.9)"
+    check "gate: a proof issued in the future: challenge" 200 "$status"
+
+    # Fill this address's minute of 60 page documents, until the 429. The limit refills
+    # over its minute, so the seconds the proofs above took leave room for a few more.
+    for _ in $(seq 120); do
+        fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
         [ "$status" = 200 ] || break
+        gated=$((gated + 1))
     done
-    check "gate: the 60th page document in a minute" 200 "$status"
-    fetch "$page" "${gate[@]}" "${human[@]}"
-    check "gate: the 61st: 429, Retry-After 300, no-store" "429 300 no-store" "$status $retry_after $cache_control"
+    holds "gate: 60 page documents in a minute pass ($gated)" "$gated" -ge 60
+    check "gate: past them: 429, Retry-After 300, no-store" "429 300 no-store" "$status $retry_after $cache_control"
     fetch "/blog/api/health" "${gate[@]}"
     check "gate: rate-limited, API routes still pass" 200 "$status"
-    fetch "$page" "${human[@]}"
+    fetch "$page"
     check "gate: rate-limited, the LAN exemption still holds" 200 "$status"
 
     # The gate down: page documents go on to their routes (Caddyfile.bot-gate's

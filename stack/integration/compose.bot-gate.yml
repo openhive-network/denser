@@ -14,6 +14,9 @@ services:
       VARNISH_VCL_FILE: /etc/varnish/bot-gate.vcl
       # It stores nothing: synthetic answers only.
       VARNISH_SIZE: 16M
+      # Signs the challenge's seeds (bot-gate.vcl); the gate does not start without it.
+      # Changing it sends every reader through the challenge once more.
+      GATE_SECRET: ${DENSER_BOT_GATE_SECRET:-${DENSER_SERVER_SECRET_COOKIE_PASSWORD:?set it in .env (32+ random characters)}}
     volumes:
       # The directory, as caddy/ is mounted; varnish-apply.sh loads a changed VCL.
       - ${DENSER_SOURCE_DIR:-../..}/stack/integration/varnish:/etc/varnish:ro
