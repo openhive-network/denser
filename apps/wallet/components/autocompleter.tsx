@@ -148,7 +148,7 @@ export function Autocompleter({
             >
               <div
                 onClick={() => pickSuggestion(item.username)}
-                className="w-full truncate px-2 py-1 even:bg-background-tertiary"
+                className="w-full min-w-0 break-words px-2 py-1 even:bg-background-tertiary"
               >
                 {`${item.username} (${item.about})`}
               </div>
