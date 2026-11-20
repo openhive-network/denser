@@ -80,7 +80,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## Spanish (es)
 
-67 strings.
+68 strings.
 
 - smart-signer chainvalidation_js.badactor: "Use con precaución al enviar a esta cuenta. Por favor, verifique la ortografía para posibles ataques de phishing." → "Ten cuidado al enviar a esta cuenta. Comprueba la ortografía por si se trata de phishing."
 - smart-signer chainvalidation_js.memo_has_privatekey: "Por favor, no incluya lo que parece ser una clave privada o contraseña." → "No incluyas lo que parece ser una clave privada o una contraseña."
@@ -145,6 +145,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - smart-signer login_form.this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage: "Esta operación requiere su clave de publicación. Introduzca su clave y guárdela en el almacenamiento seguro." → "Esta operación requiere tu clave de publicación. Introduce tu clave y guárdala en el almacenamiento seguro."
 - smart-signer login_form.this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage: "Esta operación requiere su clave activa. Introduzca su clave y guárdela en el almacenamiento seguro." → "Esta operación requiere tu clave activa. Introduce tu clave y guárdala en el almacenamiento seguro."
 - smart-signer login_form.this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage: "Esta operación requiere su clave de propietario. Introduzca su clave y guárdela en el almacenamiento seguro." → "Esta operación requiere tu clave de propietario. Introduce tu clave y guárdala en el almacenamiento seguro."
+- smart-signer login_form.signin_safe_storage.strict_mode_tooltip: "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactive este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión." → "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactiva este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión."
 - wallet profile.savings_description: "El saldo está sujeto a 3 días de espera para la retirada. HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)" → "El saldo está sujeto a 3 días de espera para la retirada. Tasa de interés de HBD: {{rate}}% anual (según votan los <0>testigos</0>)"
 - blog user_profile.lists.list.show_or_hide_descripton_two: "page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog" → " donde puedes describir cómo eliges a quién añades a tus listas y si esas cuentas pueden hacer algo para salir de ellas. Puedes ver las descripciones de las listas de otras cuentas yendo directamente a su página de lista negra o de silenciados. Estos enlaces están en su página de perfil, debajo de la información de seguidores. Para empezar, te recomendamos seguir las listas negras y de silenciados de estas cuentas: hive.blog"
 - blog post_content.footer.share_form.open_in: "Abierto en Block Explorers" → "Abrir en exploradores de bloques"
@@ -152,11 +153,12 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## French (fr)
 
-12 strings.
+13 strings.
 
 - blog user_profile.mute_button: "Muet" → "Masquer"
 - blog user_profile.unmute_button: "Un muet" → "Ne plus masquer"
 - blog user_profile.lists.list.unmute: "désilencier" → "ne plus masquer"
+- blog communities.mute: "Muet" → "Masquer"
 - blog communities.unmute: "Réactiver le son" → "Ne plus masquer"
 - blog settings_page.unmute: "Annuler le mode muet" → "ne plus masquer"
 - blog navigation.profile_notifications_tab_navbar.redeem: "Racheter" → "Réclamer"
@@ -169,11 +171,12 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## Italian (it)
 
-37 strings.
+38 strings.
 
 - blog user_profile.mute_button: "Muto" → "Silenzia"
 - blog user_profile.unmute_button: "Un muto" → "Riattiva"
 - blog user_profile.lists.list.unmute: "sospendi silenzio" → "riattiva"
+- blog communities.mute: "Disattiva audio" → "Silenzia"
 - blog communities.unmute: "Riattiva audio" → "Riattiva"
 - blog settings_page.unmute: "Disattiva silenziamento" → "riattiva"
 - blog navigation.profile_navbar.replies: "Risponde" → "Risposte"
@@ -198,7 +201,7 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - smart-signer login_form.signin_safe_storage.title: "Accedi con conservazione sicura" → "Accedi con l'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.placeholder_password: "Password di conservazione sicura" → "Password dell'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.strict_mode_scope: "(solo conservazione sicura)" → "(solo archivio sicuro)"
-- smart-signer login_form.signin_safe_storage.strict_mode_tooltip: "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactive este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión." → "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactiva este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión."
+- smart-signer login_form.signin_safe_storage.strict_mode_tooltip: "Si applica solo alle chiavi salvate nella conservazione sicura. Quando è abilitato, la conservazione sicura accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati." → "Si applica solo alle chiavi salvate nell'archivio sicuro. Quando è abilitato, l'archivio sicuro accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati."
 - smart-signer login_form.signin_safe_storage.update_key_title: "Aggiungi nuova chiave alla conservazione sicura" → "Aggiungi nuova chiave all'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.user_not_found: "Utente non trovato nella conservazione sicura" → "Utente non trovato nell'archivio sicuro"
 - smart-signer login_form.signin_safe_storage.start_failed: "Impossibile avviare l'archiviazione sicura. Ricarica la pagina e riprova." → "Impossibile avviare l'archivio sicuro. Ricarica la pagina e riprova."
@@ -286,12 +289,13 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 
 ## Russian (ru)
 
-55 strings.
+56 strings.
 
 - wallet delegations_page.confirm_revoke: "Подтвердите делегирование Vesting Shares" → "Подтвердите делегирование HIVE POWER"
 - blog user_profile.mute_button: "немой" → "Заглушить"
 - blog user_profile.unmute_button: "включить звук" → "Снять заглушение"
 - blog user_profile.lists.list.unmute: "отменить заглушку" → "снять заглушение"
+- blog communities.mute: "Отключить звук" → "Заглушить"
 - blog communities.unmute: "Включить звук" → "Снять заглушение"
 - blog settings_page.unmute: "Отменить приглушение" → "снять заглушение"
 - blog navigation.profile_notifications_tab_navbar.redeem: "Выкупать" → "Получить"
@@ -392,3 +396,8 @@ in en, es, fr, it, pl, ru and zh: the validators and safe-storage errors show th
 - blog user_profile.lists.list.show_or_hide_descripton_one: "هذا هو نظام القائمة اللامركزية الجديد. من هنا يمكنك إدارة قائمة الصمت أو القائمة السوداء الخاصة بك، بالإضافة إلى الاشتراك في قوائم الصمت والقوائم السوداء للمستخدمين الآخرين. هناك بعض الحقول الجديدة في الصفحة حيث يمكنك تعيين وصف لكيفية اختيار الأشخاص الذين أضفتهم إلى قوائمك وما إذا كان هناك أي إجراءات يمكن أن يتخذها هذا الحساب لإزالته منها. يمكنك الاطلاع على أوصاف قوائم المستخدمين الآخرين من خلال تصفح قوائمهم الشخصية المخصصة للصمت أو القائمة السوداء. يمكن العثور على هذه الروابط على صفحة الملف الشخصي الخاصة بهم أسفل معلومات المتابعين. لبدء الاستخدام، نوصي بالاشتراك في قوائم الكتم أو القوائم السوداء الخاصة بهذه الحسابات: hive.blog" → "هذا هو نظام القائمة اللامركزية الجديد. من هنا يمكنك إدارة قائمة الكتم أو القائمة السوداء الخاصة بك، بالإضافة إلى الاشتراك في قوائم الكتم والقوائم السوداء للمستخدمين الآخرين. هناك بعض الحقول الجديدة في الصفحة حيث يمكنك تعيين وصف لكيفية اختيار الأشخاص الذين أضفتهم إلى قوائمك وما إذا كان هناك أي إجراءات يمكن أن يتخذها هذا الحساب لإزالته منها. يمكنك الاطلاع على أوصاف قوائم المستخدمين الآخرين من خلال تصفح قوائمهم الشخصية المخصصة للكتم أو القائمة السوداء. يمكن العثور على هذه الروابط على صفحة الملف الشخصي الخاصة بهم أسفل معلومات المتابعين. لبدء الاستخدام، نوصي بالاشتراك في قوائم الكتم أو القوائم السوداء الخاصة بهذه الحسابات: hive.blog"
 - blog user_profile.lists.list.show_or_hide_descripton_two: "صفحة القوائم المخصصة للصمت أو القائمة السوداء. يمكنك من هنا إدارة قائمة الصمت أو القائمة السوداء الخاصة بك، بالإضافة إلى الاشتراك في قوائم الصمت والقوائم السوداء للمستخدمين الآخرين. هناك بعض الحقول الجديدة في الصفحة حيث يمكنك تعيين وصف لكيفية اختيار الأشخاص الذين أضفتهم إلى قوائمك وما إذا كان هناك أي إجراءات يمكن أن يتخذها هذا الحساب لإزالته منها. يمكنك الاطلاع على أوصاف قوائم المستخدمين الآخرين من خلال تصفح قوائمهم الشخصية المخصصة للصمت أو القائمة السوداء. يمكن العثور على هذه الروابط على صفحة الملف الشخصي الخاصة بهم أسفل معلومات المتابعين. لبدء الاستخدام، نوصي بالاشتراك في قوائم الكتم أو القوائم السوداء الخاصة بهذه الحسابات: hive.blog" → "صفحة القوائم المخصصة للكتم أو القائمة السوداء. يمكنك من هنا إدارة قائمة الكتم أو القائمة السوداء الخاصة بك، بالإضافة إلى الاشتراك في قوائم الكتم والقوائم السوداء للمستخدمين الآخرين. هناك بعض الحقول الجديدة في الصفحة حيث يمكنك تعيين وصف لكيفية اختيار الأشخاص الذين أضفتهم إلى قوائمك وما إذا كان هناك أي إجراءات يمكن أن يتخذها هذا الحساب لإزالته منها. يمكنك الاطلاع على أوصاف قوائم المستخدمين الآخرين من خلال تصفح قوائمهم الشخصية المخصصة للكتم أو القائمة السوداء. يمكن العثور على هذه الروابط على صفحة الملف الشخصي الخاصة بهم أسفل معلومات المتابعين. لبدء الاستخدام، نوصي بالاشتراك في قوائم الكتم أو القوائم السوداء الخاصة بهذه الحسابات: hive.blog"
 - blog communities.description_mod: "كتم الصوت، تثبيت، تعيين عناوين المستخدم" → "كتم، تثبيت، تعيين ألقاب المستخدمين"
+
+## Follow-up (#1735)
+
+- it blog navigation.profile_notifications_tab_navbar.replies: "Risponde" → "Risposte"
+- ar blog user_profile.lists.list.show_or_hide_descripton_one and show_or_hide_descripton_two: each held the whole paragraph, so the page showed it twice around the settings link; they now hold the text before and after "الإعدادات", as en splits it.

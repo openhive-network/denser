@@ -29,9 +29,9 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | after payout | po wypłacie | unreviewed | „+1 głos po wypłacie (niewliczony)”. |
 | payout | wypłata | unreviewed | Most frequent (14 of 23 strings): „Odrzuć wypłatę”, „Maksymalna akceptowana wypłata”. Tabs and titles: „Wypłaty” (#1698). |
 | rewards / claim rewards | nagrody / Odbierz nagrody | agreed (#1609) | Button „Odbierz” (never „Obierz”); toast „Nagrody zostały odebrane.” |
-| curation rewards | nagrody kuratorskie | agreed (#1188) | „Nagroda kuratorska za:”. See drift. |
+| curation rewards | nagrody kuratorskie | agreed (#1188) | „Nagroda kuratorska za:”. |
 | author rewards / benefactor rewards | nagrody autorskie / nagrody beneficjenta | agreed (#1188) | Wallet tabs and titles too: „Nagrody autorskie”, „Nagrody kuratorskie” (#1698). |
-| beneficiary | beneficjent | unreviewed | See drift: „Odbiorcy”. |
+| beneficiary | beneficjent | unreviewed | „beneficjenci” in the post editor's advanced options. |
 | posting key | klucz Posting; on the keys page „Klucz publikowania (Posting)” | agreed (#1188, #1603) | Key names stay English in prompts (#1603): „Wprowadź klucz Active”. Mid-sentence use `{{keyType, capitalize}}` (#1609): „klucz Active”. |
 | active key | klucz Active; keys page „Klucz aktywny (Active)” | agreed (#1188, #1603) | As above. |
 | owner key | klucz Owner; keys page „Klucz właściciela (Owner)” | agreed (#1188) | |
@@ -62,7 +62,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | log in | Zaloguj się | unreviewed | |
 | password / master password | hasło / hasło główne | agreed (#1188) | |
 | passkey | klucz dostępu | unreviewed | |
-| notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na twój post” (#1609). |
+| notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na Twój post” (#1609). |
 | this session (key badge) | Ta sesja | unreviewed | |
 | recovery account | konto odzyskiwania | unreviewed | |
 | Power up 100% (payout option) | Zwiększ moc 100% | unreviewed | Blog payout options and settings, with the agreed power-up term (#1698). Never „Wzmocnij”, „Zasilanie”. |
