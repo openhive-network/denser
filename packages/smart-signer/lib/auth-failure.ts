@@ -4,7 +4,7 @@ import { findInCauses } from '@smart-signer/lib/wrong-safe-storage-password';
 
 /**
  * A signing step refused by safe storage (hb-auth), by the key's authority check or by a signer that
- * cannot sign for the account (no passkey signer known for it). Its message stays
+ * cannot sign for the account (no passkey signer known for it, or the passkey signer failed). Its message stays
  * English, for the log and the patterns matched on it; `messageKey`, the smart-signer translation key
  * of a well-known failure, is what the error toast shows.
  */
