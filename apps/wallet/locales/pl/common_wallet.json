@@ -279,6 +279,7 @@
     "older": "Starsze",
     "insufficient_balance": "Niewystarczające saldo (dostępne: {{available}})",
     "order_too_small": "Zlecenie jest za małe: ilość i suma muszą wynosić co najmniej 0.001",
+    "invalid_number": "To nie jest poprawna liczba.",
     "use_price": "Użyj ceny {{price}}",
     "date": "Data",
     "buy": "Kup",
@@ -660,6 +661,7 @@
     "error": {
       "amount_not_positive": "Ilość musi być dodatnia.",
       "amount_empty": "Ilość nie może być pusta.",
+      "amount_invalid": "Ilość nie jest poprawną liczbą.",
       "account_length_min": "Nazwa konta jest zbyt krótka. Wpisz przynajmniej 3 znaki.",
       "account_length_max": "Nazwa konta jest zbyt długa. Wpisz maksymalnie 16 znaków.",
       "required": "Nazwa konta 'Do' jest wymagana.",

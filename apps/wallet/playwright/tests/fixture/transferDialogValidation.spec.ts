@@ -20,6 +20,8 @@ const FAILING_LOOKUP_ACCOUNT = 'lookupfails1';
 /** Well formed; its lookup never reaches a node, as offline. */
 const UNREACHABLE_LOOKUP_ACCOUNT = 'nonetwork1';
 const ABOVE_BALANCE = '5000';
+/** Well formed, and the stub node knows it. */
+const KNOWN_ACCOUNT = 'odbiorca1';
 
 let stub: Server;
 const lookedUpNames: string[] = [];
@@ -48,23 +50,26 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
-const openTransferDialog = async (page: Page): Promise<Locator> => {
+const openTransferDialog = async (
+  page: Page,
+  { item, dialogName } = { item: 'Transfer', dialogName: 'Transfer To Account' }
+): Promise<Locator> => {
   await logInAsStubAccount(page, 'active');
   await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
-  return openBalanceMenuDialog(
-    page,
-    page.getByTestId('wallet-hive-value').getByRole('button'),
-    'Transfer',
-    'Transfer To Account'
-  );
+  return openBalanceMenuDialog(page, page.getByTestId('wallet-hive-value').getByRole('button'), item, dialogName);
 };
 
 const recipientInput = (dialog: Locator) => dialog.locator('input[cmdk-input]');
 
-const submit = async (dialog: Locator, recipient: string, amount: string) => {
+const submit = async (
+  dialog: Locator,
+  recipient: string,
+  amount: string,
+  { amountLabel, next } = { amountLabel: 'Amount', next: 'Next' }
+) => {
   await recipientInput(dialog).fill(recipient);
-  await dialog.getByLabel('Amount', { exact: true }).fill(amount);
-  await dialog.getByRole('button', { name: 'Next' }).click();
+  await dialog.getByLabel(amountLabel, { exact: true }).fill(amount);
+  await dialog.getByRole('button', { name: next }).click();
 };
 
 /** The field is invalid and its description is `message`. */
@@ -137,6 +142,29 @@ test.describe('Transfer dialog validation', () => {
       "Couldn't reach the server to check this account. Check your connection and try again."
     );
     await expect(confirmDialog(page)).toBeHidden();
+  });
+
+  test('WALLET-TX-VALIDATE-06 — in English "1,000" is refused as an amount, not read as 1, and no confirmation opens', async ({
+    page
+  }) => {
+    const dialog = await openTransferDialog(page);
+    await submit(dialog, KNOWN_ACCOUNT, '1,000');
+
+    await expectFieldError(dialog.getByLabel('Amount', { exact: true }), 'Amount is not a valid number.');
+    await expect(confirmDialog(page)).toBeHidden();
+  });
+
+  test('WALLET-TX-VALIDATE-07 — in Polish "1,5" is the decimal comma: the confirmation states 1,500 HIVE', async ({
+    page,
+    baseURL
+  }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL }]);
+    const dialog = await openTransferDialog(page, { item: 'Przelew', dialogName: 'Przelew na konto' });
+    await submit(dialog, KNOWN_ACCOUNT, '1,5', { amountLabel: 'Kwota', next: 'Dalej' });
+
+    const confirmation = page.getByRole('dialog', { name: 'Potwierdź przelew na konto' });
+    // The read-only amount, after its From and To rows.
+    await expect(confirmation.locator('input').nth(2)).toHaveValue('1,500 HIVE');
   });
 
   test('WALLET-TX-VALIDATE-04 — From, Amount and Memo are labelled, and Tab moves from Amount to its currency', async ({

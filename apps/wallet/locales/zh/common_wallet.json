@@ -267,6 +267,7 @@
     "older": "较旧的",
     "insufficient_balance": "余额不足（可用：{{available}}）",
     "order_too_small": "订单太小：数量和总额都必须至少为 0.001",
+    "invalid_number": "不是有效的数字。",
     "use_price": "使用价格 {{price}}",
     "date": "日期",
     "buy": "购买",
@@ -618,6 +619,7 @@
     "error": {
       "amount_not_positive": "数量必须为正数。",
       "amount_empty": "数量不能为空。",
+      "amount_invalid": "数量不是有效的数字。",
       "account_length_min": "账户名太短，至少需要 3 个字符。",
       "account_length_max": "账户名太长，最多 16 个字符。",
       "required": "请输入账户名。",

@@ -267,6 +267,7 @@
     "older": "이전",
     "insufficient_balance": "잔액 부족 ({{available}} 사용 가능)",
     "order_too_small": "주문이 너무 작습니다: 수량과 합계는 각각 0.001 이상이어야 합니다",
+    "invalid_number": "올바른 숫자가 아닙니다.",
     "use_price": "가격 {{price}} 사용",
     "date": "날짜",
     "buy": "매수",
@@ -617,6 +618,7 @@
     "error": {
       "amount_not_positive": "금액은 양수여야 합니다.",
       "amount_empty": "금액을 입력해야 합니다.",
+      "amount_invalid": "금액이 올바른 숫자가 아닙니다.",
       "account_length_min": "계정 이름이 너무 짧습니다. 3자 이상 사용하세요.",
       "account_length_max": "계정 이름이 너무 깁니다. 최대 16자까지 사용하세요.",
       "required": "계정 이름은 필수입니다.",

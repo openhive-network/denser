@@ -81,6 +81,11 @@ const fileSizeFormats = {
 
 const BYTES_PER_KILOBYTE = 1024;
 
+const plainNumberFormats = createLocaleFormatCache(
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  (lang) => new Intl.NumberFormat(lang)
+);
+
 const toBig = (value: Big | number): Big | null =>
   value instanceof Big ? value : Number.isFinite(value) ? new Big(value) : null;
 
@@ -124,6 +129,12 @@ export const formatDollars = (value: Big | number, lang: string, decimals = 2): 
 /** `percent` (12.5 for 12.5%) with `decimals` decimals as `lang` writes a percentage: "12.5%", fr "12,5 %". */
 export const formatPercent = (percent: number, lang: string, decimals = 0): string =>
   Number.isFinite(percent) ? fixedFormat(lang, 'percent', decimals).format(percent / 100) : '';
+
+/** The decimal separator `lang` writes numbers with: "." in en, "," in pl. */
+export const getDecimalSeparator = (lang: string): string =>
+  getFormatOrEnglish(plainNumberFormats, lang)
+    .formatToParts(1.1)
+    .find((part) => part.type === 'decimal')?.value ?? '.';
 
 /** A file size in kilobytes below a megabyte, else megabytes, one decimal: "12.3 kB", fr "12,3 ko". */
 export const formatFileSize = (bytes: number, lang: string): string => {

@@ -274,6 +274,7 @@
     "older": "Más viejo",
     "insufficient_balance": "Saldo insuficiente ({{available}} disponible)",
     "order_too_small": "Orden demasiado pequeña: la cantidad y el total deben ser de al menos 0.001 cada uno",
+    "invalid_number": "No es un número válido.",
     "use_price": "Usar el precio {{price}}",
     "date": "Fecha",
     "buy": "Comprar",
@@ -645,6 +646,7 @@
     "error": {
       "amount_not_positive": "La cantidad debe ser positiva.",
       "amount_empty": "La cantidad no puede estar vacía.",
+      "amount_invalid": "La cantidad no es un número válido.",
       "account_length_min": "El nombre de cuenta es demasiado corto. Usa al menos 3 caracteres.",
       "account_length_max": "El nombre de cuenta es demasiado largo. Usa como máximo 16 caracteres.",
       "required": "El nombre de cuenta es obligatorio.",

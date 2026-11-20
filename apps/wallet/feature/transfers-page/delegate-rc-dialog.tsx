@@ -39,7 +39,13 @@ import {
 
 const logger = getLogger('app');
 
-const defaultForm = { toAccount: '', amount: '0' };
+// `misreadAmount` holds text whose separators are no decimal separator of the locale (en "1,000"),
+// shown as typed and refused rather than dropping the comma into "1000".
+const defaultForm: { toAccount: string; amount: string; misreadAmount: string | null } = {
+  toAccount: '',
+  amount: '0',
+  misreadAmount: null
+};
 const PERCENT_PRESETS = [25, 50, 75, 100];
 /** Arrow keys move the slider by 1 %, PageUp/PageDown by 10 % (Radix multiplies the step by 10). */
 const SLIDER_STEP_PERCENT = 1;
@@ -48,6 +54,7 @@ const ALMOST_ALL_RC_PERCENT = 90;
 const AMOUNT_INPUT_PATTERN = new RegExp(`^\\d*(\\.\\d{0,${RC_INPUT_DECIMALS}})?$`);
 const ACCOUNT_STATUS_ID = 'delegate-rc-account-status';
 const MINIMUM_NOTE_ID = 'delegate-rc-minimum';
+const AMOUNT_ERROR_ID = 'delegate-rc-amount-error';
 
 const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
   checking: 'transfers_page.delegate_rc.checking_account',
@@ -95,11 +102,15 @@ const DelegateRCDialog = ({
   };
 
   const setToAccount = (toAccount: string) => setForm((prev) => ({ ...prev, toAccount }));
-  const setAmount = (billions: string) => setForm((prev) => ({ ...prev, amount: billions }));
+  const setAmount = (billions: string) => setForm((prev) => ({ ...prev, amount: billions, misreadAmount: null }));
   const setPercent = (next: number) => setAmount(formatRcInput(rcForPercent(maxBillions, next)));
 
   const onAmountInput = (input: string) => {
-    const typed = withDecimalPoint(input);
+    const typed = withDecimalPoint(input, locale);
+    if (typed === null) {
+      setForm((prev) => ({ ...prev, amount: '', misreadAmount: input }));
+      return;
+    }
     if (!AMOUNT_INPUT_PATTERN.test(typed)) return;
     setAmount(parseRcBillions(typed).gt(maxBillions) ? formatRcInput(maxBillions) : typed);
   };
@@ -153,6 +164,11 @@ const DelegateRCDialog = ({
   const isAmountValid = amountBillions.gt(0) && amountBillions.lte(maxBillions) && !isBelowMinimum;
   const isFormValid = isAmountValid && accountStatus === 'found' && !delegateMutation.isPending;
   const accountStatusKey = ACCOUNT_STATUS_KEYS[accountStatus];
+  const isAmountMisread = form.misreadAmount !== null;
+  const amountDescribedBy =
+    [isAmountMisread ? AMOUNT_ERROR_ID : null, minBillions === undefined ? null : MINIMUM_NOTE_ID]
+      .filter(Boolean)
+      .join(' ') || undefined;
   const summary = {
     amount: formatRcSummary(amountBillions, locale),
     max: formatRcSummary(maxBillions, locale)
@@ -205,11 +221,16 @@ const DelegateRCDialog = ({
                 inputMode="decimal"
                 disabled={delegateMutation.isPending}
                 id="amount"
-                aria-invalid={isBelowMinimum}
-                aria-describedby={minBillions === undefined ? undefined : MINIMUM_NOTE_ID}
-                value={form.amount}
+                aria-invalid={isBelowMinimum || isAmountMisread}
+                aria-describedby={amountDescribedBy}
+                value={form.misreadAmount ?? form.amount}
                 onChange={(e) => onAmountInput(e.target.value)}
               />
+              {isAmountMisread ? (
+                <p id={AMOUNT_ERROR_ID} role="alert" className="text-xs text-destructive">
+                  {t('transfers_page.error.amount_invalid')}
+                </p>
+              ) : null}
               <div className="space-y-2">
                 <Slider
                   thumbAriaLabel={t('transfers_page.delegate_rc.slider_label')}
