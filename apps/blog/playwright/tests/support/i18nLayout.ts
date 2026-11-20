@@ -31,12 +31,4 @@ export const BLOG_USER_CONTENT = [
 export const BLOG_NAMES = ['Hive Blog'];
 
 /** Each finding the check lets through, with the issue that fixes it; remove an entry with its fix. */
-export const BLOG_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [
-  {
-    kind: 'clipped',
-    locale: 'xx',
-    viewport: 'phone',
-    match: /^\[Ţŕéñðîñĝ/,
-    issue: '#1712'
-  }
-];
+export const BLOG_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [];
