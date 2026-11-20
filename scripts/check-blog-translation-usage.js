@@ -19,7 +19,11 @@ validateTranslationUsage({
   rootDir: BLOG_DIR,
   sourceDirs: ['app', 'components', 'features', 'lib', 'pages'],
   renderers: [
-    { name: 'blog', namespaces: { common_blog: path.join(BLOG_DIR, 'locales/en/common_blog.json') } }
+    {
+      name: 'blog',
+      namespaces: { common_blog: path.join(BLOG_DIR, 'locales/en/common_blog.json') },
+      loads: { 'smart-signer': path.join(__dirname, '../packages/smart-signer/locales/en/smart-signer.json') }
+    }
   ],
   fixHint: 'Add missing keys to apps/blog/locales/en/common_blog.json'
 });

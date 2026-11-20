@@ -14,7 +14,6 @@ import GoodDomains from '@hiveio/hivescript/good-domains.json';
  */
 export const looksPhishy = (questionableUrl: string) => {
   const lowercaseUrl = questionableUrl.toLowerCase();
-  // eslint-disable-next-line no-restricted-syntax
   for (const domain of BadDomains) {
     if (lowercaseUrl.indexOf(domain) > -1) return true;
   }

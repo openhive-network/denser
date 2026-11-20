@@ -97,14 +97,18 @@ test('extracts the namespace a call names with a literal', () => {
     '  count',
     '});',
     '<Trans i18nKey="a.b" ns="smart-signer" />',
-    "t('global.close')"
+    "t('global.close')",
+    "t('global.open', { value: format({ ns: 'common_blog' }) });",
+    "t('global.open', options, { ns: 'common_blog' });"
   ].join('\n');
   assert.deepEqual(extractKeyUsages(source), [
     { key: 'search_mode.sort_by', line: 1, ns: 'common_blog' },
     { key: 'global.close', line: 2, ns: undefined },
     { key: 'witnesses_page.gap', line: 3, ns: 'common_wallet' },
     { key: 'a.b', line: 7, ns: 'smart-signer' },
-    { key: 'global.close', line: 8, ns: undefined }
+    { key: 'global.close', line: 8, ns: undefined },
+    { key: 'global.open', line: 9, ns: undefined },
+    { key: 'global.open', line: 10, ns: undefined }
   ]);
 });
 
@@ -165,4 +169,44 @@ test('a key of a namespace both apps load, or of its fallback in each app, passe
     { file: 'a.tsx', content: "t('login_form.title');\nt('global.close', { ns: 'smart-signer' });" }
   ];
   assert.deepEqual(checkUsage(sources, renderers).missing, new Map());
+});
+
+test('an ns nested in the options names no namespace, so a blog-only key is missing in the wallet', () => {
+  const renderers = [
+    app({ search_mode: { sort_by: 'Sort by' } }),
+    app({ global: { close: 'Close' } }, 'wallet', 'common_wallet')
+  ];
+  const sources = [
+    { file: 'a.tsx', content: "t('search_mode.sort_by', { label: format({ ns: 'common_blog' }) });" }
+  ];
+  assert.deepEqual(
+    checkUsage(sources, renderers).missing,
+    new Map([['search_mode.sort_by', [{ file: 'a.tsx', lines: [1], renderers: ['wallet'] }]]])
+  );
+});
+
+test('a call naming a namespace the apps only load resolves in its file', () => {
+  const loads = new Map([['smart-signer', collectKeys({ login_form: { title: 'Sign in' } })]]);
+  const renderers = [
+    { ...app({ global: { close: 'x' } }), loads },
+    { ...app({ global: { close: 'y' } }, 'wallet', 'common_wallet'), loads }
+  ];
+  const sources = [
+    {
+      file: 'a.tsx',
+      content: [
+        "t('login_form.title', { ns: 'smart-signer' });",
+        "t('global.close', { ns: 'smart-signer' });",
+        "t('login_form.gone', { ns: 'smart-signer' });",
+        "t('login_form.title');"
+      ].join('\n')
+    }
+  ];
+  assert.deepEqual(
+    checkUsage(sources, renderers).missing,
+    new Map([
+      ['login_form.gone', [{ file: 'a.tsx', lines: [3], renderers: ['blog', 'wallet'] }]],
+      ['login_form.title', [{ file: 'a.tsx', lines: [4], renderers: ['blog', 'wallet'] }]]
+    ])
+  );
 });

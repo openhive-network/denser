@@ -6,7 +6,11 @@
  * own, and the namespace i18next falls back to); a shared package has one renderer per app, so a
  * blog-only key used by a component the wallet renders fails. A call naming its namespace with a
  * literal (t('key', { ns: 'common_blog' }), <Trans ns="common_blog">) is checked only in the
- * renderers that load that namespace. With --unused it also lists reference keys no source names.
+ * renderers that load that namespace, and resolves in that namespace's file or the renderer's own:
+ * besides the namespaces an unnamed call resolves in, a renderer lists those it `loads` only for a
+ * call that names them (the apps load smart-signer's). Only the top-level options object names the
+ * namespace: t('key', { x: f({ ns: 'a' }) }) names none. With --unused it also lists reference keys
+ * no source names.
  *
  * A key with plural forms (`key_one`, `key_few`, `key_other`, ...) must be called with a `count`
  * option, which picks the form: t('key', { count }) or <Trans i18nKey="key" count={n}>. A call whose
@@ -151,7 +155,33 @@ function givesCount(rest, isTrans) {
 }
 
 /**
- * The namespace a t() call or <Trans> names with a literal, after the key `match` found.
+ * The text of an object literal at its top level: nested brackets are emptied, strings kept.
+ * @param {string} text starting with the object's `{`
+ * @returns {string}
+ */
+function topLevelObject(text) {
+  const end = closingIndex(text, 1, '}');
+  let flat = '{';
+  for (let i = 1; i < end; i++) {
+    const char = text[i];
+    const bracket = '([{'.indexOf(char);
+    if (bracket !== -1) {
+      const close = ')]}'[bracket];
+      i = closingIndex(text, i + 1, close);
+      flat += char + close;
+    } else if (char === "'" || char === '"' || char === '`') {
+      const quoteEnd = text.indexOf(char, i + 1);
+      if (quoteEnd === -1) break;
+      flat += text.slice(i, quoteEnd + 1);
+      i = quoteEnd;
+    } else flat += char;
+  }
+  return `${flat}}`;
+}
+
+/**
+ * The namespace a t() call or <Trans> names with a literal, after the key `match` found: the `ns`
+ * of t()'s options object, not of an object nested in it.
  * @param {string} content
  * @param {RegExpExecArray} match
  * @param {boolean} isTrans
@@ -163,7 +193,8 @@ function namedNamespace(content, match, isTrans) {
     const attributes = callRest(content.slice(tagStart + 1), true);
     return attributes.match(NS_ATTRIBUTE)?.[2];
   }
-  return callRest(content.slice(match.index + match[0].length), false).match(NS_OPTION)?.[2];
+  const options = callRest(content.slice(match.index + match[0].length), false);
+  return options.startsWith('{') ? topLevelObject(options).match(NS_OPTION)?.[2] : undefined;
 }
 
 /**
@@ -199,25 +230,30 @@ const allKeys = (renderers) =>
 /**
  * The renderers a usage must resolve in: those loading the namespace it names, else all of them.
  * @param {{ ns: string | undefined }} usage
- * @param {{ name: string, namespaces: Map<string, Set<string>> }[]} renderers
+ * @param {{ name: string, namespaces: Map<string, Set<string>>, loads: Map<string, Set<string>> }[]} renderers
  */
 const renderersFor = (usage, renderers) =>
-  usage.ns === undefined ? renderers : renderers.filter((renderer) => renderer.namespaces.has(usage.ns));
+  usage.ns === undefined
+    ? renderers
+    : renderers.filter((renderer) => renderer.namespaces.has(usage.ns) || renderer.loads.has(usage.ns));
 
 /**
- * Whether a renderer resolves `key`: i18next looks in the named namespace and falls back to the
- * app's own, so a key of any of its namespaces does.
+ * Whether a renderer resolves a usage's key: i18next looks in the named namespace and falls back to
+ * the app's own, so a key of that namespace or of any the renderer resolves unnamed calls in does.
  */
-const resolves = (renderer, key) => [...renderer.namespaces.values()].some((keys) => keys.has(key));
+const resolves = (renderer, { key, ns }) =>
+  Boolean(renderer.loads.get(ns)?.has(key)) || [...renderer.namespaces.values()].some((keys) => keys.has(key));
 
 /**
  * Checks the keys `sources` name against the reference keys of each renderer.
  * @param {{ file: string, content: string }[]} sources
- * @param {{ name: string, namespaces: Map<string, Set<string>> }[]} renderers each app that renders
- *   the sources, with the keys of each namespace its t() can resolve them in
+ * @param {{ name: string, namespaces: Map<string, Set<string>>, loads?: Map<string, Set<string>> }[]} renderers
+ *   each app that renders the sources, with the keys of each namespace its t() can resolve them in,
+ *   and of each other namespace it loads, which only a call naming it reaches
  * @returns {{ missing: Map<string, { file: string, lines: number[], renderers: string[] }[]>, withoutCount: Map<string, { file: string, lines: number[] }[]>, used: Set<string>, usages: number }}
  */
-function checkUsage(sources, renderers) {
+function checkUsage(sources, rendererKeys) {
+  const renderers = rendererKeys.map((renderer) => ({ ...renderer, loads: renderer.loads ?? new Map() }));
   const missing = new Map();
   const withoutCount = new Map();
   const pluralBases = new Set(
@@ -238,7 +274,7 @@ function checkUsage(sources, renderers) {
       used.add(usage.key);
       const applicable = renderersFor(usage, renderers);
       const lacking =
-        applicable.length === 0 ? renderers : applicable.filter((renderer) => !resolves(renderer, usage.key));
+        applicable.length === 0 ? renderers : applicable.filter((renderer) => !resolves(renderer, usage));
       if (lacking.length === 0) continue;
       const names = lacking.map((renderer) => renderer.name);
       const id = `${usage.key}\0${names.join(',')}`;
@@ -274,10 +310,14 @@ function loadKeys(file) {
   return collectKeys(JSON.parse(fs.readFileSync(file, 'utf8')));
 }
 
+const loadNamespaces = (files = {}) =>
+  new Map(Object.entries(files).map(([ns, file]) => [ns, loadKeys(file)]));
+
 function loadRenderers(renderers) {
-  return renderers.map(({ name, namespaces }) => ({
+  return renderers.map(({ name, namespaces, loads }) => ({
     name,
-    namespaces: new Map(Object.entries(namespaces).map(([ns, file]) => [ns, loadKeys(file)]))
+    namespaces: loadNamespaces(namespaces),
+    loads: loadNamespaces(loads)
   }));
 }
 
@@ -301,17 +341,20 @@ function reportUnused(validKeys, used) {
 
 /**
  * Runs the check for one code base and exits 1 when a used key is missing.
- * @param {{ name: string, rootDir: string, sourceDirs: string[], renderers: { name: string, namespaces: Record<string, string> }[], fixHint: string }} target
+ * @param {{ name: string, rootDir: string, sourceDirs: string[], renderers: { name: string, namespaces: Record<string, string>, loads?: Record<string, string> }[], fixHint: string }} target
  *   sourceDirs are relative to rootDir; renderers are the apps that render the code, each with the
- *   English locale file of every namespace its t() can resolve keys in there; fixHint says where a
- *   missing key belongs.
+ *   English locale file of every namespace its t() can resolve keys in there, and of every other
+ *   namespace the app loads (resolved only for a call naming it); fixHint says where a missing key
+ *   belongs.
  */
 function validateTranslationUsage({ name, rootDir, sourceDirs, renderers: rendererFiles, fixHint }) {
   const showUnused = process.argv.includes('--unused');
 
   console.log(`\n📋 Translation Usage Validator (${name})`);
   for (const renderer of rendererFiles) {
-    const files = Object.values(renderer.namespaces).map((file) => path.relative(process.cwd(), file));
+    const files = Object.values({ ...renderer.namespaces, ...renderer.loads }).map((file) =>
+      path.relative(process.cwd(), file)
+    );
     console.log(`   Reference (${renderer.name}): ${files.join(', ')}`);
   }
   console.log(`   Scanning: ${sourceDirs.join(', ')}\n`);

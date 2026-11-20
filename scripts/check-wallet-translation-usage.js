@@ -17,7 +17,11 @@ validateTranslationUsage({
   rootDir: WALLET_DIR,
   sourceDirs: ['app', 'components', 'feature', 'lib', 'pages'],
   renderers: [
-    { name: 'wallet', namespaces: { common_wallet: path.join(WALLET_DIR, 'locales/en/common_wallet.json') } }
+    {
+      name: 'wallet',
+      namespaces: { common_wallet: path.join(WALLET_DIR, 'locales/en/common_wallet.json') },
+      loads: { 'smart-signer': path.join(__dirname, '../packages/smart-signer/locales/en/smart-signer.json') }
+    }
   ],
   fixHint: 'Add missing keys to apps/wallet/locales/en/common_wallet.json'
 });
