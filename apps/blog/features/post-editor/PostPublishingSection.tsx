@@ -90,13 +90,14 @@ export function PostPublishingSection({
           ) : null}
 
           <span className="text-xs text-muted-foreground" data-testid="author-rewards-description">
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {t("submit_page.author_rewards")}
-            {watchedValues.maxAcceptedPayout === 0
-              ? ` ${t("submit_page.advanced_settings_dialog.decline_payout")}`
-              : watchedValues.payoutType === "100%"
-                ? t("submit_page.power_up")
-                : " 50% HBD / 50% HP"}
+            {t("submit_page.author_rewards_summary", {
+              rewards:
+                watchedValues.maxAcceptedPayout === 0
+                  ? t("submit_page.advanced_settings_dialog.decline_payout")
+                  : watchedValues.payoutType === "100%"
+                    ? t("submit_page.power_up")
+                    : "50% HBD / 50% HP",
+            })}
           </span>
           <AdvancedSettingsPostForm
             username={username}

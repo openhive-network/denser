@@ -37,6 +37,7 @@ translate the terms below. Status values and how to use this file:
 | upvote / downvote | unreviewed | |
 | follow / mute / reblog | unreviewed | |
 | community | unreviewed | |
+| community subscribers | unreviewed | "{{value}} subscribers", plural keys `communities.subscribers_count_*` (#1717). |
 | post / comment / reply | unreviewed | |
 | log in / log out | unreviewed | Labels: "Login", "Logout". |
 | forget a saved key | unreviewed | Removes a key saved in this browser without signing out: "Forget saved key", "Forget it and sign out" (#1703). |

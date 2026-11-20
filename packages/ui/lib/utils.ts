@@ -86,16 +86,17 @@ const blockGapCount = (secs: number): [number, Intl.RelativeTimeFormatUnit] => {
 };
 
 /**
- * How long ago `last_block` was produced at `head_block`, for "Disabled …": " just now", " recently",
- * or minutes up to years in the plural form `lang` needs ("3 lata temu", "5 lat temu").
+ * How long ago `last_block` was produced at `head_block`, for "Disabled …": "just now", "recently",
+ * or minutes up to years in the plural form `lang` needs ("3 lata temu", "5 lat temu"); null when
+ * no block was ever produced.
  */
 export const blockGap = (
   head_block: number,
   last_block: number,
   t: TFunction<'common_wallet', undefined>,
   lang: string
-) => {
-  if (!last_block || last_block < 1) return 'forever';
+): string | null => {
+  if (!last_block || last_block < 1) return null;
   const secs = (head_block - last_block) * 3;
 
   if (secs < 60) return t('witnesses_page.bock_gap.just_now', { ns: 'common_wallet' });

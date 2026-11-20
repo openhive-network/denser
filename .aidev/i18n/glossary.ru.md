@@ -39,6 +39,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | follow / mute | подписаться / заглушить | unreviewed | Mute: 20 of 31 strings use "заглуш-", 6 "скрыть". |
 | reblog | репост; button "Поделиться" | unreviewed | |
 | community | сообщество | unreviewed | |
+| community subscribers | подписчики; "1 подписчик", "3 подписчика", "5 подписчиков" | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
 | post / comment / reply | пост / комментарий / ответ | unreviewed | "пост" in 92 of 114 strings. |
 | wallet | кошелёк | unreviewed | |
 | log in / log out | Войти / Выйти | unreviewed | |

@@ -193,9 +193,9 @@ const NotificationActivities = ({
         profileData.reward_vesting_hive.amount === claimedBalancesRef.current.vests) ? (
         <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
-            {getRewardsString(profileData, t, locale)}
+            {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards', {
+              rewards: getRewardsString(profileData, t, locale)
+            })}
           </span>
           <Button
             variant="redHover"

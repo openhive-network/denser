@@ -41,6 +41,7 @@ markup and plural keys, not their wording.
 | follow / mute | 팔로우 / 뮤트 | unreviewed | |
 | reblog | 리블로그 | unreviewed | |
 | community | 커뮤니티 | unreviewed | |
+| community subscribers | 구독자; "구독자 {{value}}명" | unreviewed | #1717 |
 | post / comment / reply | 게시물 / 댓글 / 답글 | unreviewed | |
 | wallet | 지갑 | unreviewed | |
 | log in / log out | 로그인 / 로그아웃 | unreviewed | |

@@ -332,14 +332,15 @@
     "proxy_description": "También puedes elegir un proxy que votará a los testigos por ti. Esta actividad reseteará tu actual selección de witness",
     "set_proxy": "Crear proxy",
     "clear_proxy": "Eliminar proxy",
-    "disabled": "Desactivado ",
+    "disabled": "Desactivado {{time}}",
+    "disabled_no_blocks": "Desactivado, nunca produjo un bloque",
     "no_url_provided": "No se proporcionó URL",
     "use_this_for_linking_title": "Usa esto para enlazar a esta página y resaltar el testigo seleccionado",
     "has_not_produced_blocks": "⚠️No ha producido ningún bloque en más de una semana.",
     "no_blocks_for_days_one": "sin bloques desde hace {{count}} día",
     "no_blocks_for_days_many": "sin bloques desde hace {{count}} días",
     "no_blocks_for_days_other": "sin bloques desde hace {{count}} días",
-    "by": "por",
+    "by": "por {{owners}}",
     "proxy_form": {
       "title": "Confirmar proxy de testigos de la cuenta",
       "description": "Estás a punto de eliminar tu proxy.",
@@ -348,8 +349,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " justo ahora",
-      "recently": " recientemente"
+      "just_now": "justo ahora",
+      "recently": "recientemente"
     },
     "vote_for_witness": "Votar por el testigo {{witness}}",
     "remove_vote_for_witness": "Retirar el voto al testigo {{witness}}",
@@ -643,7 +644,7 @@
     "report_operations_found_other": "{{count}} operaciones encontradas",
     "report_no_operations": "No se encontraron operaciones en el periodo seleccionado",
     "report_select_operation_types": "Incluir en el informe:",
-    "current_rewards": "Tus recompensas actuales: ",
+    "current_rewards": "Tus recompensas actuales: {{rewards}}",
     "redeem_rewards": "Canjear recompensas (transferir al saldo)",
     "error": {
       "amount_not_positive": "La cantidad debe ser positiva.",

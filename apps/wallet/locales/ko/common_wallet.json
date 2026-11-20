@@ -323,12 +323,13 @@
     "proxy_description": "대신 증인에게 투표해 줄 프록시를 선택할 수도 있습니다. 이 경우 현재 선택한 증인이 초기화됩니다.",
     "set_proxy": "프록시 설정",
     "clear_proxy": "프록시 해제",
-    "disabled": "비활성화됨 ",
+    "disabled": "비활성화됨 ({{time}})",
+    "disabled_no_blocks": "비활성화됨 (생성한 블록 없음)",
     "no_url_provided": "URL이 제공되지 않았습니다",
     "use_this_for_linking_title": "이 페이지로 연결하고 선택한 증인을 강조 표시할 때 사용하세요",
     "has_not_produced_blocks": "⚠️1주일 넘게 블록을 생성하지 않았습니다.",
     "no_blocks_for_days_other": "{{count}}일 동안 블록 없음",
-    "by": "작성자",
+    "by": "작성자: {{owners}}",
     "proxy_form": {
       "title": "계정 증인 프록시 확인",
       "description": "프록시를 해제하려고 합니다.",
@@ -337,8 +338,8 @@
       "ok": "확인"
     },
     "bock_gap": {
-      "just_now": " 방금 전",
-      "recently": " 최근"
+      "just_now": "방금 전",
+      "recently": "최근"
     },
     "vote_for_witness": "증인 {{witness}}에게 투표",
     "remove_vote_for_witness": "증인 {{witness}}에 대한 투표 철회",
@@ -615,7 +616,7 @@
     "report_operations_found_other": "작업 {{count}}개를 찾았습니다",
     "report_no_operations": "선택한 기간에 작업이 없습니다",
     "report_select_operation_types": "보고서에 포함:",
-    "current_rewards": "현재 보상: ",
+    "current_rewards": "현재 보상: {{rewards}}",
     "redeem_rewards": "보상 받기 (잔액으로 송금)",
     "error": {
       "amount_not_positive": "금액은 양수여야 합니다.",

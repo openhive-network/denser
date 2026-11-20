@@ -4,6 +4,8 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useTranslation } from '@/blog/i18n/client';
 import { Link } from '@hive/ui';
+import { useLocale } from '@ui/components/locale-context';
+import { joinSentences } from '@ui/lib/locale-format';
 
 interface PostCardCommentTooltipProps {
   comments: number;
@@ -12,6 +14,7 @@ interface PostCardCommentTooltipProps {
 
 const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) => {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const responsesText =
     comments === 0
       ? t('cards.post_card.no_responses')
@@ -25,7 +28,7 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
           <TooltipTrigger asChild>
             <Link
               href={url}
-              aria-label={t('cards.post_card.open_comments', { responses: responsesText })}
+              aria-label={joinSentences([responsesText, t('cards.post_card.open_comments')], locale)}
               className="flex cursor-pointer items-center hover:text-destructive"
               data-testid="post-card-response-link"
             >
@@ -38,11 +41,7 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
             </Link>
           </TooltipTrigger>
           <TooltipContent data-testid="post-card-responses">
-            <p>
-              {responsesText}
-              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-              {t('cards.post_card.click_to_respond')}
-            </p>
+            <p>{joinSentences([responsesText, t('cards.post_card.click_to_respond')], locale)}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

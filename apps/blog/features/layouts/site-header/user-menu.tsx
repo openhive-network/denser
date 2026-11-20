@@ -31,6 +31,8 @@ import { useKeyProtection } from '@smart-signer/lib/auth/use-key-protection';
 import KeyProtectionMenuItem from '@smart-signer/components/key-protection-menu-item';
 import { usePathname } from 'next/navigation';
 import { startSignOutLeave } from '@/blog/features/tags-pages/sign-out-leave';
+import { useLocale } from '@ui/components/locale-context';
+import { formatNumber } from '@ui/lib/locale-format';
 
 /** What the login dialog opened from the menu signs in: any account, or this one with a given key */
 type LoginDialogTarget = { username?: string; keyType?: KeyType };
@@ -56,6 +58,7 @@ const UserMenu = ({
   const pathname = usePathname();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { authority, chip } = useLoginAuthorityLabels(user);
   const addKey = useAddSafeStorageKey(user);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -150,9 +153,9 @@ const UserMenu = ({
               <DropdownMenuItem className="cursor-pointer">
                 <Icons.clock className="mr-2" />
                 <span className="w-full">
-                  {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-                  {t('navigation.user_menu.notifications')}
-                  {notifications ? `(${notifications})` : null}
+                  {notifications
+                    ? t('navigation.user_menu.notifications_count', { value: formatNumber(notifications, locale) })
+                    : t('navigation.user_menu.notifications')}
                 </span>
               </DropdownMenuItem>
             </Link>

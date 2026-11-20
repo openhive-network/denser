@@ -40,6 +40,7 @@ most as of 2026-11-19.
 | follow / mute | seguir / silenciar | unreviewed | Mute: 29 of 31 strings use "silenciar". |
 | reblog | rebloguear | unreviewed | |
 | community | comunidad | unreviewed | |
+| community subscribers | suscriptores | unreviewed | #1717 |
 | post / comment / reply | publicación / comentario / respuesta | unreviewed | "publicación" in 95 of 114 strings. |
 | wallet | billetera | unreviewed | 20 strings; 11 say "monedero" (see drift). |
 | log in / log out | Iniciar sesión / Cerrar sesión | unreviewed | |

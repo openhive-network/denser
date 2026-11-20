@@ -323,12 +323,13 @@
     "proxy_description": "証人への投票の代理人を選ぶこともできます。この操作はあなたの現在の証人選択をリセットします。",
     "set_proxy": "代理人を設定",
     "clear_proxy": "代理人を解除",
-    "disabled": "無効 ",
+    "disabled": "無効（{{time}}）",
+    "disabled_no_blocks": "無効（ブロック生成なし）",
     "no_url_provided": "URLが指定されていません",
     "use_this_for_linking_title": "このページへのリンクに使用し、選択したウィットネスを強調表示します",
     "has_not_produced_blocks": "⚠️1週間以上ブロックを生成していません。",
     "no_blocks_for_days_other": "{{count}}日間ブロックなし",
-    "by": "作成者",
+    "by": "作成者: {{owners}}",
     "proxy_form": {
       "title": "アカウントのウィットネスプロキシを確認",
       "description": "プロキシを解除しようとしています。",
@@ -337,8 +338,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " たった今",
-      "recently": " 最近"
+      "just_now": "たった今",
+      "recently": "最近"
     },
     "vote_for_witness": "証人 {{witness}} に投票",
     "remove_vote_for_witness": "証人 {{witness}} への投票を取り消す",
@@ -616,7 +617,7 @@
     "report_operations_found_other": "{{count}}件の操作が見つかりました",
     "report_no_operations": "選択した期間に操作は見つかりませんでした",
     "report_select_operation_types": "レポートに含める:",
-    "current_rewards": "現在の報酬: ",
+    "current_rewards": "現在の報酬: {{rewards}}",
     "redeem_rewards": "報酬を受け取る（残高へ送金）",
     "error": {
       "amount_not_positive": "金額は正の値である必要があります。",

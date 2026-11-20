@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getSessionTimeChoices } from '@ui/lib/session-time-choice';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { formatSessionTime } from '@smart-signer/lib/session-time-text';
+import { formatSessionTime, sessionTimeCaption } from '@smart-signer/lib/session-time-text';
 
 export interface SessionTimeSelectProps {
   /** The idle time, in seconds, shown as chosen */
@@ -14,7 +14,7 @@ export interface SessionTimeSelectProps {
 }
 
 const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
-  const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
+  const { t, i18n } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
   const id = useId();
   const handleValueChange = (selected: string) => onChange(Number(selected));
 
@@ -38,8 +38,7 @@ const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
         </Select>
       </div>
       <p className="text-xs text-muted-foreground" data-testid="session-time-caption" data-seconds={value}>
-        {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-        {t('session_time.locks_after_sentence', { duration: formatSessionTime(t, value) })} {t('session_time.activity')}
+        {sessionTimeCaption(t, value, i18n.language)}
       </p>
     </div>
   );

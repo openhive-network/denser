@@ -89,7 +89,7 @@ import {
 } from '@/blog/components/observer-provider';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useLocale } from '@ui/components/locale-context';
-import { formatDateTime, formatDollars } from '@ui/lib/locale-format';
+import { formatDateTime, formatDollars, joinSentences } from '@ui/lib/locale-format';
 
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
@@ -940,7 +940,7 @@ const PostContent = () => {
                           <TooltipTrigger asChild>
                             <Link
                               href={`/${postData.category}/@${postData.author}/${postData.permlink}#comments`}
-                              aria-label={t('cards.post_card.open_comments', { responses: footerResponsesText })}
+                              aria-label={joinSentences([footerResponsesText, t('cards.post_card.open_comments')], locale)}
                               className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
                               data-testid="comment-respons"
                             >

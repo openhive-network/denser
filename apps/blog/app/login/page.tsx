@@ -42,6 +42,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     if (returnUrl) redirect(returnUrl);
   }
 
-  const { t } = await getTranslation(SMART_SIGNER_NAMESPACE);
-  return <LoginForm oauthReturn={oauthReturn} shell={<SignInFormShell t={t} />} />;
+  const { t, locale } = await getTranslation(SMART_SIGNER_NAMESPACE);
+  return <LoginForm oauthReturn={oauthReturn} shell={<SignInFormShell t={t} locale={locale} />} />;
 }

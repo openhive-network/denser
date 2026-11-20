@@ -7,6 +7,8 @@ import { cancelLiteQueued, getLiteQueueEntry, waitForLiteQueue, type LiteRelayOk
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
+import { useLocale } from '@ui/components/locale-context';
+import { joinSentences } from '@ui/lib/locale-format';
 import { useTranslation } from '@/blog/i18n/client';
 import {
   formatWait,
@@ -59,6 +61,7 @@ function useNow(active: boolean): number {
  */
 export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Props) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { identity } = useLiteIdentity();
   const build = useLiteRootPostBuilder();
   const [view, dispatch] = useReducer(queueViewReducer, pending.queued, initialQueueView);
@@ -147,10 +150,10 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
         <>
           <p className="font-medium">{t('lite_account.root_post.queue.ended_title')}</p>
           <p data-testid="lite-queue-ended">
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {t(`lite_account.root_post.errors.${endedKey(view)}`)}{' '}
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {t('lite_account.gateway.draft_kept')}
+            {joinSentences(
+              [t(`lite_account.root_post.errors.${endedKey(view)}`), t('lite_account.gateway.draft_kept')],
+              locale
+            )}
           </p>
         </>
       ) : null}

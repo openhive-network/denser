@@ -338,7 +338,8 @@
     "proxy_description": "Вы также можете выбрать прокси, который будет вместо вас голосовать за делегатов. Это сбросит ваш текущий выбор делегата.",
     "set_proxy": "Установить прокси",
     "clear_proxy": "Удалить прокси",
-    "disabled": "Отключён ",
+    "disabled": "Отключён {{time}}",
+    "disabled_no_blocks": "Отключён, не создал ни одного блока",
     "no_url_provided": "URL не указан",
     "use_this_for_linking_title": "Используйте эту ссылку на страницу с выделением выбранного делегата",
     "has_not_produced_blocks": "⚠️Не создавал блоков больше недели.",
@@ -346,7 +347,7 @@
     "no_blocks_for_days_few": "нет блоков {{count}} дня",
     "no_blocks_for_days_many": "нет блоков {{count}} дней",
     "no_blocks_for_days_other": "нет блоков {{count}} дня",
-    "by": "от",
+    "by": "от {{owners}}",
     "proxy_form": {
       "title": "Подтвердите прокси делегата для аккаунта",
       "description": "Вы собираетесь удалить свой прокси.",
@@ -355,8 +356,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " только что",
-      "recently": " недавно"
+      "just_now": "только что",
+      "recently": "недавно"
     },
     "vote_for_witness": "Голосовать за делегата {{witness}}",
     "remove_vote_for_witness": "Отозвать голос за делегата {{witness}}",
@@ -658,7 +659,7 @@
     "report_operations_found_other": "Найдено {{count}} операции",
     "report_no_operations": "За выбранный период операции не найдены",
     "report_select_operation_types": "Включить в отчёт:",
-    "current_rewards": "Ваши текущие вознаграждения: ",
+    "current_rewards": "Ваши текущие вознаграждения: {{rewards}}",
     "redeem_rewards": "Получить вознаграждения (перевести на баланс)",
     "error": {
       "amount_not_positive": "Сумма должна быть положительной.",

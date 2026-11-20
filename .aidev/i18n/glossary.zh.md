@@ -39,6 +39,7 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | follow / mute | 关注 / 静音 | unreviewed | Follow 29 of 35; mute 25 of 31 (4 say 屏蔽). |
 | reblog | 转发 | unreviewed | |
 | community | 社区 | unreviewed | |
+| community subscribers | 订阅者; "{{value}} 位订阅者" | unreviewed | #1717 |
 | post / comment / reply | 帖子 / 评论 / 回复 | unreviewed | 帖子 in 65 of 114 strings, 文章 in 27. |
 | wallet | 钱包 | unreviewed | |
 | log in / log out | 登录 / 退出登录 | unreviewed | |
