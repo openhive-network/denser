@@ -36,6 +36,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | proxy | прокси | unreviewed | |
 | Resource Credits (RC) | ресурсные кредиты (RC) | unreviewed | |
 | upvote / downvote | голос за / голос против | unreviewed | |
+| vote weight / downvote power | вес голоса / сила голоса против | unreviewed | |
 | follow / mute | подписаться / заглушить | unreviewed | Mute: 20 of 31 strings use "заглуш-", 6 "скрыть". |
 | reblog | репост; button "Поделиться" | unreviewed | |
 | community | сообщество | unreviewed | |

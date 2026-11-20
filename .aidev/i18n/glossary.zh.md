@@ -36,6 +36,7 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | proxy | 投票代理 / 代理 | unreviewed | See delegation. |
 | Resource Credits (RC) | 资源积分（RC） | unreviewed | |
 | upvote / downvote | 赞成票 / 反对票 | unreviewed | 4 strings say 点赞. |
+| vote weight / downvote power | 投票权重 / 反对票能量 | unreviewed | |
 | follow / mute | 关注 / 静音 | unreviewed | Follow 29 of 35; mute 25 of 31 (4 say 屏蔽). |
 | reblog | 转发 | unreviewed | |
 | community | 社区 | unreviewed | |

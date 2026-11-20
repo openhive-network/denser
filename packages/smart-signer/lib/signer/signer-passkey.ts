@@ -1,7 +1,8 @@
 import { TTransactionPackType } from '@hiveio/wax';
 import { getChain } from '@transaction/lib/chain';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
-import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { Signer, type SignChallenge, type SignTransaction, type SignerOptions } from '@smart-signer/lib/signer/signer';
+import { AuthFailureError } from '@smart-signer/lib/auth-failure';
 import { forgetPasskeyBinding, passkeyBindingOf } from '@smart-signer/lib/passkey/passkey-binding';
 import { openSignerPopup, SignerError, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
@@ -54,7 +55,12 @@ export class SignerPasskey extends Signer {
       throw new MissingAuthorityError(requiredKeyType);
     }
     const binding = passkeyBindingOf(this.username);
-    if (!binding) throw new Error(`No passkey signer is known for @${this.username}. Sign in again.`);
+    if (!binding) {
+      throw new AuthFailureError(
+        `No passkey signer is known for @${this.username}. Sign in again.`,
+        'auth_error.passkey_signer_unknown'
+      );
+    }
     let popup: SignerPopup | undefined;
     try {
       // Opened before anything is awaited: the click that asked for the signature allows the popup.

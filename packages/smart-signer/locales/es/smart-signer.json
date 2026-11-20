@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "La clave de propietario (owner) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave de propietario (owner) actual.",
     "keychain_signing_failed": "Se produjo un error al firmar la transacción en Hive Keychain.",
     "rewards_already_claimed": "Tus recompensas ya se reclamaron o son menores de lo mostrado, así que no se reclamó nada.",
-    "balance_too_low": "Tu saldo es insuficiente para esta cantidad, así que no se envió nada."
+    "balance_too_low": "Tu saldo es insuficiente para esta cantidad, así que no se envió nada.",
+    "generic_title": "Error",
+    "vote_identical": "Tu voto en esta publicación ya es igual a este.",
+    "not_enough_downvote_mana": "Tu poder de voto negativo es demasiado bajo para votar negativamente.",
+    "vote_weight_zero": "Elige un peso de voto mayor que cero.",
+    "post_interval": "Solo puedes publicar una vez cada 5 minutos. Espera e inténtalo de nuevo.",
+    "comment_interval": "Solo puedes comentar una vez cada 3 segundos. Espera e inténtalo de nuevo."
   },
   "request_error": {
     "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
@@ -312,6 +318,9 @@
     "invalid_challenge": "No se pudo iniciar sesión: el desafío de inicio de sesión no es válido.",
     "account_not_found": "No se encontró la cuenta en la blockchain.",
     "missing_authority": "Esta clave no tiene la autoridad necesaria para esta cuenta.",
+    "key_verification_failed": "No se pudo verificar la clave.",
+    "no_key_provided": "No se introdujo ninguna clave.",
+    "passkey_signer_unknown": "Este navegador no conoce ningún firmante con passkey para tu cuenta. Vuelve a iniciar sesión.",
     "unknown": "Se produjo un error de autenticación."
   }
 }

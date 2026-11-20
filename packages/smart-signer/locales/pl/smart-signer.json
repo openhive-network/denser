@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "Klucz Owner zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie aktualnym kluczem Owner.",
     "keychain_signing_failed": "Wystąpił błąd podczas podpisywania transakcji w Hive Keychain.",
     "rewards_already_claimed": "Twoje nagrody zostały już odebrane lub są mniejsze niż pokazane, więc nic nie odebrano.",
-    "balance_too_low": "Twoje saldo jest za niskie na tę kwotę, więc nic nie wysłano."
+    "balance_too_low": "Twoje saldo jest za niskie na tę kwotę, więc nic nie wysłano.",
+    "generic_title": "Błąd",
+    "vote_identical": "Twój głos na ten post jest już taki sam jak ten.",
+    "not_enough_downvote_mana": "Twoja siła głosu przeciw jest za niska, aby zagłosować przeciw.",
+    "vote_weight_zero": "Wybierz wagę głosu większą od zera.",
+    "post_interval": "Post możesz opublikować tylko raz na 5 minut. Odczekaj i spróbuj ponownie.",
+    "comment_interval": "Komentować możesz tylko raz na 3 sekundy. Odczekaj i spróbuj ponownie."
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
@@ -312,6 +318,9 @@
     "invalid_challenge": "Logowanie nie powiodło się: wyzwanie logowania jest nieprawidłowe.",
     "account_not_found": "Nie znaleziono konta w blockchainie.",
     "missing_authority": "Ten klucz nie ma wymaganego upoważnienia dla tego konta.",
+    "key_verification_failed": "Nie udało się zweryfikować klucza.",
+    "no_key_provided": "Nie wpisano klucza.",
+    "passkey_signer_unknown": "Ta przeglądarka nie zna serwisu podpisującego kluczem dostępu dla Twojego konta. Zaloguj się ponownie.",
     "unknown": "Wystąpił błąd uwierzytelniania."
   }
 }

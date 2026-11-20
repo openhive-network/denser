@@ -35,6 +35,7 @@ translate the terms below. Status values and how to use this file:
 | proxy | unreviewed | An account that votes for witnesses on the user's behalf. |
 | Resource Credits (RC) | unreviewed | |
 | upvote / downvote | unreviewed | |
+| vote weight / downvote power | unreviewed | A vote's percentage on the slider; the mana downvotes spend ("Downvote power: {{value}}%"). |
 | follow / mute / reblog | unreviewed | |
 | community | unreviewed | |
 | community subscribers | unreviewed | "{{value}} subscribers", plural keys `communities.subscribers_count_*` (#1717). |

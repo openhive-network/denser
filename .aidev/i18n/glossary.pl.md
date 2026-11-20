@@ -50,6 +50,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | Resource Credits (RC) | Punkty zasobów (RC) | agreed (#1188) | Unit for billions: „mld”. „Poziom punktów zasobów (RC): 42%” (#1698). |
 | API node | węzeł API | agreed (#1188) | |
 | upvote / downvote | głos za / głos przeciw | unreviewed | |
+| vote weight / downvote power | waga głosu / siła głosu przeciw | unreviewed | |
 | follow | obserwować; button „Obserwuj” | unreviewed | The delegate dialog's suggestion suffix „obserwujesz” is agreed (#1188). |
 | mute / unmute | wyciszyć / wyłączyć wyciszenie | unreviewed | Buttons „Wycisz”, „Wyłącz wyciszenie” (#1698). |
 | reblog | reblog, „Rebloguj” | unreviewed | |

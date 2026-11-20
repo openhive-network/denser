@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "安全存储中保存的所有者（owner）密钥已不再适用于您的账户，可能已被更改。请使用当前的所有者（owner）密钥重新登录。",
     "keychain_signing_failed": "在 Hive Keychain 中签名交易时出错。",
     "rewards_already_claimed": "您的奖励已被领取或少于显示的数额，因此未领取任何奖励。",
-    "balance_too_low": "您的余额不足以支付此金额，因此未发送任何内容。"
+    "balance_too_low": "您的余额不足以支付此金额，因此未发送任何内容。",
+    "generic_title": "错误",
+    "vote_identical": "你对这篇帖子的投票已与此次投票相同。",
+    "not_enough_downvote_mana": "你的反对票能量不足，无法投反对票。",
+    "vote_weight_zero": "请选择大于零的投票权重。",
+    "post_interval": "每 5 分钟只能发布一篇帖子。请稍后重试。",
+    "comment_interval": "每 3 秒只能发表一条评论。请稍后重试。"
   },
   "request_error": {
     "timeout": "服务器未及时响应。请重试。",
@@ -312,6 +318,9 @@
     "invalid_challenge": "登录失败：登录质询无效。",
     "account_not_found": "在区块链上未找到该账户。",
     "missing_authority": "此密钥不具备该账户所需的权限。",
+    "key_verification_failed": "无法验证密钥。",
+    "no_key_provided": "未输入密钥。",
+    "passkey_signer_unknown": "此浏览器中没有你账户的通行密钥签名服务。请重新登录。",
     "unknown": "发生身份验证错误。"
   }
 }

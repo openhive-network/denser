@@ -144,6 +144,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/signer/prompted-key-registration.test.ts \
     packages/smart-signer/lib/signer/google-drive-wallet-errors.test.ts \
     packages/smart-signer/lib/signer/operation-summary.test.ts \
+    packages/smart-signer/lib/signer/signer-passkey.test.ts \
     packages/smart-signer/lib/auth/accounts.test.ts \
     packages/smart-signer/lib/auth/chat-session.test.ts \
     packages/smart-signer/lib/auth/chat-sign-out.test.ts \

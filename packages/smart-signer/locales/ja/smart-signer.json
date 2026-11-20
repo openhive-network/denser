@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "安全なストレージに保存されているオーナー（owner）キーは、このアカウントでは使用できなくなりました。変更された可能性があります。現在のオーナー（owner）キーで再度サインインしてください。",
     "keychain_signing_failed": "Hive Keychain でトランザクションの署名中にエラーが発生しました。",
     "rewards_already_claimed": "報酬はすでに受け取り済みか、表示より少ないため、何も受け取られませんでした。",
-    "balance_too_low": "残高がこの金額に足りないため、何も送信されませんでした。"
+    "balance_too_low": "残高がこの金額に足りないため、何も送信されませんでした。",
+    "generic_title": "エラー",
+    "vote_identical": "この投稿へのあなたの投票は、すでにこの投票と同じです。",
+    "not_enough_downvote_mana": "反対票パワーが不足しているため、反対票を投じられません。",
+    "vote_weight_zero": "ゼロより大きい投票の重みを選択してください。",
+    "post_interval": "投稿できるのは5分に1回だけです。しばらく待ってからもう一度お試しください。",
+    "comment_interval": "コメントできるのは3秒に1回だけです。しばらく待ってからもう一度お試しください。"
   },
   "request_error": {
     "timeout": "サーバーが時間内に応答しませんでした。もう一度お試しください。",
@@ -312,6 +318,9 @@
     "invalid_challenge": "ログインに失敗しました：ログインチャレンジが無効です。",
     "account_not_found": "ブロックチェーン上にアカウントが見つかりません。",
     "missing_authority": "このキーには、このアカウントに必要な権限がありません。",
+    "key_verification_failed": "キーを検証できませんでした。",
+    "no_key_provided": "キーが入力されていません。",
+    "passkey_signer_unknown": "このブラウザーには、あなたのアカウントのパスキー署名サービスが登録されていません。もう一度サインインしてください。",
     "unknown": "認証エラーが発生しました。"
   }
 }
