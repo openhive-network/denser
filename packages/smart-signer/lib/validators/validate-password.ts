@@ -12,8 +12,8 @@ function hasAllIdenticalChars(value: string): boolean {
 export const passwordSchema = z
   .string()
   .min(MIN_PASSWORD_LENGTH, {
-    message: 'Password length should be at least 6 characters'
+    message: 'login_form.zod_error.password_length'
   })
   .refine((val) => !hasAllIdenticalChars(val), {
-    message: 'Password must not consist of all identical characters'
+    message: 'login_form.zod_error.password_identical_characters'
   });

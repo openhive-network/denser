@@ -12,7 +12,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 
 | English | Russian | Status | Notes |
 |---|---|---|---|
-| Safe Storage | безопасное хранилище | unreviewed | Label "Безопасное хранилище". See drift: "защищённое хранилище". |
+| Safe Storage | безопасное хранилище | unreviewed | Label "Безопасное хранилище". Every string since #1698. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Использовать Keychain". |
 | witness / witnesses | делегат / делегаты | unreviewed | 29 of 37 strings; 6 say "свидетель". Needs review first: "делегат" collides with delegation ("делегирование"), the same clash the Polish tester removed in #1188. |
 | voters | проголосовавшие | unreviewed | A counted list counts votes: "1 голос", "3 голоса", "5 голосов". |
@@ -49,6 +49,7 @@ No native speaker has reviewed the Russian strings yet, so every term is
 | market / interest | биржа / проценты | unreviewed | |
 | this session (key badge) | Эта сессия | unreviewed | |
 | recovery account | аккаунт восстановления | unreviewed | |
+| unmute | снять заглушение | unreviewed | Buttons "Заглушить" / "Снять заглушение" (#1698). |
 
 ## Register
 
@@ -88,12 +89,7 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER, MEMO.
 
 ## Known drift
 
-- mute: blog `user_profile.mute_button` "немой" (an adjective) and
-  `unmute_button` "включить звук".
-- redeem: blog `navigation.profile_notifications_tab_navbar.redeem`
-  "Выкупать" (buy back) against "Получить вознаграждения".
-- witness: "свидетель" in 6 strings against "делегат".
-- Safe Storage: "защищённое хранилище" in the lite-account strings.
-- Google Drive: 4 strings say "Google Диск".
-- `navigation.profile_navbar.rewards` "вознаграждение" in lower case.
-- "е" for "ё": "Кошелек" (6 strings), "счет" (10), "еще" (3).
+Strings that do not follow the glossary yet:
+
+- witness: "свидетель" in 6 strings against "делегат"; the term itself needs a tester decision (see Terms).
+- "е" for "ё" in inflected forms (#1698 fixed the bare words "Кошелёк", "счёт", "ещё").

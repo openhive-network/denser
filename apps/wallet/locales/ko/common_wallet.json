@@ -329,7 +329,7 @@
     "use_this_for_linking_title": "이 페이지로 연결하고 선택한 증인을 강조 표시할 때 사용하세요",
     "has_not_produced_blocks": "⚠️1주일 넘게 블록을 생성하지 않았습니다.",
     "no_blocks_for_days_other": "{{count}}일 동안 블록 없음",
-    "by": "작성자: {{owners}}",
+    "by": "운영자: {{owners}}",
     "proxy_form": {
       "title": "계정 증인 프록시 확인",
       "description": "프록시를 해제하려고 합니다.",

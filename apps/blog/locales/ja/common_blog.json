@@ -121,7 +121,7 @@
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "未請求の報酬: {{rewards}}",
       "no_notifications_yet": "まだ通知はありません",
-      "redeem": "償還",
+      "redeem": "報酬を受け取る",
       "claim_success_title": "報酬を受け取る",
       "claim_success_description": "報酬を受け取りました。",
       "mark_all": "すべて既読としてマークする",
@@ -166,7 +166,7 @@
       "remove_account_failed": "{{username}} を削除できませんでした。",
       "logged_in_with": "{{method}}でログイン",
       "login_method": {
-        "hbauth": "セーフストレージ",
+        "hbauth": "安全なストレージ",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",
@@ -563,7 +563,7 @@
     "description_member": "運営チームに掲載",
     "description_guest": "デフォルト。投稿とコメントが可能",
     "description_muted": "新しい投稿は自動的にミュート",
-    "admin": "admin",
+    "admin": "管理者",
     "admins": "管理者",
     "subscribers_count_other": "購読者 {{value}} 人",
     "authors_count_other": "著者 {{value}} 人",
@@ -1389,7 +1389,7 @@
       "steps": {
         "keys": "パスキーからアカウントの鍵を取得中",
         "creating": "アカウントを作成中",
-        "delegating": "リソースクレジットを委任中",
+        "delegating": "リソースクレジットを委託中",
         "linking": "ライトアカウントをリンク中"
       },
       "done": "Hive アカウントの準備ができました：",

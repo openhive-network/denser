@@ -81,13 +81,7 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER, Power Up, Power Down.
 
 ## Known drift
 
-- wallet `witnesses_page.witness` is Russian text ("Делегаты").
-- mute: blog `user_profile.mute_button` 沉默的 (an adjective, "silent").
-- follow: blog `user_profile.follow_button` 跟随 against 关注.
-- redeem: blog `navigation.profile_notifications_tab_navbar.redeem` 赎回
-  (buy back) against 领取奖励.
-- payout: 支付, 赏金, 收益, 付款 and 奖励 for the same concept; the blog's
-  `settings_page.decline_payout` says 不接受奖励.
-- delegation: 代理 against 委托 (wallet navigation, page title).
-- log out: blog 登出, wallet 退出登录.
-- Google Drive: 4 strings say Google 云端硬盘.
+Strings that do not follow the glossary yet:
+
+- payout: 支付, 赏金, 收益, 付款 and 奖励 for the same concept outside the decline-payout buttons (拒绝支付 since #1698).
+- delegation: 代理 against 委托 (wallet navigation, page title); the term needs a tester decision (see Terms).

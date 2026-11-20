@@ -29,6 +29,7 @@ import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import PostSummary from './summary';
 import { Preferences } from '@/blog/lib/utils';
+import { communityRoleLabel } from '@/blog/features/community-profile/lib/utils';
 import { Trans, useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
@@ -211,7 +212,9 @@ const PostListItem = memo(
                 </span>
                 <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
                 {post.author_role && post.author_role !== 'guest' && isCommunityPage ? (
-                  <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
+                  <span className="text-xs uppercase md:text-sm">
+                    &nbsp;{communityRoleLabel(post.author_role, t)}&nbsp;
+                  </span>
                 ) : null}
                 {post.author_title ? (
                   <Badge variant="outline" className="mr-1 border-destructive px-1 py-0 font-thin">

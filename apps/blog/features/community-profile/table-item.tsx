@@ -2,7 +2,8 @@
 
 import { TableCell, TableRow } from '@ui/components/table';
 import { Pen, Save, X } from 'lucide-react';
-import { Roles, User } from './lib/utils';
+import { Roles, User, communityRoleLabel } from './lib/utils';
+import { useTranslation } from '@/blog/i18n/client';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useSetRoleMutation } from '@/blog/features/community-profile/hooks/use-set-role-mutations';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ const TableItem = ({
   item: User;
   loggedUserValue: number;
 }) => {
+  const { t } = useTranslation('common_blog');
   const setRoleMutation = useSetRoleMutation();
   const [selectedRole, setSelectedRole] = useState<Roles>(item.role as Roles);
   const [editMode, setEditMode] = useState(false);
@@ -88,8 +90,9 @@ const TableItem = ({
                     'animate-pulse text-destructive': item.temprary
                   })}
                   data-testid="community-role-name"
+                  data-role={item.role}
                 >
-                  {item.role}
+                  {communityRoleLabel(item.role, t)}
                 </span>
                 <button
                   onClick={() => setEditMode(true)}
@@ -103,7 +106,9 @@ const TableItem = ({
             )}
           </span>
         ) : (
-          <span data-testid="community-role-name">{item.role}</span>
+          <span data-testid="community-role-name" data-role={item.role}>
+            {communityRoleLabel(item.role, t)}
+          </span>
         )}
       </TableCell>
 

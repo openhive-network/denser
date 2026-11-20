@@ -55,7 +55,7 @@ const CommunitySimpleDescription = ({
       {/* Header: Title + Action Buttons */}
       <div className="flex items-start justify-between gap-2">
         <CardTitle className="flex flex-wrap items-center gap-1 text-base sm:text-lg">
-          <span>{data.title}</span>
+          <span data-testid="community-sidebar-title">{data.title}</span>
           {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
         </CardTitle>
         <div className="flex shrink-0 gap-2 [&_button]:w-auto [&_button]:whitespace-nowrap">
@@ -108,7 +108,11 @@ const CommunitySimpleDescription = ({
       </div>
 
       {/* About */}
-      {data.about ? <p className="text-xs text-muted-foreground sm:text-sm">{data.about}</p> : null}
+      {data.about ? (
+        <p className="text-xs text-muted-foreground sm:text-sm" data-testid="community-simple-about">
+          {data.about}
+        </p>
+      ) : null}
     </Card>
   );
 };

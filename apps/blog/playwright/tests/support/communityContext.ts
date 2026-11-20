@@ -117,10 +117,11 @@ export const ROLE_MUTED = 'muted';
 
 /**
  * Stable leadership rows in `hive-160391`'s role list, asserted by COM-13.
- * The roles table renders the RAW role string (not the translated label) —
- * see `table-item.tsx` (`{item.role}`). `title` is the per-user community
- * title column. Pinned here so a re-record that changes leadership fails in
- * one place instead of inside the spec.
+ * `role` is the raw role the roles table keeps in the role cell's `data-role`
+ * (it shows the translated label, `communityRoleLabel` in `table-item.tsx`);
+ * `title` is the per-user community title column. Pinned
+ * here so a re-record that changes leadership fails in one place instead of
+ * inside the spec.
  */
 export const ROLE_ROW_ADMIN = { account: 'gandalf', role: ROLE_ADMIN, title: '' };
 export const ROLE_ROW_MOD = { account: 'gtg', role: ROLE_MOD, title: 'Wizard' };

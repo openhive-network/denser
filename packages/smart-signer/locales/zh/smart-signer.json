@@ -122,7 +122,7 @@
       "authenticated_description": "您已成功通过认证"
     },
     "zod_error": {
-      "password_length": "密码长度应大于6个字符",
+      "password_length": "密码长度至少为 6 个字符。",
       "invalid_keytype": "无效的密钥类型",
       "keytype_required": "需要密钥类型",
       "invalid_wif": "无效的WIF密钥",
@@ -135,7 +135,9 @@
       "authorised_account_active_key": "此密钥属于 @{{owner}}，它拥有 @{{account}} 的 Active 权限。关闭“{{mode}}”后即可接受此密钥",
       "authorised_account_posting_key": "此密钥属于 @{{owner}}，它拥有 @{{account}} 的 Posting 权限。关闭“{{mode}}”后即可接受此密钥",
       "other_account_active_key": "此密钥属于 @{{owner}}，而不是 @{{account}}。请输入 @{{account}} 的 Active 密钥",
-      "other_account_posting_key": "此密钥属于 @{{owner}}，而不是 @{{account}}。请输入 @{{account}} 的 Posting 密钥"
+      "other_account_posting_key": "此密钥属于 @{{owner}}，而不是 @{{account}}。请输入 @{{account}} 的 Posting 密钥",
+      "password_identical_characters": "密码不能只由同一个字符重复组成。",
+      "password_too_long": "密码长度不能超过 512 个字符。"
     },
     "signin_with_keychain": "Hive密钥链扩展",
     "signin_with_wif": "使用WIF登录（传统）",
@@ -273,12 +275,12 @@
   },
   "google_drive_error": {
     "wallet_not_found_title": "未找到钱包",
-    "wallet_not_found_description": "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。",
+    "wallet_not_found_description": "在您的 Google Drive中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。",
     "key_not_found_title": "未找到密钥",
-    "key_not_found_description": "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。",
+    "key_not_found_description": "在您的 Google Drive钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。",
     "account_not_found_title": "未找到任何密钥",
-    "account_not_found_description": "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
-    "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
+    "account_not_found_description": "您的 Google Drive钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
+    "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google Drive中。",
     "go_to_bridge": "前往 Hive Bridge",
     "wrong_password": "钱包密码错误，请重试。"
   },
@@ -293,5 +295,23 @@
     "locked": "密钥已锁定",
     "locked_notice": "你的密钥已锁定。下次签名时将要求输入密码。",
     "locked_note": "密钥已锁定：下次签名时将要求输入密码"
+  },
+  "auth_error": {
+    "invalid_password": "密码无效。",
+    "authentication_failed": "身份验证失败。",
+    "user_already_logged_in": "该用户已登录。",
+    "user_not_found": "未找到用户。",
+    "wallet_locked": "安全存储已锁定。",
+    "unlock_failed": "无法解锁安全存储。",
+    "key_not_added": "无法将密钥添加到安全存储。",
+    "key_not_registered": "此密钥不在安全存储中。",
+    "operation_cancelled": "已取消。",
+    "already_registered": "此密钥已在安全存储中，请改为更新它。",
+    "wallet_operation_failed": "安全存储无法完成该操作。",
+    "operation_failed": "操作失败。",
+    "invalid_challenge": "登录失败：登录质询无效。",
+    "account_not_found": "在区块链上未找到该账户。",
+    "missing_authority": "此密钥不具备该账户所需的权限。",
+    "unknown": "发生身份验证错误。"
   }
 }

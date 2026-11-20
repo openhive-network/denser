@@ -12,7 +12,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 
 | English | Italian | Status | Notes |
 |---|---|---|---|
-| Safe Storage | archivio sicuro | unreviewed | 21 of 37 strings; 13 say "conservazione sicura", 3 "Archiviazione Sicura" (see drift). |
+| Safe Storage | archivio sicuro | unreviewed | Masculine: "nell'archivio sicuro", "Usa l'archivio sicuro"; label "Archivio sicuro" (#1698). |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Usa Keychain". |
 | witness / witnesses | witness | unreviewed | Kept in English in 33 of 37 strings: "Witness". |
 | voters | votanti | unreviewed | |
@@ -25,7 +25,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | HIVE, HBD, HIVE POWER, HP | unchanged | unreviewed | Token symbols. |
 | payout / after payout | pagamento / dopo il pagamento | unreviewed | 23 of 23 strings. |
 | rewards / claim rewards | ricompense / Riscatta ricompense | unreviewed | |
-| curation rewards | ricompense da curatore | unreviewed | The blog says "ricompense di curation" (see drift). |
+| curation rewards | ricompense da curatore | unreviewed | |
 | beneficiary | beneficiario | unreviewed | |
 | posting / active / owner / memo key | chiave di pubblicazione / chiave attiva / chiave Owner / chiave Memo | unreviewed | Owner is a tie: 10 strings "Owner", 10 "proprietario". |
 | Keys & Permissions / Authorities | Chiavi e permessi / Autorità | unreviewed | |
@@ -49,6 +49,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | market / interest | mercato / interessi | unreviewed | |
 | this session (key badge) | Questa sessione | unreviewed | |
 | recovery account | account di recupero | unreviewed | |
+| unmute | riattiva | unreviewed | Button "Riattiva", as `communities.unmute_post_comment` (#1698). |
 
 ## Register
 
@@ -84,14 +85,6 @@ feed, backup.
 
 ## Known drift
 
-- Safe Storage: three renderings ("archivio sicuro", "conservazione sicura",
-  "Archiviazione Sicura" in the login-method labels).
-- witness: 7 strings say "testimone".
-- mute: blog `user_profile.mute_button` "Muto" and `unmute_button` "Un muto"
-  (should use "silenziare").
-- curation rewards: "ricompense da curatore" (wallet) and "ricompense di
-  curation" (blog).
-- price feed: `permissions.active_key.publish` keeps "price feed".
-- wallet `profile.savings_title` "RISPARMI" in capitals.
-- blog `navigation.profile_navbar.replies` "Risponde" (a verb) for the
-  Replies tab.
+Strings that do not follow the glossary yet:
+
+- witness: the glossary keeps "witness", and the blog's and wallet's strings now do (#1698); a native reviewer may still prefer "testimone".

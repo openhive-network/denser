@@ -8,6 +8,8 @@ import PasskeyPrompt from '@smart-signer/components/auth/passkey-prompt';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { Button } from '@ui/components/button';
 import { DialogFooter } from '@ui/components/dialog';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -36,12 +38,16 @@ const fieldsSchema = (mismatch: string) =>
  */
 export default function LiteSafeStorageForm({ onDone }: { onDone: () => void }) {
   const { t } = useTranslation('common_blog');
+  const translateSignerKey = (key: string) => t(key, { ns: SMART_SIGNER_NAMESPACE });
   const [stored, store] = useStoredLiteIdentityState();
   const [error, setError] = useState<string | null>(null);
   const [offer, setOffer] = useState<PasskeyOffer | null>(null);
   const offerPassword = useRef('');
   const form = useForm<Fields>({
-    resolver: zodResolver(fieldsSchema(t('lite_account.safe_storage.password_mismatch'))),
+    resolver: withTranslatedErrors(
+      zodResolver(fieldsSchema(t('lite_account.safe_storage.password_mismatch'))),
+      translateSignerKey
+    ),
     defaultValues: { password: '', repeat: '' }
   });
   const { isSubmitting, errors } = form.formState;
@@ -61,7 +67,7 @@ export default function LiteSafeStorageForm({ onDone }: { onDone: () => void }) 
       offerPassword.current = password;
       setOffer({ username });
     } catch (failure) {
-      setError(handleAuthError(failure, 'LiteSafeStorageForm.secure'));
+      setError(handleAuthError(failure, 'LiteSafeStorageForm.secure', translateSignerKey));
     }
   };
 
