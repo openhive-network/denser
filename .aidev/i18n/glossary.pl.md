@@ -128,6 +128,4 @@ HIVE, HBD, HP, HIVE POWER, Hive Power; key names Posting, Active, Owner, Memo
 
 ## Known drift
 
-Strings that do not follow the glossary yet:
-
-- „Hbauth” in the blog's and the wallet's `login_form.*hbauth*` keys (the smart-signer copies, which the dialogs show, say „bezpieczny magazyn”).
+None known. #1727 removed the unused `login_form.*hbauth*` keys listed here before.

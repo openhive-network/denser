@@ -24,7 +24,6 @@ const POLICY = {
       'navigation.sidebar.openhive_chat',
       'navigation.profile_navbar.blog',
       'navigation.user_menu.blog',
-      'login_form.title_hbauth_form',
       'navigation.user_menu.login_method.keychain',
       'navigation.user_menu.login_method.peakvault',
       'navigation.user_menu.login_method.metamask',

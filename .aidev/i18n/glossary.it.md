@@ -6,7 +6,9 @@ Applies to `apps/blog/locales/it/common_blog.json`,
 use this file: `.aidev/i18n/README.md`.
 
 No native speaker has reviewed the Italian strings yet, so every term is
-`unreviewed`: the rendering the locale files use most as of 2026-11-19.
+`unreviewed`: the rendering the locale files use most as of 2026-11-19. The
+`agreed` rows were decided for #1727 after comparing hive.blog, the Hive
+wallet, Ecency and PeakD; a native speaker may still refine them.
 
 ## Terms
 
@@ -14,7 +16,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 |---|---|---|---|
 | Safe Storage | archivio sicuro | unreviewed | Masculine: "nell'archivio sicuro", "Usa l'archivio sicuro"; label "Archivio sicuro" (#1698). |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Usa Keychain". |
-| witness / witnesses | witness | unreviewed | Kept in English in 33 of 37 strings: "Witness". |
+| witness / witnesses | witness | agreed (#1727) | Kept in English, as hive.blog, the Hive wallet and Ecency mobile do: "Witness". Not "testimone". |
 | voters | votanti | unreviewed | |
 | proposal / proposals | proposta / proposte | unreviewed | |
 | Unfunded | Non finanziato; phone "Non finanz." | unreviewed | |
@@ -87,6 +89,4 @@ feed, backup.
 
 ## Known drift
 
-Strings that do not follow the glossary yet:
-
-- witness: the glossary keeps "witness", and the blog's and wallet's strings now do (#1698); a native reviewer may still prefer "testimone".
+None known. #1727 settled the witness term listed here before.

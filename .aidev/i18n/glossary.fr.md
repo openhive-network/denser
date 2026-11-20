@@ -6,7 +6,9 @@ Applies to `apps/blog/locales/fr/common_blog.json`,
 use this file: `.aidev/i18n/README.md`.
 
 No native speaker has reviewed the French strings yet, so every term is
-`unreviewed`: the rendering the locale files use most as of 2026-11-19.
+`unreviewed`: the rendering the locale files use most as of 2026-11-19. The
+`agreed` rows were decided for #1727 after comparing hive.blog, the Hive
+wallet, Ecency and PeakD; a native speaker may still refine them.
 
 ## Terms
 
@@ -23,10 +25,10 @@ No native speaker has reviewed the French strings yet, so every term is
 | delegation / delegate | délégation / déléguer | unreviewed | |
 | power up / power down | Power Up / Power Down | unreviewed | Kept in English in buttons. |
 | HIVE, HBD, HIVE POWER, HP | unchanged | unreviewed | Token symbols. |
-| payout / after payout | paiement / après le paiement | unreviewed | 15 of 23 strings; 7 say "gains" (see drift). |
-| rewards | gains | unreviewed | 23 strings against 22 for "récompenses": a near tie for a reviewer to settle. |
-| claim rewards | Réclamer les gains | unreviewed | |
-| curation rewards | gains de curation | unreviewed | |
+| payout (the event) / after payout | paiement / après le paiement | agreed (#1727) | "Paiement dans 7 jours", "Refuser le paiement", "Paiement refusé". |
+| rewards / payout (amounts earned) | gains | agreed (#1727) | "Gains", "Gains en attente", "Gains d'auteur", "Gains maximaux acceptés", "Aucun gain en attente". Not "récompenses" outside curation rewards. |
+| claim rewards | Réclamer les gains | agreed (#1727) | |
+| curation rewards | récompenses de curation | agreed (#1727) | "Récompenses de curation", "Récompense de curation pour :". |
 | beneficiary | bénéficiaire | unreviewed | |
 | posting / active / owner / memo key | clé de publication / clé active / clé propriétaire / clé mémo | unreviewed | |
 | Keys & Permissions / Authorities | Clés et permissions / Autorités | unreviewed | |
@@ -86,6 +88,4 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER; passkey, blog, spoiler.
 
 ## Known drift
 
-Strings that do not follow the glossary yet:
-
-- payout/rewards: "paiement", "gains" and "récompenses" alternate for the same concepts.
+None known. #1727 settled the payout and rewards terms listed here before.
