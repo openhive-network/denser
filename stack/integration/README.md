@@ -32,7 +32,7 @@ each a production (`output: 'standalone'`) build with that base path.
   On mainnet, logging in signs **real** transactions.
 - **HTML cache** (optional, `DENSER_HTML_CACHE=varnish`): varnish between caddy and the
   blog stores the anonymous pages the blog marks public; see "Shared HTML cache" below.
-- **Bot gate** (on unless `DENSER_BOT_GATE=off`): a JS cookie challenge, a crawler
+- **Bot gate** (on unless `DENSER_BOT_GATE=off`): a JS proof-of-work challenge, a crawler
   fingerprint block and a per-address rate limit on the page documents of both apps;
   see "Bot gate" below.
 
@@ -272,11 +272,12 @@ crawl from reaching the apps' servers.
   3. More than 60 page documents a minute from one address: `429`, `Retry-After: 300`,
      `no-store`, for 5 minutes. The challenge page counts; a 403 does not. The counts are
      in the gate's memory and start over when it restarts.
-  4. No `denser_human=1` cookie and none of the signed-in cookies the HTML cache
-     recognises (`*_session`, `observer`, `observer-no-own-lists`, `account_info`): a
-     tiny `200` page, `no-store` and `noindex`, whose script sets `denser_human=1` (30
-     days, `Path=/`, `SameSite=Lax`, `Secure` on https) and reloads once the cookie is
-     there, showing "Loading…" meanwhile. A browser pays one reload on its first page; one
+  4. No valid `denser_human` proof (below) and none of the signed-in cookies the HTML
+     cache recognises (`*_session`, `observer`, `observer-no-own-lists`, `account_info`): a
+     tiny `200` page, `no-store` and `noindex`, showing "Loading…" while its script does
+     the proof's work, sets it as `denser_human` (30 days, `Path=/`, `SameSite=Lax`,
+     `Secure` on https) and reloads once the cookie is there. A browser pays the work and
+     one reload on its first page from an address; one
      refusing the cookie gets no reload but "This site needs cookies to continue…" in
      the page, in the first of its `navigator.languages` the blog has a locale for
      (English otherwise; the messages sit inline in the page), with `<html lang>` set to
@@ -285,7 +286,28 @@ crawl from reaching the apps' servers.
      year, `Path=/`, `SameSite=Lax`, as the apps write it), so the reload shows the site,
      and its cached pages, in that language. A client without JavaScript gets the English
      `<noscript>` text and never gets further.
+
+     The proof is `<issued>.<mac>.<nonce>`. The page carries the seed `<issued>.<mac>`:
+     the unix time and 64 bits of SHA-256 over the gate's secret, the client's address
+     and that time, so only this gate can issue one, and only for that address. The
+     script searches the nonce whose SHA-256 of `<seed>.<nonce>`, its last 4 bytes read
+     little-endian, is below 32768: 2^17 hashes on average (`gate_work_bound` in the VCL).
+     The gate checks the MAC for the request's address, an issue time in the last 30 days
+     and the work, so `denser_human=1`, a proof from another address, an old one or one
+     without the work get the challenge again. An IPv6 client is bound to its `/64`, so
+     its privacy addresses keep the proof; a reader whose address changes otherwise
+     solves it once more. Varnish has no HMAC: the hash is `directors.shard().key()`, the
+     only SHA-256 its vmods offer, and the page's script has its own (one block, so the
+     proof stays under 56 bytes). Solve times in Chromium, measured on a Ryzen 9 9950X3D
+     (2026-11-20, 40 solves): mean 71 ms, median 49 ms, 90th percentile 174 ms; with 4x
+     CPU throttling, Lighthouse's mid-range phone, mean 294 ms, median 194 ms, 90th
+     percentile 760 ms. The work is a lottery: some readers wait a few times the mean.
   5. Anything else passes.
+- **The secret:** `GATE_SECRET` in the gate's environment, from `DENSER_BOT_GATE_SECRET`
+  in `.env`, or `DENSER_SERVER_SECRET_COOKIE_PASSWORD` when unset. The gate does not
+  start without one of 16 or more characters, and is then failed open (below). Changing
+  it costs every reader the challenge once more; the proofs need no other state, so a
+  restart or a VCL reload keeps them.
 - **Caching:** the HTML cache drops `denser_human` with the other cookies it does not
   key on, so anonymous pages are still keyed on URL and language only.
 - **If the gate is down:** the site stays up, ungated. The gate filters crawl load and is
@@ -309,11 +331,15 @@ crawl from reaching the apps' servers.
   by `caddy-apply.sh`.
 - **Checking it:** `./test-cache.sh` runs the gate in its throwaway stack and checks,
   besides the cache: real pages for this (LAN) client, with the crawler's headers too;
-  with `X-Gate-Test: 1` the challenge on a blog and a wallet page (and, with node, its
-  script's message, in English, Polish or the English fallback by `navigator.languages`,
-  and lack of reload when the cookie is refused), the 403, the real
-  (cached) page with `denser_human=1` or a session cookie, the exempt paths and router
-  requests, and the 429 on the 61st page document of a minute, while API routes and the
+  with `X-Gate-Test: 1` the challenge on a blog and a wallet page, also for a forged
+  `denser_human=1` (and, with node, its script's message, in English, Polish or the
+  English fallback by `navigator.languages`, and lack of reload when the cookie is
+  refused; the real (cached) page with the proof it solves, and the challenge for that
+  proof with another nonce), the 403, the real page with a session cookie, the exempt
+  paths and router requests; on the throwaway stack, asking the gate directly, the proof
+  passing from its address or its IPv6 `/64` and not from another, and a proof minted
+  with the stack's secret passing, not when issued over 30 days ago or in the future;
+  the 429 past 60 page documents of a minute, while API routes and the
   LAN exemption still pass; then, with the gate stopped and with it paused, the real
   blog and wallet pages, the fail-open log lines, and the challenge again once it is
   back. `./test-cache.sh https://$SITE_HOST` runs all but the 429 and the
@@ -322,7 +348,7 @@ crawl from reaching the apps' servers.
   ```bash
   site=https://denser.discuss.peerverity.info
   curl -s -H 'X-Gate-Test: 1' "$site/blog/trending"                       # challenge
-  curl -s -H 'X-Gate-Test: 1' -H 'Cookie: denser_human=1' "$site/blog/trending"  # page
+  curl -s -H 'X-Gate-Test: 1' -H 'Cookie: denser_human=1' "$site/blog/trending"  # challenge
   curl -sI -H 'X-Gate-Test: 1' -H 'Sec-Fetch-Site: none' -H "Referer: $site" "$site/blog/trending"  # 403
   ```
 - **Measuring:** `docker compose exec bot-gate varnishncsa -F '%s %{X-Gate-Client}i %U'`
