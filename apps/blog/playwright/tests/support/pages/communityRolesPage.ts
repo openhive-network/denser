@@ -55,7 +55,7 @@ export class CommunityRolesPage {
     );
   }
 
-  /** Role label cell (e.g. "Moderator") within a given account's row. */
+  /** Role cell within a given account's row: the translated label, the raw role (e.g. "mod") in `data-role`. */
   roleNameInRow(account: string): Locator {
     return this.rowByAccount(account).getByTestId('community-role-name');
   }
@@ -66,8 +66,8 @@ export class CommunityRolesPage {
   }
 
   /**
-   * Assert a single role row renders the expected account, role label and
-   * title (`table-item.tsx`).
+   * Assert a single role row renders the expected account, raw role (`data-role`,
+   * the same in every UI language) and title (`table-item.tsx`).
    */
   async expectRoleRow({
     account,
@@ -79,7 +79,7 @@ export class CommunityRolesPage {
     title: string;
   }): Promise<void> {
     await expect(this.rowByAccount(account)).toBeVisible();
-    await expect(this.roleNameInRow(account)).toHaveText(role);
+    await expect(this.roleNameInRow(account)).toHaveAttribute('data-role', role);
     await expect(this.roleTitleInRow(account)).toHaveText(title);
   }
 }

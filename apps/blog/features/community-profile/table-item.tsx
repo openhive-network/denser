@@ -90,6 +90,7 @@ const TableItem = ({
                     'animate-pulse text-destructive': item.temprary
                   })}
                   data-testid="community-role-name"
+                  data-role={item.role}
                 >
                   {communityRoleLabel(item.role, t)}
                 </span>
@@ -105,7 +106,9 @@ const TableItem = ({
             )}
           </span>
         ) : (
-          <span data-testid="community-role-name">{communityRoleLabel(item.role, t)}</span>
+          <span data-testid="community-role-name" data-role={item.role}>
+            {communityRoleLabel(item.role, t)}
+          </span>
         )}
       </TableCell>
 

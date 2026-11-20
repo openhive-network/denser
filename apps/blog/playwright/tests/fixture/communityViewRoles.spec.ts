@@ -2,7 +2,7 @@ import { test, expect } from '../support/fixture-proxy-test';
 import { CommunityRolesPage } from '../support/pages/communityRolesPage';
 import {
   MOD_COMMUNITY_TAG,
-  ROLE_LABEL_OWNER,
+  ROLE_OWNER,
   ROLE_ROW_ADMIN,
   ROLE_ROW_MOD,
   gotoRolesPageLoggedIn
@@ -37,12 +37,13 @@ test('COM-13 — View community roles', async ({ page }) => {
   await expect(roles.table).toBeVisible();
 
   // Multiple members render (owner + admin + mod at minimum).
+  await expect(roles.roleRows.first()).toBeVisible();
   expect(await roles.roleRows.count()).toBeGreaterThanOrEqual(3);
 
   // The community account itself holds the "owner" row.
-  await expect(roles.roleNameInRow(MOD_COMMUNITY_TAG)).toHaveText(ROLE_LABEL_OWNER);
+  await expect(roles.roleNameInRow(MOD_COMMUNITY_TAG)).toHaveAttribute('data-role', ROLE_OWNER);
 
   // Leadership rows render account → raw role → title.
-  await expect(roles.roleNameInRow(ROLE_ROW_ADMIN.account)).toHaveText(ROLE_ROW_ADMIN.role);
+  await expect(roles.roleNameInRow(ROLE_ROW_ADMIN.account)).toHaveAttribute('data-role', ROLE_ROW_ADMIN.role);
   await roles.expectRoleRow(ROLE_ROW_MOD); // gtg → mod → "Wizard"
 });
