@@ -13,7 +13,7 @@ import { graduationErrorKey } from './lite-graduation-state';
 import { graduatedIdentity } from './lite-identity-record';
 import { useLiteGraduationAccess } from './use-lite-graduation';
 import { useStoredLiteIdentityState } from './use-stored-lite-identity';
-import { liteWalletFailureMessage } from './lite-wallet-errors';
+import { LiteWalletUnlockError } from './lite-wallet-errors';
 import { openLiteKeyStore } from './open-lite-key-store';
 
 const logger = getLogger('app');
@@ -34,8 +34,7 @@ export type GraduationFlowState =
  */
 function failureKey(error: unknown): string | null {
   if (error instanceof SignerError) return liteAuthorityErrorKey(error);
-  const unlock = liteWalletFailureMessage(error);
-  if (unlock !== undefined) return unlock === null ? null : 'lite_account.safe_storage.unlock_failed';
+  if (error instanceof LiteWalletUnlockError) return error.cancelled ? null : 'lite_account.safe_storage.unlock_failed';
   return graduationErrorKey(error);
 }
 

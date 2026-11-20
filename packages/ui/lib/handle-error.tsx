@@ -29,6 +29,8 @@ import { TransactionExpiredMessage } from '@smart-signer/components/transaction-
 import { EarlierBroadcastPendingMessage } from '@smart-signer/components/earlier-broadcast-pending-message';
 import { WrongSafeStoragePasswordMessage } from '@smart-signer/components/wrong-safe-storage-password-message';
 import { SafeStorageKeyNotAuthorizedMessage } from '@smart-signer/components/safe-storage-key-not-authorized-message';
+import { AuthFailureMessage } from '@smart-signer/components/auth-failure-message';
+import { findAuthFailureKey } from '@smart-signer/lib/auth-failure';
 import {
   findSafeStorageKeyNotAuthorized,
   findWrongSafeStoragePassword
@@ -149,6 +151,19 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.error(error, 'Key write in %s was superseded by another app', ctx?.method);
     toast({
       description: <SupersededKeyWriteMessage {...supersededKeyWrite} />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Safe storage or the key's authority check refused signing for a well-known reason; an unknown one
+  // keeps hb-auth's message for the generic toast below
+  const authFailureKey = findAuthFailureKey(error);
+  if (authFailureKey) {
+    logger.warn('Signing in %s refused: %s', ctx?.method, summarizeErrorForLog(error));
+    toast({
+      description: <AuthFailureMessage messageKey={authFailureKey} />,
       variant: 'destructive',
       ...toastOptions
     });

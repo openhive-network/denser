@@ -1,4 +1,5 @@
 import { getLogger } from '@ui/lib/logging';
+import { AuthFailureError } from '@smart-signer/lib/auth-failure';
 
 const logger = getLogger('app');
 
@@ -215,6 +216,15 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
     originalError: error,
     isKnownError: false
   };
+}
+
+/**
+ * `error`, hb-auth's failure, as an AuthFailureError caused by it, with parseAuthError's message and
+ * the translation key of a well-known failure; an unknown one keeps hb-auth's own message and no key.
+ */
+export function toAuthFailure(error: unknown): AuthFailureError {
+  const { message, messageKey } = parseAuthError(error);
+  return new AuthFailureError(message, messageKey, { cause: error });
 }
 
 /**

@@ -163,6 +163,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \
     packages/smart-signer/lib/auth/added-key-sign-in.test.ts \
     packages/smart-signer/lib/auth/safe-storage-unlock.test.ts \
+    packages/smart-signer/lib/auth-error.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts \
     packages/smart-signer/lib/signer/unlock-hint.test.ts \
     packages/smart-signer/lib/signer/signed-in-check.test.ts \
@@ -246,6 +247,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/matrix-chat/lib/sdk-log-routing.test.ts \
     apps/blog/features/matrix-chat/lib/sender-label.test.ts \
     apps/blog/features/lite-account/lite-did.test.ts \
+    apps/blog/features/lite-account/lite-wallet-errors.test.ts \
     apps/blog/features/lite-account/lite-reply-optimistic.test.ts \
     apps/blog/features/lite-account/use-lite-gateway-health.test.ts \
     apps/blog/features/lite-account/lite-endpoints.test.ts \

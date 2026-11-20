@@ -36,7 +36,8 @@ export class SafeStorageKeyNotAuthorizedError extends Error {
  */
 export type UnlockRefusal = 'wrong-password' | 'key-not-stored' | 'key-not-authorized';
 
-function findInCauses(error: unknown, matches: (error: Error) => boolean): Error | undefined {
+/** The first of `error` and its causes (up to a few deep) that `matches`, else undefined */
+export function findInCauses(error: unknown, matches: (error: Error) => boolean): Error | undefined {
   let current = error;
   for (let depth = 0; depth < MAX_CAUSE_DEPTH && current instanceof Error; depth++) {
     if (matches(current)) return current;

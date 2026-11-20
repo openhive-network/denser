@@ -68,7 +68,8 @@ async function unlockLiteWallet(identity: StoredLiteIdentity, keyType: LiteKeyRo
   try {
     await authenticateStoredKey(await liteWalletClient(), username, password, keyType);
   } catch (error) {
-    throw new LiteWalletUnlockError(parseAuthError(error).message, false, { cause: error });
+    const { message, messageKey } = parseAuthError(error);
+    throw new LiteWalletUnlockError(message, false, { cause: error, messageKey });
   }
 }
 
