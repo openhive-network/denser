@@ -24,6 +24,7 @@ const {
   formatNumber,
   formatPercent,
   getDecimalSeparator,
+  getGroupSeparator,
   getRelativeUnitString,
   getTimeAgoString,
   joinSentences
@@ -109,6 +110,13 @@ describe('numbers and amounts', () => {
   it('names the decimal separator the locale writes', () => {
     expectPerLocale(getDecimalSeparator, { en: '.', pl: ',', ru: ',', ja: '.', ar: '.' });
     assert.equal(getDecimalSeparator('not a tag!'), '.');
+  });
+
+  it('names the separator the locale groups thousands with', () => {
+    expectPerLocale(getGroupSeparator, { en: ',', pl: ' ', ru: ' ', ja: ',', ar: ',' });
+    assert.equal(getGroupSeparator('es'), '.');
+    assert.equal(getGroupSeparator('it'), '.');
+    assert.equal(getGroupSeparator('not a tag!'), ',');
   });
 
   it('writes a file size in the locale', () => {

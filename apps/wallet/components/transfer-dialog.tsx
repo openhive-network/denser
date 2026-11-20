@@ -53,7 +53,7 @@ import {
   memoToBroadcast
 } from '@/wallet/lib/encrypted-memo';
 import { rejectedMinDelegationVests } from '@/wallet/lib/min-delegation';
-import { parseDecimalInput, toMachineDecimal } from '@/wallet/lib/decimal-input';
+import { parseDecimalInput, toDecimalInput, toMachineDecimal } from '@/wallet/lib/decimal-input';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { convertToHP } from '@ui/lib/utils';
@@ -415,27 +415,34 @@ export function TransferDialog({
             });
           }
         }),
+        // The field holds the text as the locale writes it (es "1,5"), the values set below included.
+        // An empty field is no amount yet; text that is not an amount in the locale is NaN, a wrong one.
         amount: z
-          .number({
-            required_error: t('transfers_page.error.amount_empty'),
-            invalid_type_error: t('transfers_page.error.amount_invalid')
-          })
-          .positive({ message: t('transfers_page.error.amount_not_positive') })
-          .refine((amount) => data.amount.gte(amount), {
-            message: t('transfers_page.error.insufficient_funds')
-          })
-          .refine((amount) => !minDelegation || minDelegation.lte(amount), {
-            message: t('transfers_page.error.min_delegation', {
-              min: minDelegation ? formatNumber(minDelegation, locale, HIVE_DECIMALS) : ''
-            })
-          })
-          .refine((amount) => /^\d+(\.\d{1,3})?$/.test(amount.toString()), {
-            message: t('transfers_page.error.precision')
-          })
+          .string({ required_error: t('transfers_page.error.amount_empty') })
+          .transform((typed) => (typed === '' ? undefined : parseDecimalInput(typed, locale)))
+          .pipe(
+            z
+              .number({
+                required_error: t('transfers_page.error.amount_empty'),
+                invalid_type_error: t('transfers_page.error.amount_invalid')
+              })
+              .positive({ message: t('transfers_page.error.amount_not_positive') })
+              .refine((amount) => data.amount.gte(amount), {
+                message: t('transfers_page.error.insufficient_funds')
+              })
+              .refine((amount) => !minDelegation || minDelegation.lte(amount), {
+                message: t('transfers_page.error.min_delegation', {
+                  min: minDelegation ? formatNumber(minDelegation, locale, HIVE_DECIMALS) : ''
+                })
+              })
+              .refine((amount) => /^\d+(\.\d{1,3})?$/.test(amount.toString()), {
+                message: t('transfers_page.error.precision')
+              })
+          )
       }),
     [data.amount, locale, minDelegation, t]
   );
-  type TransferFormValues = z.infer<typeof transferSchema>;
+  type TransferFormValues = z.input<typeof transferSchema>;
 
   const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
@@ -446,8 +453,10 @@ export function TransferDialog({
   });
   const toError = form.formState.errors.to?.message;
   const amountError = form.formState.errors.amount?.message;
-  // An empty field is no amount yet; text that is not an amount in the locale is NaN, a wrong one.
-  const readAmount = (typed: string | number) => (typed === '' ? undefined : parseDecimalInput(typed, locale));
+  const fillAmount = (machine: string) => {
+    setValue(machine);
+    form.setValue('amount', toDecimalInput(machine, locale));
+  };
 
   const onSubmit: SubmitHandler<TransferFormValues> = () => {
     if (memoBlocked) return;
@@ -636,8 +645,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       {...form.register('amount', {
-                        setValueAs: readAmount,
-                        onChange: (e) => setValue(toMachineDecimal(e.target.value, locale))
+                          onChange: (e) => setValue(toMachineDecimal(e.target.value, locale))
                       })}
                       id={fieldIds.amount}
                       aria-invalid={!!amountError}
@@ -682,10 +690,7 @@ export function TransferDialog({
                   <Button
                     variant="link"
                     className="col-span-3 w-fit pl-0 underline underline-offset-4 hover:text-destructive"
-                    onClick={() => {
-                      form.setValue('amount', data.amount.toNumber());
-                      setValue(data.amount.toFixed(HIVE_DECIMALS));
-                    }}
+                    onClick={() => fillAmount(data.amount.toFixed(HIVE_DECIMALS))}
                   >
                     {t('transfers_page.balance')}: {balanceText}
                   </Button>
@@ -738,16 +743,12 @@ export function TransferDialog({
                   defaultValue={[0]}
                   max={data.amount.toNumber()}
                   step={0.001}
-                  onValueChange={(e) => {
-                    setValue(e[0].toString());
-                    form.setValue('amount', e[0]);
-                  }}
+                  onValueChange={(e) => fillAmount(e[0].toString())}
                 />
                 <p> {t('transfers_page.amount')}</p>
                 <div className="flex items-center gap-4">
                   <Input
                     {...form.register('amount', {
-                      setValueAs: readAmount,
                       onChange: (e) => setValue(toMachineDecimal(e.target.value, locale))
                     })}
                     placeholder={t('transfers_page.amount')}

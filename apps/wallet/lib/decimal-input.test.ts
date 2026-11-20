@@ -18,7 +18,7 @@ registerHooks({
   }
 });
 
-const { parseDecimalInput, toMachineDecimal, withDecimalPoint } = await import('./decimal-input.ts');
+const { parseDecimalInput, toDecimalInput, toMachineDecimal, withDecimalPoint } = await import('./decimal-input.ts');
 
 describe('amount input in a locale with a decimal point', () => {
   it('reads "." as the decimal point', () => {
@@ -44,7 +44,7 @@ describe('amount input in a locale with a decimal comma', () => {
     assert.equal(parseDecimalInput('1,000', 'pl'), 1);
     assert.equal(parseDecimalInput(' 0,125 ', 'ru'), 0.125);
     assert.equal(parseDecimalInput(',5', 'fr'), 0.5);
-    assert.equal(parseDecimalInput('-1,5', 'es'), -1.5);
+    assert.equal(parseDecimalInput('-1,5', 'it'), -1.5);
     assert.equal(parseDecimalInput('1.5', 'pl'), 1.5);
   });
 
@@ -52,6 +52,42 @@ describe('amount input in a locale with a decimal comma', () => {
     assert.equal(toMachineDecimal('1,5', 'pl'), '1.5');
     assert.equal(toMachineDecimal('12', 'pl'), '12');
     assert.equal(withDecimalPoint('1,', 'it'), '1.');
+  });
+});
+
+describe('amount input in a locale grouping thousands with "."', () => {
+  it('refuses a "." rather than reading a thousands separator as the decimal point', () => {
+    assert.ok(Number.isNaN(parseDecimalInput('1.000', 'es')));
+    assert.ok(Number.isNaN(parseDecimalInput('12.500', 'it')));
+    assert.ok(Number.isNaN(parseDecimalInput('1.5', 'es')));
+    assert.equal(withDecimalPoint('1.', 'it'), null);
+    assert.equal(toMachineDecimal('1.000', 'es'), '');
+  });
+
+  it('reads "," as the decimal point', () => {
+    assert.equal(parseDecimalInput('1,5', 'es'), 1.5);
+    assert.equal(parseDecimalInput('-1,5', 'es'), -1.5);
+    assert.equal(parseDecimalInput('1000', 'es'), 1000);
+    assert.equal(toMachineDecimal('12,5', 'it'), '12.5');
+  });
+});
+
+describe('an amount the form writes itself', () => {
+  it('reads back as the same amount in every locale', () => {
+    for (const locale of ['en', 'es', 'it', 'pl', 'ru', 'fr', 'ja']) {
+      const max = toDecimalInput('1234.567', locale);
+      assert.equal(parseDecimalInput(max, locale), 1234.567, locale);
+      assert.equal(toMachineDecimal(max, locale), '1234.567', locale);
+    }
+  });
+
+  it('writes a decimal comma only where "." groups thousands', () => {
+    assert.equal(toDecimalInput('1.234', 'es'), '1,234');
+    assert.equal(toDecimalInput('0.0', 'it'), '0,0');
+    assert.equal(toDecimalInput('1.', 'es'), '1,');
+    assert.equal(toDecimalInput('1.234', 'en'), '1.234');
+    assert.equal(toDecimalInput('1.234', 'pl'), '1.234');
+    assert.equal(toDecimalInput('12', 'es'), '12');
   });
 });
 
