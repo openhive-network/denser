@@ -25,8 +25,8 @@ const CREDENTIAL_ID = new Uint8Array([7, 7, 7, 7]);
 type AuthenticatorOptions = {
   /** The PRF output for a salt; another secret stands for a passkey created again */
   secret?: string;
-  /** What the authenticator reports of the PRF at creation */
-  prfAtCreation?: 'evaluated' | 'enabled' | 'disabled';
+  /** What the authenticator reports of the PRF at creation; `absent` for a browser that omits it */
+  prfAtCreation?: 'evaluated' | 'enabled' | 'disabled' | 'absent';
   createError?: Error;
   getError?: Error;
 };
@@ -44,9 +44,11 @@ function fakeAuthenticator({ secret = 'secret', prfAtCreation = 'evaluated', cre
       if (createError) throw createError;
       const salt = options?.publicKey?.extensions?.prf?.eval?.first;
       const extensions =
-        prfAtCreation === 'evaluated'
-          ? { prf: { enabled: true, results: { first: await prf(salt) } } }
-          : { prf: { enabled: prfAtCreation === 'enabled' } };
+        prfAtCreation === 'absent'
+          ? {}
+          : prfAtCreation === 'evaluated'
+            ? { prf: { enabled: true, results: { first: await prf(salt) } } }
+            : { prf: { enabled: prfAtCreation === 'enabled' } };
       return {
         id: 'credential',
         type: 'public-key',
@@ -105,6 +107,31 @@ describe('createPasskeyUnlock', () => {
     assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.unsupported');
   });
 
+  it('rejects as unsupported, without a second prompt, a browser that reports nothing of the PRF', async () => {
+    const { credentials, requests } = fakeAuthenticator({ prfAtCreation: 'absent' });
+
+    const error = await createPasskeyUnlock(credentials, USERNAME, PASSWORD, RP_ID).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'unsupported');
+    assert.equal(requests.created.length, 1);
+    assert.equal(requests.got.length, 0);
+  });
+
+  it('names the same user at every creation for an account, so the authenticator replaces its passkey', async () => {
+    const { credentials, requests } = fakeAuthenticator();
+
+    await createPasskeyUnlock(credentials, USERNAME, PASSWORD, RP_ID);
+    await createPasskeyUnlock(credentials, USERNAME, 'another password', RP_ID);
+    await createPasskeyUnlock(credentials, 'another.user', PASSWORD, RP_ID);
+
+    const [first, second, other] = requests.created.map(({ publicKey }) => publicKey?.user.id);
+    assert.ok(first instanceof Uint8Array);
+    assert.equal(first.length, 16);
+    assert.deepEqual(second, first);
+    assert.notDeepEqual(other, first);
+  });
+
   it('rejects as cancelled a browser prompt the user cancelled, which needs no message', async () => {
     const createError = new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
     const { credentials } = fakeAuthenticator({ createError });
@@ -138,14 +165,14 @@ describe('recoverPasskeyPassword', () => {
     assert.deepEqual(requests.got[0].publicKey?.allowCredentials, [{ id: CREDENTIAL_ID, type: 'public-key' }]);
   });
 
-  it('rejects as failed when another passkey answers, whose PRF does not decrypt the password', async () => {
+  it('rejects as stale when another passkey answers, whose PRF does not decrypt the password', async () => {
     const record = await createPasskeyUnlock(fakeAuthenticator().credentials, USERNAME, PASSWORD, RP_ID);
     const { credentials } = fakeAuthenticator({ secret: 'another passkey' });
 
     const error = await recoverPasskeyPassword(credentials, record, 'required').catch((e: unknown) => e);
 
     assert.ok(error instanceof PasskeyUnlockError);
-    assert.equal(error.reason, 'failed');
+    assert.equal(error.reason, 'stale');
   });
 
   it('rejects as cancelled a prompt the user cancelled', async () => {

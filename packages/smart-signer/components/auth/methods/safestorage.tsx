@@ -140,6 +140,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
+    /** The user whose passkey unlock failed on mount: the offer replaces the passkey */
+    const passkeyUnlockFailedRef = useRef<string | null>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -233,7 +235,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
           await authenticateStoredKey(client, username, password, keyType);
-          return shouldOfferPasskey(client, username);
+          return shouldOfferPasskey(client, username, passkeyUnlockFailedRef.current === username);
         });
 
         if (shouldPromptPasskey) {
@@ -362,6 +364,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 }
               } catch (error) {
                 // Cancelled, or the passkey is gone: the password form, without a message
+                passkeyUnlockFailedRef.current = targetUser.username;
                 logger.info('Passkey unlock of %s failed, asking for the password: %s', targetUser.username, error instanceof Error ? error.message : String(error));
               }
             }

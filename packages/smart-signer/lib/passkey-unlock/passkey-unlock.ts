@@ -1,11 +1,29 @@
-import { createPasskeyUnlock, recoverPasskeyPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock-ceremony';
+import {
+  createPasskeyUnlock,
+  recoverPasskeyPassword,
+  type PasskeyCredentials
+} from '@smart-signer/lib/passkey-unlock/passkey-unlock-ceremony';
 import { PasskeyUnlockError } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
-import { readPasskeyUnlock, storePasskeyUnlock } from '@smart-signer/lib/passkey-unlock/passkey-unlock-store';
+import {
+  readPasskeyUnlock,
+  removePasskeyUnlock,
+  storePasskeyUnlock
+} from '@smart-signer/lib/passkey-unlock/passkey-unlock-store';
+import { classifyUnlockRefusal } from '@smart-signer/lib/wrong-safe-storage-password';
 
 /** What unlocking with the password a passkey gives needs of an hb-auth client, online or offline */
 export type PasskeyUnlockClient<KeyType extends string, Status> = {
   authenticate(username: string, password: string, keyType: KeyType): Promise<Status>;
+  getRegisteredUserByUsername(username: string): Promise<unknown>;
 };
+
+/** The passkey record store `unlockWithPasskey` reads, and clears of a record that no longer unlocks */
+export type PasskeyUnlockStore = {
+  read: typeof readPasskeyUnlock;
+  remove: typeof removePasskeyUnlock;
+};
+
+const BROWSER_STORE: PasskeyUnlockStore = { read: readPasskeyUnlock, remove: removePasskeyUnlock };
 
 /**
  * Lets a passkey of this device (fingerprint, face, device PIN) unlock `username`'s safe storage
@@ -18,18 +36,48 @@ export async function registerPasskeyUnlock(username: string, password: string):
 }
 
 /**
+ * The PasskeyUnlockError, as stale, of `client` refusing the password `username`'s passkey gave;
+ * undefined when it refused for another reason (a key it does not hold, or one off chain)
+ */
+async function asStalePassword(
+  client: Pick<PasskeyUnlockClient<string, unknown>, 'getRegisteredUserByUsername'>,
+  username: string,
+  error: unknown
+): Promise<PasskeyUnlockError | undefined> {
+  const refusal = await classifyUnlockRefusal(
+    error,
+    async () => (await client.getRegisteredUserByUsername(username)) !== null
+  );
+  if (refusal !== 'wrong-password') return undefined;
+  return new PasskeyUnlockError('Passkey unlock: safe storage refuses the stored password', 'stale', { cause: error });
+}
+
+/**
  * Authenticates `username`'s `keyType` key on `client` with the password its passkey gives: the
- * passkey registered on this device, asked with `userVerification`. Rejects with
- * PasskeyUnlockError when the passkey gives none, else as `client.authenticate` does.
+ * passkey registered on this device, asked with `userVerification`. A record that no longer
+ * unlocks, its password not decrypting or refused by `client`, is removed, so the passkey can be
+ * enabled again; one the user cancelled stays. Rejects with PasskeyUnlockError when the passkey
+ * gives no password or a refused one, else as `client.authenticate` does.
  */
 export async function unlockWithPasskey<KeyType extends string, Status>(
   client: PasskeyUnlockClient<KeyType, Status>,
   username: string,
   keyType: KeyType,
-  userVerification: UserVerificationRequirement
+  userVerification: UserVerificationRequirement,
+  credentials: PasskeyCredentials = navigator.credentials,
+  store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<Status> {
-  const record = await readPasskeyUnlock(username);
+  const record = await store.read(username);
   if (!record) throw new PasskeyUnlockError(`No passkey unlock registered for ${username}`, 'not-registered');
-  const password = await recoverPasskeyPassword(navigator.credentials, record, userVerification);
-  return client.authenticate(username, password, keyType);
+  try {
+    const password = await recoverPasskeyPassword(credentials, record, userVerification);
+    try {
+      return await client.authenticate(username, password, keyType);
+    } catch (error) {
+      throw (await asStalePassword(client, username, error)) ?? error;
+    }
+  } catch (error) {
+    if (error instanceof PasskeyUnlockError && error.reason === 'stale') await store.remove(username);
+    throw error;
+  }
 }

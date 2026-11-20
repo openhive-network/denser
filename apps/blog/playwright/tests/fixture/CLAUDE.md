@@ -623,8 +623,10 @@ extension. `safeStoragePasskeyUnlock.spec.ts` adds Chromium's virtual authentica
 `automaticPresenceSimulation`), so creation and unlock answer without a touch, and counts the
 passkeys with `WebAuthn.getCredentials`. `WebAuthn.setUserVerified` false makes a creation fail
 with NotAllowedError, as Cancel in the browser's prompt does; `WebAuthn.clearCredentials` plays a
-passkey deleted from the password manager. Add the authenticator before the ceremony; it lives
-as long as the page's CDP session.
+passkey deleted from the password manager. The passkey records themselves are in the page's
+`/passkeys_v3` IndexedDB (store `credentials`, keyed by username): the spec edits one in
+`page.evaluate` to play a record that no longer decrypts or one hb-auth wrote (no `transports`).
+Add the authenticator before the ceremony; it lives as long as the page's CDP session.
 
 ---
 

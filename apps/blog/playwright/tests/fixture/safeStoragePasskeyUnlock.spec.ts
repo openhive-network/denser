@@ -20,8 +20,9 @@ import {
  * authenticator (CDP WebAuthn, with PRF): enabled once after a password sign-in, it unlocks the
  * next sign-in after a sign-out without the password and without creating another passkey. A
  * cancelled creation finishes the password sign-in without the browser's error and is not offered
- * again at the next sign-in; an unlock the browser refuses leaves the password form, without a
- * message. The ceremonies themselves are covered by
+ * again at the next sign-in. A passkey deleted from the authenticator, or a record it no longer
+ * decrypts (which is removed), leaves the password form, without a message, and the offer returns
+ * after the password; enabling again replaces the passkey. The ceremonies themselves are covered by
  * packages/smart-signer/lib/passkey-unlock/passkey-unlock-ceremony.test.ts.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose add-account dialog stores
@@ -55,6 +56,59 @@ async function addPlatformAuthenticator(page: Page): Promise<{ cdp: CDPSession; 
 async function passkeyCount(cdp: CDPSession, authenticatorId: string): Promise<number> {
   const { credentials } = await cdp.send('WebAuthn.getCredentials', { authenticatorId });
   return credentials.length;
+}
+
+type RecordChange = 'read' | 'corrupt' | 'as-hb-auth';
+
+/**
+ * Whether hb-auth's passkey record store, the `/passkeys_v3` IndexedDB the app writes, holds
+ * `username`'s record, after `change`: spoiling its password, or dropping `transports`, which
+ * hb-auth's records lack
+ */
+function withPasskeyStore<T>(page: Page, change: RecordChange, username: string): Promise<T> {
+  return page.evaluate(
+    ([change, username]) =>
+      new Promise<T>((resolve, reject) => {
+        const open = indexedDB.open('/passkeys_v3', 1);
+        open.onerror = () => reject(open.error);
+        open.onsuccess = () => {
+          const transaction = open.result.transaction('credentials', 'readwrite');
+          const store = transaction.objectStore('credentials');
+          const read = store.get(username);
+          let result: T;
+          read.onsuccess = () => {
+            const record = read.result;
+            if (change === 'corrupt' && record) {
+              record.encryptedPassword = record.encryptedPassword.map((byte: number) => byte ^ 0xff);
+              store.put(record);
+            }
+            if (change === 'as-hb-auth' && record) {
+              delete record.transports;
+              store.put(record);
+            }
+            result = Boolean(record) as T;
+          };
+          transaction.oncomplete = () => {
+            open.result.close();
+            resolve(result);
+          };
+          transaction.onerror = () => reject(transaction.error);
+        };
+      }),
+    [change, username] as const
+  );
+}
+
+/** Spoils the password `username`'s passkey record holds, which its passkey then no longer decrypts */
+async function corruptPasskeyRecord(page: Page, username: string): Promise<void> {
+  expect(await withPasskeyStore<boolean>(page, 'corrupt', username)).toBe(true);
+}
+
+const hasPasskeyRecord = (page: Page, username: string) => withPasskeyStore<boolean>(page, 'read', username);
+
+/** Turns `username`'s passkey record into one hb-auth wrote, without `transports` */
+async function writeAsHbAuth(page: Page, username: string): Promise<void> {
+  expect(await withPasskeyStore<boolean>(page, 'as-hb-auth', username)).toBe(true);
 }
 
 async function signOut(page: Page): Promise<void> {
@@ -131,7 +185,7 @@ test.describe('Safe-storage passkey unlock', () => {
     expect(await passkeyCount(cdp, authenticatorId)).toBe(0);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-03 — a passkey unlock that fails falls back to the password form quietly, without a new passkey', async ({
+  test('BLOG-SAFE-STORAGE-PASSKEY-03 — a passkey deleted from the authenticator falls back to the password once, and the offer returns', async ({
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
@@ -144,10 +198,57 @@ test.describe('Safe-storage passkey unlock', () => {
     await signOut(page);
     const next = await openSignIn(page);
     await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
-    await expect(next.passwordInput).toBeVisible();
     await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
     await next.signInButton.click();
+    const offer = next.loginDialog.getByTestId('passkey-prompt');
+    await expect(offer).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await offer.getByTestId('passkey-prompt-enable').click();
     await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
-    expect(await passkeyCount(cdp, authenticatorId)).toBe(0);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+
+    await signOut(page);
+    await openSignIn(page);
+    await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(new HomePage(page).profileAvatarButton).toBeVisible();
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-04 — a record that no longer decrypts is cleared, and enabling again leaves one passkey', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await prompt.getByTestId('passkey-prompt-enable').click();
+    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await corruptPasskeyRecord(page, ACCOUNT);
+
+    await signOut(page);
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+    await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await next.signInButton.click();
+    const offer = next.loginDialog.getByTestId('passkey-prompt');
+    await expect(offer).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await offer.getByTestId('passkey-prompt-enable').click();
+    await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-05 — a record hb-auth wrote, without transports, still unlocks the sign-in', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await prompt.getByTestId('passkey-prompt-enable').click();
+    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await writeAsHbAuth(page, ACCOUNT);
+
+    await signOut(page);
+    await openSignIn(page);
+    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(new HomePage(page).profileAvatarButton).toBeVisible();
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 });
