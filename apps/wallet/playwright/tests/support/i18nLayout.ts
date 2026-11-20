@@ -19,6 +19,4 @@ export const WALLET_USER_CONTENT = [
 export const WALLET_INTL_FORMATTED = ['[data-testid="proposal-date"]'];
 
 /** Each finding the check lets through, with the issue that fixes it; remove an entry with its fix. */
-export const WALLET_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [
-  { kind: 'clipped', match: /^stub-sender \(/, issue: '#1713' }
-];
+export const WALLET_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [];
