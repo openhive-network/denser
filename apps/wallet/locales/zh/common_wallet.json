@@ -323,12 +323,13 @@
     "proxy_description": "你也可以指定代理人来代替你给见证人投票。这将重置你当前的见证人选择。",
     "set_proxy": "设置投票代理",
     "clear_proxy": "清除代理",
-    "disabled": "已停用 ",
+    "disabled": "已停用（{{time}}）",
+    "disabled_no_blocks": "已停用（从未出块）",
     "no_url_provided": "未提供 URL",
     "use_this_for_linking_title": "使用此链接指向本页并高亮所选见证人",
     "has_not_produced_blocks": "⚠️超过一周未生产任何区块。",
     "no_blocks_for_days_other": "{{count}} 天未出块",
-    "by": "由",
+    "by": "由 {{owners}} 运营",
     "proxy_form": {
       "title": "确认账户见证人代理",
       "description": "你即将移除你的代理。",
@@ -337,8 +338,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " 刚刚",
-      "recently": " 最近"
+      "just_now": "刚刚",
+      "recently": "最近"
     },
     "vote_for_witness": "为见证人 {{witness}} 投票",
     "remove_vote_for_witness": "撤销对见证人 {{witness}} 的投票",
@@ -616,7 +617,7 @@
     "report_operations_found_other": "找到 {{count}} 个操作",
     "report_no_operations": "在所选期间内未找到任何操作",
     "report_select_operation_types": "报告中包含：",
-    "current_rewards": "你当前的奖励：",
+    "current_rewards": "你当前的奖励：{{rewards}}",
     "redeem_rewards": "领取奖励（转入余额）",
     "error": {
       "amount_not_positive": "数量必须为正数。",

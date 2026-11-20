@@ -86,9 +86,9 @@ const ListArea = ({
           hidden: !listDescription
         })}
       >
-        {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-        {t('user_profile.lists.list.list_description')}
-        {listDescription ?? t('user_profile.lists.list.description_not_added')}
+        {t('user_profile.lists.list.list_description', {
+          description: listDescription ?? t('user_profile.lists.list.description_not_added')
+        })}
       </p>
 
       {/* List */}
@@ -150,9 +150,8 @@ const ListArea = ({
             </Button>
           </div>
           <span className="text-xs text-primary/50">
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
             {t('user_profile.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
-            {' \u00B7 '}
+            <span aria-hidden="true">{' \u00B7 '}</span>
             {itemsCountLabel}
           </span>
         </div>

@@ -34,6 +34,8 @@ import { useStoredLiteIdentity } from './use-stored-lite-identity';
 import { useLiteNotificationsAccount } from './use-lite-notifications';
 import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-unread-notifications';
 import { useLiteGraduationAccess } from './use-lite-graduation';
+import { useLocale } from '@ui/components/locale-context';
+import { formatNumber } from '@ui/lib/locale-format';
 
 // The passkey dialogs are loaded when opened: the header is on every page.
 const LiteSecureDialog = dynamic(() => import('./lite-secure-dialog'), { ssr: false });
@@ -71,6 +73,7 @@ function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdenti
  */
 export default function LiteIdentityMenu() {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const identity = useStoredLiteIdentity();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isForgetOpen, setIsForgetOpen] = useState(false);
@@ -165,9 +168,9 @@ export default function LiteIdentityMenu() {
               <Link href={`/@${did}/notifications`} className="flex w-full items-center" data-testid="lite-identity-notifications">
                 <Icons.clock className="mr-2" />
                 <span className="w-full">
-                  {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-                  {t('navigation.user_menu.notifications')}
-                  {unread > 0 ? ` (${unread})` : null}
+                  {unread > 0
+                    ? t('navigation.user_menu.notifications_count', { value: formatNumber(unread, locale) })
+                    : t('navigation.user_menu.notifications')}
                 </span>
               </Link>
             </DropdownMenuItem>

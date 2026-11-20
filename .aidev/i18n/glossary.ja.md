@@ -39,6 +39,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | follow / mute | フォロー / ミュート | unreviewed | |
 | reblog | リブログ | unreviewed | |
 | community | コミュニティ | unreviewed | |
+| community subscribers | 購読者; "購読者 {{value}} 人" | unreviewed | #1717 |
 | post / comment / reply | 投稿 / コメント / 返信 | unreviewed | |
 | wallet | ウォレット | unreviewed | |
 | log in / log out | ログイン / ログアウト | unreviewed | |

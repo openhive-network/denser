@@ -7,7 +7,7 @@ import { Input } from '@ui/components/input';
 import { Icons } from '@ui/components/icons';
 import { configuredSessionTime } from '@ui/config/public-vars';
 import { KeyType } from '@smart-signer/types/common';
-import { formatSessionTime } from '@smart-signer/lib/session-time-text';
+import { formatSessionTime, sessionTimeCaption } from '@smart-signer/lib/session-time-text';
 
 /** The frame `SignInForm` lays its steps out in */
 export const SignInFormFrame: FC<{ children: ReactNode }> = ({ children }) => (
@@ -17,6 +17,8 @@ export const SignInFormFrame: FC<{ children: ReactNode }> = ({ children }) => (
 export interface SignInFormShellProps {
   /** The app's translations of the smart-signer namespace */
   t: TFunction;
+  /** The language the page renders in */
+  locale: string;
 }
 
 const InfoIcon: FC = () => (
@@ -47,7 +49,7 @@ const SecretInput: FC<{ placeholder: string }> = ({ placeholder }) => (
  * so the form's text is painted from the server's HTML. Outside the form, render it in a `SignInFormFrame`.
  * Keep it in step with `methods/safestorage.tsx`.
  */
-const SignInFormShell: FC<SignInFormShellProps> = ({ t }) => {
+const SignInFormShell: FC<SignInFormShellProps> = ({ t, locale }) => {
   const keyType = KeyType.posting;
   const duration = formatSessionTime(t, configuredSessionTime.deployment);
 
@@ -102,8 +104,7 @@ const SignInFormShell: FC<SignInFormShellProps> = ({ t }) => {
               </span>
             </div>
             <p className="text-muted-foreground text-xs">
-              {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-              {t('session_time.locks_after_sentence', { duration })} {t('session_time.activity')}
+              {sessionTimeCaption(t, configuredSessionTime.deployment, locale)}
             </p>
           </div>
           <div className="flex select-none">

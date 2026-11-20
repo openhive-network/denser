@@ -327,13 +327,14 @@
     "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
     "set_proxy": "Set proxy",
     "clear_proxy": "Clear proxy",
-    "disabled": "Disabled ",
+    "disabled": "Disabled {{time}}",
+    "disabled_no_blocks": "Disabled, never produced a block",
     "no_url_provided": "No URL provided",
     "use_this_for_linking_title": "Use this for linking to this page and highlight the selected witness",
     "has_not_produced_blocks": "⚠️Has not produced any blocks for over a week.",
     "no_blocks_for_days_one": "no blocks for {{count}} day",
     "no_blocks_for_days_other": "no blocks for {{count}} days",
-    "by": "by",
+    "by": "by {{owners}}",
     "proxy_form": {
       "title": "Confirm Account Witness Proxy",
       "description": "You are about to remove your proxy.",
@@ -342,8 +343,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " just now",
-      "recently": " recently"
+      "just_now": "just now",
+      "recently": "recently"
     },
     "vote_for_witness": "Vote for witness {{witness}}",
     "remove_vote_for_witness": "Remove vote for witness {{witness}}",
@@ -628,7 +629,7 @@
     "report_operations_found_other": "{{count}} operations found",
     "report_no_operations": "No operations found in the selected period",
     "report_select_operation_types": "Include in report:",
-    "current_rewards": "Your current rewards: ",
+    "current_rewards": "Your current rewards: {{rewards}}",
     "redeem_rewards": "Redeem Rewards (Transfer To Balance)",
     "error": {
       "amount_not_positive": "Amount must be positive.",

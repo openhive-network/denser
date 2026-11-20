@@ -54,6 +54,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | mute / unmute | wyciszyć / wyłączyć wyciszenie | unreviewed | 30 of 31 strings use „wycisz-”. See drift. |
 | reblog | reblog, „Rebloguj” | unreviewed | |
 | community | społeczność | unreviewed | |
+| community subscribers | subskrybenci; „1 subskrybent”, „3 subskrybenci”, „5 subskrybentów” | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
 | post / comment / reply | post / komentarz / odpowiedź | unreviewed | „post” in 85 of 114 strings. |
 | wallet | portfel | unreviewed | |
 | log out | Wyloguj | agreed (#1188) | Never „Wylogowuj”. |

@@ -39,6 +39,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | follow / mute | seguire / silenziare | unreviewed | Mute: 27 of 31 strings use "silenzia-". |
 | reblog | ricondividere ("Ricondividi") | unreviewed | |
 | community | comunità | unreviewed | |
+| community subscribers | iscritti | unreviewed | #1717 |
 | post / comment / reply | post / commento / risposta | unreviewed | "post" in 93 of 114 strings. |
 | wallet | portafoglio | unreviewed | 24 strings; 18 keep "wallet". |
 | log in / log out | Accedi / Esci | unreviewed | |

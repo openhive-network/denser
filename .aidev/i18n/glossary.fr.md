@@ -40,6 +40,7 @@ No native speaker has reviewed the French strings yet, so every term is
 | follow / mute | suivre / masquer | unreviewed | Mute: 23 of 31 strings use "masquer". |
 | reblog | rebloguer | unreviewed | |
 | community | communauté | unreviewed | |
+| community subscribers | abonnés | unreviewed | #1717 |
 | post / comment / reply | article / commentaire / réponse | unreviewed | "article" in 58 of 114 strings; "publication" 23, "post" 20. |
 | wallet | portefeuille | unreviewed | |
 | log in / log out | Se connecter / Se déconnecter | unreviewed | |

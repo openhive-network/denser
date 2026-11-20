@@ -338,7 +338,8 @@
     "proxy_description": "Możesz również wybrać pełnomocnika, który będzie głosował na świadków w Twoim imieniu. Spowoduje to wyczyszczenie Twoich bieżących głosów.",
     "set_proxy": "Ustaw pełnomocnika",
     "clear_proxy": "Usuń pełnomocnika",
-    "disabled": "Wyłączony ",
+    "disabled": "Wyłączony {{time}}",
+    "disabled_no_blocks": "Wyłączony, nie wytworzył żadnego bloku",
     "no_url_provided": "Nie podano adresu URL",
     "use_this_for_linking_title": "Użyj tego, aby utworzyć link do tej strony z podświetlonym wybranym świadkiem",
     "has_not_produced_blocks": "⚠️Od ponad tygodnia nie wyprodukował żadnych bloków.",
@@ -346,7 +347,7 @@
     "no_blocks_for_days_few": "brak bloków od {{count}} dni",
     "no_blocks_for_days_many": "brak bloków od {{count}} dni",
     "no_blocks_for_days_other": "brak bloków od {{count}} dnia",
-    "by": "przez",
+    "by": "przez {{owners}}",
     "proxy_form": {
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
@@ -355,8 +356,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " przed chwilą",
-      "recently": " ostatnio"
+      "just_now": "przed chwilą",
+      "recently": "ostatnio"
     },
     "vote_for_witness": "Głosuj na świadka {{witness}}",
     "remove_vote_for_witness": "Wycofaj głos na świadka {{witness}}",
@@ -658,7 +659,7 @@
     "report_operations_found_other": "Znaleziono {{count}} operacji",
     "report_no_operations": "Nie znaleziono operacji w wybranym okresie",
     "report_select_operation_types": "Uwzględnij w raporcie:",
-    "current_rewards": "Twoje bieżące nagrody: ",
+    "current_rewards": "Twoje bieżące nagrody: {{rewards}}",
     "redeem_rewards": "Odbierz nagrody (przelew na saldo)",
     "error": {
       "amount_not_positive": "Ilość musi być dodatnia.",

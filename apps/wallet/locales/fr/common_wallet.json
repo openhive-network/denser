@@ -332,14 +332,15 @@
     "proxy_description": "Vous pouvez aussi donner une procuration à quelqu'un qui votera pour les témoins en votre nom. Cela annulera votre choix de témoins actuels.",
     "set_proxy": "Donner une procuration",
     "clear_proxy": "Supprimer la procuration",
-    "disabled": "Désactivé ",
+    "disabled": "Désactivé {{time}}",
+    "disabled_no_blocks": "Désactivé, n'a jamais produit de bloc",
     "no_url_provided": "Aucune URL fournie",
     "use_this_for_linking_title": "Utilisez ceci pour créer un lien vers cette page et mettre en évidence le témoin sélectionné",
     "has_not_produced_blocks": "⚠️N'a produit aucun bloc depuis plus d'une semaine.",
     "no_blocks_for_days_one": "aucun bloc depuis {{count}} jour",
     "no_blocks_for_days_many": "aucun bloc depuis {{count}} jours",
     "no_blocks_for_days_other": "aucun bloc depuis {{count}} jours",
-    "by": "par",
+    "by": "par {{owners}}",
     "proxy_form": {
       "title": "Confirmer le proxy de témoin du compte",
       "description": "Vous êtes sur le point de supprimer votre proxy.",
@@ -348,8 +349,8 @@
       "ok": "OK"
     },
     "bock_gap": {
-      "just_now": " à l'instant",
-      "recently": " récemment"
+      "just_now": "à l'instant",
+      "recently": "récemment"
     },
     "vote_for_witness": "Voter pour le témoin {{witness}}",
     "remove_vote_for_witness": "Retirer le vote pour le témoin {{witness}}",
@@ -643,7 +644,7 @@
     "report_operations_found_other": "{{count}} opérations trouvées",
     "report_no_operations": "Aucune opération trouvée sur la période sélectionnée",
     "report_select_operation_types": "Inclure dans le rapport :",
-    "current_rewards": "Vos gains actuels : ",
+    "current_rewards": "Vos gains actuels : {{rewards}}",
     "redeem_rewards": "Réclamer les gains (transférer vers le solde)",
     "error": {
       "amount_not_positive": "Le montant doit être positif.",

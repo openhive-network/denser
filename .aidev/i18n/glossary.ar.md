@@ -31,6 +31,7 @@ Arabic string yet; add them here when the first one is written.
 | follow / mute | متابعة / كتم | unreviewed | Muted: مكتوم. See drift. |
 | reblog | إعادة النشر | unreviewed | |
 | community | المجتمع | unreviewed | 31 of 35 strings. |
+| community subscribers | المشتركون; "{{value}} مشترك" | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
 | post / comment / reply | مشاركة / تعليق / رد | unreviewed | مشاركة in 66 of 110 strings, منشور in 30. |
 | wallet | المحفظة | unreviewed | |
 | log in / log out | تسجيل الدخول / تسجيل الخروج | unreviewed | |

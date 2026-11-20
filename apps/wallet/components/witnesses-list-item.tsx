@@ -7,6 +7,7 @@ import { convertStringToBig } from '@hive/ui/lib/helpers';
 import {
   formatAbbreviatedAmount,
   formatDollars,
+  formatList,
   formatLargestUnitDuration,
   getRoundedAbbreveration,
   parseUtcTimestamp
@@ -27,14 +28,6 @@ import { DOTTED_ITEM_CLASS, DOTTED_ROW_CLASS } from './dotted-row';
 
 // Loaded when a row's voters are first opened: the witness page's own load carries none of it.
 const WitnessVotersDialog = dynamic(() => import('./witness-voters-dialog'), { ssr: false });
-
-const getOwnersString = (owners?: string) => {
-  if (!owners) return '';
-  const ownersArray = owners.split(',');
-  const lastOwner = ownersArray.pop();
-  if (ownersArray.length === 0) return lastOwner;
-  return ownersArray.join(', ') + ' & ' + lastOwner;
-};
 
 interface WitnessListItemProps {
   data: RankedWitness;
@@ -98,6 +91,11 @@ function WitnessListItem({
     ? t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })
     : null;
   const priceFeed = formatDollars(convertStringToBig(data.hbd_exchange_rate.base), locale, 3);
+  const lastBlockGap = blockGap(headBlock, data.last_confirmed_block_num, t, locale);
+  const disabledText =
+    lastBlockGap === null
+      ? t('witnesses_page.disabled_no_blocks')
+      : t('witnesses_page.disabled', { time: lastBlockGap });
   const feedPublished = hasPublishedFeed(data.last_hbd_exchange_update);
   const votersDialog = useLazyDialog();
   const showVotersLabel = t('witnesses_page.show_voters_label', { witness: data.owner });
@@ -168,8 +166,7 @@ function WitnessListItem({
                 </Link>
                 {witnessOwner && (
                   <span className={clsx('min-w-0 truncate', MUTED_TEXT)}>
-                    {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-                    {t('witnesses_page.by')} {getOwnersString(witnessOwner)}
+                    {t('witnesses_page.by', { owners: formatList(witnessOwner.split(','), locale) })}
                   </span>
                 )}
                 <Link
@@ -211,9 +208,7 @@ function WitnessListItem({
               >
                 {disableUser ? (
                   <span className="truncate">
-                    {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-                    {t('witnesses_page.disabled')}
-                    {blockGap(headBlock, data.last_confirmed_block_num, t, locale)}
+                    {disabledText}
                   </span>
                 ) : (
                   <WitnessSiteLink url={data.url} />

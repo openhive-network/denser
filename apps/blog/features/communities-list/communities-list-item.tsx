@@ -6,6 +6,8 @@ import { Link } from '@hive/ui';
 import BasePathLink from '@/blog/components/base-path-link';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import type { TFunction } from 'i18next';
+import { useLocale } from '@ui/components/locale-context';
+import { formatNumber } from '@ui/lib/locale-format';
 import CommunitySubscribeButton from '../community-profile/community-subscribe-button';
 import type { CommunitySubscriptionState } from './use-communities-subscription';
 
@@ -20,6 +22,7 @@ const CommunitiesListItem = ({
   subscription: CommunitySubscriptionState;
   onSubscribeClick: (community: Community, state: CommunitySubscriptionState) => void;
 }) => {
+  const { locale } = useLocale();
   return (
     <Card
       className={cn('hover my-4 flex justify-between bg-background text-primary')}
@@ -43,12 +46,20 @@ const CommunitiesListItem = ({
           data-testid="community-list-item-footer"
         >
           <p className="text-sm font-medium leading-5 text-primary/80">
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {community.subscribers} {t('communities.subscribers')} <span className="mx-1">•</span>{' '}
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {community.num_authors} {t('communities.authors')} <span className="mx-1">•</span>
-            {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-            {community.num_pending} {t('communities.posts')}
+            {t('communities.subscribers_count', {
+              count: community.subscribers,
+              value: formatNumber(community.subscribers, locale)
+            })}{' '}
+            <span className="mx-1">•</span>{' '}
+            {t('communities.authors_count', {
+              count: community.num_authors,
+              value: formatNumber(community.num_authors, locale)
+            })}{' '}
+            <span className="mx-1">•</span>
+            {t('communities.posts_count', {
+              count: community.num_pending,
+              value: formatNumber(community.num_pending, locale)
+            })}
           </p>
           {community.admins && community.admins?.length > 0 ? (
             <p className="text-sm font-medium text-primary/80">

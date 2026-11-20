@@ -164,16 +164,20 @@ const PostListItem = memo(
             <div className="flex items-center gap-2 py-1 text-sm">
               <Icons.forward className="h-4 w-4" />
               <span data-testid="reblogged-label">
-                <Link
-                  href={`/@${post.reblogged_by[0]}`}
-                  className="cursor-pointer hover:text-destructive"
-                  data-testid="reblogged-author-link"
-                >
-                  {authorDisplayName(post.reblogged_by[0])}
-                </Link>
-                {isLiteDid(post.reblogged_by[0]) ? <LiteDidBadge /> : ' '}
-                {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-                {t('cards.reblogged')}
+                <Trans
+                  i18nKey="cards.reblogged"
+                  values={{ author: authorDisplayName(post.reblogged_by[0]) }}
+                  components={{
+                    author: (
+                      <Link
+                        href={`/@${post.reblogged_by[0]}`}
+                        className="cursor-pointer hover:text-destructive"
+                        data-testid="reblogged-author-link"
+                      />
+                    ),
+                    badge: isLiteDid(post.reblogged_by[0]) ? <LiteDidBadge /> : <span />
+                  }}
+                />
               </span>
             </div>
           ) : null}

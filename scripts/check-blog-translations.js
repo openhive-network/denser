@@ -49,6 +49,7 @@ const POLICY = {
     pl: new Set([
       // Polish uses the same word
       'communities.mod',
+      'communities.posts_count_one',
       'page_titles.blog'
     ]),
     es: new Set([
@@ -86,6 +87,7 @@ const POLICY = {
       'navigation.profile_navbar.social',
       'navigation.profile_navbar.notifications',
       'navigation.user_menu.notifications',
+      'navigation.user_menu.notifications_count',
       'navigation.profile_social_tab_navbar.badges',
       'navigation.profile_notifications_tab_navbar.mentions',
       'communities.notes',
@@ -115,7 +117,8 @@ const POLICY = {
       'post_content.in',
       'post_content.footer.in',
       'user_profile.lists.post_count.one',
-      'user_profile.lists.list.accounts_count_one'
+      'user_profile.lists.list.accounts_count_one',
+      'communities.posts_count_one'
     ])
   }
 };

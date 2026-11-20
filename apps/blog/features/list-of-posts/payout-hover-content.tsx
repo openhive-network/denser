@@ -91,8 +91,7 @@ export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
     <>
       <span>{t('amount_hover_card.pending_payout_amount', { value: formatNumber(post.payout, locale, 2) })}</span>
       <span>
-        {/* eslint-disable-next-line @hive/i18n/no-joined-translation -- an existing fragment join, to become one key with placeholders */}
-        {t('amount_hover_card.breakdown')} {formatList(breakdown, locale, 'unit')}
+        {t('amount_hover_card.breakdown', { items: formatList(breakdown, locale, 'unit') })}
       </span>
       <>
         {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
