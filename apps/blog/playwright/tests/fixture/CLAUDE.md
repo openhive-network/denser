@@ -763,6 +763,31 @@ expectVoteOperation(broadcast.calls[0], {
 
 ---
 
+## Recipe: check a route in the pseudo-locale and in Polish (i18n layout)
+
+`i18nLayout*.spec.ts` belong to the `i18n-layout` project, which exists only with
+`DENSER_I18N_CHECKS=1` and runs as an advisory pass after the suite
+(`.aidev/i18n-checks.sh`); `chromium-fixture` ignores them. A new route: in the spec
+of a recording that serves it (one recording per file, as always), per locale of
+`I18N_CHECK_LOCALES`, `setUiLocale(context, locale, baseURL)`, open the page and
+wait for its content, then
+
+```ts
+const issues = await checkI18nLayout(page, { locale, userContent: BLOG_USER_CONTENT, names: BLOG_NAMES });
+expectNoI18nIssues(issues, locale, BLOG_KNOWN_I18N_ISSUES);
+```
+
+(`root: '[role="dialog"]'` checks an open dialog only). The check
+(`playwright/support/i18n-layout.ts`) resizes the page to the three viewports
+itself. User content it should not judge (titles, bodies, community names) goes
+into `BLOG_USER_CONTENT` (`support/i18nLayout.ts`) as a test-id selector; an
+account name inside a link to `/@<name>` is recognised by itself. A real finding
+you do not fix goes into `BLOG_KNOWN_I18N_ISSUES` with the issue that will.
+`pl-locale` runs `PL_RUN_TESTS` (`playwright.fixture.config.ts`) with
+`NEXT_LOCALE=pl`: add a test there only when it finds everything by test id or role
+without English names. Run either on the dev stack:
+`DENSER_I18N_CHECKS=1 .aidev/dev-stack-spec.sh <spec> --project=i18n-layout`.
+
 ## Overlay fixture dirs
 
 Variant dirs (e.g. `postVoting_upvoted/`) use an **overlay** pattern

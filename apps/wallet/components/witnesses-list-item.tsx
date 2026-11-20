@@ -223,6 +223,7 @@ function WitnessListItem({
                 type="button"
                 title={witnessDescription}
                 aria-expanded={descriptionExpanded}
+                data-testid="witness-description"
                 onClick={toggleDescription}
                 className={clsx('hidden w-full max-w-full cursor-pointer text-left sm:block', MUTED_TEXT, {
                   truncate: !descriptionExpanded,

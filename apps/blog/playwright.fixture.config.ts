@@ -35,6 +35,7 @@ import {
   shardFromEnv,
   specsForShard
 } from './playwright/tests/support/fixture-shards/shard-specs';
+import { localeStorageState, selectTests } from '../../playwright/support/i18n-layout';
 import type {
   FixtureAuthTestFixtures,
   FixtureProxyWorkerFixtures
@@ -109,6 +110,8 @@ const serverEnv = {
   // stub signer stand for; a spec needing another list rewrites it in __ENV.js
   // (`configureSigners` in support/litePasskeyContext.ts).
   REACT_APP_PASSKEY_SIGNERS: JSON.stringify(['https://signer.syncad.com']),
+  // The pseudo-locale (packages/ui/lib/pseudo-locale.ts) the `i18n-layout` project renders pages in.
+  REACT_APP_PSEUDO_LOCALE: 'true',
   // The API set engine's probes are no recorded calls (they would be replay misses): it learns
   // which node serves which API from the app's own calls only.
   DENSER_API_SETS_PROBING: 'off',
@@ -151,6 +154,33 @@ const apiSetsServerEnv = {
 };
 
 const API_SETS_SPEC = 'apiSetsLite.spec.ts';
+/**
+ * The i18n checks (#1696), run only with DENSER_I18N_CHECKS=1, as the advisory pass of
+ * .aidev/run-fixture-e2e.sh runs them: `i18n-layout` renders key routes in the pseudo-locale and in
+ * Polish (playwright/support/i18n-layout.ts), `pl-locale` runs PL_RUN_TESTS with `NEXT_LOCALE=pl`.
+ */
+const I18N_CHECKS = process.env.DENSER_I18N_CHECKS === '1';
+const I18N_LAYOUT_SPECS = /i18nLayout\w*\.spec\.ts$/;
+/**
+ * Existing tests run again in Polish by `pl-locale`, by spec file and test ID: the ones that find their
+ * elements by test id or role, not by English text.
+ */
+const PL_RUN_TESTS = {
+  'commentDraft.spec.ts': ['CMT-07'],
+  'commentSort.spec.ts': ['CMT-08'],
+  'communityViewRoles.spec.ts': ['COM-13'],
+  'loggedInPostDetail.spec.ts': ['VIEW-08', 'VIEW-08b'],
+  'postDetail.spec.ts': [
+    'ANON-POST-01',
+    'ANON-POST-02',
+    'ANON-POST-03',
+    'ANON-POST-04',
+    'ANON-POST-05',
+    'ANON-POST-06',
+    'ANON-POST-07',
+    'ANON-POST-08'
+  ]
+};
 /** Runs API_SETS_SPEC against a probing server: it starts a standalone build, which a stack has not. */
 export const API_SETS_PROBING_PROJECT = 'chromium-fixture-api-sets-probing';
 const SHARD_SPECS = SHARD
@@ -219,8 +249,19 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   projects: [
     {
       name: 'chromium-fixture',
+      testIgnore: I18N_LAYOUT_SPECS,
       use: { ...devices['Desktop Chrome'] }
     },
+    ...(I18N_CHECKS
+      ? [
+          { name: 'i18n-layout', testMatch: I18N_LAYOUT_SPECS, use: { ...devices['Desktop Chrome'] } },
+          {
+            name: 'pl-locale',
+            ...selectTests(PL_RUN_TESTS),
+            use: { ...devices['Desktop Chrome'], storageState: localeStorageState('pl') }
+          }
+        ]
+      : []),
     ...(!SHARD_SPECS || SHARD_SPECS.includes(API_SETS_SPEC)
       ? [
           {

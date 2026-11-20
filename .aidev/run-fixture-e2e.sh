@@ -65,6 +65,11 @@
 # against its copy and writes test-results/fixture-shard-<k>/. A run with
 # arguments (a re-run) is unsharded in every shard: it builds and runs what it
 # was given, as without DENSER_FIXTURE_SHARD.
+#
+# The advisory i18n checks (.aidev/i18n-checks.sh) run after the last shard's
+# share (after the whole pass when unsharded), against the same build, in
+# <results>/i18n/; they never change the suite's verdict. A run naming
+# `--project=i18n-layout` or `--project=pl-locale` runs just those.
 set -euo pipefail
 
 started_at="$(date +%s)"
@@ -107,6 +112,9 @@ fi
 source .aidev/pnpm-deps.sh
 # shellcheck source=junit-helpers.sh
 source .aidev/junit-helpers.sh
+# shellcheck source=i18n-checks.sh
+source .aidev/i18n-checks.sh
+if i18n_checks_named "$@"; then export DENSER_I18N_CHECKS=1; fi
 
 results=test-results/fixture
 [ "$shard_index" -eq 1 ] || results="test-results/fixture-shard-$shard_index"
@@ -155,6 +163,15 @@ build_basepath_blog() {
         && (cd apps/blog && NEXT_PUBLIC_BASE_PATH="$basepath" pnpm build < /dev/null) \
         && mkdir -p "$basepath_next" \
         && mv apps/blog/.next/standalone apps/blog/.next/static "$basepath_next/"
+}
+
+# The advisory i18n checks against the build in NEXT_DIR, by the last shard only.
+#
+#   run_i18n_fixture NEXT_DIR
+run_i18n_fixture() {
+    [ "$shard_index" -eq "$shard_total" ] || return 0
+    (cd apps/blog && FIXTURE_NEXT_DIR="$1" FIXTURE_RESULTS_DIR="$results_dir/i18n/misses" \
+        run_i18n_checks "$results_dir/i18n" --config=playwright.fixture.config.ts --output=test-results/i18n)
 }
 
 run_basepath_fixture() {
@@ -224,6 +241,7 @@ run_shard() {
         FIXTURE_NEXT_DIR="$shard_builds/$shard_index" FIXTURE_RESULTS_DIR="$results_dir" \
         run_playwright "$junit" "$json_report" "$suite_name" --config=playwright.fixture.config.ts \
         --output="test-results/shard-$shard_index") || status=$?
+    run_i18n_fixture "$shard_builds/$shard_index"
     rm -rf "${shard_builds:?}/$shard_index"
     exit "$status"
 }
@@ -252,6 +270,7 @@ if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
             --config=playwright.fixture.config.ts "$@"
     ) || status=$?
     if [ "$#" -eq 0 ]; then
+        run_i18n_fixture "$PWD/apps/blog/.next"
         [ "$basepath_status" -ne 0 ] || run_basepath_fixture || basepath_status=$?
         finish_basepath_fixture "$basepath_status" || status=1
     fi

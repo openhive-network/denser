@@ -8,6 +8,7 @@ import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
 import { readLocaleCookie } from '@ui/lib/locale-cookie';
 import { addI18nFormatters, I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
+import { withPseudoLocaleLoader } from '@ui/lib/pseudo-locale';
 import { reportFallbacks } from '@ui/lib/i18n-fallback-report';
 import { reportFallbackToSentry } from '@ui/lib/i18n-fallback-sentry';
 import env from '@beam-australia/react-env';
@@ -71,7 +72,7 @@ export function createI18nClient(
 
   i18next
     .use(initReactI18next)
-    .use(resourcesToBackend(loadNamespace))
+    .use(resourcesToBackend(withPseudoLocaleLoader(loadNamespace)))
     .init({
       ...getOptions(getInitialLanguage()),
       ...fallbackReport,

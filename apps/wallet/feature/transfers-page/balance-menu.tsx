@@ -80,6 +80,7 @@ export function BalanceMenu({
                 key={action.id}
                 className="cursor-pointer hover:text-primary"
                 onSelect={() => openDialog(action.id)}
+                data-testid={`balance-action-${action.id}`}
               >
                 {action.label}
               </DropdownMenuItem>

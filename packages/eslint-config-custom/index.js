@@ -1,35 +1,4 @@
-// Names every locale keeps as they are (.aidev/i18n/glossary.en.md, "Untranslated names"), longest first
-// so a regex alternation matches "Hive Keychain" before "Hive". Matched in any case: an "nsfw" tag is one.
-const UNTRANSLATED_NAMES = [
-  'HIVE DOLLARS',
-  'Hive Keychain',
-  'Hive Wallet',
-  'Hive Bridge',
-  'Hive Power',
-  'Google Drive',
-  'Hive.blog',
-  'Hive.io',
-  'Blocktrades',
-  'Hivesigner',
-  'PeakVault',
-  'HiveAuth',
-  'Hivebuzz',
-  'Keychain',
-  'MetaMask',
-  'OpenHive',
-  'Ionomy',
-  'Ecency',
-  'PeakD',
-  'Hive',
-  'NSFW',
-  'FAQ',
-  'DHF',
-  'CSV',
-  'API',
-  'HBD',
-  'HP',
-  'RC'
-];
+const UNTRANSLATED_NAMES = require('./untranslated-names');
 // esquery regexes cannot contain "/", so the patterns below use character classes instead.
 const NAMES_ONLY = `/^[^A-Za-z]*((${UNTRANSLATED_NAMES.join('|').replace(/\./g, '[.]')})[^A-Za-z]*)*$/i`;
 // A bare URL is an address, not text.
