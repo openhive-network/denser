@@ -23,7 +23,7 @@ const SearchButton = ({ aiTag, className }: { aiTag: boolean; className?: string
         <Icons.search className="h-5 w-5 rotate-90" aria-hidden="true" />
         {aiTag ? (
           <span className="absolute bottom-0 right-2 text-[10px] font-bold" aria-hidden="true">
-            AI
+            {t('navigation.main_nav_bar.ai_tag')}
           </span>
         ) : null}
       </Link>

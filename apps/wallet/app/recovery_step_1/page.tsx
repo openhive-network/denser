@@ -5,8 +5,10 @@ import { Button, Input, Separator } from '@ui/components';
 import { ChangeEvent, useState } from 'react';
 import { useDebounce } from '@/wallet/components/hooks/use-debounce';
 import { getOwnerHistory } from '@/wallet/lib/hive';
+import { useTranslation } from '@/wallet/i18n/client';
 
 export default function RecoveryStep1() {
+  const { t } = useTranslation('common_wallet');
   const [accountName, setAccountName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -20,7 +22,7 @@ export default function RecoveryStep1() {
     const res = await chain.api.database_api.find_accounts({ accounts: [name], delayed_votes_active: false });
     if (!res.accounts.length) {
       setAccountSearchResult('error');
-      setNameError('Account not found');
+      setNameError(t('recovery_page.account_not_found'));
     } else {
       const ownerUpdate = res.accounts[0].last_owner_update;
       const ownerUpdateTime = new Date(ownerUpdate).getTime();
@@ -28,7 +30,7 @@ export default function RecoveryStep1() {
 
       if (ownerUpdateTime < THIRTY_DAYS_AGO) {
         setAccountSearchResult('error');
-        setNameError('We are unable to recover this account, it has not changed ownership recently');
+        setNameError(t('recovery_page.owner_not_changed'));
       } else {
         setAccountSearchResult('default');
       }
@@ -58,7 +60,7 @@ export default function RecoveryStep1() {
     if (await validateAccountOwner()) {
       setConfirmEmail(true);
     } else {
-      setPasswordError('This password was not used on this account in the last 30 days.');
+      setPasswordError(t('recovery_page.password_not_used'));
     }
   };
 
@@ -68,24 +70,18 @@ export default function RecoveryStep1() {
     <div className="m-auto flex max-w-2xl flex-col gap-4 bg-gray-50 p-2 pb-8 dark:bg-slate-950">
       {!confirmEmail ? (
         <>
-          <div className="text-2xl font-bold">Stolen accounts recovery</div>
-          <p className="text-sm leading-relaxed text-primary/60">
-            From time to time, a Hiver&apos;s owner key may be compromised. Stolen Account Recovery gives the
-            rightful account owner 30 days to recover their account from the moment the thief changed their
-            owner key. Stolen Account Recovery can only be used on hive.blog if the account owner had
-            previously listed &apos;Hive&apos; as their account trustee and complied with Hive&apos;s Terms of
-            Service.
-          </p>
+          <div className="text-2xl font-bold">{t('recovery_page.title')}</div>
+          <p className="text-sm leading-relaxed text-primary/60">{t('recovery_page.description')}</p>
           <Separator />
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Account name
+            {t('recovery_page.account_name')}
           </label>
           <Input value={accountName} onChange={onAccountChange} />
           {accountSearchResult === 'error' && (
             <p className="text-sm font-medium text-destructive">{nameError}</p>
           )}
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Recent password
+            {t('recovery_page.recent_password')}
           </label>
           <Input
             value={password}
@@ -107,21 +103,19 @@ export default function RecoveryStep1() {
               !password.length
             }
           >
-            Begin recovery
+            {t('recovery_page.begin_recovery')}
           </Button>
         </>
       ) : (
         <>
-          <p className="text-sm leading-relaxed text-primary/60">
-            We need to verify your identity. Please enter your email address below to begin the verification.
-          </p>
+          <p className="text-sm leading-relaxed text-primary/60">{t('recovery_page.verify_identity')}</p>
           <Separator />
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Email
+            {t('recovery_page.email')}
           </label>
           <Input value={email} onChange={(e) => setEmail(e.target.value)} />
           <Button variant="redHover" className="mt-2 w-fit" onClick={onSubmitEmail}>
-            Continue with email
+            {t('recovery_page.continue_with_email')}
           </Button>
         </>
       )}

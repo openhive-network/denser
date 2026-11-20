@@ -48,7 +48,14 @@
       "hours_and_minutes": "{{hours}}{{minutes}}"
     },
     "profile_picture": "头像",
-    "notifications_region": "通知 ({hotkey})"
+    "notifications_region": "通知 ({hotkey})",
+    "profile_picture_of": "{{username}} 的头像",
+    "loading_more": "加载中...",
+    "no_data_available": "暂无数据",
+    "fetching_data_failed": "获取数据时出现问题。",
+    "check_permlink_or_node": "请检查永久链接是否正确，或节点是否正常运行。",
+    "unexpected_error": "发生意外错误。请重试。",
+    "page_load_failed": "无法加载此页面。请重试。"
   },
   "navigation": {
     "main_nav_bar": {
@@ -65,7 +72,8 @@
       "create_post": "发布帖子",
       "theme": "主题",
       "language": "语言",
-      "menu_panel": "菜单面板"
+      "menu_panel": "菜单面板",
+      "ai_tag": "AI"
     },
     "sidebar": {
       "welcome": "欢迎",
@@ -80,7 +88,9 @@
       "privacy_policy": "隐私政策",
       "terms_of_service": "服务条款",
       "not_available_yet": "暂不可用",
-      "login_required": "请登录以使用此选项"
+      "login_required": "请登录以使用此选项",
+      "healthchecker": "节点健康检查",
+      "version": "版本：{{version}}"
     },
     "communities_nav": {
       "my_friends": "我的好友",
@@ -186,6 +196,13 @@
       "add_active_key": "添加活动密钥",
       "add_posting_key": "添加发帖密钥",
       "switch_to_posting_key": "切换到发帖密钥"
+    },
+    "manabars": {
+      "resource_credits": "资源积分",
+      "rc_level": "（RC）水平：{{value}}%",
+      "voting_power": "投票能量：{{value}}%",
+      "downvote_power": "反对票能量：{{value}}%",
+      "full_in": "充满还需：{{time}}"
     }
   },
   "select_sort": {
@@ -293,7 +310,11 @@
     "reveal_nsfw_post": "显示此 NSFW 帖子",
     "my_blacklist": "我的黑名单",
     "post_image": "帖子图片",
-    "payout_declined": "已拒绝收益"
+    "payout_declined": "已拒绝收益",
+    "cross_posted": "<author>{{author}}</author> 转帖了 <original>@{{original}}</original>",
+    "nsfw_hidden_logged_in": "<reveal>显示此帖子</reveal>，或调整你的<settings>显示偏好</settings>。",
+    "nsfw_hidden_logged_out": "<reveal>显示此帖子</reveal>，或<account>创建账户</account>以保存你的偏好。",
+    "no_image": "无图片"
   },
   "alert_dialog_reblog": {
     "action": "确定",
@@ -301,7 +322,9 @@
     "description": "此帖子将被添加到你的博客并分享给你的关注者。",
     "already_reblogged": "你已经转发过此帖子。",
     "title": "转发此帖子",
-    "close": "关闭"
+    "close": "关闭",
+    "toast_title": "转发成功",
+    "toast_description": "你已转发该帖子。"
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "取消点赞",
@@ -470,7 +493,9 @@
       "followed_you": "@{{username}} 关注了你",
       "mentioned_you_and_others": "@{{username}} 提到了你和其他 {{others}} 人",
       "mentioned_you": "@{{username}} 提到了你",
-      "subscribed_to": "@{{username}} 订阅了 {{community}}"
+      "subscribed_to": "@{{username}} 订阅了 {{community}}",
+      "marked_read_title": "通知已标记为已读",
+      "marked_read_description": "所有通知已标记为已读。"
     },
     "load_more_failed": "无法加载更多帖子。",
     "load_more_retry": "重试",
@@ -488,7 +513,32 @@
       "unfollowed_description": "你已取消关注 {{username}}。",
       "unfollowed_all_title": "已全部取消关注",
       "unfollowed_all_description": "你不再关注任何人。"
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "已将博客加入黑名单",
+      "blacklisted_description": "博客 {{blog}} 已加入你的黑名单。",
+      "unblacklisted_title": "已将博客移出黑名单",
+      "unblacklisted_description": "博客 {{blog}} 已从你的黑名单中移除。",
+      "blacklist_reset_title": "黑名单已重置",
+      "blacklist_reset_description": "已移除黑名单中的所有博客。",
+      "list_followed_title": "已关注该博客的列表",
+      "blacklist_followed_description": "博客 {{blog}} 已加入你关注的黑名单。",
+      "list_unfollowed_title": "已取消关注该博客的列表",
+      "blacklist_unfollowed_description": "博客 {{blog}} 已从你关注的黑名单中移除。",
+      "followed_blacklists_reset_title": "已关注的黑名单已重置",
+      "followed_blacklists_reset_description": "已从你关注的黑名单中移除所有博客。",
+      "muted_list_followed_description": "博客 {{blog}} 已加入你关注的静音列表。",
+      "muted_list_unfollowed_description": "博客 {{blog}} 已从你关注的静音列表中移除。",
+      "followed_muted_lists_reset_title": "已关注的静音列表已重置",
+      "followed_muted_lists_reset_description": "你关注的静音列表已重置。",
+      "muted_title": "已静音",
+      "muted_description": "你已静音 {{username}}。",
+      "unmuted_title": "已取消静音",
+      "unmuted_description": "你已取消静音 {{username}}。",
+      "muted_list_reset_title": "静音列表已重置",
+      "muted_list_reset_description": "你的静音列表已重置。"
+    },
+    "level_badge_alt": "{{level}} 等级"
   },
   "communities": {
     "set_title_for_user": "为 @{{username}} 设置标题",
@@ -539,7 +589,11 @@
       "subscribed_title": "已订阅",
       "subscribed_description": "您已成功订阅 {{community}}。",
       "unsubscribed_title": "已取消订阅",
-      "unsubscribed_description": "您已成功取消订阅 {{community}}。"
+      "unsubscribed_description": "您已成功取消订阅 {{community}}。",
+      "role_updated_title": "成功",
+      "role_updated_description": "已更新 {{username}} 在社区 {{community}} 中的角色。",
+      "updated_title": "社区已更新",
+      "updated_description": "你已更新社区 {{community}}。"
     },
     "buttons": {
       "subscribe": "订阅",
@@ -711,7 +765,33 @@
       "updated_description": "你的评论已更新。",
       "deleted_title": "评论已删除",
       "deleted_description": "你的评论已删除。"
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "已置顶",
+      "pinned_description": "帖子已置顶。",
+      "unpinned_title": "已取消置顶",
+      "unpinned_description": "帖子已取消置顶。",
+      "muted_title": "帖子已静音",
+      "muted_description": "帖子已被静音。",
+      "unmuted_title": "帖子已取消静音",
+      "unmuted_description": "帖子已取消静音。",
+      "flagged_title": "举报成功",
+      "flagged_description": "你已举报 {{community}} 中的帖子。"
+    },
+    "vote_toasts": {
+      "title": "投票成功",
+      "upvoted_description": "你已投赞成票。",
+      "downvoted_description": "你已投反对票。",
+      "removed_description": "你的投票已撤销。"
+    },
+    "delete_dialog": {
+      "title_post": "确认删除帖子",
+      "title_comment": "确认删除评论",
+      "description": "你确定吗？",
+      "cancel": "取消"
+    },
+    "cross_posted_banner": "<author>{{author}}</author> 将<post>此帖子</post>转帖到 <community>{{community}}</community>",
+    "authored_by": "（作者：<author>@{{author}}</author>）"
   },
   "submit_page": {
     "log_in_to_post": "登录后才能发布帖子。",
@@ -856,7 +936,14 @@
       "unordered_list": "无序列表",
       "ordered_list": "有序列表",
       "task_list": "任务列表"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "帖子已发布",
+      "submitted_description": "你的帖子已提交",
+      "deleted_title": "帖子已删除",
+      "deleted_description": "你的帖子已删除"
+    },
+    "submitting": "提交中..."
   },
   "search_page": {
     "placeholder": "搜索",
@@ -933,7 +1020,11 @@
     "error_already_exists": "此节点已在列表中",
     "error_cant_remove_active": "您无法移除当前首选节点，请先选择新的首选节点",
     "error_cant_remove_all": "列表中必须至少有一个节点",
-    "changes_saved": "更改已保存"
+    "changes_saved": "更改已保存",
+    "profile_toasts": {
+      "updated_title": "个人资料已更新",
+      "updated_description": "你的个人资料已更新。"
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "抱歉！ 此页面不存在。",
@@ -990,7 +1081,8 @@
       "pending": "待定",
       "roles": "角色"
     },
-    "for_you_posts": "为你推荐"
+    "for_you_posts": "为你推荐",
+    "community_description": "{{community}} 社区。"
   },
   "chat_widget": {
     "chat": "聊天",
@@ -1046,7 +1138,8 @@
       "account": "用户",
       "user_topic": "按主题查看用户帖子",
       "tag": "标签"
-    }
+    },
+    "sort_by": "排序方式："
   },
   "for_you_feed": {
     "sign_in_prompt": "登录后即可查看你的推荐内容。",
@@ -1351,13 +1444,41 @@
       "locked": "安全存储中的密钥：已锁定",
       "unlocked": "安全存储中的密钥：已解锁",
       "lock": "锁定"
-    }
+    },
+    "reply_failed_title": "回复失败"
   },
   "api_sets": {
     "description": "每一类 Hive API 都会发送到为其选定的节点。请为每一类选择节点，或保留自动选择。",
     "check_nodes": "检查节点",
     "stop_checking": "停止检查",
     "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。",
-    "catalog_only": "只能选择列出的节点：本站无法连接其他节点。"
+    "catalog_only": "只能选择列出的节点：本站无法连接其他节点。",
+    "title": "API 切换与节点健康检查",
+    "checks": {
+      "find_accounts": "数据库 - 查找账户",
+      "get_post": "Bridge - 获取帖子",
+      "list_communities": "Bridge - 社区列表",
+      "get_ranked_posts": "Bridge - 获取排名帖子",
+      "ai_search": "AI 搜索",
+      "ai_similar_posts": "AI 相似帖子"
+    }
+  },
+  "service_unavailable": {
+    "title": "服务暂时不可用",
+    "description": "连接 Hive 网络时出现问题。这通常是暂时的。",
+    "what_you_can_do": "你可以这样做",
+    "refresh": "稍后刷新页面重试",
+    "check_api_status": "在节点健康检查中查看 API 状态",
+    "check_back": "请稍后再来，我们正在处理"
+  },
+  "oidc": {
+    "interaction_title": "交互",
+    "consent_title": "授权同意",
+    "consent_request": "应用 {{application}} 的 OAuth 流程需要你的同意。此应用希望：",
+    "create_account": "为你创建账户。",
+    "read_profile": "获取你的 Hive 公开个人资料。",
+    "choose": "请点击下方相应的按钮：",
+    "consent_yes": "是，我同意",
+    "consent_no": "否，我不同意"
   }
 }

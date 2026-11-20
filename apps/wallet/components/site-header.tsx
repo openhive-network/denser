@@ -130,10 +130,12 @@ const SiteHeader: FC = () => {
                   user={user}
                   tooltip={
                     <TooltipContent className="flex flex-col">
-                      <span>Resource Credits</span>
-                      <span>(RC) level: {stats.resourceCreditsPercent}%</span>
+                      <span>{t('resource_credits.title')}</span>
+                      <span>{t('resource_credits.rc_level', { value: stats.resourceCreditsPercent })}</span>
                       {stats.resourceCreditsWaitTime !== 0 ? (
-                        <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
+                        <span>
+                          {t('resource_credits.full_in_hours', { hours: stats.resourceCreditsWaitTime / 3600 })}
+                        </span>
                       ) : null}
                     </TooltipContent>
                   }

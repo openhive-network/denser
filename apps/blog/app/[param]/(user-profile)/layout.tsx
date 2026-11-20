@@ -5,6 +5,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getProfileAccount, getProfileGlobalProperties, getProfileReputations } from '@/blog/lib/profile-cache';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
+import { HIVE_TAGLINE } from '@transaction/lib/metadata';
 import { parseSocialLinks } from '@/blog/features/layouts/user-profile/lib/social-links';
 import { isValidAccountNameFormat } from '@transaction/lib/validation';
 import { isTransportError } from '@transaction/lib/wax-errors';
@@ -69,10 +70,10 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
     logger.error(error, 'Error in generateMetadata:');
     return {
       title: { absolute: 'Hive' },
-      description: 'Hive: Communities Without Borders.',
+      description: HIVE_TAGLINE,
       openGraph: {
         title: 'Hive',
-        description: 'Hive: Communities Without Borders.'
+        description: HIVE_TAGLINE
       }
     };
   }

@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
@@ -20,6 +21,7 @@ const changesImage = (params: UpdateProfileParams, prevProfile: FullAccount['pro
   (params.cover_image ?? '') !== (prevProfile?.cover_image ?? '');
 
 export function useUpdateProfileMutation() {
+  const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const queryKey = ['profileData', user.username];
   return useOperationMutation({
@@ -50,8 +52,8 @@ export function useUpdateProfileMutation() {
       });
     },
     successToast: () => ({
-      title: 'Profile updated successfully',
-      description: 'Your profile has been updated.'
+      title: t('settings_page.profile_toasts.updated_title'),
+      description: t('settings_page.profile_toasts.updated_description')
     }),
     invalidate: () => [queryKey],
     invalidateDelays: [4000]

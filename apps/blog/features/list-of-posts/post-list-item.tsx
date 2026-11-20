@@ -29,7 +29,7 @@ import PostCardUpvotesTooltip from './post-card-upvotes-tooltip';
 import PostCardBlacklistMark from './post-card-blacklist-mark';
 import PostSummary from './summary';
 import { Preferences } from '@/blog/lib/utils';
-import { useTranslation } from '@/blog/i18n/client';
+import { Trans, useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import AuthorProfileLink from '@/blog/features/lite-account/author-profile-link';
@@ -131,17 +131,29 @@ const PostListItem = memo(
             <div className="mt-2 rounded-sm bg-background-secondary px-2 py-1 text-sm" data-testid="cross-post-banner">
               <p className="flex items-center gap-1 text-xs md:text-sm">
                 <Icons.crossPost className="h-4 w-4 text-slate-500 dark:text-slate-400" />{' '}
-                <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${post.author}`} data-testid="cross-post-author-link">
-                  {post.author}
-                </Link>{' '}
-                cross-posted{' '}
-                <Link
-                  href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
-                  className="text-destructive hover:cursor-pointer"
-                  data-testid="cross-post-original-link"
-                >
-                  @{post.original_entry.author}/{post.original_entry.permlink}
-                </Link>
+                <Trans
+                  i18nKey="cards.cross_posted"
+                  values={{
+                    author: post.author,
+                    original: `${post.original_entry.author}/${post.original_entry.permlink}`
+                  }}
+                  components={{
+                    author: (
+                      <Link
+                        className="hover:cursor-pointer hover:text-destructive"
+                        href={`/@${post.author}`}
+                        data-testid="cross-post-author-link"
+                      />
+                    ),
+                    original: (
+                      <Link
+                        href={`/${post.original_entry.community}/@${post.original_entry.author}/${post.original_entry.permlink}`}
+                        className="text-destructive hover:cursor-pointer"
+                        data-testid="cross-post-original-link"
+                      />
+                    )
+                  }}
+                />
               </p>
             </div>
           ) : null}

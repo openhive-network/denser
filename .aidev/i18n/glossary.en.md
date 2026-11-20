@@ -77,8 +77,11 @@ even in English, so the other locales get their own categories (#1188).
 ## Untranslated names
 
 Hive, Hive Keychain, HiveAuth, Hivesigner, PeakVault, MetaMask, Google Drive,
-Hive Bridge, Ecency, PeakD, Hive.blog, Blocktrades, Ionomy, OpenHive; FAQ,
-NSFW, RC, DHF, CSV, API; HIVE, HBD, HP, HIVE POWER. These names stay as they
+Hive Bridge, Hive Wallet, Ecency, PeakD, Hive.blog, Hive.io, Hivebuzz,
+Blocktrades, Ionomy, OpenHive; FAQ, NSFW, RC, DHF, CSV, API; HIVE, HBD, HP,
+HIVE POWER, HIVE DOLLARS. These names stay as they
 are in every locale (`identicalToEnglishAllowed` in
 `scripts/check-blog-translations.js` and `scripts/check-wallet-translations.js`
-lists the keys that may equal English).
+lists the keys that may equal English). The ESLint guard against hard-coded
+text (`packages/eslint-config-custom/index.js`, `UNTRANSLATED_NAMES`) lets
+these names stand alone in source.

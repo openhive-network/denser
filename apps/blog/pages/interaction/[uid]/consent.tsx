@@ -7,6 +7,7 @@ import { useConsent } from '@smart-signer/lib/auth/use-consent';
 import { PostConsentSchema } from '@smart-signer/lib/auth/utils';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useEffect, useState } from 'react';
+import { useTranslation } from '@/blog/i18n/client';
 
 const logger = getLogger('app');
 
@@ -17,6 +18,7 @@ export default function ConsentPage({
   oidcClientDetails: OidcClientDetails;
   redirectTo: string;
 }) {
+  const { t } = useTranslation('common_blog');
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -55,16 +57,15 @@ export default function ConsentPage({
         sm:justify-around sm:gap-0"
       >
         <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
-          <div className="text-lg font-bold sm:text-3xl">Consent</div>
+          <div className="text-lg font-bold sm:text-3xl">{t('oidc.consent_title')}</div>
           <p>
-            We need your consent in Oauth flow for application
-            {oidcClientDetails.clientName}. This application wants to:
+            {t('oidc.consent_request', { application: oidcClientDetails.clientName })}
             <ol>
-              <li>Create an account for you.</li>
-              <li>Know your Hive public user profile details.</li>
+              <li>{t('oidc.create_account')}</li>
+              <li>{t('oidc.read_profile')}</li>
             </ol>
           </p>
-          <p>Please click the appropriate button below:</p>
+          <p>{t('oidc.choose')}</p>
           <button
             disabled={!!runningAction}
             onClick={() => registerConsent(true)}
@@ -73,7 +74,7 @@ export default function ConsentPage({
             {runningAction === 'yes' ? (
               <CircleSpinner loading={runningAction === 'yes'} size={18} color="#dc2626" />
             ) : (
-              'Yes, I consent'
+              t('oidc.consent_yes')
             )}
           </button>
 
@@ -85,7 +86,7 @@ export default function ConsentPage({
             {runningAction === 'no' ? (
               <CircleSpinner loading={runningAction === 'no'} size={18} color="#dc2626" />
             ) : (
-              'No, I do not consent'
+              t('oidc.consent_no')
             )}
           </button>
         </div>

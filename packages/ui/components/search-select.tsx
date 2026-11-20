@@ -8,17 +8,21 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/components/select';
+import type { TFunction } from 'i18next';
 import { Label } from '@ui/components/label';
 import { SearchMode, SearchSort, useSearch } from '@ui/hooks/use-search';
 
 function SearchSortSelect({
   value,
   secondValue,
-  mode
+  mode,
+  t
 }: {
   value: string;
   secondValue: string;
   mode: SearchMode;
+  /** The app's translation function: this package owns no locale files. */
+  t: TFunction;
 }) {
   const { handleSearch, sortQuery } = useSearch();
   const onValueChange = (sortValue: SearchSort) => {
@@ -30,14 +34,14 @@ function SearchSortSelect({
   };
   return (
     <Select value={sortQuery ?? 'relevance'} onValueChange={onValueChange}>
-      <Label>Sort by:</Label>
+      <Label>{t('search_mode.sort_by')}</Label>
       <SelectTrigger className="w-[180px]" data-testid="search-sort-by-dropdown-list">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="created">Newest</SelectItem>
-          <SelectItem value="relevance">Relevance</SelectItem>
+          <SelectItem value="created">{t('select_sort.search_sorter.newest')}</SelectItem>
+          <SelectItem value="relevance">{t('select_sort.search_sorter.relevance')}</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

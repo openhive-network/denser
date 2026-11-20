@@ -119,7 +119,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
         </button>
       </div>
       {searchPage && (mode === 'classic' || mode === 'userTopic') && (
-        <SearchSortSelect value={inputValue} secondValue={secondInputValue} mode={mode} />
+        <SearchSortSelect value={inputValue} secondValue={secondInputValue} mode={mode} t={t} />
       )}
     </div>
   );

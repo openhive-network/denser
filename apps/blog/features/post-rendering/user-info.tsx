@@ -1,7 +1,7 @@
 import { Link } from '@hive/ui';
 import { formatUtcDate } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from '@/blog/i18n/client';
+import { Trans, useTranslation } from '@/blog/i18n/client';
 
 import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import TimeAgo from '@hive/ui/components/time-ago';
@@ -66,11 +66,18 @@ function UserInfo({
       )}
       {authored && (
         <span className="text-muted-foreground">
-          (authored by{' '}
-          <AuthorProfileLink className="hover:cursor-pointer hover:text-destructive" author={authored}>
-            @{authorDisplayName(authored)}
-          </AuthorProfileLink>
-          )
+          <Trans
+            i18nKey="post_content.authored_by"
+            values={{ author: authorDisplayName(authored) }}
+            components={{
+              // Trans fills in the children from the translation.
+              author: (
+                <AuthorProfileLink className="hover:cursor-pointer hover:text-destructive" author={authored}>
+                  @{authorDisplayName(authored)}
+                </AuthorProfileLink>
+              )
+            }}
+          />
         </span>
       )}
       <span className="text-muted-foreground">{t('post_content.in')}</span>

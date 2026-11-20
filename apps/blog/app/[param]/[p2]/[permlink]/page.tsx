@@ -9,6 +9,7 @@ import { isPostListed, withholdBody, withholdEntryBody } from '@/blog/lib/listed
 import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
+import { HIVE_TAGLINE } from '@transaction/lib/metadata';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isPermlinkValid, isPostAuthorValid, isValidUserParam, postAuthorFromParam } from '@/blog/utils/validate-links';
@@ -33,10 +34,10 @@ const logger = getLogger('app');
 
 const FALLBACK_METADATA: Metadata = {
   title: 'Hive',
-  description: 'Hive: Communities Without Borders.',
+  description: HIVE_TAGLINE,
   openGraph: {
     title: 'Hive',
-    description: 'Hive: Communities Without Borders.'
+    description: HIVE_TAGLINE
   }
 };
 

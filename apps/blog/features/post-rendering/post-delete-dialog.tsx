@@ -13,20 +13,24 @@ import {
 } from '@ui/components/alert-dialog';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { ReactNode, useState } from 'react';
+import { X } from 'lucide-react';
+import { useTranslation } from '@/blog/i18n/client';
 
 export function PostDeleteDialog({
   children,
   permlink,
   action,
-  label
+  kind
 }: {
   children: ReactNode;
   permlink: string;
   action: (permlink: string) => void;
-  label: string;
+  kind: 'post' | 'comment';
 }) {
+  const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const [open, setOpen] = useState(false);
+  const title = kind === 'post' ? t('post_content.delete_dialog.title_post') : t('post_content.delete_dialog.title_comment');
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -34,16 +38,22 @@ export function PostDeleteDialog({
       <AlertDialogContent className="flex flex-col gap-8 sm:rounded-r-xl ">
         <AlertDialogHeader className="gap-2">
           <div className="flex items-center justify-between">
-            <AlertDialogTitle data-testid="flag-dialog-header">{`Confirm Delete ${label}`}</AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="flag-dialog-close">
-              X
+            <AlertDialogTitle data-testid="flag-dialog-header">{title}</AlertDialogTitle>
+            <AlertDialogCancel
+              className="border-none hover:text-red-800"
+              aria-label={t('global.close')}
+              data-testid="flag-dialog-close"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
             </AlertDialogCancel>
           </div>
-          <AlertDialogDescription data-testid="flag-dialog-description">Are you sure?</AlertDialogDescription>
+          <AlertDialogDescription data-testid="flag-dialog-description">
+            {t('post_content.delete_dialog.description')}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
           <AlertDialogCancel className="hover:text-red-800" data-testid="flag-dialog-cancel">
-            Cancel
+            {t('post_content.delete_dialog.cancel')}
           </AlertDialogCancel>
           {user && user.isLoggedIn ? (
             <AlertDialogAction
@@ -56,7 +66,7 @@ export function PostDeleteDialog({
                 setOpen(false);
               }}
             >
-              OK
+              {t('post_content.flag.ok')}
             </AlertDialogAction>
           ) : null}
         </AlertDialogFooter>

@@ -2,12 +2,14 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
+import { useTranslation } from '@/blog/i18n/client';
 
 const logger = getLogger('app');
 
 export default function InteractionPage({
   redirectTo
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation('common_blog');
   const router = useRouter();
 
   if (redirectTo) {
@@ -20,7 +22,7 @@ export default function InteractionPage({
         sm:justify-around sm:gap-0"
     >
       <div className="flex flex-col gap-3 sm:mr-4 sm:gap-8">
-        <div className="text-lg font-bold sm:text-3xl">Interaction</div>
+        <div className="text-lg font-bold sm:text-3xl">{t('oidc.interaction_title')}</div>
       </div>
     </div>
   );

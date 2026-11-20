@@ -10,9 +10,9 @@ export const useFollowBlacklistBlogMutation = () =>
   useAddToFollowListMutation('follow_blacklist', {
     name: 'useFollowBlacklistBlogMutation',
     run: ({ otherBlogs, blog }) => transactionService.followBlacklistBlog(otherBlogs, blog, OBSERVE),
-    toast: ({ otherBlogs }) => ({
-      title: 'Blog followed successfully',
-      description: `The blog ${otherBlogs} has been added to your followed blacklist.`
+    toast: (t, { otherBlogs }) => ({
+      title: t('user_profile.list_toasts.list_followed_title'),
+      description: t('user_profile.list_toasts.blacklist_followed_description', { blog: otherBlogs })
     })
   });
 
@@ -20,9 +20,9 @@ export const useUnfollowBlacklistBlogMutation = () =>
   useRemoveFromFollowListMutation('follow_blacklist', {
     name: 'useUnfollowBlacklistBlogMutation',
     run: ({ blog }) => transactionService.unfollowBlacklistBlog(blog, OBSERVE),
-    toast: ({ blog }) => ({
-      title: 'Blog unfollowed successfully',
-      description: `The blog ${blog} has been removed from your followed blacklist.`
+    toast: (t, { blog }) => ({
+      title: t('user_profile.list_toasts.list_unfollowed_title'),
+      description: t('user_profile.list_toasts.blacklist_unfollowed_description', { blog })
     })
   });
 
@@ -30,8 +30,8 @@ export const useResetFollowBlacklistBlogMutation = () =>
   useResetFollowListMutation('follow_blacklist', {
     name: 'useResetFollowBlacklistBlogMutation',
     run: () => transactionService.resetFollowBlacklistBlog(OBSERVE),
-    toast: () => ({
-      title: 'Follow blacklist reset successfully',
-      description: 'All followed blogs have been removed from your blacklist.'
+    toast: (t) => ({
+      title: t('user_profile.list_toasts.followed_blacklists_reset_title'),
+      description: t('user_profile.list_toasts.followed_blacklists_reset_description')
     })
   });

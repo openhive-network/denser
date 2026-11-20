@@ -1,3 +1,72 @@
+// Names every locale keeps as they are (.aidev/i18n/glossary.en.md, "Untranslated names"), longest first
+// so a regex alternation matches "Hive Keychain" before "Hive". Matched in any case: an "nsfw" tag is one.
+const UNTRANSLATED_NAMES = [
+  'HIVE DOLLARS',
+  'Hive Keychain',
+  'Hive Wallet',
+  'Hive Bridge',
+  'Hive Power',
+  'Google Drive',
+  'Hive.blog',
+  'Hive.io',
+  'Blocktrades',
+  'Hivesigner',
+  'PeakVault',
+  'HiveAuth',
+  'Hivebuzz',
+  'Keychain',
+  'MetaMask',
+  'OpenHive',
+  'Ionomy',
+  'Ecency',
+  'PeakD',
+  'Hive',
+  'NSFW',
+  'FAQ',
+  'DHF',
+  'CSV',
+  'API',
+  'HBD',
+  'HP',
+  'RC'
+];
+// esquery regexes cannot contain "/", so the patterns below use character classes instead.
+const NAMES_ONLY = `/^[^A-Za-z]*((${UNTRANSLATED_NAMES.join('|').replace(/\./g, '[.]')})[^A-Za-z]*)*$/i`;
+// A bare URL is an address, not text.
+const TEXT = `[value=/[A-Za-z]/]:not([value=${NAMES_ONLY}]):not([value=/^\\s*https?:[^\\s]*\\s*$/])`;
+// A dotted translation key handed on to a later t(), e.g. label: 'account_keys.this_session'.
+const STRING_TEXT = `Literal${TEXT}:not([value=/^[A-Za-z0-9_]+([.][A-Za-z0-9_-]+)+$/])`;
+// A template part is text when a word stands beside a space; key fragments like `login_form.title_${type}` have none.
+const TEMPLATE_TEXT = `TemplateLiteral[expressions.length>0] > TemplateElement[value.raw=/[A-Za-z][^\\s]*\\s|\\s[^\\s]*[A-Za-z]/]:not([value.raw=${NAMES_ONLY}])`;
+const TRANSLATE_MESSAGE = 'Translate user-facing text with t() instead of a string literal.';
+
+/** Selectors for the text an expression in `context` renders: a string, either branch of a ?: or ||, a template. */
+const textIn = (context) =>
+  [
+    `${context} > ${STRING_TEXT}`,
+    `${context} > :matches(ConditionalExpression, LogicalExpression) > ${STRING_TEXT}`,
+    `${context} > ${TEMPLATE_TEXT}`,
+    `${context} > TemplateLiteral[expressions.length=0] > TemplateElement${TEXT.replace(/value/g, 'value.raw')}`
+  ].map((selector) => ({ selector, message: TRANSLATE_MESSAGE }));
+
+const TRANSLATED_ATTRIBUTE = 'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/]';
+
+const JSX_TEXT_SELECTORS = [
+  { selector: `${TRANSLATED_ATTRIBUTE} > Literal${TEXT}`, message: TRANSLATE_MESSAGE },
+  ...textIn(`${TRANSLATED_ATTRIBUTE} > JSXExpressionContainer`),
+  { selector: `JSXText${TEXT}`, message: TRANSLATE_MESSAGE },
+  ...textIn(':matches(JSXElement, JSXFragment) > JSXExpressionContainer')
+];
+
+const TRANSLATION_SELECTORS = [
+  ...JSX_TEXT_SELECTORS,
+  // An object's title, description or label: a toast and its builders' results, a select option, page metadata.
+  ...textIn('Property[key.name=/^(title|description|label)$/]'),
+  ...textIn('CallExpression[callee.name=/^(toast|handleError)$/] Property[key.name="message"]'),
+  // A default label of a shared component (closeLabel = 'Close'): take the translated text as a prop instead.
+  ...textIn('AssignmentPattern[left.name=/^(label|text|title)$|(Label|Text|Title)$/]')
+];
+
 module.exports = {
   extends: ['prettier'],
   parser: '@typescript-eslint/parser',
@@ -55,22 +124,17 @@ module.exports = {
     'prefer-const': 'warn',
     // Discourage console.log in production code - use logger instead
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    // User-facing attribute text must come from t() so every locale can translate it
-    'no-restricted-syntax': [
-      'error',
-      {
-        selector:
-          'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/] > Literal[value=/[A-Za-z]/]',
-        message: 'Translate user-facing attribute text with t() instead of a string literal.'
-      },
-      {
-        selector:
-          'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/] > JSXExpressionContainer > :matches(Literal[value=/[A-Za-z]/], TemplateLiteral[expressions.length=0])',
-        message: 'Translate user-facing attribute text with t() instead of a string literal.'
-      }
-    ]
+    // User-facing text must come from t() so every locale can translate it
+    'no-restricted-syntax': ['error', ...TRANSLATION_SELECTORS]
   },
   overrides: [
+    {
+      // Test data (post titles, option labels) is not shown to users.
+      files: ['*.test.ts', '*.test.tsx', '*.test.js'],
+      rules: {
+        'no-restricted-syntax': ['error', ...JSX_TEXT_SELECTORS]
+      }
+    },
     {
       files: ['*.ts', '*.tsx'],
       rules: {

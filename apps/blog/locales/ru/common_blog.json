@@ -54,7 +54,14 @@
       "hours_and_minutes": "{{hours}} и {{minutes}}"
     },
     "profile_picture": "Фото профиля",
-    "notifications_region": "Уведомления ({hotkey})"
+    "notifications_region": "Уведомления ({hotkey})",
+    "profile_picture_of": "Фото профиля {{username}}",
+    "loading_more": "Загрузка...",
+    "no_data_available": "Нет данных",
+    "fetching_data_failed": "Не удалось получить данные.",
+    "check_permlink_or_node": "Проверьте, правильна ли постоянная ссылка и нормально ли работает узел.",
+    "unexpected_error": "Произошла непредвиденная ошибка. Попробуйте ещё раз.",
+    "page_load_failed": "Не удалось загрузить эту страницу. Попробуйте ещё раз."
   },
   "navigation": {
     "main_nav_bar": {
@@ -71,7 +78,8 @@
       "create_post": "Создать пост",
       "theme": "Тема",
       "language": "Язык",
-      "menu_panel": "Панель меню"
+      "menu_panel": "Панель меню",
+      "ai_tag": "ИИ"
     },
     "sidebar": {
       "welcome": "Добро пожаловать",
@@ -86,7 +94,9 @@
       "privacy_policy": "Политика Конфиденциальности",
       "terms_of_service": "Условия пользования",
       "not_available_yet": "Пока недоступно",
-      "login_required": "Войдите, чтобы использовать эту опцию"
+      "login_required": "Войдите, чтобы использовать эту опцию",
+      "healthchecker": "Проверка узлов",
+      "version": "Версия: {{version}}"
     },
     "communities_nav": {
       "my_friends": "Мои друзья",
@@ -192,6 +202,13 @@
       "add_active_key": "Добавить активный ключ",
       "add_posting_key": "Добавить ключ публикации",
       "switch_to_posting_key": "Перейти на ключ публикации"
+    },
+    "manabars": {
+      "resource_credits": "Ресурсные кредиты",
+      "rc_level": "Уровень (RC): {{value}} %",
+      "voting_power": "Сила голоса: {{value}} %",
+      "downvote_power": "Сила голоса против: {{value}} %",
+      "full_in": "Полностью через: {{time}}"
     }
   },
   "select_sort": {
@@ -299,7 +316,11 @@
     "reveal_nsfw_post": "Показать этот NSFW-пост",
     "my_blacklist": "Мой чёрный список",
     "post_image": "Изображение поста",
-    "payout_declined": "Выплата отклонена"
+    "payout_declined": "Выплата отклонена",
+    "cross_posted": "<author>{{author}}</author> опубликовал(а) <original>@{{original}}</original>",
+    "nsfw_hidden_logged_in": "<reveal>Показать этот пост</reveal> или изменить <settings>настройки отображения</settings>.",
+    "nsfw_hidden_logged_out": "<reveal>Показать этот пост</reveal> или <account>создать аккаунт</account>, чтобы сохранить настройки.",
+    "no_image": "Нет изображения"
   },
   "alert_dialog_reblog": {
     "action": "ОК",
@@ -307,7 +328,9 @@
     "description": "Этот пост будет добавлен в ваш блог и показан вашим подписчикам.",
     "already_reblogged": "Вы уже сделали репост этого поста.",
     "title": "Репост этого поста",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "toast_title": "Репост сделан",
+    "toast_description": "Вы сделали репост."
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Отменить голос за",
@@ -485,7 +508,9 @@
       "followed_you": "@{{username}} подписался на вас",
       "mentioned_you_and_others": "@{{username}} упомянул вас и других пользователей ({{others}})",
       "mentioned_you": "@{{username}} упомянул вас",
-      "subscribed_to": "@{{username}} подписался на {{community}}"
+      "subscribed_to": "@{{username}} подписался на {{community}}",
+      "marked_read_title": "Уведомления отмечены как прочитанные",
+      "marked_read_description": "Все уведомления отмечены как прочитанные."
     },
     "load_more_failed": "Не удалось загрузить больше постов.",
     "load_more_retry": "Повторить",
@@ -503,7 +528,32 @@
       "unfollowed_description": "Вы отписались от {{username}}.",
       "unfollowed_all_title": "Вы отписались от всех",
       "unfollowed_all_description": "Вы больше ни на кого не подписаны."
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "Блог добавлен в чёрный список",
+      "blacklisted_description": "Блог {{blog}} добавлен в ваш чёрный список.",
+      "unblacklisted_title": "Блог удалён из чёрного списка",
+      "unblacklisted_description": "Блог {{blog}} удалён из вашего чёрного списка.",
+      "blacklist_reset_title": "Чёрный список сброшен",
+      "blacklist_reset_description": "Все блоги удалены из чёрного списка.",
+      "list_followed_title": "Вы подписались на список блога",
+      "blacklist_followed_description": "Блог {{blog}} добавлен в отслеживаемые вами чёрные списки.",
+      "list_unfollowed_title": "Вы отписались от списка блога",
+      "blacklist_unfollowed_description": "Блог {{blog}} удалён из отслеживаемых вами чёрных списков.",
+      "followed_blacklists_reset_title": "Отслеживаемые чёрные списки сброшены",
+      "followed_blacklists_reset_description": "Все блоги удалены из отслеживаемых вами чёрных списков.",
+      "muted_list_followed_description": "Блог {{blog}} добавлен в отслеживаемые вами списки заглушённых.",
+      "muted_list_unfollowed_description": "Блог {{blog}} удалён из отслеживаемых вами списков заглушённых.",
+      "followed_muted_lists_reset_title": "Отслеживаемые списки заглушённых сброшены",
+      "followed_muted_lists_reset_description": "Отслеживаемые вами списки заглушённых сброшены.",
+      "muted_title": "Заглушено",
+      "muted_description": "Вы заглушили {{username}}.",
+      "unmuted_title": "Заглушение снято",
+      "unmuted_description": "Вы сняли заглушение с {{username}}.",
+      "muted_list_reset_title": "Список заглушённых сброшен",
+      "muted_list_reset_description": "Ваш список заглушённых сброшен."
+    },
+    "level_badge_alt": "Уровень {{level}}"
   },
   "communities": {
     "set_title_for_user": "Установить заголовок для @{{username}}",
@@ -554,7 +604,11 @@
       "subscribed_title": "Вы подписались",
       "subscribed_description": "Вы подписались на сообщество {{community}}.",
       "unsubscribed_title": "Вы отписались",
-      "unsubscribed_description": "Вы отписались от сообщества {{community}}."
+      "unsubscribed_description": "Вы отписались от сообщества {{community}}.",
+      "role_updated_title": "Готово",
+      "role_updated_description": "Роль {{username}} в сообществе {{community}} обновлена.",
+      "updated_title": "Сообщество обновлено",
+      "updated_description": "Вы обновили сообщество {{community}}."
     },
     "buttons": {
       "subscribe": "Подписаться",
@@ -726,7 +780,33 @@
       "updated_description": "Ваш комментарий обновлён.",
       "deleted_title": "Комментарий удалён",
       "deleted_description": "Ваш комментарий удалён."
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "Закреплено",
+      "pinned_description": "Пост закреплён.",
+      "unpinned_title": "Откреплено",
+      "unpinned_description": "Пост откреплён.",
+      "muted_title": "Пост заглушён",
+      "muted_description": "Пост заглушён.",
+      "unmuted_title": "Заглушение поста снято",
+      "unmuted_description": "С поста снято заглушение.",
+      "flagged_title": "Жалоба отправлена",
+      "flagged_description": "Вы пожаловались на пост в сообществе {{community}}."
+    },
+    "vote_toasts": {
+      "title": "Голос учтён",
+      "upvoted_description": "Вы проголосовали за.",
+      "downvoted_description": "Вы проголосовали против.",
+      "removed_description": "Ваш голос отозван."
+    },
+    "delete_dialog": {
+      "title_post": "Подтвердите удаление поста",
+      "title_comment": "Подтвердите удаление комментария",
+      "description": "Вы уверены?",
+      "cancel": "Отмена"
+    },
+    "cross_posted_banner": "<author>{{author}}</author> опубликовал(а) <post>этот пост</post> в <community>{{community}}</community>",
+    "authored_by": "(автор: <author>@{{author}}</author>)"
   },
   "submit_page": {
     "log_in_to_post": "Войдите, чтобы опубликовать сообщение.",
@@ -871,7 +951,14 @@
       "unordered_list": "Маркированный список",
       "ordered_list": "Нумерованный список",
       "task_list": "Список задач"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "Пост опубликован",
+      "submitted_description": "Ваш пост отправлен",
+      "deleted_title": "Пост удалён",
+      "deleted_description": "Ваш пост удалён"
+    },
+    "submitting": "Отправка..."
   },
   "search_page": {
     "placeholder": "Поиск",
@@ -948,7 +1035,11 @@
     "error_already_exists": "Эта конечная точка уже есть в списке",
     "error_cant_remove_active": "Вы не можете удалить текущую предпочтительную конечную точку. Пожалуйста, сначала выберите новую предпочтительную конечную точку",
     "error_cant_remove_all": "У вас должна быть хотя бы одна конечная точка в списке",
-    "changes_saved": "Изменения сохранены"
+    "changes_saved": "Изменения сохранены",
+    "profile_toasts": {
+      "updated_title": "Профиль обновлён",
+      "updated_description": "Ваш профиль обновлён."
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Извините! Эта страница не существует.",
@@ -1005,7 +1096,8 @@
       "pending": "ожидающее",
       "roles": "роли"
     },
-    "for_you_posts": "Для вас"
+    "for_you_posts": "Для вас",
+    "community_description": "Сообщество {{community}}."
   },
   "chat_widget": {
     "chat": "Чат",
@@ -1061,7 +1153,8 @@
       "account": "Пользователи",
       "user_topic": "Посты пользователя по теме",
       "tag": "Теги"
-    }
+    },
+    "sort_by": "Сортировать по:"
   },
   "for_you_feed": {
     "sign_in_prompt": "Войдите, чтобы увидеть свою ленту.",
@@ -1366,13 +1459,41 @@
       "locked": "Ключи в защищённом хранилище: заблокированы",
       "unlocked": "Ключи в защищённом хранилище: разблокированы",
       "lock": "Заблокировать"
-    }
+    },
+    "reply_failed_title": "Не удалось отправить ответ"
   },
   "api_sets": {
     "description": "Каждое семейство API Hive отправляется на узел, выбранный для него. Выберите узел для каждого семейства или оставьте автоматический выбор.",
     "check_nodes": "Проверить узлы",
     "stop_checking": "Остановить проверку",
     "node_unavailable": "{{selected}} недоступен для {{set}}; до его восстановления используется {{node}}.",
-    "catalog_only": "Можно выбрать только узлы из списка: сайт не может обращаться к другим."
+    "catalog_only": "Можно выбрать только узлы из списка: сайт не может обращаться к другим.",
+    "title": "Переключение API и проверка узлов",
+    "checks": {
+      "find_accounts": "База данных — поиск аккаунтов",
+      "get_post": "Bridge — получение поста",
+      "list_communities": "Bridge — список сообществ",
+      "get_ranked_posts": "Bridge — получение рейтинга постов",
+      "ai_search": "ИИ-поиск",
+      "ai_similar_posts": "Похожие посты (ИИ)"
+    }
+  },
+  "service_unavailable": {
+    "title": "Сервис временно недоступен",
+    "description": "Не удаётся подключиться к сети Hive. Обычно это временно.",
+    "what_you_can_do": "Что можно сделать",
+    "refresh": "Обновите страницу через несколько минут",
+    "check_api_status": "Проверьте состояние API на странице проверки узлов",
+    "check_back": "Загляните чуть позже — мы уже работаем над этим"
+  },
+  "oidc": {
+    "interaction_title": "Взаимодействие",
+    "consent_title": "Согласие",
+    "consent_request": "Нам нужно ваше согласие в процессе OAuth для приложения {{application}}. Это приложение хочет:",
+    "create_account": "Создать для вас аккаунт.",
+    "read_profile": "Получить данные вашего публичного профиля Hive.",
+    "choose": "Нажмите нужную кнопку ниже:",
+    "consent_yes": "Да, я согласен(на)",
+    "consent_no": "Нет, я не согласен(на)"
   }
 }

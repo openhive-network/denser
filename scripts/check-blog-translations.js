@@ -36,6 +36,7 @@ const POLICY = {
       'navigation.sidebar.openhive_chat',
       // Abbreviations
       'navigation.sidebar.faq',
+      'navigation.main_nav_bar.ai_tag',
       'page_titles.faq',
       'communities.edit_props_dialog.nsfw',
       // Acknowledgement buttons

@@ -41,7 +41,10 @@
     "profile_picture": "Zdjęcie profilowe",
     "notifications_region": "Powiadomienia ({hotkey})",
     "offline_notice": "Jesteś offline. Portfel odświeży się po przywróceniu połączenia.",
-    "select_placeholder": "Wybierz..."
+    "select_placeholder": "Wybierz...",
+    "unexpected_error": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.",
+    "copied": "Skopiowano!",
+    "profile_picture_of": "Zdjęcie profilowe {{username}}"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "Polityka prywatności",
       "terms_of_service": "Warunki korzystania z usługi",
       "currency_market": "Wymiana tokenów",
-      "third_party_exchanges": "Zewnętrzne giełdy:"
+      "third_party_exchanges": "Zewnętrzne giełdy:",
+      "healthchecker": "Kontrola węzłów",
+      "version": "Wersja: {{version}}"
     },
     "profile_navbar": {
       "blog": "Blog",
@@ -264,7 +269,8 @@
     "fill_recurrent_transfer_from": "Otrzymano cykliczny przelew {{value}} (pozostało: {{remaining}}) od ",
     "failed_recurrent_transfer_to": "Nie udało się wysłać cyklicznego przelewu {{value}} (kolejne nieudane próby: {{failures}}) do ",
     "failed_recurrent_transfer_from": "Nieudany cykliczny przelew {{value}} od ",
-    "recurrent_transfer_deleted": " - cykliczny przelew został anulowany po zbyt wielu nieudanych próbach"
+    "recurrent_transfer_deleted": " - cykliczny przelew został anulowany po zbyt wielu nieudanych próbach",
+    "unformatted_operation": "błąd"
   },
   "market_page": {
     "last_price": "Ostatnia cena",
@@ -837,6 +843,9 @@
       "passkey": "Twój klucz Posting jest wyprowadzony z klucza dostępu na {{origin}}.",
       "passkey_signer": "usłudze podpisu kluczem dostępu",
       "session_marked": "Klucze, którymi podpisuje ta sesja, są oznaczone na liście powyżej jako „Ta sesja”."
+    },
+    "master_key": {
+      "info": "Z hasła głównego powstają wszystkie pozostałe klucze, w tym klucz Owner. Kto je zna, kontroluje Twoje konto, więc przechowuj je bezpiecznie offline."
     }
   },
   "communities": {
@@ -878,7 +887,8 @@
       "minimum_characters": "Minimalnie {{value}} znaków",
       "pick_one": "Wybierz jedną opcję"
     },
-    "no_payment_option": "Aby utworzyć społeczność, potrzebujesz {{hive}} HIVE lub {{tokens}} tokenu tworzenia konta"
+    "no_payment_option": "Aby utworzyć społeczność, potrzebujesz {{hive}} HIVE lub {{tokens}} tokenu tworzenia konta",
+    "created_toast": "Utworzono społeczność"
   },
   "settings": {
     "preferences": "Preferencje",
@@ -905,7 +915,9 @@
     "minutes_few": "{{count}} minuty",
     "minutes_many": "{{count}} minut",
     "minutes_other": "{{count}} minuty",
-    "hours_and_minutes": "{{hours}} i {{minutes}}"
+    "hours_and_minutes": "{{hours}} i {{minutes}}",
+    "rc_level": "Poziom (RC): {{value}}%",
+    "full_in_hours": "Pełny za {{hours}} godz."
   },
   "page_titles": {
     "home": "Strona główna",
@@ -921,14 +933,21 @@
     "permissions": "Uprawnienia",
     "authorities": "Upoważnienia",
     "change_password": "Zmiana hasła",
-    "create_communities": "Tworzenie społeczności"
+    "create_communities": "Tworzenie społeczności",
+    "healthchecker_description": "Kontrola stanu API portfela"
   },
   "api_sets": {
     "description": "Każda rodzina API Hive trafia do węzła wybranego dla niej. Wybierz węzeł dla każdej rodziny albo zostaw wybór automatyczny.",
     "check_nodes": "Sprawdź węzły",
     "stop_checking": "Zatrzymaj sprawdzanie",
     "node_unavailable": "{{selected}} jest niedostępny dla {{set}}; do czasu jego powrotu używany jest {{node}}.",
-    "catalog_only": "Można wybrać tylko węzły z listy: strona nie może łączyć się z innymi."
+    "catalog_only": "Można wybrać tylko węzły z listy: strona nie może łączyć się z innymi.",
+    "title": "Przełącznik API i kontrola węzłów",
+    "checks": {
+      "find_accounts": "Baza danych – wyszukiwanie kont",
+      "savings_withdrawals": "Baza danych – wypłaty z oszczędności",
+      "operation_types": "HAFAH – typy operacji"
+    }
   },
   "account_keys": {
     "this_session": "Ta sesja",
@@ -942,5 +961,18 @@
       "safe_storage_replaced": "Nowe klucze zastąpią te zapisane w bezpiecznym magazynie w tej przeglądarce.",
       "none": "Klucz przechowywany przez tę kartę zostanie zastąpiony nowym; w przeciwnym razie przy następnym podpisie wprowadź nowy klucz."
     }
+  },
+  "recovery_page": {
+    "title": "Odzyskiwanie skradzionych kont",
+    "description": "Czasem klucz Owner użytkownika Hive może zostać przejęty. Odzyskiwanie skradzionych kont daje prawowitemu właścicielowi 30 dni na odzyskanie konta od chwili, gdy złodziej zmienił klucz Owner. Na hive.blog można z niego skorzystać tylko wtedy, gdy właściciel wcześniej wskazał 'Hive' jako powiernika konta i przestrzegał Warunków korzystania z Hive.",
+    "account_name": "Nazwa konta",
+    "recent_password": "Niedawne hasło",
+    "begin_recovery": "Rozpocznij odzyskiwanie",
+    "verify_identity": "Musimy potwierdzić Twoją tożsamość. Wpisz poniżej swój adres e-mail, aby rozpocząć weryfikację.",
+    "email": "E-mail",
+    "continue_with_email": "Kontynuuj z adresem e-mail",
+    "account_not_found": "Nie znaleziono konta",
+    "owner_not_changed": "Nie możemy odzyskać tego konta: jego właściciel nie zmienił się ostatnio",
+    "password_not_used": "To hasło nie było używane na tym koncie w ciągu ostatnich 30 dni."
   }
 }

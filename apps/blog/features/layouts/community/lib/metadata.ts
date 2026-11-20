@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getCommunity } from '@transaction/lib/bridge-api';
+import { HIVE_TAGLINE } from '@transaction/lib/metadata';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { getTranslation } from '@/blog/i18n/server';
@@ -25,6 +26,7 @@ export async function buildCommunityTagMetadata(
   const sectionKey = SECTION_TITLE_KEYS[section];
   const sectionLabel = sectionKey ? t(sectionKey) : section;
   const alternates = { canonical: `/${sort}/${tag}` };
+  const fallbackDescription = `${t('page_titles.community_description', { community: tag })} ${HIVE_TAGLINE}`;
 
   if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`, alternates };
 
@@ -34,7 +36,7 @@ export async function buildCommunityTagMetadata(
     const communityName = data?.title ?? data?.name ?? tag;
     const titleSection = sectionLabel ? ` / ${sectionLabel}` : '';
     const title = `${communityName}${titleSection} - Hive`;
-    const description = data?.description || `${tag} community. Hive: Communities Without Borders.`;
+    const description = data?.description || fallbackDescription;
     const image = data?.avatar_url || 'https://hive.blog/images/hive-blog-share.png';
 
     return {
@@ -58,11 +60,11 @@ export async function buildCommunityTagMetadata(
   }
   return {
     title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`,
-    description: `${tag} community. Hive: Communities Without Borders.`,
+    description: fallbackDescription,
     alternates,
     openGraph: {
       title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`,
-      description: `${tag} community. Hive: Communities Without Borders.`,
+      description: fallbackDescription,
       images: ['https://hive.blog/images/hive-blog-share.png']
     }
   };

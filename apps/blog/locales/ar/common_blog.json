@@ -58,7 +58,14 @@
       "hours_and_minutes": "{{hours}} و{{minutes}}"
     },
     "profile_picture": "صورة الملف الشخصي",
-    "notifications_region": "الإشعارات ({hotkey})"
+    "notifications_region": "الإشعارات ({hotkey})",
+    "profile_picture_of": "صورة الملف الشخصي لـ {{username}}",
+    "loading_more": "جارٍ التحميل...",
+    "no_data_available": "لا توجد بيانات",
+    "fetching_data_failed": "حدثت مشكلة أثناء جلب البيانات.",
+    "check_permlink_or_node": "تحقق من صحة الرابط الدائم أو من أن العقدة تعمل بشكل صحيح.",
+    "unexpected_error": "حدث خطأ غير متوقع. حاول مرة أخرى.",
+    "page_load_failed": "تعذر تحميل هذه الصفحة. حاول مرة أخرى."
   },
   "navigation": {
     "main_nav_bar": {
@@ -75,7 +82,8 @@
       "create_post": "إنشاء مشاركة",
       "theme": "المظهر",
       "language": "اللغة",
-      "menu_panel": "لوحة القائمة"
+      "menu_panel": "لوحة القائمة",
+      "ai_tag": "ذ.ا"
     },
     "sidebar": {
       "welcome": "مرحبا",
@@ -90,7 +98,9 @@
       "privacy_policy": "سياسة الخصوصية",
       "terms_of_service": "شروط الخدمة",
       "not_available_yet": "غير متاح بعد",
-      "login_required": "سجّل الدخول لاستخدام هذا الخيار"
+      "login_required": "سجّل الدخول لاستخدام هذا الخيار",
+      "healthchecker": "فاحص الحالة",
+      "version": "الإصدار: {{version}}"
     },
     "communities_nav": {
       "my_friends": "أصدقائي",
@@ -196,6 +206,13 @@
       "add_active_key": "إضافة المفتاح النشط",
       "add_posting_key": "إضافة مفتاح النشر",
       "switch_to_posting_key": "التبديل إلى مفتاح النشر"
+    },
+    "manabars": {
+      "resource_credits": "رصيد الموارد",
+      "rc_level": "مستوى (RC): {{value}}%",
+      "voting_power": "قوة التصويت: {{value}}%",
+      "downvote_power": "قوة التصويت السلبي: {{value}}%",
+      "full_in": "يمتلئ خلال: {{time}}"
     }
   },
   "select_sort": {
@@ -303,7 +320,11 @@
     "reveal_nsfw_post": "إظهار هذه المشاركة المصنفة NSFW",
     "my_blacklist": "قائمتي السوداء",
     "post_image": "صورة المشاركة",
-    "payout_declined": "تم رفض الدفع"
+    "payout_declined": "تم رفض الدفع",
+    "cross_posted": "أعاد <author>{{author}}</author> نشر <original>@{{original}}</original>",
+    "nsfw_hidden_logged_in": "<reveal>أظهر هذه المشاركة</reveal> أو عدّل <settings>تفضيلات العرض</settings>.",
+    "nsfw_hidden_logged_out": "<reveal>أظهر هذه المشاركة</reveal> أو <account>أنشئ حسابًا</account> لحفظ تفضيلاتك.",
+    "no_image": "لا توجد صورة"
   },
   "alert_dialog_reblog": {
     "action": "موافق",
@@ -311,7 +332,9 @@
     "cancel": "إلغاء",
     "description": "سيتم إضافة هذه المشاركة إلى مدونتك ومشاركتها مع متابعيك.",
     "title": "إعادة نشر هذه المشاركة",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "toast_title": "تمت إعادة النشر",
+    "toast_description": "تمت إعادة نشر المشاركة."
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "إزالة التصويت الإيجابي",
@@ -495,7 +518,9 @@
       "followed_you": "@{{username}} تابعك",
       "mentioned_you_and_others": "@{{username}} ذكرك و{{others}} آخرين",
       "mentioned_you": "@{{username}} ذكرك",
-      "subscribed_to": "@{{username}} اشترك في {{community}}"
+      "subscribed_to": "@{{username}} اشترك في {{community}}",
+      "marked_read_title": "تم تعليم الإشعارات كمقروءة",
+      "marked_read_description": "تم تعليم جميع الإشعارات كمقروءة."
     },
     "load_more_failed": "تعذر تحميل المزيد من المشاركات.",
     "load_more_retry": "إعادة المحاولة",
@@ -513,7 +538,32 @@
       "unfollowed_description": "لقد ألغيت متابعة {{username}}.",
       "unfollowed_all_title": "تم إلغاء متابعة الجميع",
       "unfollowed_all_description": "لم تعد تتابع أي أحد."
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "تمت إضافة المدونة إلى القائمة السوداء",
+      "blacklisted_description": "تمت إضافة المدونة {{blog}} إلى قائمتك السوداء.",
+      "unblacklisted_title": "تمت إزالة المدونة من القائمة السوداء",
+      "unblacklisted_description": "تمت إزالة المدونة {{blog}} من قائمتك السوداء.",
+      "blacklist_reset_title": "تمت إعادة تعيين القائمة السوداء",
+      "blacklist_reset_description": "تمت إزالة جميع المدونات من القائمة السوداء.",
+      "list_followed_title": "تمت متابعة قائمة المدونة",
+      "blacklist_followed_description": "تمت إضافة المدونة {{blog}} إلى القوائم السوداء التي تتابعها.",
+      "list_unfollowed_title": "تم إلغاء متابعة قائمة المدونة",
+      "blacklist_unfollowed_description": "تمت إزالة المدونة {{blog}} من القوائم السوداء التي تتابعها.",
+      "followed_blacklists_reset_title": "تمت إعادة تعيين القوائم السوداء المتابعة",
+      "followed_blacklists_reset_description": "تمت إزالة جميع المدونات من القوائم السوداء التي تتابعها.",
+      "muted_list_followed_description": "تمت إضافة المدونة {{blog}} إلى قوائم الكتم التي تتابعها.",
+      "muted_list_unfollowed_description": "تمت إزالة المدونة {{blog}} من قوائم الكتم التي تتابعها.",
+      "followed_muted_lists_reset_title": "تمت إعادة تعيين قوائم الكتم المتابعة",
+      "followed_muted_lists_reset_description": "تمت إعادة تعيين قوائم الكتم التي تتابعها.",
+      "muted_title": "تم الكتم",
+      "muted_description": "لقد كتمت {{username}}.",
+      "unmuted_title": "تم إلغاء الكتم",
+      "unmuted_description": "لقد ألغيت كتم {{username}}.",
+      "muted_list_reset_title": "تمت إعادة تعيين قائمة الكتم",
+      "muted_list_reset_description": "تمت إعادة تعيين قائمة الكتم الخاصة بك."
+    },
+    "level_badge_alt": "مستوى {{level}}"
   },
   "communities": {
     "set_title_for_user": "تعيين العنوان لـ @{{username}}",
@@ -564,7 +614,11 @@
       "subscribed_title": "تم الاشتراك",
       "subscribed_description": "لقد اشتركت بنجاح في {{community}}.",
       "unsubscribed_title": "تم إلغاء الاشتراك",
-      "unsubscribed_description": "لقد ألغيت اشتراكك بنجاح في {{community}}."
+      "unsubscribed_description": "لقد ألغيت اشتراكك بنجاح في {{community}}.",
+      "role_updated_title": "تم بنجاح",
+      "role_updated_description": "تم تحديث دور {{username}} في المجتمع {{community}}.",
+      "updated_title": "تم تحديث المجتمع",
+      "updated_description": "تم تحديث المجتمع {{community}}."
     },
     "buttons": {
       "subscribe": "الاشتراك",
@@ -736,7 +790,33 @@
       "updated_description": "تم تحديث تعليقك.",
       "deleted_title": "تم حذف التعليق",
       "deleted_description": "تم حذف تعليقك."
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "تم التثبيت",
+      "pinned_description": "تم تثبيت المشاركة.",
+      "unpinned_title": "تم إلغاء التثبيت",
+      "unpinned_description": "تم إلغاء تثبيت المشاركة.",
+      "muted_title": "تم كتم المشاركة",
+      "muted_description": "تم كتم المشاركة.",
+      "unmuted_title": "تم إلغاء كتم المشاركة",
+      "unmuted_description": "تم إلغاء كتم المشاركة.",
+      "flagged_title": "تم الإبلاغ",
+      "flagged_description": "لقد أبلغت عن المشاركة في {{community}}."
+    },
+    "vote_toasts": {
+      "title": "تم التصويت",
+      "upvoted_description": "تم تسجيل تصويتك الإيجابي.",
+      "downvoted_description": "تم تسجيل تصويتك السلبي.",
+      "removed_description": "تمت إزالة تصويتك."
+    },
+    "delete_dialog": {
+      "title_post": "تأكيد حذف المشاركة",
+      "title_comment": "تأكيد حذف التعليق",
+      "description": "هل أنت متأكد؟",
+      "cancel": "إلغاء"
+    },
+    "cross_posted_banner": "أعاد <author>{{author}}</author> نشر <post>هذه المشاركة</post> في <community>{{community}}</community>",
+    "authored_by": "(بقلم <author>@{{author}}</author>)"
   },
   "submit_page": {
     "log_in_to_post": "تسجيل الدخول لنشر مشاركة.",
@@ -881,7 +961,14 @@
       "unordered_list": "قائمة نقطية",
       "ordered_list": "قائمة مرقمة",
       "task_list": "قائمة مهام"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "تم نشر المشاركة",
+      "submitted_description": "تم إرسال مشاركتك",
+      "deleted_title": "تم حذف المشاركة",
+      "deleted_description": "تم حذف مشاركتك"
+    },
+    "submitting": "جارٍ الإرسال..."
   },
   "search_page": {
     "placeholder": "البحث",
@@ -958,7 +1045,11 @@
     "error_already_exists": "توجد هذه النقطة النهائية بالفعل في القائمة",
     "error_cant_remove_active": "لا يمكنك إزالة نقطة النهاية المفضلة الحالية. يرجى تحديد نقطة نهاية مفضلة جديدة أولاً",
     "error_cant_remove_all": "يجب أن يكون لديك على الأقل نقطة نهاية واحدة في القائمة",
-    "changes_saved": "تم حفظ التغييرات"
+    "changes_saved": "تم حفظ التغييرات",
+    "profile_toasts": {
+      "updated_title": "تم تحديث الملف الشخصي",
+      "updated_description": "تم تحديث ملفك الشخصي."
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "هذه الصفحة غير موجودة!",
@@ -1015,7 +1106,8 @@
       "pending": "المعلقة",
       "roles": "الأدوار"
     },
-    "for_you_posts": "لك"
+    "for_you_posts": "لك",
+    "community_description": "مجتمع {{community}}."
   },
   "chat_widget": {
     "chat": "المحادثة",
@@ -1071,7 +1163,8 @@
       "account": "المستخدمون",
       "user_topic": "مشاركات المستخدم حسب الموضوع",
       "tag": "الوسوم"
-    }
+    },
+    "sort_by": "الترتيب حسب:"
   },
   "for_you_feed": {
     "sign_in_prompt": "سجّل الدخول لعرض موجزك.",
@@ -1376,13 +1469,41 @@
       "locked": "المفاتيح في التخزين الآمن: مقفلة",
       "unlocked": "المفاتيح في التخزين الآمن: غير مقفلة",
       "lock": "قفل"
-    }
+    },
+    "reply_failed_title": "تعذر إرسال الرد"
   },
   "api_sets": {
     "description": "تذهب كل عائلة من واجهات Hive البرمجية إلى العقدة المختارة لها. اختر عقدة لكل عائلة، أو أبقِ الاختيار التلقائي.",
     "check_nodes": "افحص العقد",
     "stop_checking": "أوقف الفحص",
     "node_unavailable": "{{selected}} غير متاحة لـ {{set}}؛ يتم استخدام {{node}} حتى تتعافى.",
-    "catalog_only": "يمكن اختيار العُقد المدرجة فقط: لا يتصل الموقع بغيرها."
+    "catalog_only": "يمكن اختيار العُقد المدرجة فقط: لا يتصل الموقع بغيرها.",
+    "title": "تبديل API وفحص الحالة",
+    "checks": {
+      "find_accounts": "قاعدة البيانات - البحث عن الحسابات",
+      "get_post": "Bridge - جلب مشاركة",
+      "list_communities": "Bridge - قائمة المجتمعات",
+      "get_ranked_posts": "Bridge - جلب المشاركات المرتبة",
+      "ai_search": "البحث بالذكاء الاصطناعي",
+      "ai_similar_posts": "مشاركات مشابهة بالذكاء الاصطناعي"
+    }
+  },
+  "service_unavailable": {
+    "title": "الخدمة غير متاحة مؤقتًا",
+    "description": "نواجه مشكلة في الاتصال بشبكة Hive. عادةً ما تكون هذه المشكلة مؤقتة.",
+    "what_you_can_do": "ما يمكنك فعله",
+    "refresh": "حاول تحديث الصفحة بعد لحظات",
+    "check_api_status": "تحقق من حالة واجهة API في فاحص الحالة",
+    "check_back": "عُد بعد قليل — نحن نعمل على حل المشكلة"
+  },
+  "oidc": {
+    "interaction_title": "تفاعل",
+    "consent_title": "الموافقة",
+    "consent_request": "نحتاج إلى موافقتك في عملية OAuth للتطبيق {{application}}. يريد هذا التطبيق:",
+    "create_account": "إنشاء حساب لك.",
+    "read_profile": "معرفة تفاصيل ملفك الشخصي العام على Hive.",
+    "choose": "انقر على الزر المناسب أدناه:",
+    "consent_yes": "نعم، أوافق",
+    "consent_no": "لا، لا أوافق"
   }
 }

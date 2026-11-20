@@ -104,7 +104,7 @@ const CommentListItem = memo(function CommentListItem({
               height="40"
               width="40"
               src={getUserAvatarUrl(comment.author, 'small')}
-              alt={`${comment.author} profile picture`}
+              alt={t('global.profile_picture_of', { username: comment.author })}
               loading="lazy"
             />
             <Accordion type="single" collapsible value={openState} className="w-full min-w-0">
@@ -141,7 +141,7 @@ const CommentListItem = memo(function CommentListItem({
                                   height="20"
                                   width="20"
                                   src={getUserAvatarUrl(comment.author, 'small')}
-                                  alt={`${comment.author} profile picture`}
+                                  alt={t('global.profile_picture_of', { username: comment.author })}
                                   loading="lazy"
                                 />
                                 <UserPopoverCard

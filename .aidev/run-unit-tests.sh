@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, scripts/check-workerbee-patch, scripts/check-playwright-test-ids, playwright/support, packages/ui, packages/smart-signer, packages/common-hiveio-packages,
+# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations and scripts/translation-usage), packages/eslint-config-custom, scripts/check-beekeeper-lockfile, scripts/check-workerbee-patch, scripts/check-playwright-test-ids, playwright/support, packages/ui, packages/smart-signer, packages/common-hiveio-packages,
 # apps/blog and apps/wallet (run through node's TypeScript type stripping), and the
 # integration site's upkeep check (stack/integration/test-upkeep.sh: bash with stand-ins
 # for docker, git, df and curl): the `baseline` slot and the `unit` suite of the quick,
@@ -50,7 +50,15 @@ run_with_junit_fallback "$junit" translations node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     scripts/check-wallet-translations.test.js scripts/check-blog-translations.test.js \
-    scripts/check-smart-signer-translations.test.js scripts/korean-translations.test.js < /dev/null || status=1
+    scripts/check-smart-signer-translations.test.js scripts/korean-translations.test.js \
+    scripts/translation-usage.test.js < /dev/null || status=1
+
+echo "== node --test packages/eslint-config-custom" >&2
+junit="$PWD/test-results/unit/eslint-config-custom.xml"
+run_with_junit_fallback "$junit" eslint-config-custom node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    packages/eslint-config-custom/index.test.js < /dev/null || status=1
 
 echo "== node --test scripts/check-beekeeper-lockfile" >&2
 junit="$PWD/test-results/unit/beekeeper-lockfile.xml"

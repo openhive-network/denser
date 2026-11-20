@@ -43,8 +43,6 @@ type OperationRenderers = {
   [Type in keyof IFormattedOperationValues]: (op: IFormattedOperationValues[Type]) => ReactNode;
 };
 
-const UNFORMATTED_OPERATION = <div>error</div>;
-
 const AccountLink = ({ name, children }: { name: string; children?: ReactNode }) => (
   <Link href={`/@${name}`} className="font-semibold text-primary hover:text-destructive">
     {children ?? name}
@@ -62,6 +60,7 @@ export function createWalletOperationsFormatter(
   dynamicData: DynamicData,
   t: TFunction<'common_wallet', undefined>
 ): (operation: HiveOperation) => ReactNode {
+  const unformattedOperation = <div>{t('profile.unformatted_operation')}</div>;
   const formatHivePower = (vests: IFormattedOperationValues['withdraw_vesting_operation']['vesting_shares']) =>
     convertToFormattedHivePower(vests, dynamicData.total_vesting_fund_hive, dynamicData.total_vesting_shares);
 
@@ -96,7 +95,7 @@ export function createWalletOperationsFormatter(
             <AccountLink name={op.to} />
           </span>
         );
-      return UNFORMATTED_OPERATION;
+      return unformattedOperation;
     },
     transfer_to_savings_operation: (op) => (
       <span>
@@ -211,7 +210,7 @@ export function createWalletOperationsFormatter(
     Object.prototype.hasOwnProperty.call(renderers, type);
 
   return ({ op }: HiveOperation): ReactNode => {
-    if (!isFormattedType(op.type)) return UNFORMATTED_OPERATION;
+    if (!isFormattedType(op.type)) return unformattedOperation;
     // The API's operation value is the protocol shape of its type, which the dispatch key names.
     const render = renderers[op.type] as (value: unknown) => ReactNode;
     return render(op.value);

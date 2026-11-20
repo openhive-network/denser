@@ -13,7 +13,8 @@ const compat = new FlatCompat({
 
 const config = [
   {
-    ignores: ['public/auth/worker.js', '.next/**', 'dist/**', 'build/**']
+    // playwright/ has its own eslintrc, which the static checks run (as .eslintignore says)
+    ignores: ['public/auth/worker.js', '.next/**', 'dist/**', 'build/**', 'playwright/**']
   },
   ...compat.extends('@hive/eslint-config-custom')
 ];

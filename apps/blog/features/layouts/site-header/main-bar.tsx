@@ -71,26 +71,27 @@ const MainBar: FC = () => {
   const downvotePercent = manabarsData?.downvote.percentageValue ?? 0;
   const rcPercent = manabarsData?.rc.percentageValue ?? 0;
 
+  const fullIn = (cooldown: Date) => t('navigation.manabars.full_in', { time: hoursAndMinutes(cooldown, t) });
   const resourceCreditsTooltip = manabarsData ? (
     // Unmounts at once when closed, as TooltipContainer's labels do.
     <TooltipContent className="flex flex-col bg-background-tertiary data-[state=closed]:animate-none">
-      <span>Resource Credits</span>
+      <span>{t('navigation.manabars.resource_credits')}</span>
       <div className="flex flex-col text-blue-600">
-        <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
+        <span>{t('navigation.manabars.rc_level', { value: manabarsData.rc.percentageValue })}</span>
         {manabarsData.rc.percentageValue !== 100 ? (
-          <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
+          <span>{fullIn(manabarsData.rc.cooldown)}</span>
         ) : null}
       </div>
       <div className="flex flex-col text-green-600">
-        <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
+        <span>{t('navigation.manabars.voting_power', { value: manabarsData.upvote.percentageValue })}</span>
         {manabarsData?.upvote.percentageValue !== 100 ? (
-          <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
+          <span>{fullIn(manabarsData.upvote.cooldown)}</span>
         ) : null}
       </div>
       <div className="flex flex-col text-destructive">
-        <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
+        <span>{t('navigation.manabars.downvote_power', { value: manabarsData.downvote.percentageValue })}</span>
         {manabarsData.downvote.percentageValue !== 100 ? (
-          <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
+          <span>{fullIn(manabarsData.downvote.cooldown)}</span>
         ) : null}
       </div>
     </TooltipContent>

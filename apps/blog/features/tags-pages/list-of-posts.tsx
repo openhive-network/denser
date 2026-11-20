@@ -216,7 +216,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
         ) : (
           <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
             {isFetchingNextPage && !!data && data.pages.length > 0 ? (
-              <div>Loading...</div>
+              <div>{t('global.loading_more')}</div>
             ) : hasNextPage ? (
               t('user_profile.load_newer')
             ) : data?.pages?.[0] && data.pages[0].length > 0 ? (

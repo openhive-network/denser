@@ -50,7 +50,14 @@
       "hours_and_minutes": "{{hours}} and {{minutes}}"
     },
     "profile_picture": "Profile picture",
-    "notifications_region": "Notifications ({hotkey})"
+    "notifications_region": "Notifications ({hotkey})",
+    "profile_picture_of": "{{username}} profile picture",
+    "loading_more": "Loading...",
+    "no_data_available": "No Data Available",
+    "fetching_data_failed": "There was a problem fetching the data.",
+    "check_permlink_or_node": "Please check if permlink is correct or the node is running properly.",
+    "unexpected_error": "An unexpected error occurred. Please try again.",
+    "page_load_failed": "We couldn't load this page. Please try again."
   },
   "navigation": {
     "main_nav_bar": {
@@ -67,7 +74,8 @@
       "create_post": "Create Post",
       "theme": "Theme",
       "language": "Language",
-      "menu_panel": "Menu Panel"
+      "menu_panel": "Menu Panel",
+      "ai_tag": "AI"
     },
     "sidebar": {
       "welcome": "Welcome",
@@ -82,7 +90,9 @@
       "privacy_policy": "Privacy Policy",
       "terms_of_service": "Terms of Service",
       "not_available_yet": "Not available yet",
-      "login_required": "Log in to use this option"
+      "login_required": "Log in to use this option",
+      "healthchecker": "Healthchecker",
+      "version": "Version: {{version}}"
     },
     "communities_nav": {
       "my_friends": "My friends",
@@ -188,6 +198,13 @@
       "add_active_key": "Add active key",
       "add_posting_key": "Add posting key",
       "switch_to_posting_key": "Switch to posting key"
+    },
+    "manabars": {
+      "resource_credits": "Resource Credits",
+      "rc_level": "(RC) level: {{value}}%",
+      "voting_power": "Voting Power: {{value}}%",
+      "downvote_power": "Downvote power: {{value}}%",
+      "full_in": "Full in: {{time}}"
     }
   },
   "select_sort": {
@@ -295,7 +312,11 @@
     "reveal_nsfw_post": "Reveal this NSFW post",
     "my_blacklist": "My blacklist",
     "post_image": "Post image",
-    "payout_declined": "Payout Declined"
+    "payout_declined": "Payout Declined",
+    "cross_posted": "<author>{{author}}</author> cross-posted <original>@{{original}}</original>",
+    "nsfw_hidden_logged_in": "<reveal>Reveal this post</reveal> or adjust your <settings>display preferences</settings>.",
+    "nsfw_hidden_logged_out": "<reveal>Reveal this post</reveal> or <account>create an account</account> to save your preferences.",
+    "no_image": "No image"
   },
   "alert_dialog_reblog": {
     "action": "OK",
@@ -303,7 +324,9 @@
     "description": "This post will be added to your blog and shared with your followers.",
     "already_reblogged": "You have already reblogged this post.",
     "title": "Reblog This Post",
-    "close": "Close"
+    "close": "Close",
+    "toast_title": "Reblog successful",
+    "toast_description": "You have successfully reblogged the post."
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Remove Upvote",
@@ -475,7 +498,9 @@
       "followed_you": "@{{username}} followed you",
       "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
       "mentioned_you": "@{{username}} mentioned you",
-      "subscribed_to": "@{{username}} subscribed to {{community}}"
+      "subscribed_to": "@{{username}} subscribed to {{community}}",
+      "marked_read_title": "Notifications marked as read",
+      "marked_read_description": "All notifications have been marked as read successfully."
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
@@ -493,7 +518,32 @@
       "unfollowed_description": "You have unfollowed {{username}}.",
       "unfollowed_all_title": "Unfollowed all",
       "unfollowed_all_description": "You no longer follow anyone."
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "Blog blacklisted successfully",
+      "blacklisted_description": "The blog {{blog}} has been added to your blacklist.",
+      "unblacklisted_title": "Blog unblacklisted successfully",
+      "unblacklisted_description": "The blog {{blog}} has been removed from your blacklist.",
+      "blacklist_reset_title": "Blacklist reset successfully",
+      "blacklist_reset_description": "All blacklisted blogs have been removed.",
+      "list_followed_title": "Blog followed successfully",
+      "blacklist_followed_description": "The blog {{blog}} has been added to your followed blacklist.",
+      "list_unfollowed_title": "Blog unfollowed successfully",
+      "blacklist_unfollowed_description": "The blog {{blog}} has been removed from your followed blacklist.",
+      "followed_blacklists_reset_title": "Follow blacklist reset successfully",
+      "followed_blacklists_reset_description": "All followed blogs have been removed from your blacklist.",
+      "muted_list_followed_description": "The blog {{blog}} has been added to your followed muted list.",
+      "muted_list_unfollowed_description": "The blog {{blog}} has been removed from your followed muted list.",
+      "followed_muted_lists_reset_title": "Muted blogs reset successfully",
+      "followed_muted_lists_reset_description": "Your followed muted blogs have been reset.",
+      "muted_title": "Muted",
+      "muted_description": "You have muted {{username}}.",
+      "unmuted_title": "Unmuted",
+      "unmuted_description": "You have unmuted {{username}}.",
+      "muted_list_reset_title": "Blog list reset",
+      "muted_list_reset_description": "Your blog list has been reset."
+    },
+    "level_badge_alt": "{{level}} level"
   },
   "communities": {
     "set_title_for_user": "Set Title for @{{username}}",
@@ -544,7 +594,11 @@
       "subscribed_title": "Subscribed",
       "subscribed_description": "You have successfully subscribed to {{community}}.",
       "unsubscribed_title": "Unsubscribed",
-      "unsubscribed_description": "You have successfully unsubscribed from {{community}}."
+      "unsubscribed_description": "You have successfully unsubscribed from {{community}}.",
+      "role_updated_title": "Success",
+      "role_updated_description": "Role updated successfully for {{username}} in community {{community}}.",
+      "updated_title": "Community updated",
+      "updated_description": "You have successfully updated the community {{community}}."
     },
     "buttons": {
       "subscribe": "Subscribe",
@@ -716,7 +770,33 @@
       "updated_description": "Your comment has been updated successfully.",
       "deleted_title": "Comment deleted successfully",
       "deleted_description": "Your comment has been deleted successfully."
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "Pinned",
+      "pinned_description": "Post has been pinned successfully.",
+      "unpinned_title": "Unpinned",
+      "unpinned_description": "Post has been unpinned successfully.",
+      "muted_title": "Post muted",
+      "muted_description": "Post has been muted successfully.",
+      "unmuted_title": "Post unmuted",
+      "unmuted_description": "Post has been unmuted successfully.",
+      "flagged_title": "Flag transaction successful",
+      "flagged_description": "You have flagged the post in {{community}}."
+    },
+    "vote_toasts": {
+      "title": "Vote successful",
+      "upvoted_description": "You have successfully upvoted.",
+      "downvoted_description": "You have successfully downvoted.",
+      "removed_description": "Your vote has been removed."
+    },
+    "delete_dialog": {
+      "title_post": "Confirm Delete Post",
+      "title_comment": "Confirm Delete Comment",
+      "description": "Are you sure?",
+      "cancel": "Cancel"
+    },
+    "cross_posted_banner": "<author>{{author}}</author> cross-posted <post>this post</post> in <community>{{community}}</community>",
+    "authored_by": "(authored by <author>@{{author}}</author>)"
   },
   "submit_page": {
     "log_in_to_post": "Log in to make a post.",
@@ -861,7 +941,14 @@
       "unordered_list": "Unordered List",
       "ordered_list": "Ordered List",
       "task_list": "Task List"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "Post submitted successfully",
+      "submitted_description": "Your post has been submitted",
+      "deleted_title": "Post deleted successfully",
+      "deleted_description": "Your post has been deleted"
+    },
+    "submitting": "Submitting..."
   },
   "search_page": {
     "placeholder": "Search",
@@ -938,7 +1025,11 @@
     "error_already_exists": "This endpoint is already in the list",
     "error_cant_remove_active": "You can't remove the current preferred endpoint. Please select a new preferred endpoint first",
     "error_cant_remove_all": "You must have at least one endpoint in the list",
-    "changes_saved": "Changes saved"
+    "changes_saved": "Changes saved",
+    "profile_toasts": {
+      "updated_title": "Profile updated successfully",
+      "updated_description": "Your profile has been updated."
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Sorry! This page does not exist.",
@@ -995,7 +1086,8 @@
       "pending": "pending",
       "roles": "roles"
     },
-    "for_you_posts": "For You"
+    "for_you_posts": "For You",
+    "community_description": "{{community}} community."
   },
   "chat_widget": {
     "chat": "Chat",
@@ -1051,7 +1143,8 @@
       "account": "Users",
       "user_topic": "User posts by topic",
       "tag": "Tags"
-    }
+    },
+    "sort_by": "Sort by:"
   },
   "for_you_feed": {
     "sign_in_prompt": "Sign in to see your feed.",
@@ -1356,13 +1449,41 @@
       "locked": "Keys in Safe Storage: locked",
       "unlocked": "Keys in Safe Storage: unlocked",
       "lock": "Lock"
-    }
+    },
+    "reply_failed_title": "Reply failed"
   },
   "api_sets": {
     "description": "Each family of Hive APIs goes to the node chosen for it. Pick a node per family, or keep the automatic choice.",
     "check_nodes": "Check the nodes",
     "stop_checking": "Stop checking",
     "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers.",
-    "catalog_only": "Only the listed nodes can be chosen: the site may call no others."
+    "catalog_only": "Only the listed nodes can be chosen: the site may call no others.",
+    "title": "API switch and HealthChecker",
+    "checks": {
+      "find_accounts": "Database - Find accounts",
+      "get_post": "Bridge - Get post",
+      "list_communities": "Bridge - List Communities",
+      "get_ranked_posts": "Bridge - Get Ranked Posts",
+      "ai_search": "AI search",
+      "ai_similar_posts": "AI similar posts"
+    }
+  },
+  "service_unavailable": {
+    "title": "Service Temporarily Unavailable",
+    "description": "We're having trouble connecting to the Hive network. This is usually temporary.",
+    "what_you_can_do": "What you can do",
+    "refresh": "Try refreshing the page in a few moments",
+    "check_api_status": "Check the API status on the health checker",
+    "check_back": "Check back shortly — we're working on it"
+  },
+  "oidc": {
+    "interaction_title": "Interaction",
+    "consent_title": "Consent",
+    "consent_request": "We need your consent in OAuth flow for application {{application}}. This application wants to:",
+    "create_account": "Create an account for you.",
+    "read_profile": "Know your Hive public user profile details.",
+    "choose": "Please click the appropriate button below:",
+    "consent_yes": "Yes, I consent",
+    "consent_no": "No, I do not consent"
   }
 }

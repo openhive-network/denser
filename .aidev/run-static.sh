@@ -5,10 +5,13 @@
 # package in the workspace.
 #
 # ESLint runs with --quiet: the rules added for gradual adoption are warnings, and
-# the existing ~200 of them must not fail a change; an error does. The locale
-# key/placeholder sync checks of the blog, the wallet and the smart-signer package
-# run here, with the blog's translation usage check and the check that no two
-# Playwright tests of an app share a test ID.
+# the existing ~200 of them must not fail a change; an error does. It lints both
+# apps and the packages/ui and packages/smart-signer components they render, whose
+# hard-coded user-facing text is an error (no-restricted-syntax in
+# @hive/eslint-config-custom). The locale key/placeholder sync checks of the blog,
+# the wallet and the smart-signer package run here, with the translation usage
+# checks of both apps and both packages (every t('key') names an existing key) and
+# the check that no two Playwright tests of an app share a test ID.
 #
 # The Playwright code (apps/*/playwright) is excluded from the apps' ESLint and
 # tsconfig, so it is checked on its own: its tsconfig, and its .eslintrc.js, which
@@ -82,6 +85,10 @@ for app in blog wallet; do
     echo "== tsc apps/$app/playwright" >&2
     pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
 done
+for pkg in ui smart-signer; do
+    echo "== eslint packages/$pkg" >&2
+    pnpm --filter "@hive/$pkg" exec eslint . --quiet < /dev/null || status=1
+done
 for app in blog wallet; do
     echo "== $app translation sync" >&2
     pnpm --filter "@hive/$app" lint:translations < /dev/null || status=1
@@ -90,6 +97,8 @@ echo "== smart-signer translation sync" >&2
 node scripts/check-smart-signer-translations.js < /dev/null || status=1
 echo "== playwright test ID uniqueness" >&2
 node scripts/check-playwright-test-ids.js < /dev/null || status=1
-echo "== blog translation usage" >&2
-pnpm --filter @hive/blog lint:translations:usage < /dev/null || status=1
+for target in blog wallet smart-signer ui; do
+    echo "== $target translation usage" >&2
+    node "scripts/check-$target-translation-usage.js" < /dev/null || status=1
+done
 exit "$status"
