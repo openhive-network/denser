@@ -272,8 +272,7 @@ crawl from reaching the apps' servers.
   3. More than 60 page documents a minute from one address: `429`, `Retry-After: 300`,
      `no-store`, for 5 minutes. The challenge page counts; a 403 does not. The counts are
      in the gate's memory and start over when it restarts.
-  4. No valid `denser_human` proof (below) and none of the signed-in cookies the HTML
-     cache recognises (`*_session`, `observer`, `observer-no-own-lists`, `account_info`): a
+  4. No valid `denser_human` proof (below), signed in or not: a
      tiny `200` page, `no-store` and `noindex`, showing "Loading…" while its script does
      the proof's work, sets it as `denser_human` (30 days, `Path=/`, `SameSite=Lax`,
      `Secure` on https) and reloads once the cookie is there. A browser pays the work and
@@ -302,6 +301,13 @@ crawl from reaching the apps' servers.
      (2026-11-20, 40 solves): mean 71 ms, median 49 ms, 90th percentile 174 ms; with 4x
      CPU throttling, Lighthouse's mid-range phone, mean 294 ms, median 194 ms, 90th
      percentile 760 ms. The work is a lottery: some readers wait a few times the mean.
+
+     The signed-in cookies the HTML cache passes (`*_session`, `observer`,
+     `observer-no-own-lists`, `account_info`) let no request past this rule: any client
+     can send them (`observer` and `account_info` are set by the browser's own script),
+     and each such request is an uncached render. A reader signs in on a page they got
+     past the gate, so they already hold a proof; one whose address changes solves it
+     once more, like a signed-out reader.
   5. Anything else passes.
 - **The secret:** `GATE_SECRET` in the gate's environment, from `DENSER_BOT_GATE_SECRET`
   in `.env`, or `DENSER_SERVER_SECRET_COOKIE_PASSWORD` when unset. The gate does not
@@ -335,7 +341,8 @@ crawl from reaching the apps' servers.
   `denser_human=1` (and, with node, its script's message, in English, Polish or the
   English fallback by `navigator.languages`, and lack of reload when the cookie is
   refused; the real (cached) page with the proof it solves, and the challenge for that
-  proof with another nonce), the 403, the real page with a session cookie, the exempt
+  proof with another nonce, and the real uncached page signed in with it), the
+  challenge for a made-up `observer`, `denser_session` or `account_info` cookie, the 403, the exempt
   paths and router requests; on the throwaway stack, asking the gate directly, the proof
   passing from its address or its IPv6 `/64` and not from another, and a proof minted
   with the stack's secret passing, not when issued over 30 days ago or in the future;

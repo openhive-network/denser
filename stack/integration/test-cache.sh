@@ -322,16 +322,21 @@ if [ "${DENSER_BOT_GATE:-on}" != off ]; then
         check "gate: typed navigation with a page Referer passes" 200 "$status"
         fetch "$page" "${gate[@]}" -H "Cookie: denser_human=${proof%.*}.$((${proof##*.} + 1))"
         holds "gate: the proof with another nonce: challenge" "${body#*"$challenge_marker"}" != "$body"
-        gated=$((gated + 3))
+        fetch "$page" "${gate[@]}" -H "Cookie: denser_session=x; denser_human=$proof"
+        holds "gate: signed in with the solved proof: the page, uncached" \
+            "$status $x_cache" = "200 BYPASS" -a "${body#*"$challenge_marker"}" = "$body"
+        gated=$((gated + 4))
     else
         echo "skip gate: the challenge's script and its proof (no node)"
     fi
     fetch "/wallet/@guest4test/transfers?gatetest=$run" "${gate[@]}"
     holds "gate: a wallet page: challenge" "${body#*"$challenge_marker"}" != "$body" \
         -a "${body#*"$cookies_message"}" != "$body"
-    fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
-    check "gate: a session cookie passes" 200 "$status"
-    gated=$((gated + 2))
+    for cookie in observer=x denser_session=x account_info=x; do
+        fetch "$page" "${gate[@]}" -H "Cookie: $cookie"
+        holds "gate: a made-up $cookie, no proof: challenge" "$status" = 200 -a "${body#*"$challenge_marker"}" != "$body"
+    done
+    gated=$((gated + 4))
     fetch "/blog/api/health" "${gate[@]}"
     check "gate: API route not gated" "200 ok" "$status $body"
     fetch "$page" "${gate[@]}" -H 'RSC: 1'
@@ -371,7 +376,7 @@ if $stub && [ "${DENSER_BOT_GATE:-on}" != off ]; then
     # Fill this address's minute of 60 page documents, until the 429. The limit refills
     # over its minute, so the seconds the proofs above took leave room for a few more.
     for _ in $(seq 120); do
-        fetch "$page" "${gate[@]}" -H 'Cookie: denser_session=x'
+        fetch "$page" "${gate[@]}"
         [ "$status" = 200 ] || break
         gated=$((gated + 1))
     done
