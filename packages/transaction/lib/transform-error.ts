@@ -6,56 +6,62 @@ import { describeError } from './describe-error';
 const logger = getLogger('app');
 
 /**
- * Strings to look for in error's stuff. When found, we can assume
- * that we caught well known error and we can use these strings in
- * message for user safely.
+ * Strings to look for in error's stuff. When found, we can assume that we caught well known error,
+ * whose message for the user is the text of `key` (a smart-signer translation key): the toast
+ * translates it, `transformError` keeps the English `description` for the log and as the fallback.
+ * Order matters: the first entry found wins, so more specific strings come first.
  */
-const wellKnownErrorDescriptions = [
+const wellKnownErrorDescriptions: { description: string; key: string }[] = [
   // Voting errors
-  'Your current vote on this comment is identical to this vote',
-  'Account does not have enough mana to downvote',
-  'Vote weight cannot be 0',
+  {
+    description: 'Your current vote on this comment is identical to this vote',
+    key: 'broadcast_error.vote_identical'
+  },
+  { description: 'Account does not have enough mana to downvote', key: 'broadcast_error.not_enough_downvote_mana' },
+  { description: 'Vote weight cannot be 0', key: 'broadcast_error.vote_weight_zero' },
 
   // Posting rate limits
-  'You may only post once every 5 minutes',
-  'You may only comment once every 3 seconds',
+  { description: 'You may only post once every 5 minutes', key: 'broadcast_error.post_interval' },
+  { description: 'You may only comment once every 3 seconds', key: 'broadcast_error.comment_interval' },
 
   // Authentication/hb-auth errors
-  'Invalid credentials',
-  'Invalid password',
-  'Not authorized',
-  'Authentication failed',
-  'Invalid WIF',
-  'Invalid WIF key',
-  'Invalid WIF checksum',
-  'Invalid WIF format',
-  'User not found',
-  'Key verification failed',
-  'Wallet is locked',
-  'Failed to unlock wallet',
-  'No password provided',
-  'No key provided',
-  'Operation cancelled',
-  'Wallet operation failed',
-  'Operation failed',
-  'Login failed - invalid challenge',
-  'Key already registered - update it instead',
+  { description: 'Invalid credentials', key: 'auth_error.authentication_failed' },
+  { description: 'Invalid password', key: 'auth_error.invalid_password' },
+  { description: 'Not authorized', key: 'auth_error.authentication_failed' },
+  { description: 'Authentication failed', key: 'auth_error.authentication_failed' },
+  { description: 'Invalid WIF checksum', key: 'chainvalidation_js.invalid_wif_checksum' },
+  { description: 'Invalid WIF format', key: 'chainvalidation_js.invalid_wif_format' },
+  { description: 'Invalid WIF', key: 'login_form.zod_error.invalid_wif' },
+  { description: 'User not found', key: 'auth_error.user_not_found' },
+  { description: 'Key verification failed', key: 'auth_error.key_verification_failed' },
+  { description: 'Wallet is locked', key: 'auth_error.wallet_locked' },
+  { description: 'Failed to unlock wallet', key: 'auth_error.unlock_failed' },
+  { description: 'No password provided', key: 'login_form.zod_error.password_required' },
+  { description: 'No key provided', key: 'auth_error.no_key_provided' },
+  { description: 'Operation cancelled', key: 'auth_error.operation_cancelled' },
+  { description: 'Wallet operation failed', key: 'auth_error.wallet_operation_failed' },
+  { description: 'Operation failed', key: 'auth_error.operation_failed' },
+  { description: 'Login failed - invalid challenge', key: 'auth_error.invalid_challenge' },
+  { description: 'Key already registered - update it instead', key: 'auth_error.already_registered' },
 
   // Key registration errors
-  'Registration failed',
-  'Failed to import key',
-  'Key is not registered',
+  { description: 'Registration failed', key: 'auth_error.key_not_added' },
+  { description: 'Failed to import key', key: 'auth_error.key_not_added' },
+  { description: 'Key is not registered', key: 'auth_error.key_not_registered' },
 
   // Blockchain/authority errors
-  'Account not found on the blockchain',
-  'authority for this account',
+  { description: 'Account not found on the blockchain', key: 'auth_error.account_not_found' },
+  { description: 'authority for this account', key: 'auth_error.missing_authority' },
 
   // Auth storage desync (IndexedDB cleared while session valid)
-  'Auth for user',
+  { description: 'Auth for user', key: 'broadcast_error.safe_storage_missing_account' },
 
   // User-cancelled operations (password dialog dismissed)
-  'No password from user'
+  { description: 'No password from user', key: 'auth_error.operation_cancelled' }
 ];
+
+/** The smart-signer translation key of the generic title, for an error the app has no text of its own for */
+export const GENERIC_ERROR_TITLE_KEY = 'broadcast_error.generic_title';
 
 /**
  * Wax's Keychain provider prefixes the extension's own answer with this; the
@@ -161,12 +167,14 @@ function stringifyError(error: unknown): string {
  *
  * @param {*} e
  * @param {{ method: string, params: T }} ctx
- * @returns error description; `isWellKnownError` marks one not worth reporting,
- * `keychainFallback` a Keychain error and `insufficientBalance` a chain rejection to title with the
- * app's own text rather than the description
+ * @returns error description, in English; `errorTitleKey` is the smart-signer translation key to
+ * title the toast with instead (none for a wallet's own message), `isWellKnownError` marks one not
+ * worth reporting, `keychainFallback` a Keychain error and `insufficientBalance` a chain rejection to
+ * title with the app's own text rather than the description
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   let description = 'Error';
+  let errorTitleKey: string | undefined;
   let isWellKnownError = false;
   let keychainFallback: KeychainFallback | null = null;
   const isUserCancel = isKeychainUserCancel(e);
@@ -191,23 +199,19 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
   if (!defaultDescription) {
     let errorDescription = 'Error';
 
-    let wellKnownErrorDescription;
-    for (const wked of wellKnownErrorDescriptions) {
-      if (e.includes(wked)) {
-        wellKnownErrorDescription = wked;
-        break;
-      }
-    }
+    const wellKnownError = wellKnownErrorDescriptions.find(({ description }) => e.includes(description));
 
     const keychainMessage = KEYCHAIN_ERROR_PATTERN.exec(e)?.[1]?.trim();
 
-    if (wellKnownErrorDescription) {
-      description = wellKnownErrorDescription;
+    if (wellKnownError) {
+      description = wellKnownError.description;
+      errorTitleKey = wellKnownError.key;
       isWellKnownError = true;
     } else if (walletResponseMessage) {
       description = walletResponseMessage;
     } else if (keychainMessage === undefined) {
       description = errorDescription;
+      errorTitleKey = GENERIC_ERROR_TITLE_KEY;
     } else {
       keychainFallback = keychainFallbackFor(keychainMessage);
       description = keychainFallback === 'no_message' ? errorDescription : keychainMessage;
@@ -217,6 +221,7 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
 
   return {
     errorTitle: defaultDescription ?? description,
+    errorTitleKey,
     fullError: scrubSensitiveData(e.toString()),
     isWellKnownError,
     keychainFallback,

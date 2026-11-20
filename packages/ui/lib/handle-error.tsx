@@ -15,6 +15,7 @@ import { EarlierBroadcastPendingError } from '@hive/transaction/lib/unconfirmed-
 import { AssetPrecisionMessage } from '@smart-signer/components/asset-precision-message';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { InsufficientBalanceTitle } from '@smart-signer/components/insufficient-balance-title';
+import { ErrorToastTitle } from '@smart-signer/components/error-toast-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
 import { SignedOutMessage } from '@smart-signer/components/signed-out-message';
@@ -68,9 +69,15 @@ function reportToSentry(error: unknown): void {
     .catch(importError => logger.error('Loading Sentry to report an error failed: %o', importError));
 }
 
-function errorToastTitle({ errorTitle, keychainFallback, insufficientBalance }: ReturnType<typeof transformError>) {
+function errorToastTitle({
+  errorTitle,
+  errorTitleKey,
+  keychainFallback,
+  insufficientBalance
+}: ReturnType<typeof transformError>) {
   if (keychainFallback) return <KeychainErrorFallbackTitle fallback={keychainFallback} />;
   if (insufficientBalance) return <InsufficientBalanceTitle reason={insufficientBalance} />;
+  if (errorTitleKey) return <ErrorToastTitle titleKey={errorTitleKey} />;
   return errorTitle;
 }
 
@@ -157,7 +164,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  // Safe storage or the key's authority check refused signing for a well-known reason; an unknown one
+  // Safe storage, the key's authority check or the signer refused signing for a well-known reason; an unknown one
   // keeps hb-auth's message for the generic toast below
   const authFailureKey = findAuthFailureKey(error);
   if (authFailureKey) {

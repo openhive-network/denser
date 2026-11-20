@@ -36,6 +36,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | proxy | proxy | unreviewed | |
 | Resource Credits (RC) | Crediti Risorse (RC) | unreviewed | |
 | upvote / downvote | voto positivo / voto negativo | unreviewed | |
+| vote weight / downvote power | peso del voto / potere di voto negativo | unreviewed | |
 | follow / mute | seguire / silenziare | unreviewed | Mute: 27 of 31 strings use "silenzia-". |
 | reblog | ricondividere ("Ricondividi") | unreviewed | |
 | community | comunità | unreviewed | |

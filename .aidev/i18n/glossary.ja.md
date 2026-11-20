@@ -36,6 +36,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | proxy | 代理人 | unreviewed | A tie: 5 strings 代理人, 5 プロキシ. |
 | Resource Credits (RC) | リソースクレジット（RC） | unreviewed | |
 | upvote / downvote | 賛成票 / 反対票 | unreviewed | 4 strings say アップボート. |
+| vote weight / downvote power | 投票の重み / 反対票パワー | unreviewed | |
 | follow / mute | フォロー / ミュート | unreviewed | |
 | reblog | リブログ | unreviewed | |
 | community | コミュニティ | unreviewed | |

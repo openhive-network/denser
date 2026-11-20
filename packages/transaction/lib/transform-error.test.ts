@@ -1,6 +1,15 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { summarizeErrorForLog, transformError } from './transform-error';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { GENERIC_ERROR_TITLE_KEY, summarizeErrorForLog, transformError } from './transform-error';
+
+const SMART_SIGNER_LOCALES_DIR = join(__dirname, '../../smart-signer/locales');
+
+function translate(locale: string, key: string): unknown {
+  const translations = JSON.parse(readFileSync(join(SMART_SIGNER_LOCALES_DIR, locale, 'smart-signer.json'), 'utf8'));
+  return key.split('.').reduce((node, part) => node?.[part], translations);
+}
 
 class WaxKeychainProviderError extends Error {
   name = 'WaxKeychainProviderError';
@@ -198,9 +207,56 @@ describe('transformError', () => {
     expect(transformError(error, { method: 'transfer', params: {} }).insufficientBalance).to.equal(null);
   });
 
+  for (const [message, key] of [
+    ['Assert Exception:false: Vote weight cannot be 0.', 'broadcast_error.vote_weight_zero'],
+    [
+      'Assert Exception: Your current vote on this comment is identical to this vote.',
+      'broadcast_error.vote_identical'
+    ],
+    ['Assert Exception: Account does not have enough mana to downvote.', 'broadcast_error.not_enough_downvote_mana'],
+    ['Assert Exception: You may only post once every 5 minutes.', 'broadcast_error.post_interval'],
+    ['Assert Exception: You may only comment once every 3 seconds.', 'broadcast_error.comment_interval'],
+    ['AuthorizationError: Not authorized', 'auth_error.authentication_failed'],
+    ['AuthorizationError: Invalid WIF checksum', 'chainvalidation_js.invalid_wif_checksum'],
+    ['AuthorizationError: Invalid WIF key', 'login_form.zod_error.invalid_wif'],
+    ['Error: Key verification failed', 'auth_error.key_verification_failed'],
+    ['Error: No key provided', 'auth_error.no_key_provided'],
+    ['Error: Key does not have the required authority for this account', 'auth_error.missing_authority']
+  ] as const) {
+    it(`titles a well-known error with a smart-signer key every locale translates (${key})`, () => {
+      const { errorTitle, errorTitleKey, isWellKnownError } = transformError(new Error(message));
+      expect(errorTitleKey).to.equal(key);
+      expect(message).to.contain(errorTitle);
+      expect(isWellKnownError).to.equal(true);
+      const english = translate('en', key);
+      expect(english).to.be.a('string');
+      for (const locale of readdirSync(SMART_SIGNER_LOCALES_DIR).filter(locale => locale !== 'en')) {
+        expect(translate(locale, key), locale).to.be.a('string').and.not.equal(english);
+      }
+    });
+  }
+
+  it('titles an unknown error with the generic key, which every locale translates', () => {
+    expect(transformError(peakVaultRejection({ error: 'sign_error' })).errorTitleKey).to.equal(GENERIC_ERROR_TITLE_KEY);
+    for (const locale of readdirSync(SMART_SIGNER_LOCALES_DIR)) {
+      expect(translate(locale, GENERIC_ERROR_TITLE_KEY), locale).to.be.a('string');
+    }
+    expect(translate('pl', GENERIC_ERROR_TITLE_KEY)).to.equal('Błąd');
+  });
+
+  it("titles a wallet's own answer with that answer, not a key", () => {
+    const keychain = new WaxKeychainProviderError('Keychain error: The account is not in your wallet');
+    expect(transformError(keychain).errorTitleKey).to.equal(undefined);
+    const peakVault = peakVaultRejection({ error: 'sign_error', message: 'Could not sign the transaction' });
+    expect(transformError(peakVault).errorTitleKey).to.equal(undefined);
+  });
+
   it('keeps the generic title for an unknown error', () => {
-    const { errorTitle, isWellKnownError, keychainFallback, insufficientBalance } = transformError(new Error('boom'));
+    const { errorTitle, errorTitleKey, isWellKnownError, keychainFallback, insufficientBalance } = transformError(
+      new Error('boom')
+    );
     expect(errorTitle).to.equal('Error');
+    expect(errorTitleKey).to.equal(GENERIC_ERROR_TITLE_KEY);
     expect(isWellKnownError).to.equal(false);
     expect(keychainFallback).to.equal(null);
     expect(insufficientBalance).to.equal(null);

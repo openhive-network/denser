@@ -37,6 +37,7 @@ No native speaker has reviewed the French strings yet, so every term is
 | proxy | proxy | unreviewed | 6 strings; 5 say "procuration". |
 | Resource Credits (RC) | crédits de ressources (RC) | unreviewed | |
 | upvote / downvote | vote positif / vote négatif | unreviewed | |
+| vote weight / downvote power | poids du vote / puissance de vote négatif | unreviewed | |
 | follow / mute | suivre / masquer | unreviewed | Mute: 23 of 31 strings use "masquer". |
 | reblog | rebloguer | unreviewed | |
 | community | communauté | unreviewed | |

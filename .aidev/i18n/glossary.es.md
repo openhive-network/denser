@@ -37,6 +37,7 @@ most as of 2026-11-19.
 | proxy | proxy | unreviewed | |
 | Resource Credits (RC) | Créditos de Recursos (RC) | unreviewed | |
 | upvote / downvote | voto positivo / voto negativo | unreviewed | |
+| vote weight / downvote power | peso del voto / poder de voto negativo | unreviewed | |
 | follow / mute | seguir / silenciar | unreviewed | Mute: 29 of 31 strings use "silenciar". |
 | reblog | rebloguear | unreviewed | |
 | community | comunidad | unreviewed | |

@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "The owner key kept in safe storage no longer works for your account; it may have been changed. Sign in again with your current owner key.",
     "keychain_signing_failed": "An error occurred while signing the transaction in Hive Keychain.",
     "rewards_already_claimed": "Your rewards were already claimed or are smaller than shown, so nothing was claimed.",
-    "balance_too_low": "Your balance is too low for this amount, so nothing was sent."
+    "balance_too_low": "Your balance is too low for this amount, so nothing was sent.",
+    "generic_title": "Error",
+    "vote_identical": "Your vote on this post is already the same as this one.",
+    "not_enough_downvote_mana": "Your downvote power is too low to downvote.",
+    "vote_weight_zero": "Choose a vote weight greater than zero.",
+    "post_interval": "You can publish a post only once every 5 minutes. Wait and try again.",
+    "comment_interval": "You can comment only once every 3 seconds. Wait and try again."
   },
   "request_error": {
     "timeout": "The server did not respond in time. Please try again.",
@@ -312,6 +318,9 @@
     "invalid_challenge": "Sign-in failed: the sign-in challenge is invalid.",
     "account_not_found": "The account was not found on the blockchain.",
     "missing_authority": "This key does not have the required authority for this account.",
+    "key_verification_failed": "The key could not be verified.",
+    "no_key_provided": "No key was entered.",
+    "passkey_signer_unknown": "No passkey signer is known for your account in this browser. Sign in again.",
     "unknown": "An authentication error occurred."
   }
 }

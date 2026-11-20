@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "La clé propriétaire (owner) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé propriétaire (owner) actuelle.",
     "keychain_signing_failed": "Une erreur s'est produite lors de la signature de la transaction dans Hive Keychain.",
     "rewards_already_claimed": "Vos récompenses ont déjà été réclamées ou sont inférieures à celles affichées, rien n'a donc été réclamé.",
-    "balance_too_low": "Votre solde est insuffisant pour ce montant, rien n'a donc été envoyé."
+    "balance_too_low": "Votre solde est insuffisant pour ce montant, rien n'a donc été envoyé.",
+    "generic_title": "Erreur",
+    "vote_identical": "Votre vote sur cet article est déjà identique à celui-ci.",
+    "not_enough_downvote_mana": "Votre puissance de vote négatif est trop faible pour voter négativement.",
+    "vote_weight_zero": "Choisissez un poids de vote supérieur à zéro.",
+    "post_interval": "Vous ne pouvez publier qu'un article toutes les 5 minutes. Patientez et réessayez.",
+    "comment_interval": "Vous ne pouvez commenter qu'une fois toutes les 3 secondes. Patientez et réessayez."
   },
   "request_error": {
     "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
@@ -312,6 +318,9 @@
     "invalid_challenge": "Échec de la connexion : le défi de connexion est invalide.",
     "account_not_found": "Le compte est introuvable sur la blockchain.",
     "missing_authority": "Cette clé n'a pas l'autorité requise pour ce compte.",
+    "key_verification_failed": "La clé n'a pas pu être vérifiée.",
+    "no_key_provided": "Aucune clé n'a été saisie.",
+    "passkey_signer_unknown": "Aucun signataire à passkey n'est connu pour votre compte dans ce navigateur. Reconnectez-vous.",
     "unknown": "Une erreur d'authentification s'est produite."
   }
 }

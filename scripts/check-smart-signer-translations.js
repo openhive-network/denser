@@ -30,7 +30,13 @@ const POLICY = {
       'session_time.seconds'
     ]),
     // Spanish and French abbreviate minutes, hours and seconds as English does
-    es: new Set(['session_time.minutes', 'session_time.hours', 'session_time.seconds']),
+    es: new Set([
+      'session_time.minutes',
+      'session_time.hours',
+      'session_time.seconds',
+      // Spanish uses the same word
+      'broadcast_error.generic_title'
+    ]),
     fr: new Set(['session_time.minutes', 'session_time.hours', 'session_time.seconds']),
     // Polish abbreviates minutes and seconds as English does
     pl: new Set(['session_time.minutes', 'session_time.seconds'])

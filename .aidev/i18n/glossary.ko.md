@@ -38,6 +38,7 @@ markup and plural keys, not their wording.
 | proxy | 프록시 | unreviewed | |
 | Resource Credits (RC) | 리소스 크레딧(RC) | unreviewed | |
 | vote / upvote / downvote | 보팅 / 업보팅 / 다운보팅 | unreviewed | Hive community usage; "voters" stays 투표자. |
+| vote weight / downvote power | 보팅 가중치 / 다운보팅 파워 | unreviewed | The blog's manabar says 비추천력. |
 | follow / mute | 팔로우 / 뮤트 | unreviewed | |
 | reblog | 리블로그 | unreviewed | |
 | community | 커뮤니티 | unreviewed | |

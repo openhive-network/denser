@@ -259,7 +259,13 @@
     "safe_storage_owner_key_not_authorized": "La chiave proprietario (owner) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave proprietario (owner) attuale.",
     "keychain_signing_failed": "Si è verificato un errore durante la firma della transazione in Hive Keychain.",
     "rewards_already_claimed": "Le tue ricompense sono già state riscosse o sono inferiori a quelle mostrate, quindi non è stato riscosso nulla.",
-    "balance_too_low": "Il tuo saldo è troppo basso per questo importo, quindi non è stato inviato nulla."
+    "balance_too_low": "Il tuo saldo è troppo basso per questo importo, quindi non è stato inviato nulla.",
+    "generic_title": "Errore",
+    "vote_identical": "Il tuo voto su questo post è già identico a questo.",
+    "not_enough_downvote_mana": "Il tuo potere di voto negativo è troppo basso per votare negativamente.",
+    "vote_weight_zero": "Scegli un peso del voto maggiore di zero.",
+    "post_interval": "Puoi pubblicare un post solo ogni 5 minuti. Attendi e riprova.",
+    "comment_interval": "Puoi commentare solo ogni 3 secondi. Attendi e riprova."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",
@@ -312,6 +318,9 @@
     "invalid_challenge": "Accesso non riuscito: la richiesta di verifica dell'accesso non è valida.",
     "account_not_found": "Account non trovato sulla blockchain.",
     "missing_authority": "Questa chiave non ha l'autorità richiesta per questo account.",
+    "key_verification_failed": "Non è stato possibile verificare la chiave.",
+    "no_key_provided": "Non è stata inserita alcuna chiave.",
+    "passkey_signer_unknown": "In questo browser non è noto alcun firmatario con passkey per il tuo account. Accedi di nuovo.",
     "unknown": "Si è verificato un errore di autenticazione."
   }
 }
