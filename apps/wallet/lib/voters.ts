@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import { formatPercent } from '@ui/lib/locale-format';
 import type { HafbeWitnessVoter, HafbeWitnessVoters } from '@hive/common-hiveio-packages/wax';
 
 /**
@@ -57,10 +58,13 @@ export const totalHpOf = (voters: readonly Voter[]): number => voters.reduce((su
 export const shareOf = (hp: number, totalHp: number): number =>
   totalHp > 0 ? Math.min(1, Math.max(0, hp / totalHp)) : 0;
 
-/** A share as a percentage with one decimal, e.g. "42.2%"; a share too small to show is "<0.1%". */
-export const formatShare = (share: number): string => {
-  if (share > 0 && share < 0.0005) return '<0.1%';
-  return `${(share * 100).toFixed(1)}%`;
+// The smallest share a percentage with one decimal shows.
+const SMALLEST_SHOWN_PERCENT = 0.1;
+
+/** A share as a percentage with one decimal in `locale`, e.g. "42.2%"; a share too small to show is "<0.1%". */
+export const formatShare = (share: number, locale: string): string => {
+  if (share > 0 && share < 0.0005) return `<${formatPercent(SMALLEST_SHOWN_PERCENT, locale, 1)}`;
+  return formatPercent(share * 100, locale, 1);
 };
 
 export interface BarSegment {

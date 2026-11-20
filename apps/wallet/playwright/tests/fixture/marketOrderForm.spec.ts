@@ -78,7 +78,7 @@ test.describe('Market order form', () => {
   });
 
   test('WALLET-MARKET-FORM-02 — a sell whose amount exceeds the HIVE balance is disabled', async ({ page }) => {
-    await expect(page.getByTestId('sell-form-available-value')).toHaveText('1234.567 HIVE', {
+    await expect(page.getByTestId('sell-form-available-value')).toHaveText('1,234.567 HIVE', {
       timeout: HYDRATION_TIMEOUT
     });
     await fillAmount(page, 'sell-form', '2000', '498.000');

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useId, useReducer, useRef, useState } from 'react';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
-import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
+import { convertStringToBig } from '@ui/lib/helpers';
+import { formatAsset } from '@ui/lib/asset-format';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useCreateMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
@@ -14,6 +15,7 @@ import { getAccount } from '@transaction/lib/hive-api';
 import { getAsset } from '@transaction/lib/utils';
 import { exceedsAvailableBalance, isBelowMinimumOrder, orderFormReducer } from '../lib/market-order-form';
 import OrderFormField from './order-form-field';
+import { useLocale } from '@ui/components/locale-context';
 
 export default function BuyOrSellForm({
   price,
@@ -25,6 +27,7 @@ export default function BuyOrSellForm({
   transaction: 'sell' | 'buy';
 }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [state, dispatch] = useReducer(orderFormReducer, {
     price,
     amount: '',
@@ -85,7 +88,7 @@ export default function BuyOrSellForm({
   }, [createBuyOrderMutation, queryClient, state.amount, state.total, transaction, user.username]);
 
   const availableAsset = transaction === 'buy' ? accountData?.hbd_balance : accountData?.balance;
-  const availableText = availableAsset ? formatNaiAsset(availableAsset) : '';
+  const availableText = availableAsset ? formatAsset(availableAsset, { locale }) : '';
   const insufficientBalance = exceedsAvailableBalance(
     state,
     transaction,

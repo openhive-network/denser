@@ -3,6 +3,7 @@ import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { convertToHP } from '@ui/lib/utils';
 import { formatAsset, isNaiAsset } from '@ui/lib/asset-format';
+import { formatAmount } from '@ui/lib/locale-format';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
 import type { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 
@@ -23,10 +24,15 @@ interface RewardTypeConfig {
   /** One line per asset of the summed rewards. */
   weeklyTotals: (
     rewards: RewardEntry[],
-    dynamicData: GetDynamicGlobalPropertiesResponse | undefined
+    dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+    locale: string
   ) => string[];
   /** One line per asset paid by a single reward. */
-  payoutLines: (op: RewardOp, dynamicData: GetDynamicGlobalPropertiesResponse | undefined) => string[];
+  payoutLines: (
+    op: RewardOp,
+    dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+    locale: string
+  ) => string[];
 }
 
 function hivePowerOf(vests: unknown, dynamicData: GetDynamicGlobalPropertiesResponse | undefined): Big {
@@ -37,56 +43,58 @@ function hivePowerOf(vests: unknown, dynamicData: GetDynamicGlobalPropertiesResp
 
 function formattedHivePowerOf(
   vests: NaiAsset | undefined,
-  dynamicData: GetDynamicGlobalPropertiesResponse | undefined
+  dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+  locale: string
 ) {
   return vests && dynamicData
     ? convertToFormattedHivePower(
         vests,
         dynamicData.total_vesting_fund_hive,
-        dynamicData.total_vesting_shares
+        dynamicData.total_vesting_shares,
+        locale
       )
     : '0';
 }
 
 function authorWeeklyTotals(
   rewards: RewardEntry[],
-  dynamicData: GetDynamicGlobalPropertiesResponse | undefined
+  dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+  locale: string
 ): string[] {
   const totals = rewards.reduce(
     (total, { op }) => ({
-      hbd: Number(Big(total.hbd).plus(convertStringToBig(op.hbd_payout ?? '0'))),
-      hive: Number(Big(total.hive).plus(convertStringToBig(op.hive_payout ?? '0'))),
-      hp: Number(Big(total.hp).plus(hivePowerOf(op.vesting_payout, dynamicData)))
+      hbd: total.hbd.plus(convertStringToBig(op.hbd_payout ?? '0')),
+      hive: total.hive.plus(convertStringToBig(op.hive_payout ?? '0')),
+      hp: total.hp.plus(hivePowerOf(op.vesting_payout, dynamicData))
     }),
-    { hbd: 0, hive: 0, hp: 0 }
+    { hbd: Big(0), hive: Big(0), hp: Big(0) }
   );
   return [
-    `${totals.hp.toFixed(3)} HIVE POWER`,
-    `${totals.hive.toFixed(3)} HIVE`,
-    `${totals.hbd.toFixed(3)} HBD`
+    formatAmount(totals.hp, 'HIVE POWER', locale),
+    formatAmount(totals.hive, 'HIVE', locale),
+    formatAmount(totals.hbd, 'HBD', locale)
   ];
 }
 
 function curationWeeklyTotals(
   rewards: RewardEntry[],
-  dynamicData: GetDynamicGlobalPropertiesResponse | undefined
+  dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+  locale: string
 ): string[] {
-  const hp = rewards.reduce(
-    (total, { op }) => Number(Big(total).plus(hivePowerOf(op.reward, dynamicData))),
-    0
-  );
+  const hp = rewards.reduce((total, { op }) => total.plus(hivePowerOf(op.reward, dynamicData)), Big(0));
   // Six decimals until the Condenser API is gone and precision is handled properly.
-  return [`${hp.toFixed(6)} HIVE POWER`];
+  return [formatAmount(hp, 'HIVE POWER', locale, 6)];
 }
 
 function authorPayoutLines(
   op: RewardOp,
-  dynamicData: GetDynamicGlobalPropertiesResponse | undefined
+  dynamicData: GetDynamicGlobalPropertiesResponse | undefined,
+  locale: string
 ): string[] {
   return [
-    formattedHivePowerOf(op.vesting_payout, dynamicData),
-    isNaiAsset(op.hive_payout) ? formatAsset(op.hive_payout) : '',
-    isNaiAsset(op.hbd_payout) ? formatAsset(op.hbd_payout) : ''
+    formattedHivePowerOf(op.vesting_payout, dynamicData, locale),
+    isNaiAsset(op.hive_payout) ? formatAsset(op.hive_payout, { locale }) : '',
+    isNaiAsset(op.hbd_payout) ? formatAsset(op.hbd_payout, { locale }) : ''
   ];
 }
 
@@ -110,6 +118,6 @@ export const REWARD_TYPES: Record<RewardType, RewardTypeConfig> = {
     titleKey: 'profile.curation_reward_title',
     linksPostAuthor: true,
     weeklyTotals: curationWeeklyTotals,
-    payoutLines: (op, dynamicData) => [formattedHivePowerOf(op.reward, dynamicData)]
+    payoutLines: (op, dynamicData, locale) => [formattedHivePowerOf(op.reward, dynamicData, locale)]
   }
 };

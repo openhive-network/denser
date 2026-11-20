@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "and",
     "close": "Close",
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
@@ -31,18 +30,6 @@
       "a_year": " a year ago"
     },
     "time": {
-      "a_few_seconds": " a few seconds",
-      "seconds": " seconds",
-      "minutes": " minutes",
-      "a_minute": " a minute",
-      "hours": " hours",
-      "an_hour": " an hour",
-      "days": " days",
-      "a_day": " a day",
-      "months": " months",
-      "a_month": " a month",
-      "years": " years",
-      "a_year": " a year",
       "hours_count_one": "{{count}} hour",
       "hours_count_other": "{{count}} hours",
       "minutes_count_one": "{{count}} minute",
@@ -273,7 +260,7 @@
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
       "click_to_respond": "Click to respond",
-      "open_comments": "Open comments",
+      "open_comments": "{{responses}}Open comments",
       "reblog": "Reblog",
       "you_reblogged": "You reblogged",
       "no_reblogs": "no reblogs",
@@ -339,7 +326,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "Pending payout amount: ${{value}}",
     "breakdown": "Breakdown:",
-    "payout_in": "Payout in",
+    "payout_in": "Payout {{time}}",
     "past_payouts": "Past Payouts ${{value}}",
     "author": "Author ${{value}}",
     "curators": "Curators ${{value}}",
@@ -550,7 +537,8 @@
     "mute": "Mute",
     "save": "Save",
     "unmute": "Unmute",
-    "post_comment": " post/comment",
+    "mute_post_comment": "Mute post/comment",
+    "unmute_post_comment": "Unmute post/comment",
     "please_provide_a_note": "Please provide a note regarding your decision to mute this content.",
     "notes": "Notes",
     "pin": "Pin",
@@ -710,7 +698,7 @@
       "no_responses": "No responses. ",
       "response": "1 response. ",
       "responses": "{{responses}} responses. ",
-      "share_on": "Share on ",
+      "share_on": "Share on {{network}}",
       "share_form": {
         "copy": "COPY",
         "copied": "Copied!",

@@ -1,4 +1,3 @@
-import { numberWithCommas } from '@ui/lib/utils';
 import { PieChart, Pie } from 'recharts';
 import { useTranslation } from '@/wallet/i18n/client';
 

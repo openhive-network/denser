@@ -22,7 +22,7 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
   return (
     <SharePostButton
       onClick={openWindow}
-      label={t('post_content.footer.share_on') + `Twitter`}
+      label={t('post_content.footer.share_on', { network: 'Twitter' })}
       data-testid="share-on-twitter"
     >
       <Twitter className="h-[18px] w-[18px]" aria-hidden />

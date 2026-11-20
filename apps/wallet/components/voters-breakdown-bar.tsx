@@ -2,6 +2,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from '@/wallet/i18n/client';
 import { formatShare, type Breakdown } from '@/wallet/lib/voters';
+import { useLocale } from '@ui/components/locale-context';
 
 /** Segment colours, largest voter first; each holds its contrast on light and dark backgrounds. */
 const SEGMENT_COLORS = [
@@ -28,9 +29,10 @@ interface SegmentView {
  */
 function VotersBreakdownBar({ breakdown }: { breakdown: Breakdown }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const segments: SegmentView[] = breakdown.segments.map((segment, index) => ({
     key: segment.name,
-    label: `@${segment.name} · ${formatShare(segment.share)}`,
+    label: `@${segment.name} · ${formatShare(segment.share, locale)}`,
     share: segment.share,
     color: SEGMENT_COLORS[index % SEGMENT_COLORS.length]
   }));
@@ -39,7 +41,7 @@ function VotersBreakdownBar({ breakdown }: { breakdown: Breakdown }) {
       key: '',
       label: t('voters_dialog.others_share', {
         count: breakdown.rest.count,
-        share: formatShare(breakdown.rest.share)
+        share: formatShare(breakdown.rest.share, locale)
       }),
       share: breakdown.rest.share,
       color: REST_COLOR

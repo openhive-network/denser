@@ -5,8 +5,7 @@ import { Link } from '@hive/ui';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
-import { formatCalendarDate } from '@ui/lib/calendar-date';
-import { getTimeAgoDateTime } from '@ui/lib/time-ago';
+import { formatCalendarDate, getTimeAgoDateTime } from '@ui/lib/locale-format';
 
 const truncateTitle = (title: string, maxLength: number = 50) => {
   return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;

@@ -99,7 +99,7 @@ const MutePostDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {(contentMuted ? t('communities.unmute') : t('communities.mute')) + t('communities.post_comment')}
+            {contentMuted ? t('communities.unmute_post_comment') : t('communities.mute_post_comment')}
           </DialogTitle>
           <DialogDescription>{t('communities.please_provide_a_note')}</DialogDescription>
           <Separator />

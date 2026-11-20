@@ -43,3 +43,15 @@ export function createLocaleFormatCache<F extends LocaleFormatter>(
 
   return { get, size: () => formats.size };
 }
+
+const FALLBACK_LOCALE = 'en';
+
+/** The formatter for `lang`, or for English when the Intl constructor rejects the tag. */
+export function getFormatOrEnglish<F>(cache: LocaleFormatCache<F>, lang: string): F {
+  try {
+    return cache.get(lang);
+  } catch (error) {
+    if (error instanceof RangeError) return cache.get(FALLBACK_LOCALE);
+    throw error;
+  }
+}

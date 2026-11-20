@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "と",
     "close": "閉じる",
     "no_rewards": "引き換えが保留中の特典はありません。",
     "loading": "読み込み中",
@@ -31,18 +30,6 @@
       "a_year": " 1年前"
     },
     "time": {
-      "a_few_seconds": " 数秒",
-      "seconds": " 秒",
-      "minutes": " 分",
-      "a_minute": " 1分",
-      "hours": " 時間",
-      "an_hour": " 1時間",
-      "days": " 日",
-      "a_day": " 1日",
-      "months": " か月",
-      "a_month": " 1か月",
-      "years": " 年",
-      "a_year": " 1年",
       "hours_count_other": "{{count}}時間",
       "minutes_count_other": "{{count}}分",
       "hours_and_minutes": "{{hours}}{{minutes}}"
@@ -271,7 +258,7 @@
       "response": "返信は1件です。",
       "responses": " 返信は%{{responses}}件です。",
       "click_to_respond": "返信するにはクリックしてください。",
-      "open_comments": "コメントを開く",
+      "open_comments": "{{responses}}コメントを開く",
       "reblog": "リブログ",
       "you_reblogged": "Reblogしました",
       "no_reblogs": "Reblogなし",
@@ -337,7 +324,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "保留支払額 ${{value}}",
     "breakdown": "内訳:",
-    "payout_in": "支払いまで",
+    "payout_in": "支払い: {{time}}",
     "past_payouts": "支払い済み ${{value}}",
     "author": "投稿者 ${{value}}",
     "curators": "キュレーター ${{value}}",
@@ -545,7 +532,8 @@
     "mute": "ミュート",
     "save": "保存",
     "unmute": "ミュート解除",
-    "post_comment": " 投稿/コメント",
+    "mute_post_comment": "投稿/コメントをミュート",
+    "unmute_post_comment": "投稿/コメントのミュートを解除",
     "please_provide_a_note": "このコンテンツをミュートする理由を記入してください。",
     "notes": "メモ",
     "pin": "ピン留め",
@@ -705,7 +693,7 @@
       "you_reblogged": "Reblogしました",
       "reply": "返信",
       "edit": "編集",
-      "share_on": "共有先: ",
+      "share_on": "共有先: {{network}}",
       "share_form": {
         "copy": "コピー",
         "copied": "コピーしました！!",

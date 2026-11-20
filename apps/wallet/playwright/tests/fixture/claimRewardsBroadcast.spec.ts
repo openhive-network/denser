@@ -147,7 +147,7 @@ test.describe('Claim rewards broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     await openOwnTransfersPage(page);
 
-    await expect(page.getByText('Your current rewards: 1.234 HIVE, 0.567 HBD and 2.001 HP')).toBeVisible({
+    await expect(page.getByText('Your current rewards: 1.234 HIVE, 0.567 HBD, and 2.001 HP')).toBeVisible({
       timeout: HYDRATION_TIMEOUT
     });
     // The button renders only once the client knows the signed-in user, i.e. after hydration.

@@ -7,7 +7,7 @@ import type { AccountFollowStats, ILiteProfile } from '@hive/common-hiveio-packa
 import { getLiteFollowCount } from '@transaction/lib/lite-social-api';
 import { Button } from '@ui/components/button';
 import { Icons } from '@hive/ui/components/icons';
-import { formatMonthYear } from '@ui/lib/month-year';
+import { formatMonthYear } from '@ui/lib/locale-format';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import UserAvatar from '@/blog/features/post-rendering/user-avatar';
 import { useTranslation } from '@/blog/i18n/client';

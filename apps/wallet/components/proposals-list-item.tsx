@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from '@hive/ui';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
-import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { formatDateTime, formatDecimal, getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { isRefundProposal, remainingDays } from '@/wallet/lib/proposals-list';
 import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
@@ -61,10 +61,6 @@ const StatusTooltip = ({
   </TooltipProvider>
 );
 
-// The full month name: with a day, a locale writes it in its date form (Polish "15 maja"), which the
-// abbreviation does not always give ("15 maj")
-const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-
 /**
  * A proposal in three lines: its title and badges; who it is by, its daily pay, dates and the days
  * left; and its money (see ProposalPaidAmounts). Its vote total and vote button sit on the right.
@@ -80,7 +76,6 @@ export function ProposalListItem({
 }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { locale } = useLocale();
-  const dateFormat = new Intl.DateTimeFormat(locale, PROPOSAL_DATE_FORMAT);
 
   const totalDays = dayjs(proposalData.end_date).diff(dayjs(proposalData.start_date), 'day');
   const totalHBD = proposalData.daily_pay.amount.times(totalDays);
@@ -89,8 +84,10 @@ export function ProposalListItem({
   const daysToStart =
     proposalData.status === 'inactive' ? Math.max(1, remainingDays(proposalData.start_date, now)) : null;
   const postPath = `@${proposalData.creator}/${proposalData.permlink}`;
-  const dateRange = `${dateFormat.format(dayjs(proposalData.start_date).toDate())} – ${dateFormat.format(
-    dayjs(proposalData.end_date).toDate()
+  const dateRange = `${formatDateTime(dayjs(proposalData.start_date).valueOf(), locale, 'date')} – ${formatDateTime(
+    dayjs(proposalData.end_date).valueOf(),
+    locale,
+    'date'
   )}`;
   const statusLabelKey = STATUS_LABEL_KEYS[proposalData.status];
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);

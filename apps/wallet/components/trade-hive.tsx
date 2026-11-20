@@ -72,8 +72,8 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
   const { data, isLoading } = useTradeHive();
   const [inputAsk, setInputAsk] = useState(tickerData.lowest_ask.toFixed(6));
   const [inputBid, setInputBid] = useState(tickerData.highest_bid.toFixed(6));
-  const paramsBuy = [t('market_page.total') + ' HBD($)', 'HBD($)', 'HIVE', t('market_page.price')];
-  const paramsSell = [t('market_page.price'), 'HIVE', 'HBD($)', t('market_page.total') + ' HBD($)'];
+  const paramsBuy = [`${t('market_page.total')} HBD($)`, 'HBD($)', 'HIVE', t('market_page.price')];
+  const paramsSell = [t('market_page.price'), 'HIVE', 'HBD($)', `${t('market_page.total')} HBD($)`];
   const paramsHistory = [t('market_page.date'), t('market_page.price'), 'HIVE', 'HBD($)'];
   const { user } = useUserClient();
 

@@ -4,6 +4,7 @@ import { Button } from '@ui/components';
 import type { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useLocale } from '@ui/components/locale-context';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
 import AccountHistoryError from '@/wallet/components/account-history-error';
@@ -41,11 +42,12 @@ const HistoryTable = ({
 }: HistoryTableProps) => {
   const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
   const { user } = useUserClient();
+  const { locale } = useLocale();
   const isOwnAccount = user.isLoggedIn && user.username === username;
 
   const formatOperationDescription = useMemo(
-    () => createWalletOperationsFormatter(username, dynamicData, t),
-    [username, dynamicData, t]
+    () => createWalletOperationsFormatter(username, dynamicData, t, locale),
+    [username, dynamicData, t, locale]
   );
 
   // Rows already loaded are shown first; only when they run out is the next page requested.

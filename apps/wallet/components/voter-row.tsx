@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import clsx from 'clsx';
 import { Link, getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
-import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { formatDecimal, getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { useLocale } from '@ui/components/locale-context';
 import { useTranslation } from '@/wallet/i18n/client';
 import { formatShare, shareOf, voterHp, type Voter } from '@/wallet/lib/voters';
@@ -67,6 +67,7 @@ interface VoterRowProps {
 /** One voter on one line: avatar, name linked to their profile, weight and share of the total. */
 function VoterRow({ voter, totalHp, isOwn, tabIndex, onFocus }: VoterRowProps) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   return (
     <li
       className={clsx('flex h-10 min-w-0 items-center gap-1.5 rounded-md px-1.5 whitespace-nowrap', {
@@ -97,7 +98,7 @@ function VoterRow({ voter, totalHp, isOwn, tabIndex, onFocus }: VoterRowProps) {
       <VoterDetail voter={voter} />
       {voter.weight && totalHp !== null && (
         <span className="shrink-0 text-right text-xs tabular-nums" data-testid="voter-share">
-          {formatShare(shareOf(voterHp(voter), totalHp))}
+          {formatShare(shareOf(voterHp(voter), totalHp), locale)}
         </span>
       )}
     </li>

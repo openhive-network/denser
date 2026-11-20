@@ -7,7 +7,7 @@ import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
-import { formatMonthYear } from '@hive/ui/lib/month-year';
+import { formatMonthYear } from '@ui/lib/locale-format';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { escapeCssUrl, isSafeImageUrl } from '@ui/lib/css-utils';
 import clsx from 'clsx';

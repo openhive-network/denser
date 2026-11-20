@@ -1,7 +1,6 @@
 'use client';
 
 import { Icons } from '@hive/ui/components/icons';
-import { formatUtcDate } from '@hive/ui/lib/parse-date';
 import { Card, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@hive/ui/lib/utils';
 import { Link } from '@hive/ui';
@@ -26,6 +25,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 import { getCommentMuteReasonKey } from '@/blog/lib/muted-reasons';
 import CommentListItemContent from './comment-list-item-content';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime, formatDollars } from '@ui/lib/locale-format';
 
 interface CommentListProps {
   permissionToMute: Boolean;
@@ -56,6 +57,7 @@ const CommentListItem = memo(function CommentListItem({
   children
 }: CommentListProps) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const ref = useRef<HTMLTableRowElement>(null);
   const isMutedByViewer = mutedList?.some((x) => x.name === comment.author);
   const isGrayedByStats = comment.stats?.gray;
@@ -179,7 +181,7 @@ const CommentListItem = memo(function CommentListItem({
                                 <Link
                                   href={`#@${comment.author}/${comment.permlink}`}
                                   className="hover:text-destructive md:text-sm ml-1"
-                                  title={formatUtcDate(comment.created)}
+                                  title={formatDateTime(comment.created, locale, 'weekdayDateYear', 'UTC')}
                                   data-testid="comment-timestamp-link"
                                   onClick={() => {
                                     onCommnentLinkClick(`#@${comment.author}/${comment.permlink}`);
@@ -271,8 +273,7 @@ const CommentListItem = memo(function CommentListItem({
                                 className="flex items-center hover:cursor-pointer hover:text-destructive "
                                 data-testid="comment-card-footer-payout"
                               >
-                                {'$'}
-                                {comment.payout.toFixed(2)}
+                                {formatDollars(comment.payout, locale)}
                               </div>
                             </DetailsCardHover>
                             {comment.children ? (

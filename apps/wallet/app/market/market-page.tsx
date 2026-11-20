@@ -7,40 +7,29 @@ import clsx from 'clsx';
 import { useMarket } from '@/wallet/components/hooks/use-market';
 import TradeHive from '@/wallet/components/trade-hive';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDollars, formatPercent } from '@ui/lib/locale-format';
 
-const Box = ({
-  label,
-  value,
-  diff,
-  percent = false,
-  dollar = false,
-  testId
-}: {
-  label: string;
-  value: string;
-  diff?: string;
-  percent?: boolean;
-  dollar?: boolean;
-  testId?: string;
-}) => {
+const PRICE_DECIMALS = 6;
+
+const Box = ({ label, value, diff, testId }: { label: string; value: string; diff?: Big; testId?: string }) => {
+  const { locale } = useLocale();
   return (
     <div className="flex bg-background-secondary px-2 text-xs drop-shadow-md" data-testid={testId}>
       <span className="border-r border-border py-1 pr-2 font-semibold" data-testid={testId ? `${testId}-label` : undefined}>{label}</span>
       <span className="py-1 pl-2" data-testid={testId ? `${testId}-value` : undefined}>
-        {dollar ? '$' : null}
         {value}
-        {percent ? '%' : null}
       </span>
       {diff ? (
         <span
           className={clsx('py-1 ', {
-            'text-red-500': Number(diff) < 0,
-            'text-green-500': Number(diff) > 0
+            'text-red-500': diff.lt(0),
+            'text-green-500': diff.gt(0)
           })}
           data-testid={testId ? `${testId}-diff` : undefined}
         >
-          ({Number(diff) > 0 ? '+' : null}
-          {diff + '%'})
+          ({diff.gt(0) ? '+' : null}
+          {formatPercent(diff.toNumber(), locale, 2)})
         </span>
       ) : null}
     </div>
@@ -49,6 +38,7 @@ const Box = ({
 
 export default function MarketPage() {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { data: tickerData, isPending: tickerLoading } = useMarket();
 
   if (!tickerData || tickerLoading) {
@@ -66,21 +56,31 @@ export default function MarketPage() {
       <div className="flex w-full flex-wrap justify-center gap-1" data-testid="market-statistics">
         <Box
           label={t('market_page.last_price')}
-          value={convertStringToBig(tickerData.latest).toFixed(6)}
-          diff={convertStringToBig(tickerData.percent_change).toFixed(2)}
-          dollar
+          value={formatDollars(convertStringToBig(tickerData.latest), locale, PRICE_DECIMALS)}
+          diff={convertStringToBig(tickerData.percent_change)}
           testId="market-last-price"
         />
         <Box
           label={t('market_page.volume')}
-          value={convertStringToBig(tickerData?.hbd_volume).toFixed(2)}
-          dollar
+          value={formatDollars(convertStringToBig(tickerData?.hbd_volume), locale)}
           testId="market-volume"
         />
-        <Box label={t('market_page.bid')} value={tickerData.highest_bid.toFixed(6)} dollar testId="market-bid" />
-        <Box label={t('market_page.ask')} value={tickerData.lowest_ask.toFixed(6)} dollar testId="market-ask" />
+        <Box
+          label={t('market_page.bid')}
+          value={formatDollars(tickerData.highest_bid, locale, PRICE_DECIMALS)}
+          testId="market-bid"
+        />
+        <Box
+          label={t('market_page.ask')}
+          value={formatDollars(tickerData.lowest_ask, locale, PRICE_DECIMALS)}
+          testId="market-ask"
+        />
 
-        <Box label={t('market_page.spread')} value={spread.toFixed(3)} percent testId="market-spread" />
+        <Box
+          label={t('market_page.spread')}
+          value={formatPercent(spread.toNumber(), locale, 3)}
+          testId="market-spread"
+        />
       </div>
       <TradeHive tickerData={tickerData} />
     </div>

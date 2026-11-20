@@ -200,7 +200,7 @@ test.describe('Delegate broadcast', () => {
     const dialog = await openDelegateDialog(page);
 
     await expect(dialog.getByRole('alert')).toHaveText(
-      'You cannot delegate yet: the minimum delegation is 1000.000 HP and you have 900.000 HP available.'
+      'You cannot delegate yet: the minimum delegation is 1,000.000 HP and you have 900.000 HP available.'
     );
     await expect(dialog.getByRole('button', { name: 'Next' })).toBeDisabled();
   });

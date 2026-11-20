@@ -16,7 +16,7 @@ export default function FacebookShare({ url }: { url: string }) {
   return (
     <SharePostButton
       onClick={openWindow}
-      label={t('post_content.footer.share_on') + `Facebook`}
+      label={t('post_content.footer.share_on', { network: 'Facebook' })}
       data-testid="share-on-facebook"
     >
       <Facebook className="h-[18px] w-[18px]" aria-hidden />

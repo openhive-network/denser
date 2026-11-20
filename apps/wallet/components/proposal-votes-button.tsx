@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import { Icons } from '@hive/ui/components/icons';
-import { formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { formatDecimal, getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { useLocale } from '@ui/components/locale-context';
 import { useTranslation } from '@/wallet/i18n/client';
 import VoteProposals from './votes-proposals-dialog';

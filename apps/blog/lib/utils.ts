@@ -3,7 +3,9 @@ import dayjs from 'dayjs';
 import { TFunction } from 'i18next';
 import { Symbol } from '@ui/lib/asset-constants';
 import { accountReputation } from '@ui/lib/reputation';
-import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
+import { convertStringToBig } from '@ui/lib/helpers';
+import { formatAsset } from '@ui/lib/asset-format';
+import { formatList } from '@ui/lib/locale-format';
 import { commonVariables } from '@ui/lib/common-variables';
 import { configuredFypApiUrl } from '@ui/config/public-vars';
 import { matchHiveBlogImageUrl } from './body-image-url';
@@ -71,49 +73,6 @@ export function parsePayoutAmount(amount: string) {
   return parseFloat(String(amount).replace(/\s[A-Z]*$/, ''));
 }
 
-export function fmt(decimal_amount: number | string, asset = null) {
-  return formatDecimal(Number(decimal_amount)).join('') + (asset ? ' ' + asset : '');
-}
-
-function fractional_part_len(value: number) {
-  const parts = (Number(value) + '').split('.');
-  return parts.length < 2 ? 0 : parts[1].length;
-}
-
-export function formatDecimal(value: number, decPlaces = 2, truncate0s = true) {
-  let fl, j;
-  // eslint-disable-next-line no-void,no-restricted-globals
-  if (value === null || value === void 0 || isNaN(value)) {
-    return ['N', 'a', 'N'];
-  }
-  if (truncate0s) {
-    fl = fractional_part_len(value);
-    if (fl < 2) fl = 2;
-    if (fl < decPlaces) decPlaces = fl;
-  }
-  const decSeparator = '.';
-  const thouSeparator = ',';
-  const sign = value < 0 ? '-' : '';
-  const abs_value = Math.abs(value);
-  const i = parseInt(abs_value.toFixed(decPlaces), 10) + '';
-  j = i.length;
-  j = i.length > 3 ? j % 3 : 0;
-  // @ts-ignore
-  const decPart = decPlaces
-    ? decSeparator +
-      // @ts-ignore
-      Math.abs(abs_value - i)
-        .toFixed(decPlaces)
-        .slice(2)
-    : '';
-  return [
-    sign +
-      (j ? i.substr(0, j) + thouSeparator : '') +
-      i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thouSeparator),
-    decPart
-  ];
-}
-
 export function extractLinks(text: string): string[] {
   const urlRegex = /https?:\\?\/\\?\/[^\s]+/g;
   const markdownImageRegex = /!\[.*?\]\((https?:\\?\/\\?\/[^\s]+)\)/g;
@@ -171,36 +130,22 @@ export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefine
   return hoursText || minutesText;
 }
 
-export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {
-  const nothingToClaim = t('global.no_rewards');
-  const hiveAmount = convertStringToBig(account.reward_hive_balance);
-  const hbdAmount = convertStringToBig(account.reward_hbd_balance);
-  const vestingHiveAmount = convertStringToBig(account.reward_vesting_hive);
-
-  const reward_hive = hiveAmount.gt(0) ? formatNaiAsset(account.reward_hive_balance, 'HIVE') : null;
-  const reward_hbd = hbdAmount.gt(0) ? formatNaiAsset(account.reward_hbd_balance, 'HBD') : null;
-  const reward_hp = vestingHiveAmount.gt(0) ? formatNaiAsset(account.reward_vesting_hive, 'HP') : null;
-
-  const rewards = [];
-  if (reward_hive) rewards.push(reward_hive);
-  if (reward_hbd) rewards.push(reward_hbd);
-  if (reward_hp) rewards.push(reward_hp);
-
-  let rewards_str;
-  switch (rewards.length) {
-    case 3:
-      rewards_str = `${rewards[0]}, ${rewards[1]} ${t('global.and')} ${rewards[2]}`;
-      break;
-    case 2:
-      rewards_str = `${rewards[0]} ${t('global.and')} ${rewards[1]}`;
-      break;
-    case 1:
-      rewards_str = `${rewards[0]}`;
-      break;
-    default:
-      rewards_str = nothingToClaim;
-  }
-  return rewards_str;
+/** The account's unclaimed rewards as one list in `locale` ("1.000 HIVE, 2.000 HBD and 3.000 HP"), or that there are none. */
+export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>, locale: string): string {
+  const rewards = [
+    account.reward_hive_balance,
+    account.reward_hbd_balance,
+    account.reward_vesting_hive
+  ].filter((asset) => BigInt(asset.amount) > BigInt(0));
+  if (rewards.length === 0) return t('global.no_rewards');
+  return formatList(
+    rewards.map((asset) =>
+      asset === account.reward_vesting_hive
+        ? `${formatAsset(asset, { appendTokenName: false, locale })} HP`
+        : formatAsset(asset, { locale })
+    ),
+    locale
+  );
 }
 
 export function netVests(account: FullAccount) {

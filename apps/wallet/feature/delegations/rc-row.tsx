@@ -4,12 +4,14 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/wallet/i18n/client';
 import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
 import RevokeRcDialog from './revoke-rc-dialog';
+import { useLocale } from '@ui/components/locale-context';
 
 const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string; account: string }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { user } = useUserClient();
   const userOwner = account === user.username;
-  const amount = prepareRC(delegated_rc.toString(), t, RC_SUMMARY_DECIMALS);
+  const amount = prepareRC(delegated_rc.toString(), t, locale, RC_SUMMARY_DECIMALS);
 
   return (
     <tr

@@ -25,7 +25,7 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   return (
     <SharePostButton
       onClick={openWindow}
-      label={t('post_content.footer.share_on') + `LinkedIn`}
+      label={t('post_content.footer.share_on', { network: 'LinkedIn' })}
       data-testid="share-on-linkedin"
     >
       <Linkedin className="h-[18px] w-[18px]" aria-hidden />

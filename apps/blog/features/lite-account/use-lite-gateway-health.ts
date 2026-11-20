@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { TFunction } from 'i18next';
+import { joinSentences } from '@ui/lib/locale-format';
 import { liteGatewayHealthEndpoint } from './lite-endpoints.ts';
 
 const HEALTH_STALE_MS = 10_000;
@@ -59,11 +60,11 @@ export function readiness(health: LiteGatewayHealth | undefined, kind: LitePostK
   return { ok: false, reason: 'busy', availableInS: seconds(lane.available_in_s), canQueue, queueWaitS };
 }
 
-/** The user-facing explanation of a not-ready answer, with "try again in N s" when known. */
-export function readinessText(t: TFunction<'common_blog'>, r: LiteReadiness): string {
+/** The user-facing explanation of a not-ready answer in `locale`, with "try again in N s" when known. */
+export function readinessText(t: TFunction<'common_blog'>, r: LiteReadiness, locale: string): string {
   const reason = t(`lite_account.gateway.reason_${r.reason ?? 'down'}`);
   if (r.availableInS === undefined) return reason;
-  return `${reason} ${t('lite_account.gateway.try_again_in', { seconds: Math.ceil(r.availableInS) })}`;
+  return joinSentences([reason, t('lite_account.gateway.try_again_in', { seconds: Math.ceil(r.availableInS) })], locale);
 }
 
 async function fetchLiteGatewayHealth(): Promise<LiteGatewayHealth> {

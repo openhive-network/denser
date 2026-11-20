@@ -7,6 +7,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { graduationAmount } from './lite-graduation-state';
 import type { StoredLiteIdentity } from './lite-identity-record';
 import { useLiteGraduationOffer } from './use-lite-graduation-offer';
+import { useLocale } from '@ui/components/locale-context';
 
 type Props = {
   identity: StoredLiteIdentity;
@@ -24,6 +25,7 @@ type Props = {
  */
 export default function LiteGraduationMenuItems({ identity, onUpgrade, onSignInAs }: Props) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const offer = useLiteGraduationOffer(identity, true);
   const account = identity.graduated ?? (offer?.kind === 'linked' ? offer.account : undefined);
 
@@ -62,7 +64,7 @@ export default function LiteGraduationMenuItems({ identity, onUpgrade, onSignInA
       <span className="flex w-full flex-col">
         {t('lite_account.graduation.upgrade')}
         <span className="text-xs text-muted-foreground" data-testid="lite-identity-upgrade-amount">
-          {graduationAmount(t, offer)}
+          {graduationAmount(t, offer, locale)}
         </span>
       </span>
     </DropdownMenuItem>

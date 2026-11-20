@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "и",
     "close": "Закрыть",
     "no_rewards": "Никаких наград в ожидании погашения.",
     "loading": "Загрузка",
@@ -31,18 +30,6 @@
       "a_year": " год назад"
     },
     "time": {
-      "a_few_seconds": " несколько секунд",
-      "seconds": " сек.",
-      "minutes": " мин.",
-      "a_minute": " минута",
-      "hours": " ч.",
-      "an_hour": " час",
-      "days": " дн.",
-      "a_day": " день",
-      "months": " мес.",
-      "a_month": " месяц",
-      "years": " г.",
-      "a_year": " год",
       "hours_count_one": "{{count}} час",
       "hours_count_few": "{{count}} часа",
       "hours_count_many": "{{count}} часов",
@@ -277,7 +264,7 @@
       "response": "1 ответ. ",
       "responses": "{{responses}} ответов. ",
       "click_to_respond": "Нажмите чтобы ответить.",
-      "open_comments": "Открыть комментарии",
+      "open_comments": "{{responses}}Открыть комментарии",
       "reblog": "Поделиться",
       "you_reblogged": "Вы сделали репост",
       "no_reblogs": "нет репостов",
@@ -343,7 +330,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "Ожидаемая выплата: ${{value}}",
     "breakdown": "Детализация:",
-    "payout_in": "Выплата через",
+    "payout_in": "Выплата {{time}}",
     "past_payouts": "Предыдущие выплаты ${{value}}",
     "author": "Авторские ${{value}}",
     "curators": "Кураторские ${{value}}",
@@ -560,7 +547,8 @@
     "mute": "Отключить звук",
     "save": "Сохранить",
     "unmute": "Включить звук",
-    "post_comment": " опубликовать/прокомментировать",
+    "mute_post_comment": "Заглушить пост/комментарий",
+    "unmute_post_comment": "Снять заглушение с поста/комментария",
     "please_provide_a_note": "Пожалуйста, укажите причину отключения звука для этого контента.",
     "notes": "Заметки",
     "pin": "Закрепить",
@@ -720,7 +708,7 @@
       "you_reblogged": "Вы сделали репост",
       "reply": "Ответить",
       "edit": "Pедактировать",
-      "share_on": "Поделиться в ",
+      "share_on": "Поделиться в {{network}}",
       "share_form": {
         "copy": "Копировать",
         "copied": "Скопировано!",

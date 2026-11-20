@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "和",
     "close": "关闭",
     "no_rewards": "没有等待兑换的奖励",
     "loading": "加载中",
@@ -31,18 +30,6 @@
       "a_year": " 1 年前"
     },
     "time": {
-      "a_few_seconds": " 几秒",
-      "seconds": " 秒",
-      "minutes": " 分钟",
-      "a_minute": " 1 分钟",
-      "hours": " 小时",
-      "an_hour": " 1 小时",
-      "days": " 天",
-      "a_day": " 1 天",
-      "months": " 个月",
-      "a_month": " 1 个月",
-      "years": " 年",
-      "a_year": " 1 年",
       "hours_count_other": "{{count}}小时",
       "minutes_count_other": "{{count}}分钟",
       "hours_and_minutes": "{{hours}}{{minutes}}"
@@ -271,7 +258,7 @@
       "response": "1个回复。",
       "responses": "{{responses}}个回复。",
       "click_to_respond": "点击回复。",
-      "open_comments": "打开评论",
+      "open_comments": "{{responses}}打开评论",
       "reblog": "转发",
       "you_reblogged": "你已转发",
       "no_reblogs": "暂无转发",
@@ -337,7 +324,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "待获得赏金${{value}}",
     "breakdown": "明细：",
-    "payout_in": "支付倒计时",
+    "payout_in": "支付: {{time}}",
     "past_payouts": "累计赏金${{value}}",
     "author": "作者收入${{value}}",
     "curators": "审查收入${{value}}",
@@ -545,7 +532,8 @@
     "mute": "静音",
     "save": "保存",
     "unmute": "取消静音",
-    "post_comment": " 发布/评论",
+    "mute_post_comment": "静音帖子/评论",
+    "unmute_post_comment": "取消静音帖子/评论",
     "please_provide_a_note": "请提供关于您将此内容静音的决定的备注。",
     "notes": "备注",
     "pin": "固定",
@@ -705,7 +693,7 @@
       "you_reblogged": "你已转发",
       "reply": "回复",
       "edit": "编辑",
-      "share_on": "分享到 ",
+      "share_on": "分享到 {{network}}",
       "share_form": {
         "copy": "复制",
         "copied": "已复制！!",

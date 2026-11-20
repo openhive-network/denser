@@ -2,7 +2,7 @@ import { useId } from 'react';
 import Big from 'big.js';
 import env from '@beam-australia/react-env';
 import { Link } from '@hive/ui';
-import { formatDecimal } from '@hive/ui/lib/utils';
+import { formatDecimal } from '@ui/lib/locale-format';
 import { useLocale } from '@ui/components/locale-context';
 import { Skeleton } from '@ui/components/skeleton';
 import { useTranslation, Trans } from '@/wallet/i18n/client';

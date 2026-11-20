@@ -429,6 +429,13 @@ ESLint (`no-restricted-syntax` in `@hive/eslint-config-custom`, an error) reject
 
 It lets through text without Latin letters (punctuation, numbers), bare URLs, dotted translation keys handed on to a later `t()`, and the untranslated names of `.aidev/i18n/glossary.en.md` (`UNTRANSLATED_NAMES` in the config: Hive, HBD, HP, RC, NSFW, ...). Unit tests may build objects with titles; Playwright code is not checked. Text that truly is not for translation (a dev-only overlay, an English legal page, Hive entry data) takes an `// eslint-disable-next-line no-restricted-syntax -- <why>` comment.
 
+**Formatting:** numbers, amounts, dates, relative times, durations and lists shown to the user come from `@ui/lib/locale-format` with the active locale (`useLocale().locale`, `i18n.language`, or the `locale` of the server's `getTranslation`): `formatNumber`, `formatAmount` (`"1,234.500 HBD"`), `formatAbbreviatedAmount`, `formatDollars`, `formatPercent`, `formatDateTime` (named formats, `'UTC'` for chain dates rendered on the server), `getTimeAgoString`, `formatDuration`, `formatList` and `joinSentences`; a NaiAsset is `formatAsset(asset, { locale })` (`@ui/lib/asset-format`). The same ESLint rule rejects, outside that module:
+- `toFixed()` digits that are rendered, put in a template or a `+` concatenation, or handed to `t()` (a value for an input or for the chain may still use it);
+- `toLocaleString`, `toLocaleDateString`, `toLocaleTimeString` and `new Intl.*Format`;
+- a `t()` joined to other text with `+`, in a template holding more than it (a page title's `- Hive` affix is fine) or in an array `.join()`: put the sentence in one key with `{{placeholders}}`, use `<Trans>`, `formatList()` or, for whole sentences, `joinSentences()`.
+
+`lint:translations:usage` also fails a key with plural forms (`_one`/`_few`/`_many`/`_other`) called without a `count` option.
+
 **Glossaries:** before writing or changing a string in any locale (blog, wallet or smart-signer), read `.aidev/i18n/glossary.<lang>.md` and follow it: its terms, register (formal or informal address), plural forms, number/date conventions and untranslated names. An `agreed` term was settled by the tester; keep it unless a new tester decision changes it. A term the glossary lacks: use the locale's most frequent rendering and add it as `unreviewed` in the same change. Don't copy a string listed under "Known drift". `.aidev/i18n/README.md` explains the format.
 
 ### Translation Keys Validation

@@ -22,6 +22,8 @@ import { signedLiteReply } from './lite-signed-requests';
 import { openLiteKeyStore } from './open-lite-key-store';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
+import { useLocale } from '@ui/components/locale-context';
+import { joinSentences } from '@ui/lib/locale-format';
 
 const logger = getLogger('app');
 
@@ -78,6 +80,7 @@ export function useLiteRootPostBuilder() {
  */
 export function useLiteRootPostMutation() {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const relay = useLiteRelayInfo();
   const health = useLiteGatewayHealth(!!relay.data?.enabled);
   const { markRegistered } = useLiteIdentity();
@@ -107,13 +110,13 @@ export function useLiteRootPostMutation() {
       if (walletFailed(error)) return;
       const draftKept = t('lite_account.gateway.draft_kept');
       if (error instanceof LiteGatewayNotReadyError) {
-        const description = `${readinessText(t, error.readiness)} ${draftKept}`;
+        const description = joinSentences([readinessText(t, error.readiness, locale), draftKept], locale);
         toast({ title: t('lite_account.root_post.unavailable_title'), description, variant: 'destructive' });
         return;
       }
       const relayError = relayErrorCode(error);
       const reason = t(`lite_account.root_post.errors.${rootPostErrorKey(relayError?.code, relayError?.reason)}`);
-      toast({ title: t('lite_account.root_post.failed_title'), description: `${reason} ${draftKept}`, variant: 'destructive' });
+      toast({ title: t('lite_account.root_post.failed_title'), description: joinSentences([reason, draftKept], locale), variant: 'destructive' });
     }
   });
 }

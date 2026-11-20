@@ -1,7 +1,7 @@
 'use client';
 
-import { formatMonthYear } from '@ui/lib/month-year';
-import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
+import { formatMonthYear, formatNumber } from '@ui/lib/locale-format';
+import { convertToHP, netDelegatedVests } from '@ui/lib/utils';
 import Big from 'big.js';
 import { Avatar, AvatarFallback, AvatarImage, getUserAvatarUrl } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
@@ -124,7 +124,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
                   <span className="text-xs text-muted-foreground">{t('post_content.header.hover_author.following')}</span>
                 </div>
                 <div className="flex flex-col items-center" data-testid="user-hp">
-                  <span className="text-lg font-semibold text-foreground">{numberWithCommas(hp.toFixed(0))}</span>
+                  <span className="text-lg font-semibold text-foreground">{formatNumber(hp, i18n.language)}</span>
                   <span className="text-xs text-muted-foreground">HP</span>
                 </div>
               </div>

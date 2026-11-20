@@ -15,7 +15,7 @@ export default function RedditShare({ title, url }: { title: string; url: string
   return (
     <SharePostButton
       onClick={openWindow}
-      label={t('post_content.footer.share_on') + `Reddit`}
+      label={t('post_content.footer.share_on', { network: 'Reddit' })}
       data-testid="share-on-reddit"
     >
       <svg

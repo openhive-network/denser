@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "i",
     "close": "Zamknij",
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
@@ -31,18 +30,6 @@
       "a_year": " rok temu"
     },
     "time": {
-      "a_few_seconds": " Za kilka sekund",
-      "seconds": " sekund",
-      "minutes": " minut",
-      "a_minute": " minutę",
-      "hours": " godzin",
-      "an_hour": " godzina",
-      "days": " dni",
-      "a_day": " dzień",
-      "months": " miesięcy",
-      "a_month": " miesiąc",
-      "years": " lat",
-      "a_year": " rok",
       "hours_count_one": "{{count}} godzina",
       "hours_count_few": "{{count}} godziny",
       "hours_count_many": "{{count}} godzin",
@@ -277,7 +264,7 @@
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
       "click_to_respond": "Kliknij by odpowiedzieć",
-      "open_comments": "Otwórz komentarze",
+      "open_comments": "{{responses}}Otwórz komentarze",
       "reblog": "Rebloguj",
       "you_reblogged": "Zreblogowałeś",
       "no_reblogs": "brak reblogów",
@@ -343,7 +330,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "Wypłacana kwota: ${{value}}",
     "breakdown": "Podział:",
-    "payout_in": "Wypłata za",
+    "payout_in": "Wypłata {{time}}",
     "past_payouts": "Wcześniejsze wypłaty ${{value}}",
     "author": "Autor ${{value}}",
     "curators": "Kuratorzy ${{value}}",
@@ -560,7 +547,8 @@
     "mute": "Wycisz post",
     "save": "Zapisz",
     "unmute": "Wyłącz wyciszenie posta",
-    "post_comment": " post/komentarz",
+    "mute_post_comment": "Wycisz post/komentarz",
+    "unmute_post_comment": "Wyłącz wyciszenie posta/komentarza",
     "please_provide_a_note": "Podaj notatkę dotyczącą decyzji o wyciszeniu tej treści.",
     "notes": "Notatka",
     "pin": "Przypnij",
@@ -720,7 +708,7 @@
       "you_reblogged": "Zreblogowałeś",
       "reply": "Odpowiedz",
       "edit": "Edytuj",
-      "share_on": "Udostępnij na ",
+      "share_on": "Udostępnij na {{network}}",
       "share_form": {
         "copy": "KOPIUJ",
         "copied": "Skopiowano!",

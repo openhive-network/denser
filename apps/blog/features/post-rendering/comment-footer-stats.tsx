@@ -9,10 +9,13 @@ import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper
 import DetailsCardHover from '../list-of-posts/details-card-hover';
 import DetailsCardVoters from './details-card-voters';
 import { useVoteCount } from './hooks/use-vote-count';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDollars } from '@ui/lib/locale-format';
 
 /** A comment footer's votes, payout and voters, which do not depend on the signed-in user. */
 export const CommentFooterStats = memo(function CommentFooterStats({ comment }: { comment: Entry }) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const voteCount = useVoteCount(comment);
 
   return (
@@ -32,8 +35,7 @@ export const CommentFooterStats = memo(function CommentFooterStats({ comment }: 
             }
           )}
         >
-          {'$'}
-          {comment.payout.toFixed(2)}
+          {formatDollars(comment.payout, locale)}
         </span>
       </DetailsCardHover>
       <Separator orientation="vertical" className="h-5" />

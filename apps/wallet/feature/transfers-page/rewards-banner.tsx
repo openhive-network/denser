@@ -5,7 +5,10 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { Button } from '@ui/components';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
+import { convertStringToBig } from '@ui/lib/helpers';
+import { formatAsset } from '@ui/lib/asset-format';
+import { useLocale } from '@ui/components/locale-context';
+import { formatList } from '@ui/lib/locale-format';
 import { getFindAccounts } from '@transaction/lib/hive-api';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
 import { handleError } from '@ui/lib/handle-error';
@@ -24,25 +27,20 @@ interface RewardsBannerProps {
 
 const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const claimRewardsMutation = useClaimRewardsMutation();
 
   const rewardsStr = useMemo(() => {
+    const isPositive = (asset: NaiAsset | undefined): asset is NaiAsset =>
+      asset !== undefined && convertStringToBig(asset).gt(0);
+    const { reward_hive_balance: hive, reward_hbd_balance: hbd, reward_vesting_hive: hp } = rewardBalances;
     const allRewards = [
-      rewardBalances.reward_hive_balance && convertStringToBig(rewardBalances.reward_hive_balance).gt(0)
-        ? formatNaiAsset(rewardBalances.reward_hive_balance, 'HIVE')
-        : null,
-      rewardBalances.reward_hbd_balance && convertStringToBig(rewardBalances.reward_hbd_balance).gt(0)
-        ? formatNaiAsset(rewardBalances.reward_hbd_balance, 'HBD')
-        : null,
-      rewardBalances.reward_vesting_hive && convertStringToBig(rewardBalances.reward_vesting_hive).gt(0)
-        ? formatNaiAsset(rewardBalances.reward_vesting_hive, 'HP')
-        : null
-    ].filter(Boolean);
-
-    return allRewards.length > 2
-      ? `${allRewards[0]}, ${allRewards[1]} ${t('global.and')} ${allRewards[2]}`
-      : allRewards.join(` ${t('global.and')} `);
-  }, [rewardBalances, t]);
+      isPositive(hive) ? formatAsset(hive, { locale }) : null,
+      isPositive(hbd) ? formatAsset(hbd, { locale }) : null,
+      isPositive(hp) ? `${formatAsset(hp, { appendTokenName: false, locale })} HP` : null
+    ].filter((reward): reward is string => reward !== null);
+    return allRewards.length ? formatList(allRewards, locale) : '';
+  }, [rewardBalances, locale]);
 
   const claimRewards = async () => {
     try {

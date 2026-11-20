@@ -8,7 +8,10 @@ import { FullAccount, IFeedHistory, IOpenOrdersData } from '@hive/common-hiveio-
 import { Link } from '@hive/ui';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
 import type { TransferDialogType } from '@/wallet/components/transfer-dialog';
-import { powerdownHive, convertToHP, netDelegatedVests, numberWithCommas, vestsToHive } from '@ui/lib/utils';
+import { powerdownHive, convertToHP, netDelegatedVests, vestsToHive } from '@ui/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
+import { formatAmount, formatDollars, formatDuration, formatNumber } from '@ui/lib/locale-format';
+import Big from 'big.js';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { hiveToHbdSatoshis } from '@ui/lib/asset-math';
@@ -26,6 +29,7 @@ const TransferDialog = dynamic(
 );
 
 const MIN_HIVE_AMOUNT = '0.001';
+const HIVE_DECIMALS = 3;
 
 interface SuggestedUser {
   username: string;
@@ -56,15 +60,11 @@ const WalletBalancesTable = ({
   openOrders
 }: WalletBalancesTableProps) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
 
   // Calculate balances
   const hours = dayjs(accountData.next_vesting_withdrawal).diff(dayjs(), 'hour');
-  const days = Math.floor(hours / 24);
-  const remainingHours = hours % 24;
-  const totalTime =
-    days === 0
-      ? `${remainingHours} ${t('global.time.hours')}`
-      : `${days} ${t('global.time.days')} ${remainingHours} ${t('global.time.hours')}`;
+  const totalTime = formatDuration({ day: Math.floor(hours / 24), hour: hours % 24 }, locale);
 
   const vestingHiveNai = vestsToHive(
     accountData.vesting_shares,
@@ -85,10 +85,11 @@ const WalletBalancesTable = ({
     BigInt(accountData.to_withdraw) > BigInt(accountData.withdrawn);
   // A small power down's weekly installment can be worth less than the smallest HIVE amount.
   const nextPowerDownHive = powerdown_hive.gte(MIN_HIVE_AMOUNT)
-    ? `~${numberWithCommas(powerdown_hive.toFixed(3))}`
-    : `< ${MIN_HIVE_AMOUNT}`;
+    ? `~${formatNumber(powerdown_hive, locale, HIVE_DECIMALS)}`
+    : `< ${formatNumber(Big(MIN_HIVE_AMOUNT), locale, HIVE_DECIMALS)}`;
+  const hasReceivedPower = !delegated_hive.round(HIVE_DECIMALS).eq(0);
   const received_power_balance =
-    (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
+    (delegated_hive.lt(0) ? '+' : '') + formatNumber(delegated_hive.neg(), locale, HIVE_DECIMALS);
 
   const saving_balance_hive = convertStringToBig(accountData.savings_balance);
   const hbd_balance = convertStringToBig(accountData.hbd_balance);
@@ -117,7 +118,7 @@ const WalletBalancesTable = ({
     hiveToHbdSatoshis(totalHiveSatoshis, BigInt(base.amount), BigInt(quote.amount)) + totalHbdSatoshis
   );
 
-  const total_value = numberWithCommas(convertStringToBig(totalValueHbd).toFixed(2));
+  const total_value = formatDollars(convertStringToBig(totalValueHbd), locale);
 
   const delegatedVesting = convertToHP(
     accountData.delegated_vesting_shares,
@@ -125,14 +126,20 @@ const WalletBalancesTable = ({
     dynamicData.total_vesting_fund_hive
   );
 
-  const hp = numberWithCommas(vesting_hive.toFixed(3)) + ' HIVE';
+  const hp = formatAmount(vesting_hive, 'HIVE', locale);
+  const balances = {
+    hive: formatAmount(balance_hive, 'HIVE', locale),
+    hbd: formatDollars(hbd_balance, locale, HIVE_DECIMALS),
+    savingsHive: formatAmount(saving_balance_hive, 'HIVE', locale),
+    savingsHbd: formatDollars(hbd_balance_savings, locale, HIVE_DECIMALS)
+  };
 
   const amount = {
-    hive: numberWithCommas(balance_hive.toFixed(3)) + ' HIVE',
-    hbd: '$' + numberWithCommas(hbd_balance.toFixed(3)),
-    reducedHP: vesting_hive.minus(delegatedVesting).toFixed(3),
-    savingsHive: saving_balance_hive.toFixed(3) + ' HIVE',
-    savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3)),
+    hive: balance_hive,
+    hbd: hbd_balance,
+    reducedHP: vesting_hive.minus(delegatedVesting).round(HIVE_DECIMALS),
+    savingsHive: saving_balance_hive,
+    savingsHbd: hbd_balance_savings,
     delegatedVesting: delegatedVesting,
     to_withdraw: convertToHP(
       createNaiAsset('VESTS', accountData.to_withdraw),
@@ -188,7 +195,7 @@ const WalletBalancesTable = ({
               <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-value">
                 {isOwner ? (
                   <BalanceMenu
-                    balance={amount.hive}
+                    balance={balances.hive}
                     withMarket
                     actions={[
                       transferAction('transfers', 'HIVE', t('profile.transfer')),
@@ -197,14 +204,14 @@ const WalletBalancesTable = ({
                     ]}
                   />
                 ) : (
-                  <div className="px-4 py-2">{amount.hive}</div>
+                  <div className="px-4 py-2">{balances.hive}</div>
                 )}
                 {hiveOrders.gt(0) && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hive-open-orders">
-                          <Link href="/market">(+{formatAsset(hiveOrdersNai)})</Link>
+                          <Link href="/market">(+{formatAsset(hiveOrdersNai, { locale })})</Link>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
@@ -224,7 +231,7 @@ const WalletBalancesTable = ({
                   {delegatedVesting.gt(0) ? (
                     <>{t('profile.hp_delegated_description', { username: accountData.name })} </>
                   ) : null}
-                  {t('profile.hp_apr_description', { value: getCurrentHpApr(dynamicData).toFixed(2) })}{' '}
+                  {t('profile.hp_apr_description', { value: formatNumber(getCurrentHpApr(dynamicData), locale, 2) })}{' '}
                   <span className="font-semibold text-primary hover:text-destructive">
                     <Link href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}>
                       {t('profile.see_faq_for_details')}
@@ -244,8 +251,8 @@ const WalletBalancesTable = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      {Number(received_power_balance) !== 0 && (
-                        <div className="px-4">({received_power_balance + ' HIVE'})</div>
+                      {hasReceivedPower && (
+                        <div className="px-4">({received_power_balance} HIVE)</div>
                       )}
                     </TooltipTrigger>
                     <TooltipContent className="font-normal">{t('profile.delegated_tooltip')}</TooltipContent>
@@ -266,7 +273,7 @@ const WalletBalancesTable = ({
               <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-dallars-value">
                 {isOwner ? (
                   <BalanceMenu
-                    balance={amount.hbd}
+                    balance={balances.hbd}
                     withMarket
                     actions={[
                       transferAction('transfers', 'HBD', t('profile.transfer')),
@@ -274,7 +281,7 @@ const WalletBalancesTable = ({
                     ]}
                   />
                 ) : (
-                  <div className="px-4 py-2">{amount.hbd}</div>
+                  <div className="px-4 py-2">{balances.hbd}</div>
                 )}
                 {hbdOrders.gt(0) && (
                   <TooltipProvider>
@@ -282,7 +289,7 @@ const WalletBalancesTable = ({
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hbd-open-orders">
                           <Link href="/market">
-                            (+{'$' + formatAsset(hbdOrdersNai, { appendTokenName: false })})
+                            (+{formatDollars(hbdOrders, locale, HIVE_DECIMALS)})
                           </Link>
                         </div>
                       </TooltipTrigger>
@@ -309,7 +316,7 @@ const WalletBalancesTable = ({
                       />
                     ]}
                     values={{
-                      rate: (dynamicData.hbd_interest_rate / 100).toFixed(2)
+                      rate: formatNumber(dynamicData.hbd_interest_rate / 100, locale, 2)
                     }}
                   />
                 </p>
@@ -318,11 +325,11 @@ const WalletBalancesTable = ({
                 {isOwner ? (
                   <div className="flex w-fit flex-col items-start">
                     <BalanceMenu
-                      balance={amount.savingsHive}
+                      balance={balances.savingsHive}
                       actions={[transferAction('withdrawHive', 'HIVE', t('profile.withdraw_hive'))]}
                     />
                     <BalanceMenu
-                      balance={amount.savingsHbd}
+                      balance={balances.savingsHbd}
                       actions={[
                         transferAction('withdrawHiveDollars', 'HBD', t('profile.withdraw_hive_dollars'))
                       ]}
@@ -330,8 +337,8 @@ const WalletBalancesTable = ({
                   </div>
                 ) : (
                   <div className="px-4 py-2">
-                    <div data-testid="wallet-saving-hive-value">{amount.savingsHive}</div>
-                    <div data-testid="walled-hbd-saving-value">{amount.savingsHbd}</div>
+                    <div data-testid="wallet-saving-hive-value">{balances.savingsHive}</div>
+                    <div data-testid="walled-hbd-saving-value">{balances.savingsHbd}</div>
                   </div>
                 )}
               </td>
@@ -350,7 +357,7 @@ const WalletBalancesTable = ({
                 className="whitespace-nowrap px-4 py-2 font-semibold"
                 data-testid="wallet-estimated-account-value"
               >
-                {'$' + total_value}
+                {total_value}
               </td>
             </tr>
           </tbody>
@@ -359,7 +366,7 @@ const WalletBalancesTable = ({
       </div>
       {isPoweringDown ? (
         <div className="p-2 text-sm sm:p-4">
-          {`${t('profile.the_next_power_down')} ${totalTime} (${nextPowerDownHive} HIVE)`}
+          {t('profile.the_next_power_down', { time: totalTime, amount: nextPowerDownHive })}
         </div>
       ) : null}
     </>

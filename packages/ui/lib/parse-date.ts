@@ -2,38 +2,10 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { TFunction } from 'i18next';
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
-
-export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
-  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = dayjs(new Date(isTimeZoned));
-
-  const dd = dm
-    .fromNow()
-    .replace('a few seconds', t('global.time.a_few_seconds'))
-    .replace(' seconds', t('global.time.seconds'))
-    .replace(' minutes', t('global.time.minutes'))
-    .replace(' a minute', t('global.time.a_minute'))
-    .replace(' hours', t('global.time.hours'))
-    .replace(' an hour', t('global.time.an_hour'))
-    .replace(' days', t('global.time.days'))
-    .replace(' a day', t('global.time.a_day'))
-    .replace(' months', t('global.time.months'))
-    .replace(' a month', t('global.time.a_month'))
-    .replace(' years', t('global.time.years'))
-    .replace(' a year', t('global.time.a_year'));
-  return dd;
-};
-
-export const dateToFormatted = (d: string, format: string = 'LLLL'): string => {
-  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = dayjs(new Date(isTimeZoned));
-  return dm.format(format);
-};
 
 export const dayDiff = (d: string) => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
@@ -73,13 +45,6 @@ const parseDate = (d: string): string => {
     return dayjs(new Date(isTimeZoned)).format('ddd MMM DD YYYY');
   }
 };
-
-/**
- * Formats a chain timestamp (UTC, with or without a zone suffix) as its UTC calendar date,
- * e.g. "Fri Jun 18 2021". Unlike `parseDate`, the result does not depend on the runtime's time
- * zone, so it is safe to render on the server and hydrate in the browser.
- */
-export const formatUtcDate = (d: string): string => dayjs.utc(d).format('ddd MMM DD YYYY');
 
 export const parseDate2 = (d: string): Date => {
   if (!d) return new Date();

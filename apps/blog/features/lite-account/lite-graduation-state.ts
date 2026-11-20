@@ -1,4 +1,5 @@
 import type { LiteGraduationView } from '@hiveio/lite-account';
+import { formatNumber } from '@ui/lib/locale-format';
 
 // No runtime import of @hiveio/lite-account: the identity menu and the profile read these.
 
@@ -24,13 +25,21 @@ export function graduationOffer(view: LiteGraduationView): GraduationOffer {
   return { kind: 'progress', rewards, threshold, percent };
 }
 
-/** An HBD amount as the ledger shows it: three decimals. */
-export const formatHbd = (amount: number): string => amount.toFixed(3);
+// An HBD amount as the ledger shows it: three decimals.
+const HBD_DECIMALS = 3;
 
 type Translate = (key: string, options: Record<string, string | number>) => string;
 
-/** How far an offer's account is, as the menu and the profile say it: the ledger amount, the threshold and the progress. */
-export function graduationAmount(t: Translate, offer: Extract<GraduationOffer, { kind: 'eligible' | 'progress' }>): string {
+/**
+ * How far an offer's account is, as the menu and the profile say it: the ledger amount, the threshold
+ * and the progress, the amounts in `locale`.
+ */
+export function graduationAmount(
+  t: Translate,
+  offer: Extract<GraduationOffer, { kind: 'eligible' | 'progress' }>,
+  locale: string
+): string {
+  const formatHbd = (amount: number) => formatNumber(amount, locale, HBD_DECIMALS);
   const rewards = formatHbd(offer.rewards);
   if (offer.kind === 'progress') {
     return t('lite_account.graduation.progress', { rewards, threshold: formatHbd(offer.threshold), percent: offer.percent });

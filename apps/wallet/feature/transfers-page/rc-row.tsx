@@ -7,6 +7,7 @@ import { prepareRC } from '@/wallet/lib/utils';
 import { delegatableRawRc } from './lib/rc-amount';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
 
 // recharts draws the manabar rings only once the manabars are fetched: keep it out of page-load chunks.
 const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
@@ -21,6 +22,7 @@ const RCRow = ({
   suggestedUsers: { username: string; about: string }[];
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const queryClient = useQueryClient();
   // Shares the page's global properties query instead of requesting them a second time.
   const loadDynamicGlobalProperties = () =>
@@ -35,20 +37,20 @@ const RCRow = ({
       e
         ? {
             upvote: {
-              current: prepareRC(e.upvote.current, t),
-              max: prepareRC(e.upvote.max, t),
+              current: prepareRC(e.upvote.current, t, locale),
+              max: prepareRC(e.upvote.max, t, locale),
               percentageValue: e.upvote.percentageValue,
               cooldown: formatRestoreTime(e.upvote.cooldown, t)
             },
             downvote: {
-              current: prepareRC(e.downvote.current, t),
-              max: prepareRC(e.downvote.max, t),
+              current: prepareRC(e.downvote.current, t, locale),
+              max: prepareRC(e.downvote.max, t, locale),
               percentageValue: e.downvote.percentageValue,
               cooldown: formatRestoreTime(e.downvote.cooldown, t)
             },
             rc: {
-              current: prepareRC(e.rc.current, t),
-              max: prepareRC(e.rc.max, t),
+              current: prepareRC(e.rc.current, t, locale),
+              max: prepareRC(e.rc.max, t, locale),
               percentageValue: e.rc.percentageValue,
               cooldown: formatRestoreTime(e.rc.cooldown, t)
             },

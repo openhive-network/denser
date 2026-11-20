@@ -67,6 +67,36 @@ const TRANSLATION_SELECTORS = [
   ...textIn('AssignmentPattern[left.name=/^(label|text|title)$|(Label|Text|Title)$/]')
 ];
 
+// Display formatting goes through @ui/lib/locale-format, which formats in the active locale.
+const FORMAT_MESSAGE =
+  'Format numbers, amounts and dates for display with @ui/lib/locale-format (formatNumber, formatAmount, formatDate, …) and the active locale.';
+const TO_FIXED = 'CallExpression[callee.property.name="toFixed"]';
+const RENDERED_CHILD = ':matches(JSXElement, JSXFragment) > JSXExpressionContainer';
+// A t() call, also as i18n.t().
+const TRANSLATE_CALL = ':matches(CallExpression[callee.name="t"], CallExpression[callee.property.name="t"])';
+const SENTENCE_MESSAGE =
+  'Do not join translated fragments into a sentence: put the whole sentence in one key with {{placeholders}}, use <Trans>, or formatList() from @ui/lib/locale-format.';
+
+const FORMAT_SELECTORS = [
+  // toFixed() whose digits are shown: rendered, put in a template or a concatenation, or handed to t().
+  `${RENDERED_CHILD} > ${TO_FIXED}`,
+  `${RENDERED_CHILD} > :matches(ConditionalExpression, LogicalExpression) > ${TO_FIXED}`,
+  `TemplateLiteral > ${TO_FIXED}`,
+  `BinaryExpression[operator="+"] > ${TO_FIXED}`,
+  `${TRANSLATE_CALL} > ObjectExpression > Property > ${TO_FIXED}`,
+  // The runtime's default locale, or whichever the caller happened to pass.
+  'CallExpression[callee.property.name=/^toLocale(Date|Time)?String$/]',
+  'NewExpression[callee.object.name="Intl"][callee.property.name=/Format$/]'
+].map((selector) => ({ selector, message: FORMAT_MESSAGE }));
+
+const SENTENCE_SELECTORS = [
+  `BinaryExpression[operator="+"] > ${TRANSLATE_CALL}`,
+  // A template that holds more than the translation, or words of its own; a title's site name affix
+  // (`${t('page_titles.market')} - Hive`) is neither.
+  `TemplateLiteral:matches([expressions.length>1], :has(> TemplateElement${TEXT.replace(/value/g, 'value.raw')})) > ${TRANSLATE_CALL}`,
+  `CallExpression[callee.property.name="join"] > MemberExpression.callee > ArrayExpression.object > ${TRANSLATE_CALL}`
+].map((selector) => ({ selector, message: SENTENCE_MESSAGE }));
+
 module.exports = {
   extends: ['prettier'],
   parser: '@typescript-eslint/parser',
@@ -125,7 +155,7 @@ module.exports = {
     // Discourage console.log in production code - use logger instead
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     // User-facing text must come from t() so every locale can translate it
-    'no-restricted-syntax': ['error', ...TRANSLATION_SELECTORS]
+    'no-restricted-syntax': ['error', ...TRANSLATION_SELECTORS, ...FORMAT_SELECTORS, ...SENTENCE_SELECTORS]
   },
   overrides: [
     {

@@ -64,3 +64,47 @@ test('lets test data name objects but still checks JSX text in tests', async () 
   );
   assert.deepEqual(await untranslatedLines(code, 'component.test.tsx'), [2]);
 });
+
+/** The lines of `code` (as `filePath`) whose reports carry `messageStart`. */
+async function reportedLines(code, messageStart, filePath = 'component.tsx') {
+  const [result] = await eslint.lintText(code, { filePath });
+  return result.messages.filter((message) => message.message.startsWith(messageStart)).map((message) => message.line);
+}
+
+test('reports toFixed digits shown to the user, toLocale*String and Intl formatters', async () => {
+  const code = [
+    'export const A = ({ t, amount, date }) => {',
+    "  const label = amount.toFixed(3) + ' HBD';",
+    '  const text = `${amount.toFixed(2)} HIVE`;',
+    "  const title = t('a.b', { value: amount.toFixed(2) });",
+    '  const when = date.toLocaleDateString() + date.toLocaleString(\'pl\');',
+    "  const format = new Intl.NumberFormat('en');",
+    '  const input = amount.toFixed(3);',
+    '  return <p title={title}>{amount.toFixed(1)}{label}{when}{format}{input}{text}</p>;',
+    '};'
+  ].join('\n');
+  assert.deepEqual(await reportedLines(code, 'Format numbers'), [2, 3, 4, 5, 5, 6, 8]);
+});
+
+test('reports translated fragments joined into a sentence, not a title with the site name', async () => {
+  const code = [
+    'export const a = (t, n, i18n) => [',
+    "  t('a.share_on') + 'Facebook',",
+    "  `${n} ${t('global.time.hours')}`,",
+    "  `${t('a.reason')} more text`,",
+    "  [t('a.first'), t('a.second')].join(' '),",
+    "  i18n.t('a.b') + n,",
+    "  `${t('page_titles.market')} - Hive`,",
+    "  `Hive Wallet - ${t('page_titles.home')}`,",
+    "  `${t('market_page.total')} HBD($)`,",
+    "  t('a.b', { n })",
+    '];'
+  ].join('\n');
+  assert.deepEqual(await reportedLines(code, 'Do not join'), [2, 3, 4, 5, 5, 6]);
+});
+
+test('lets tests format numbers and join text', async () => {
+  const code = "export const expected = (n, t) => n.toFixed(3) + ' HBD' + t('a.b');";
+  assert.deepEqual(await reportedLines(code, 'Format numbers', 'component.test.ts'), []);
+  assert.deepEqual(await reportedLines(code, 'Do not join', 'component.test.ts'), []);
+});

@@ -35,6 +35,8 @@ import { castVoteCount } from '@/blog/features/votes/lib/removed-votes';
 import AuthorProfileLink from '@/blog/features/lite-account/author-profile-link';
 import LiteDidBadge from '@/blog/features/lite-account/lite-did-badge';
 import { authorDisplayName, isLiteDid } from '@/blog/features/lite-account/lite-did';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDollars } from '@ui/lib/locale-format';
 
 interface PostListItemProps {
   post: CardEntry;
@@ -79,6 +81,7 @@ const PostListItem = memo(
     isImagePriority = false
   }: PostListItemProps) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { user } = useUserClient();
   const reblogMutation = useReblogMutation();
   const tagExists = Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
@@ -298,7 +301,7 @@ const PostListItem = memo(
                       }`}
                       data-testid="post-payout"
                     >
-                      ${post.payout.toFixed(2)}
+                      {formatDollars(post.payout, locale)}
                     </span>
                   </DetailsCardHover>
 

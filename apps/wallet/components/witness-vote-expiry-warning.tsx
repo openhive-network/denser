@@ -3,6 +3,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { useLocale } from '@ui/components/locale-context';
 import { Link } from '@hive/ui';
 import HoverClickTooltip from './hover-click-tooltip';
+import { formatDateTime } from '@ui/lib/locale-format';
 
 const HIVE_NULL_DATE = 2016; // The year when the Hive blockchain was created
 
@@ -21,7 +22,7 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
   if (expiryDiff > 3 || !expiryDiff || !expiryDate) {
     return null;
   }
-  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(expiryDate.toDate());
+  const date = formatDateTime(expiryDate.valueOf(), locale, 'date');
   const duration = t('profile.governance_expiry_duration');
 
   return (

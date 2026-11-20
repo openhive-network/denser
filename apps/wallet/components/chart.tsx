@@ -4,10 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { OrdersItem } from './market-table';
 import Big from 'big.js';
-import { getRoundedAbbreveration } from '@ui/lib/utils';
+import { formatNumber, getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { useTranslation } from '@/wallet/i18n/client';
 import { CHART_HEIGHT } from './chart-dimensions';
 import { useLocale } from '@ui/components/locale-context';
+
+const PRICE_DECIMALS = 6;
+const AMOUNT_DECIMALS = 3;
 
 export type PayloadOrder = {
   total: number;
@@ -89,26 +92,34 @@ const CustomTooltip = ({
   label?: number;
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
 
   if (active && payload && payload.length) {
+    const isBid = payload[0].value !== 0;
+    const total = isBid ? payload[0].value : payload[1].value;
     return (
       <div className="bg-background-tertiary p-2 text-sm">
-        <p>{t('market_page.price') + `: ${label} $/HIVE`}</p>
         <p>
-          {payload[0].value !== 0
-            ? t('market_page.bid') + payload[0].value
-            : t('market_page.ask') + payload[1].value}
-          {' HBD($)'}
+          {t('global.label_value', {
+            label: t('market_page.price'),
+            value: `${formatNumber(Number(label), locale, PRICE_DECIMALS)} $/HIVE`
+          })}
+        </p>
+        <p>
+          {t('global.label_value', {
+            label: (isBid ? t('market_page.bid') : t('market_page.ask')).trim(),
+            value: `${formatNumber(Number(total), locale, AMOUNT_DECIMALS)} HBD($)`
+          })}
         </p>
       </div>
     );
   }
 };
-const XTick = ({ x, y, payload }: { x: number; y: number; payload: any }) => {
+const XTick = ({ x = 0, y = 0, payload, locale }: { x?: number; y?: number; payload?: any; locale: string }) => {
   if (payload)
     return (
       <text x={x - 12} y={y + 12} className="text-xs">
-        {(+payload.value).toFixed(2)}
+        {formatNumber(Number(payload.value), locale, 2)}
       </text>
     );
   return <></>;
@@ -170,7 +181,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
           type="number"
           tickCount={64}
           domain={[minX, maxX]}
-          tick={XTick}
+          tick={<XTick locale={locale} />}
           allowDataOverflow={true}
         />
         <YAxis

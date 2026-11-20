@@ -213,8 +213,9 @@ for (const lang of ['pl', 'en'] as const) {
       expect(overflow).toBeLessThanOrEqual(0);
       expect(await siteLinkDot(page, TAGGED_WITNESS)).toEqual({ hasDot: true, startsLine: true, dotShown: false });
       expect(await siteLinkDot(page, NO_FEED_WITNESS)).toEqual({ hasDot: true, startsLine: false, dotShown: true });
+      // The price feed in the language's own form: "$0.250" in en, "0,250 $" in pl.
       await expect(witnessRow(page, TAGGED_WITNESS).getByTestId('witness-phone-summary')).toContainText(
-        /\$\d+\.\d{3} · \S/
+        /(\$\d+\.\d{3}|\d+,\d{3}\s\$) · \S/
       );
       await expect(tagged.getByTestId('witness-voters-trigger-phone')).toHaveText(EXPECTED[lang].voters);
       await expect(tagged.getByTestId('witness-voters-trigger-phone')).toBeVisible();

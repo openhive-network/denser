@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getCommunity } from '@transaction/lib/bridge-api';
 import { HIVE_TAGLINE } from '@transaction/lib/metadata';
+import { joinSentences } from '@ui/lib/locale-format';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { getTranslation } from '@/blog/i18n/server';
@@ -22,11 +23,11 @@ export async function buildCommunityTagMetadata(
   section: string = sort
 ): Promise<Metadata> {
   const tag = params.tag;
-  const { t } = await getTranslation('common_blog');
+  const { t, locale } = await getTranslation('common_blog');
   const sectionKey = SECTION_TITLE_KEYS[section];
   const sectionLabel = sectionKey ? t(sectionKey) : section;
   const alternates = { canonical: `/${sort}/${tag}` };
-  const fallbackDescription = `${t('page_titles.community_description', { community: tag })} ${HIVE_TAGLINE}`;
+  const fallbackDescription = joinSentences([t('page_titles.community_description', { community: tag }), HIVE_TAGLINE], locale);
 
   if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`, alternates };
 
