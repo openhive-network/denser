@@ -11,8 +11,7 @@ import {
 import { Checkbox } from '@ui/components/checkbox';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { HiveOperation } from '@hive/common-hiveio-packages/wax';
-import { formatAsset, isNaiAsset } from '@ui/lib/asset-format';
+import { getNaiSymbols } from '@ui/lib/asset-constants';
 import { useFinancialReportOperations } from '@/wallet/components/hooks/use-financial-report-operations';
 import Loading from '@ui/components/loading';
 import {
@@ -22,135 +21,11 @@ import {
   FinancialReportPeriod,
   filterFinancialReportOperations
 } from '@/wallet/lib/financial-report';
+import { financialReportCsv } from '@/wallet/lib/financial-report-csv';
+
 interface FinancialReportProps {
   username: string;
 }
-
-const escapeCSV = (value: string | number | undefined | null): string => {
-  if (value === undefined || value === null) return '';
-  let str = String(value);
-  // Prevent CSV formula injection: prefix formula-triggering characters with
-  // a single quote so spreadsheet applications treat the cell as plain text
-  // instead of evaluating it as a formula. Attacker-controlled fields like
-  // transfer memos can contain arbitrary content from the blockchain.
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = "'" + str;
-  }
-  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
-};
-
-const formatAmount = (amount: unknown): string => (isNaiAsset(amount) ? formatAsset(amount) : '');
-
-const convertHistoryToCSV = (transactions: HiveOperation[]) => {
-  let csv = '';
-  const columns = [
-    'timestamp',
-    'operation_type',
-    'account',
-    'from',
-    'to',
-    'amount',
-    'memo',
-    'permlink',
-    'hbd_payout',
-    'hive_payout',
-    'vesting_payout',
-    'reward'
-  ];
-
-  csv += columns.join(',') + '\r\n';
-
-  transactions.forEach((transaction) => {
-    const { op, timestamp } = transaction;
-    const value = op.value as Record<string, unknown>;
-    const opType = op.type;
-
-    const row: Record<string, string> = {
-      timestamp: String(timestamp),
-      operation_type: opType,
-      account: '',
-      from: '',
-      to: '',
-      amount: '',
-      memo: '',
-      permlink: '',
-      hbd_payout: '',
-      hive_payout: '',
-      vesting_payout: '',
-      reward: ''
-    };
-
-    switch (opType) {
-      case 'transfer_operation':
-        row.from = String(value.from || '');
-        row.to = String(value.to || '');
-        row.amount = formatAmount(value.amount);
-        row.memo = String(value.memo || '');
-        break;
-
-      case 'curation_reward_operation':
-        row.account = String(value.curator || '');
-        row.reward = formatAmount(value.reward);
-        row.permlink = String(value.comment_permlink || '');
-        break;
-
-      case 'author_reward_operation':
-        row.account = String(value.author || '');
-        row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(value.hbd_payout);
-        row.hive_payout = formatAmount(value.hive_payout);
-        row.vesting_payout = formatAmount(value.vesting_payout);
-        break;
-
-      case 'comment_reward_operation':
-        row.account = String(value.author || '');
-        row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(value.payout);
-        break;
-
-      case 'comment_benefactor_reward_operation':
-        row.account = String(value.benefactor || '');
-        row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(value.hbd_payout);
-        row.hive_payout = formatAmount(value.hive_payout);
-        row.vesting_payout = formatAmount(value.vesting_payout);
-        break;
-
-      case 'producer_reward_operation':
-        row.account = String(value.producer || '');
-        row.vesting_payout = formatAmount(value.vesting_shares);
-        break;
-
-      case 'interest_operation':
-        row.account = String(value.owner || '');
-        row.amount = formatAmount(value.interest);
-        break;
-
-      case 'proposal_pay_operation':
-        row.account = String(value.receiver || '');
-        row.from = String(value.payer || '');
-        row.to = String(value.receiver || '');
-        row.amount = formatAmount(value.payment);
-        break;
-
-      case 'dhf_funding_operation':
-        row.amount = formatAmount(value.additional_funds);
-        break;
-
-      default:
-        row.account = String(value.account || value.owner || value.author || '');
-        row.amount = formatAmount(value.amount || value.reward);
-    }
-
-    const formatted = columns.map((col) => escapeCSV(row[col]));
-    csv += formatted.join(',') + '\r\n';
-  });
-
-  return csv;
-};
 
 const downloadCSV = (csv: string) => {
   const csvData = new Blob([csv], { type: 'text/csv' });
@@ -210,7 +85,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
     if (!operationHistoryData) return;
     const filtered = filterFinancialReportOperations(operationHistoryData, selectedOpTypes, financialReportPeriod);
     if (filtered.length === 0) return;
-    downloadCSV(convertHistoryToCSV(filtered));
+    downloadCSV(financialReportCsv(filtered, getNaiSymbols()));
   };
 
   return (

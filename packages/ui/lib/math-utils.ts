@@ -3,7 +3,7 @@
  * Safe to import from Playwright tests and other Node.js environments.
  */
 import Big from 'big.js';
-import { createLocaleFormatCache, type LocaleFormatCache } from './locale-format-cache';
+import { createLocaleFormatCache, getFormatOrEnglish, type LocaleFormatCache } from './locale-format-cache';
 
 const ABBREVIATION_SUFFIXES = ['K', 'M', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'];
 const THOUSAND = new Big(1000);
@@ -18,7 +18,7 @@ const abbreviationFormat = (locale: string, maxDecimals: number) => {
     );
     abbreviationFormats.set(maxDecimals, cache);
   }
-  return cache.get(locale);
+  return getFormatOrEnglish(cache, locale);
 };
 
 // `minimumFractionDigits: 1` makes the formatter print the locale's decimal separator after the
@@ -51,7 +51,7 @@ export function getRoundedAbbreveration(amount: Big, locale: string, maxDecimals
 export function formatDecimal(amount: Big, decimals: number, locale: string): string {
   const rounded = amount.round(decimals);
   const [whole, fraction] = rounded.abs().toFixed(decimals).split('.');
-  const parts = integerFormats.get(locale).formatToParts(BigInt(whole));
+  const parts = getFormatOrEnglish(integerFormats, locale).formatToParts(BigInt(whole));
   const decimalIndex = parts.findIndex((part) => part.type === 'decimal');
   const integer = parts
     .slice(0, decimalIndex === -1 ? parts.length : decimalIndex)

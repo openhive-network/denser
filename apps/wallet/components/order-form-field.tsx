@@ -2,6 +2,9 @@
 
 import { useId } from 'react';
 import { Input } from '@ui/components/input';
+import { withDecimalPoint } from '@/wallet/lib/decimal-input';
+
+const TYPED_AMOUNT_PATTERN = /^\d*\.?\d*$/;
 
 /**
  * One numeric field of the market order form. Its accessible name joins the form heading
@@ -28,6 +31,10 @@ export default function OrderFormField({
   const inputId = useId();
   const labelId = useId();
   const unitId = useId();
+  const handleChange = (typed: string) => {
+    const amount = withDecimalPoint(typed.replaceAll('-', ''));
+    if (TYPED_AMOUNT_PATTERN.test(amount)) onChange(amount);
+  };
   return (
     <div className="flex w-full justify-between text-sm">
       <label id={labelId} htmlFor={inputId} className="flex w-24 items-center" data-testid={`${testId}-label`}>
@@ -42,9 +49,10 @@ export default function OrderFormField({
           className="h-8 rounded-none text-end focus-visible:ring-0"
           placeholder="0.0"
           value={value}
-          type="number"
+          type="text"
+          inputMode="decimal"
           data-testid={`${testId}-input`}
-          onChange={(e) => onChange(e.target.value.replaceAll('-', ''))}
+          onChange={(e) => handleChange(e.target.value)}
         />
         <div id={unitId} className="flex w-28 items-center justify-center bg-background-secondary">
           {unit}

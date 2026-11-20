@@ -53,6 +53,7 @@ import {
   memoToBroadcast
 } from '@/wallet/lib/encrypted-memo';
 import { rejectedMinDelegationVests } from '@/wallet/lib/min-delegation';
+import { parseDecimalInput, toMachineDecimal } from '@/wallet/lib/decimal-input';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { convertToHP } from '@ui/lib/utils';
@@ -630,16 +631,16 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       {...form.register('amount', {
-                        valueAsNumber: true,
-                        onChange: (e) => setValue(e.target.value)
+                        setValueAs: parseDecimalInput,
+                        onChange: (e) => setValue(toMachineDecimal(e.target.value))
                       })}
                       id={fieldIds.amount}
                       aria-invalid={!!amountError}
                       aria-describedby={amountError ? fieldIds.amountError : undefined}
                       placeholder={t('transfers_page.amount')}
                       className="text-stale-900 block w-full px-3 py-2.5"
-                      type="number"
-                      step="any"
+                      type="text"
+                      inputMode="decimal"
                     />
                     {/* After the amount in the DOM, so Tab reaches it in its visual order. */}
                     {data.selectCurr && (
@@ -741,15 +742,14 @@ export function TransferDialog({
                 <div className="flex items-center gap-4">
                   <Input
                     {...form.register('amount', {
-                      valueAsNumber: true,
-                      onChange: (e) => setValue(e.target.value)
+                      setValueAs: parseDecimalInput,
+                      onChange: (e) => setValue(toMachineDecimal(e.target.value))
                     })}
                     placeholder={t('transfers_page.amount')}
                     className="text-stale-900 z-10 block w-full px-3 py-2.5"
-                    type="number"
-                    step="any"
+                    type="text"
+                    inputMode="decimal"
                     defaultValue={0}
-                    max={data.amount.toNumber()}
                   />
                   <span>HIVE</span>
                 </div>
