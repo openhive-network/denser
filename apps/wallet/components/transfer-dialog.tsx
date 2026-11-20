@@ -416,7 +416,10 @@ export function TransferDialog({
           }
         }),
         amount: z
-          .number({ message: t('transfers_page.error.amount_empty') })
+          .number({
+            required_error: t('transfers_page.error.amount_empty'),
+            invalid_type_error: t('transfers_page.error.amount_invalid')
+          })
           .positive({ message: t('transfers_page.error.amount_not_positive') })
           .refine((amount) => data.amount.gte(amount), {
             message: t('transfers_page.error.insufficient_funds')
@@ -443,6 +446,8 @@ export function TransferDialog({
   });
   const toError = form.formState.errors.to?.message;
   const amountError = form.formState.errors.amount?.message;
+  // An empty field is no amount yet; text that is not an amount in the locale is NaN, a wrong one.
+  const readAmount = (typed: string | number) => (typed === '' ? undefined : parseDecimalInput(typed, locale));
 
   const onSubmit: SubmitHandler<TransferFormValues> = () => {
     if (memoBlocked) return;
@@ -631,8 +636,8 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       {...form.register('amount', {
-                        setValueAs: parseDecimalInput,
-                        onChange: (e) => setValue(toMachineDecimal(e.target.value))
+                        setValueAs: readAmount,
+                        onChange: (e) => setValue(toMachineDecimal(e.target.value, locale))
                       })}
                       id={fieldIds.amount}
                       aria-invalid={!!amountError}
@@ -742,8 +747,8 @@ export function TransferDialog({
                 <div className="flex items-center gap-4">
                   <Input
                     {...form.register('amount', {
-                      setValueAs: parseDecimalInput,
-                      onChange: (e) => setValue(toMachineDecimal(e.target.value))
+                      setValueAs: readAmount,
+                      onChange: (e) => setValue(toMachineDecimal(e.target.value, locale))
                     })}
                     placeholder={t('transfers_page.amount')}
                     className="text-stale-900 z-10 block w-full px-3 py-2.5"

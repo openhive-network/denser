@@ -23,6 +23,7 @@ const {
   formatList,
   formatNumber,
   formatPercent,
+  getDecimalSeparator,
   getRelativeUnitString,
   getTimeAgoString,
   joinSentences
@@ -103,6 +104,11 @@ describe('numbers and amounts', () => {
     assert.equal(formatNumber(new Big('1234.5'), 'not a tag!', 2), '1,234.50');
     assert.equal(formatAmount(1234.5, 'HBD', 'not a tag!'), '1,234.500 HBD');
     assert.equal(formatAbbreviatedAmount(new Big('651700'), 'HBD', 'not a tag!'), '651.7K HBD');
+  });
+
+  it('names the decimal separator the locale writes', () => {
+    expectPerLocale(getDecimalSeparator, { en: '.', pl: ',', ru: ',', ja: '.', ar: '.' });
+    assert.equal(getDecimalSeparator('not a tag!'), '.');
   });
 
   it('writes a file size in the locale', () => {

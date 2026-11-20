@@ -267,6 +267,7 @@
     "older": "古い",
     "insufficient_balance": "残高不足（利用可能: {{available}}）",
     "order_too_small": "注文が小さすぎます：数量と合計はそれぞれ0.001以上である必要があります",
+    "invalid_number": "正しい数値ではありません。",
     "use_price": "価格 {{price}} を使用",
     "date": "日付",
     "buy": "購入",
@@ -618,6 +619,7 @@
     "error": {
       "amount_not_positive": "金額は正の値である必要があります。",
       "amount_empty": "金額を入力してください。",
+      "amount_invalid": "金額が正しい数値ではありません。",
       "account_length_min": "アカウント名が短すぎます。3文字以上にしてください。",
       "account_length_max": "アカウント名が長すぎます。16文字以内にしてください。",
       "required": "アカウント名は必須です。",

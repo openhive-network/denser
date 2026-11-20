@@ -104,6 +104,41 @@ test.describe('Market order form', () => {
     await expect(page.getByTestId('sell-form-price-input')).toHaveValue(ASK_PRICE);
   });
 
+  test('WALLET-MARKET-FORM-08 — in English "1,000" is refused as an amount, not read as 1 or 1000, and the order cannot be placed', async ({
+    page
+  }) => {
+    await fillAmount(page, 'buy-form', '5', '1.255');
+    const amount = page.getByTestId('buy-form-amount-input');
+    await amount.fill('1,000');
+
+    await expect(amount).toHaveValue('1,000');
+    await expect(amount).toHaveAttribute('aria-invalid', 'true');
+    const error = page.getByTestId('buy-form-amount-error');
+    await expect(error).toHaveRole('alert');
+    await expect(amount).toHaveAccessibleDescription('Not a valid number.');
+    await expect(page.getByTestId('buy-form-total-input')).toHaveValue('');
+    await expect(page.getByTestId('buy-form-submit-button')).toBeDisabled();
+    await expect(page.getByTestId('buy-form-dialog')).toBeHidden();
+
+    await amount.fill('1.5');
+    await expect(error).toBeHidden();
+    await expect(page.getByTestId('buy-form-total-input')).toHaveValue('0.377');
+  });
+
+  test('WALLET-MARKET-FORM-09 — in Polish "1,5" is the decimal comma and the order states 1.5 HIVE', async ({
+    page,
+    baseURL
+  }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL }]);
+    await page.reload();
+    await fillAmount(page, 'buy-form', '1,5', '0.377');
+
+    await expect(page.getByTestId('buy-form-amount-input')).toHaveValue('1.5');
+    await expect(page.getByTestId('buy-form-amount-error')).toHaveCount(0);
+    await page.getByTestId('buy-form-submit-button').click();
+    await expect(page.getByTestId('buy-form-dialog')).toContainText('1.5');
+  });
+
   test('WALLET-MARKET-FORM-04 — inputs are named by side and unit, sections are headings', async ({ page }) => {
     await expect(page.getByRole('textbox', { name: 'Buy HIVE Price HBD/HIVE' })).toBeVisible({
       timeout: HYDRATION_TIMEOUT

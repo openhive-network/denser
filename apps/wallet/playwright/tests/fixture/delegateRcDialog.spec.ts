@@ -342,9 +342,14 @@ test.describe('Delegate RC dialog', () => {
     await expect(amount).toHaveAttribute('aria-invalid', 'true');
     await expect(submit).toBeDisabled();
 
-    // A decimal comma, as a pl or ru reader types it, is the decimal point.
+    // In English a "," is a thousands separator, so it is refused rather than read as the decimal point.
     await amount.fill('1,84');
-    await expect(amount).toHaveValue('1.84');
+    await expect(amount).toHaveValue('1,84');
+    await expect(amount).toHaveAttribute('aria-invalid', 'true');
+    await expect(dialog.getByRole('alert').filter({ hasText: 'Amount is not a valid number.' })).toBeVisible();
+    await expect(submit).toBeDisabled();
+
+    await amount.fill('1.84');
     await expect(amount).toHaveAttribute('aria-invalid', 'false');
     await expect(submit).toBeEnabled();
   });
