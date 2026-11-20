@@ -705,6 +705,7 @@
       "show_all": "Show all",
       "hide": "Hide",
       "you_might_also_like": "You Might Also Like",
+      "related_posts": "Related Posts",
       "title": "Suggestions"
     },
     "browse_to_original_post": "Browse to the original post by @{{author}}",

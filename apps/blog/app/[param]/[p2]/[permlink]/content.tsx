@@ -50,7 +50,7 @@ import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
-import { getSimilarPostsByPost } from '@transaction/lib/hivesense-api';
+import { getHiveSenseStatus, getSimilarPosts } from '@transaction/lib/hivesense-api';
 import { isRenderableSearchEntry } from '@transaction/lib/hivesense-search';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Badge } from '@ui/components/badge';
@@ -248,25 +248,39 @@ const PostContent = () => {
     enabled: crossedPost
   });
 
+  // The header's HiveSense probe, shared through its query key
+  const { data: hiveSenseAvailable } = useQuery({
+    queryKey: ['hivesense-api'],
+    queryFn: () => getHiveSenseStatus(),
+    enabled: user.isLoggedIn,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
   // Signed-in readers only: crawlers are never signed in, and similar posts are hivesense's costliest call
   const { data: similarPosts } = useQuery({
-    queryKey: ['suggestions', author, permlink, accountObserver],
+    queryKey: ['suggestions', author, permlink, accountObserver, hiveSenseAvailable],
     queryFn: async () => {
-      const results = await getSimilarPostsByPost({
+      const results = await getSimilarPosts({
         author,
         permlink,
         observer: accountObserver,
         result_limit: 10, // Only get 10 suggestions
-        full_posts: 10 // Get all as full posts
+        full_posts: 10, // Get all as full posts
+        hiveSenseAvailable: hiveSenseAvailable === true
       });
 
-      const fullPosts = results?.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
-      return fullPosts.length > 0 ? fullPosts : null;
+      const fullPosts = results?.posts.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
+      return results && fullPosts.length > 0 ? { source: results.source, posts: fullPosts } : null;
     },
-    enabled: user.isLoggedIn
+    enabled: user.isLoggedIn && hiveSenseAvailable !== undefined
   });
   // A disabled query keeps its cached data, so a reader who signs out must not see it
-  const suggestionData = user.isLoggedIn ? similarPosts : null;
+  const suggestionData = user.isLoggedIn ? similarPosts?.posts : null;
+  // A lexical (BM25) list is not presented under the semantic list's title
+  const suggestionsTitle =
+    similarPosts?.source === 'text'
+      ? t('post_content.suggestions.related_posts')
+      : t('post_content.suggestions.you_might_also_like');
   const useCommunityInitialData = initialCommunity && communityObserver === ssrObserver;
   const communityQuery = useQuery({
     queryKey: ['community', category, communityObserver],
@@ -473,7 +487,7 @@ const PostContent = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-2 hidden md:block">
-          {suggestionData ? <AnimatedList suggestions={suggestionData} /> : null}
+          {suggestionData ? <AnimatedList suggestions={suggestionData} title={suggestionsTitle} /> : null}
         </div>
         <div className="w-full min-w-0 py-8 md:col-span-8 md:mx-auto md:flex md:flex-col">
           <div className={postContainerClasses}>
@@ -1060,7 +1074,7 @@ const PostContent = () => {
                 <div className="md:hidden">
                   {!!suggestionData ? (
                     <div className="mt-6 border-t border-border pt-4">
-                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">{t('post_content.suggestions.you_might_also_like')}</h2>
+                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">{suggestionsTitle}</h2>
                       <SuggestionsList suggestions={suggestionData} horizontal />
                     </div>
                   ) : null}

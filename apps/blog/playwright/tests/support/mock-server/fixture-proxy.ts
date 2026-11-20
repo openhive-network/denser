@@ -172,6 +172,9 @@ const isLiteApiCall = (call: IJsonRpcCall): boolean => call.method.startsWith('l
 /** A vote-free post read (`bridge.get_post_v2`, ...), which hivemind before its vote-free reads lacks. */
 const isVoteFreeCall = (call: IJsonRpcCall): boolean => call.method.endsWith('_v2');
 
+/** hivemind's BM25 similar posts, which hivemind before `search-api.find_similar` (hivemind#428) lacks. */
+const isFindSimilarCall = (call: IJsonRpcCall): boolean => call.method === 'search-api.find_similar';
+
 /** What such a hivemind answers a method it lacks, the namespace mangled as it mangles it. */
 const unknownMethodError = (method: string) => ({
   code: -32602,
@@ -655,8 +658,8 @@ export async function createReplayProxy(
       return;
     }
 
-    // Likewise a recording without vote-free post reads was made against a node without them.
-    if ((!entries || entries.length === 0) && jsonRpc && isVoteFreeCall(jsonRpc)) {
+    // Likewise a recording without vote-free post reads or find_similar was made against a node without them.
+    if ((!entries || entries.length === 0) && jsonRpc && (isVoteFreeCall(jsonRpc) || isFindSimilarCall(jsonRpc))) {
       res.status(200).json({
         id: (reqBody as { id?: unknown })?.id ?? 0,
         jsonrpc: '2.0',

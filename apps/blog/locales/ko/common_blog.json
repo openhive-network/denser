@@ -700,6 +700,7 @@
       "show_all": "모두 보기",
       "hide": "숨기기",
       "you_might_also_like": "추천 게시물",
+      "related_posts": "관련 게시물",
       "title": "추천"
     },
     "browse_to_original_post": "@{{author}} 님의 원본 게시물로 이동",
