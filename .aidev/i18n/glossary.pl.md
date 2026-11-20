@@ -63,7 +63,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | log in | Zaloguj się | unreviewed | |
 | password / master password | hasło / hasło główne | agreed (#1188) | |
 | passkey | klucz dostępu | unreviewed | |
-| notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na Twój post” (#1609). |
+| notification / notifications | powiadomienie / powiadomienia | unreviewed | „@{{username}} odpowiedział na Twój post” (#1609); toast announcement label „Powiadomienie” (#1739). |
 | this session (key badge) | Ta sesja | unreviewed | |
 | recovery account | konto odzyskiwania | unreviewed | |
 | Power up 100% (payout option) | Zwiększ moc 100% | unreviewed | Blog payout options and settings, with the agreed power-up term (#1698). Never „Wzmocnij”, „Zasilanie”. |

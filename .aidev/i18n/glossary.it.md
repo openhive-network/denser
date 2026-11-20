@@ -51,6 +51,7 @@ No native speaker has reviewed the Italian strings yet, so every term is
 | this session (key badge) | Questa sessione | unreviewed | |
 | recovery account | account di recupero | unreviewed | |
 | unmute | riattiva | unreviewed | Button "Riattiva", as `communities.unmute_post_comment` (#1698). |
+| notification / notifications | notifica / notifiche | unreviewed | Toast announcement label "Notifica", region "Notifiche ({hotkey})" (#1739). |
 
 ## Register
 

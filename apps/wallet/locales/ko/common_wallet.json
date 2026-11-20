@@ -26,6 +26,7 @@
     "close": "닫기",
     "profile_picture": "프로필 사진",
     "notifications_region": "알림 ({hotkey})",
+    "toast_announcement": "알림",
     "offline_notice": "오프라인 상태입니다. 연결이 복구되면 지갑이 새로 고쳐집니다.",
     "select_placeholder": "선택...",
     "unexpected_error": "예기치 않은 오류가 발생했습니다. 다시 시도하세요.",

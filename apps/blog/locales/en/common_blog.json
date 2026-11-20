@@ -38,6 +38,7 @@
     },
     "profile_picture": "Profile picture",
     "notifications_region": "Notifications ({hotkey})",
+    "toast_announcement": "Notification",
     "profile_picture_of": "{{username}} profile picture",
     "loading_more": "Loading...",
     "no_data_available": "No Data Available",

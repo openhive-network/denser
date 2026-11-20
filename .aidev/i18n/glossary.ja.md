@@ -51,6 +51,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | this session (key badge) | このセッション | unreviewed | |
 | recovery account | リカバリーアカウント | unreviewed | |
 | witness owner (witness list) | 運営者 | unreviewed | 「運営者: @gtg」(#1698); not 作成者 (author). |
+| notification / notifications | 通知 | unreviewed | Toast announcement label 「通知」 (#1739). |
 
 ## Register
 

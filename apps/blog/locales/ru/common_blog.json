@@ -42,6 +42,7 @@
     },
     "profile_picture": "Фото профиля",
     "notifications_region": "Уведомления ({hotkey})",
+    "toast_announcement": "Уведомление",
     "profile_picture_of": "Фото профиля {{username}}",
     "loading_more": "Загрузка...",
     "no_data_available": "Нет данных",

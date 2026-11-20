@@ -37,6 +37,7 @@ Arabic string yet; add them here when the first one is written.
 | log in / log out | تسجيل الدخول / تسجيل الخروج | unreviewed | |
 | password | كلمة المرور | unreviewed | |
 | passkey | مفتاح المرور | unreviewed | |
+| notification / notifications | إشعار / الإشعارات | unreviewed | Toast announcement label "إشعار", region "الإشعارات ({hotkey})" (#1739). |
 
 ## Register
 

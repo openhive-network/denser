@@ -50,6 +50,7 @@ No native speaker has reviewed the Chinese strings yet, so every term is
 | market / interest | 市场 / 利息 | unreviewed | |
 | this session (key badge) | 当前会话 | unreviewed | |
 | recovery account | 恢复账户 | unreviewed | |
+| notification / notifications | 通知 | unreviewed | Toast announcement label "通知" (#1739). |
 
 ## Register
 

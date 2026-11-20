@@ -40,6 +40,7 @@
     },
     "profile_picture": "Immagine del profilo",
     "notifications_region": "Notifiche ({hotkey})",
+    "toast_announcement": "Notifica",
     "profile_picture_of": "Immagine del profilo di {{username}}",
     "loading_more": "Caricamento...",
     "no_data_available": "Nessun dato disponibile",

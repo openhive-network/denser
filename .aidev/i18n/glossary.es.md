@@ -53,6 +53,7 @@ most as of 2026-11-19.
 | recovery account | cuenta de recuperación | unreviewed | |
 | block explorer | explorador de bloques | unreviewed | "Abrir en exploradores de bloques" (#1698). |
 | unmute | dejar de silenciar | unreviewed | Button "Dejar de silenciar" (#1698). |
+| notification / notifications | notificación / notificaciones | unreviewed | Toast announcement label "Notificación", region "Notificaciones ({hotkey})" (#1739). |
 
 ## Register
 

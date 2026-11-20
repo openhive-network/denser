@@ -26,6 +26,7 @@
     "close": "Close",
     "profile_picture": "Profile picture",
     "notifications_region": "Notifications ({hotkey})",
+    "toast_announcement": "Notification",
     "offline_notice": "You're offline. The wallet will refresh once your connection is back.",
     "select_placeholder": "Select...",
     "unexpected_error": "An unexpected error occurred. Please try again.",

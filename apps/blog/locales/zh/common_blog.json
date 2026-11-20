@@ -36,6 +36,7 @@
     },
     "profile_picture": "头像",
     "notifications_region": "通知 ({hotkey})",
+    "toast_announcement": "通知",
     "profile_picture_of": "{{username}} 的头像",
     "loading_more": "加载中...",
     "no_data_available": "暂无数据",

@@ -53,6 +53,7 @@ markup and plural keys, not their wording.
 | this session (key badge) | 이 세션 | unreviewed | |
 | recovery account | 복구 계정 | unreviewed | |
 | witness owner (witness list) | 운영자 | unreviewed | "운영자: @gtg" (#1698); not 작성자 (author). |
+| notification / notifications | 알림 | unreviewed | Toast announcement label "알림" (#1739). |
 
 ## Register
 
