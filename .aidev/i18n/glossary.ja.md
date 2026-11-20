@@ -12,15 +12,15 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 
 | English | Japanese | Status | Notes |
 |---|---|---|---|
-| Safe Storage | 安全なストレージ | unreviewed | 22 of 37 strings; 13 say 安全な保管, the login-method label セーフストレージ (see drift). |
+| Safe Storage | 安全なストレージ | unreviewed | Every string since #1698. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Keychainを使用". |
-| witness / witnesses | 証人 | unreviewed | 29 of 37 strings; 6 say ウィットネス. |
+| witness / witnesses | 証人 | unreviewed | Every string since #1698. |
 | voters | 投票者 | unreviewed | |
 | proposal / proposals | 提案 | unreviewed | |
 | Unfunded | 未資金 | unreviewed | |
 | Up to … left | 最大 <amount/> 残り | unreviewed | |
 | refund (proposal) | 返金 | unreviewed | |
-| delegation / delegate | 委託 / 委託する | unreviewed | 26 of 33 strings; the wallet's navigation and page title say 委任 (see drift). |
+| delegation / delegate | 委託 / 委託する | unreviewed | Every string since #1698. |
 | power up / power down | パワーアップ / パワーダウン | unreviewed | |
 | HIVE, HBD, HIVE POWER, HP | unchanged | unreviewed | Token symbols. |
 | payout / after payout | 支払い / 支払い後 | unreviewed | 20 of 23 strings. |
@@ -49,6 +49,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | market / interest | マーケット / 利息 | unreviewed | |
 | this session (key badge) | このセッション | unreviewed | |
 | recovery account | リカバリーアカウント | unreviewed | |
+| witness owner (witness list) | 運営者 | unreviewed | 「運営者: @gtg」(#1698); not 作成者 (author). |
 
 ## Register
 
@@ -83,10 +84,4 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER.
 
 ## Known drift
 
-- delegation: 委任 (wallet `navigation.wallet_nav.delegations`,
-  `page_titles.delegations`) against 委託.
-- Safe Storage: 安全なストレージ, 安全な保管 and セーフストレージ.
-- redeem: blog `navigation.profile_notifications_tab_navbar.redeem` 償還
-  (repayment) against 報酬を受け取る.
-- witness: ウィットネス in 6 strings.
-- Google Drive: one string says Google ドライブ.
+None known. The #1698 review fixed the drift listed here before.

@@ -50,6 +50,7 @@ No native speaker has reviewed the French strings yet, so every term is
 | market / interest | marché / intérêts | unreviewed | |
 | this session (key badge) | Cette session | unreviewed | |
 | recovery account | compte de récupération | unreviewed | |
+| unmute | ne plus masquer | unreviewed | Button "Ne plus masquer" (#1698). |
 
 ## Register
 
@@ -83,12 +84,6 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER; passkey, blog, spoiler.
 
 ## Known drift
 
-- mute: blog `user_profile.mute_button` "Muet" and `unmute_button` "Un muet"
-  (should use "masquer").
-- redeem: blog `navigation.profile_notifications_tab_navbar.redeem`
-  "Racheter" (buy back) against "Réclamer les gains".
-- payout/rewards: "paiement", "gains" and "récompenses" alternate for the
-  same concepts.
-- log out: blog "Déconnexion", wallet "Se déconnecter".
-- wallet `profile.savings_title` "EPARGNE" (capitals, no accent).
-- "Stockage Sécurisé" in title case in the login-method labels.
+Strings that do not follow the glossary yet:
+
+- payout/rewards: "paiement", "gains" and "récompenses" alternate for the same concepts.

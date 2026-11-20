@@ -1,7 +1,7 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { TIMEOUTS } from '../support/constants';
 import { HomePage } from '../support/pages/homePage';
-import { BLOG_KNOWN_I18N_ISSUES, BLOG_NAMES, BLOG_USER_CONTENT } from '../support/i18nLayout';
+import { BLOG_KNOWN_I18N_ISSUES, BLOG_NAMES, BLOG_USER_CONTENT, testI18nRoutes } from '../support/i18nLayout';
 import {
   I18N_CHECK_LOCALES,
   checkI18nLayout,
@@ -47,3 +47,15 @@ for (const locale of I18N_CHECK_LOCALES) {
     expectNoI18nIssues(issues, locale, BLOG_KNOWN_I18N_ISSUES);
   });
 }
+
+testI18nRoutes([
+  { id: 'HOME', path: '/', ready: '[data-testid="post-list-item"]' },
+  { id: 'HOT', path: '/hot', ready: '[data-testid="post-list-item"]' },
+  { id: 'CREATED', path: '/created', ready: '[data-testid="post-list-item"]' },
+  { id: 'PAYOUT', path: '/payout', ready: '[data-testid="post-list-item"]' },
+  { id: 'MUTED', path: '/muted', ready: '[data-testid="post-list-item"]' },
+  { id: 'FAQ', path: '/faq.html', ready: 'h1' },
+  { id: 'WELCOME', path: '/welcome', ready: '#articleBody' },
+  { id: 'TOS', path: '/tos.html', ready: '#articleBody' },
+  { id: 'LOGIN', path: '/login', ready: '[data-testid="login-page"]' }
+]);

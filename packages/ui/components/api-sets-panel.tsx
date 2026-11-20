@@ -82,7 +82,9 @@ export function ApiSetsPanel({
       <Button className="self-center" onClick={toggleChecking} data-testid="api-sets-check-toggle">
         {checking ? stopLabel : checkLabel}
       </Button>
-      <ApiSetsComponent className={`m-4 ${HIDE_CUSTOM_NODE_FORM}`} engine={engine} />
+      <div data-testid="api-sets-component">
+        <ApiSetsComponent className={`m-4 ${HIDE_CUSTOM_NODE_FORM}`} engine={engine} />
+      </div>
       <p className="text-muted-foreground m-4 text-sm" data-testid="api-sets-catalog-only">
         {catalogOnlyNote}
       </p>

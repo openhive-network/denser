@@ -238,7 +238,7 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(loginForm.usernameErrorMessage).toHaveText('Account name should not be empty.');
   });
 
-  // Password length should be at least 6 characters - Wrong password
+  // Password must be at least 6 characters long. - Wrong password
   test('Validate the error message for too short password', async ({page}) =>{
     const loginForm = new LoginForm(page);
 
@@ -247,11 +247,11 @@ test.describe('Login and Sign Up tests', () =>{
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
-    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
+    await expect(loginForm.passwordErrorMessage).toHaveText('Password must be at least 6 characters long.');
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
     await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
-    await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
+    await expect(loginForm.passwordErrorMessage).toHaveText('Password must be at least 6 characters long.');
   });
 
   // WIF should not be empty. - Wrong WIF (needs username)
@@ -266,7 +266,7 @@ test.describe('Login and Sign Up tests', () =>{
     // Type wrong WIF format to the input
     await loginForm.wifInput.fill('wrongWif');
     // `Invalid WIF format.` message changed to `Invalid WIF key.`
-    await expect(loginForm.wifInputErrorMessage).toHaveText('Invalid WIF key.');
+    await expect(loginForm.wifInputErrorMessage).toHaveText('Invalid WIF key');
     // Type empty string to the WIF input
     await loginForm.wifInput.fill('');
     await expect(loginForm.wifInputErrorMessage).toHaveText('WIF should not be empty.');
@@ -309,7 +309,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.postingPrivateKeyInput.fill(user.keys[0].private + '1'); // wrong wif
     await loginForm.postingPrivateKeySubmitButton.click();
     // `Invalid WIF checksum.` message changed to `Invalid WIF key.`
-    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF key.');
+    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF key');
     await loginForm.closeDialog.last().click();
     // Validate other sign in options form is loaded without an error message
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);

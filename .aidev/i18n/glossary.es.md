@@ -42,7 +42,7 @@ most as of 2026-11-19.
 | community | comunidad | unreviewed | |
 | community subscribers | suscriptores | unreviewed | #1717 |
 | post / comment / reply | publicación / comentario / respuesta | unreviewed | "publicación" in 95 of 114 strings. |
-| wallet | billetera | unreviewed | 20 strings; 11 say "monedero" (see drift). |
+| wallet | billetera | unreviewed | Feminine: "tu billetera", "Billetera no encontrada" (#1698). |
 | log in / log out | Iniciar sesión / Cerrar sesión | unreviewed | |
 | forget a saved key | olvidar la clave guardada | unreviewed | "Olvidar la clave guardada", "Olvidarla y cerrar sesión" (#1703). |
 | password | contraseña | unreviewed | |
@@ -50,11 +50,14 @@ most as of 2026-11-19.
 | market / interest | mercado / intereses | unreviewed | |
 | this session (key badge) | Esta sesión | unreviewed | |
 | recovery account | cuenta de recuperación | unreviewed | |
+| block explorer | explorador de bloques | unreviewed | "Abrir en exploradores de bloques" (#1698). |
+| unmute | dejar de silenciar | unreviewed | Button "Dejar de silenciar" (#1698). |
 
 ## Register
 
 Informal "tú": "Tu borrador", "tu voto" (123 uses of "tu" against 3 of
-"usted"). Do not mix in "usted" forms.
+"usted"). Do not mix in "usted" forms. The smart-signer strings moved from
+"usted" to "tú" in #1698.
 
 ## Plural forms
 
@@ -84,12 +87,6 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER; passkey, blog, feed.
 
 ## Known drift
 
-- mute: blog `user_profile.mute_button` "Mudo" and `unmute_button` "Un mudo"
-  (should use "silenciar").
-- wallet: "monedero" (blog `navigation.profile_navbar.wallet`) against
-  "billetera".
-- wallet `witnesses_page.witness` (a single witness) reads "Testigos".
-- wallet `profile.savings_title` "AHORROS" in capitals.
-- "Almacenamiento Seguro" in title case in the login-method labels.
-- blog `navigation.profile_notifications_tab_navbar.redeem` "Canjear" vs
-  "reclamar" in some claim texts.
+Strings that do not follow the glossary yet:
+
+- "Hbauth" in the blog's and the wallet's `login_form.*hbauth*` keys (the dialogs show the smart-signer copies, which say "almacenamiento seguro").

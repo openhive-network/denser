@@ -1,6 +1,6 @@
 import { test } from '../support/fixture-proxy-test';
 import { ProfilePage } from '../support/pages/profilePage';
-import { BLOG_KNOWN_I18N_ISSUES, BLOG_NAMES, BLOG_USER_CONTENT } from '../support/i18nLayout';
+import { BLOG_KNOWN_I18N_ISSUES, BLOG_NAMES, BLOG_USER_CONTENT, testI18nRoutes } from '../support/i18nLayout';
 import {
   I18N_CHECK_LOCALES,
   checkI18nLayout,
@@ -29,3 +29,13 @@ for (const locale of I18N_CHECK_LOCALES) {
     expectNoI18nIssues(issues, locale, BLOG_KNOWN_I18N_ISSUES);
   });
 }
+
+testI18nRoutes([
+  { id: 'PROFILE-POSTS', path: '/@hiveio/posts', ready: '[data-testid="post-list-item"]' },
+  { id: 'PROFILE-COMMENTS', path: '/@hiveio/comments', ready: '[data-testid="post-list-item"]' },
+  { id: 'PROFILE-REPLIES', path: '/@hiveio/replies', ready: '[data-testid="post-list-item"]' },
+  { id: 'PROFILE-PAYOUT', path: '/@hiveio/payout', ready: '[data-testid="profile-name"]' },
+  { id: 'PROFILE-COMMUNITIES', path: '/@hiveio/communities', ready: '[data-testid="profile-name"]' },
+  { id: 'PROFILE-FOLLOWERS', path: '/@hiveio/followers', ready: '[data-testid="profile-name"]' },
+  { id: 'PROFILE-FOLLOWED', path: '/@hiveio/followed', ready: '[data-testid="profile-name"]' }
+]);

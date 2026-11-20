@@ -777,7 +777,16 @@ const issues = await checkI18nLayout(page, { locale, userContent: BLOG_USER_CONT
 expectNoI18nIssues(issues, locale, BLOG_KNOWN_I18N_ISSUES);
 ```
 
-(`root: '[role="dialog"]'` checks an open dialog only). The check
+(`root: '[role="dialog"]'` checks an open dialog only). A whole page needs no code of its own:
+add it to the `testI18nRoutes([...])` of the spec of its recording (`support/i18nLayout.ts`:
+path, a selector shown once its data is in, `loggedIn` for an `authenticatedUser` spec). The
+specs cover every route of `app/` (one sort of each feed family) but `/privacy.html` (an English
+legal page), `/for-you` (served by a page-routed stub, `forYouFeed.spec.ts`),
+`/service-unavailable` and the lite accounts' pages (`/@did:lite:…`, `/@x/devices`). Text a
+third-party package renders and takes no translations for goes into the route's `thirdParty`
+with the issue that asks the package for them: that, `BLOG_USER_CONTENT` and the English
+markdown of `/faq.html`, `/tos.html` and `/welcome` (`#articleBody`) are the check's allow-list.
+The check
 (`playwright/support/i18n-layout.ts`) resizes the page to the three viewports
 itself. User content it should not judge (titles, bodies, community names) goes
 into `BLOG_USER_CONTENT` (`support/i18nLayout.ts`) as a test-id selector; an

@@ -381,7 +381,7 @@ change n, add or drop shard entries and rewrite every `k/n`.
 The slot is at AIDEV's eight-suite ceiling, so they are no suite of their own: two
 Playwright projects of each app's `playwright.fixture.config.ts`, present only with
 `DENSER_I18N_CHECKS=1` (`.aidev/i18n-checks.sh`). `i18n-layout` (`i18nLayout*.spec.ts`)
-renders the key routes and dialogs in the pseudo-locale `xx` (`packages/ui/lib/pseudo-locale.ts`:
+renders every route and the main dialogs in the pseudo-locale `xx` (`packages/ui/lib/pseudo-locale.ts`:
 every `en` string accented, ~40 % longer, in `[` `]`) and in Polish, at 1280x900, 844x390 and
 390x844, in DejaVu Sans (`playwright/support/fonts/`), and fails on visible words that bypass
 the translations, on text an element cuts off without a `title`, and on a sideways page

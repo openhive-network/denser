@@ -2,7 +2,7 @@
 # .aidev/run-wallet-fixture-e2e.sh: two Playwright projects of each app's
 # playwright.fixture.config.ts that exist only with DENSER_I18N_CHECKS=1.
 #
-#   i18n-layout  key routes and dialogs in the pseudo-locale and in Polish, at 1280x900, 844x390
+#   i18n-layout  the routes and dialogs in the pseudo-locale and in Polish, at 1280x900, 844x390
 #                and 390x844, in DejaVu Sans: no text bypassing the translations, none cut off,
 #                no sideways page scroll (playwright/support/i18n-layout.ts, i18nLayout*.spec.ts)
 #   pl-locale    existing specs that hold in any language, run again with NEXT_LOCALE=pl

@@ -2,8 +2,11 @@
 
 import { Badge } from '@hive/ui';
 import { Link } from '@hive/ui';
+import { useTranslation } from '@/blog/i18n/client';
+import { communityRoleLabel } from '@/blog/features/community-profile/lib/utils';
 
 const SubscriptionListItem = ({ community }: { community: string[] }) => {
+  const { t } = useTranslation('common_blog');
   return (
     <li data-testid="author-community-subscribed-list-item">
       <Link
@@ -13,8 +16,8 @@ const SubscriptionListItem = ({ community }: { community: string[] }) => {
       >
         {community[1] ? community[1] : community[0]}
       </Link>
-      <span className="text-sm font-light opacity-60" data-testid="author-role-community">
-        {community[2].toUpperCase()}
+      <span className="text-sm font-light uppercase opacity-60" data-testid="author-role-community">
+        {communityRoleLabel(community[2], t)}
       </span>
       {community[3] ? (
         <Badge

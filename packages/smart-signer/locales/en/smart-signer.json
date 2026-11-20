@@ -130,7 +130,7 @@
       "authenticated_description": "You have been authenticated successfully"
     },
     "zod_error": {
-      "password_length": "Password length should be more than 6 characters",
+      "password_length": "Password must be at least 6 characters long.",
       "invalid_keytype": "Invalid keyType",
       "keytype_required": "keyType is required",
       "invalid_wif": "Invalid WIF key",
@@ -143,7 +143,9 @@
       "authorised_account_active_key": "This key belongs to @{{owner}}, which has active authority over @{{account}}. It will be accepted with \"{{mode}}\" turned off",
       "authorised_account_posting_key": "This key belongs to @{{owner}}, which has posting authority over @{{account}}. It will be accepted with \"{{mode}}\" turned off",
       "other_account_active_key": "This key belongs to @{{owner}}, not @{{account}}. Enter the active key of @{{account}}",
-      "other_account_posting_key": "This key belongs to @{{owner}}, not @{{account}}. Enter the posting key of @{{account}}"
+      "other_account_posting_key": "This key belongs to @{{owner}}, not @{{account}}. Enter the posting key of @{{account}}",
+      "password_identical_characters": "Password must not consist of one repeated character.",
+      "password_too_long": "Password must be at most 512 characters long."
     },
     "signin_with_keychain": "Hive Keychain extension",
     "signin_with_peakvault": "PeakVault extension",
@@ -293,5 +295,23 @@
     "locked": "Keys locked",
     "locked_notice": "Your keys are locked. The next signature will ask for your password.",
     "locked_note": "Keys locked: the next signature asks for your password"
+  },
+  "auth_error": {
+    "invalid_password": "Invalid password.",
+    "authentication_failed": "Authentication failed.",
+    "user_already_logged_in": "This user is already signed in.",
+    "user_not_found": "User not found.",
+    "wallet_locked": "Safe storage is locked.",
+    "unlock_failed": "Safe storage could not be unlocked.",
+    "key_not_added": "The key could not be added to safe storage.",
+    "key_not_registered": "This key is not in safe storage.",
+    "operation_cancelled": "Cancelled.",
+    "already_registered": "This key is already in safe storage. Update it instead.",
+    "wallet_operation_failed": "Safe storage could not complete the operation.",
+    "operation_failed": "The operation failed.",
+    "invalid_challenge": "Sign-in failed: the sign-in challenge is invalid.",
+    "account_not_found": "The account was not found on the blockchain.",
+    "missing_authority": "This key does not have the required authority for this account.",
+    "unknown": "An authentication error occurred."
   }
 }

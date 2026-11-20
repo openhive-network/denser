@@ -16,6 +16,7 @@ import EditCommunityDialog from '../../community-profile/edit-dialog';
 import { Separator } from '@ui/components';
 import clsx from 'clsx';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { communityRoleLabel } from '@/blog/features/community-profile/lib/utils';
 
 const CommunityDescription = ({
   data,
@@ -55,7 +56,7 @@ const CommunityDescription = ({
       >
         <CardHeader className="px-0 font-light">
           <CardTitle className="flex items-center gap-1">
-            <span>{data.title}</span>
+            <span data-testid="community-sidebar-title">{data.title}</span>
             {data.is_nsfw ? <Badge variant="red">NSFW</Badge> : null}
           </CardTitle>
           <span className="text-sm" data-testid="short-community-description">
@@ -118,7 +119,9 @@ const CommunityDescription = ({
                   <BasePathLink href={`/@${member[0]}`} className="text-destructive hover:cursor-pointer">
                     @{member[0]}
                   </BasePathLink>{' '}
-                  <span className="text-[10px] text-slate-500">{member[1].toUpperCase()}</span>{' '}
+                  <span className="text-[10px] uppercase text-slate-500">
+                    {communityRoleLabel(member[1], t)}
+                  </span>{' '}
                   {member[2] && member[2] !== '' ? (
                     <Badge variant="outline" className="ml-0.5 border-destructive py-0">
                       {member[2]}

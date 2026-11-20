@@ -58,7 +58,9 @@ export default function DelegationsPage({ username }: { username: string }) {
                     )}{' '}
                     HP
                   </td>
-                  <td className="px-1 py-2 sm:px-4">{element.delegatee}</td>
+                  <td className="px-1 py-2 sm:px-4" data-testid="wallet-delegation-delegatee">
+                    {element.delegatee}
+                  </td>
                   <td className="px-1 py-2 sm:px-4">
                     <TimeAgo date={element.min_delegation_time} />
                   </td>

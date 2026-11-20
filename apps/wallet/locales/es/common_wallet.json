@@ -67,7 +67,7 @@
       "rewards": "Recompensa",
       "curation_rewards": "Recompensas de curación",
       "author_rewards": "Recompensas de autor",
-      "wallet": "Monedero"
+      "wallet": "Billetera"
     },
     "wallet_nav": {
       "balances": "Saldos",
@@ -90,7 +90,7 @@
         "posting_and_active": "Menú de la cuenta {{username}}, claves de publicación y activa bloqueadas"
       },
       "account_menu_signer": "Menú de la cuenta {{username}}, {{method}}",
-      "wallet": "Monedero",
+      "wallet": "Billetera",
       "blog": "Blog",
       "toggle_theme": "Tema",
       "toggle_lang": "Idioma",
@@ -113,7 +113,7 @@
       "add_posting_key": "Añadir clave de publicación",
       "switch_to_posting_key": "Cambiar a la clave de publicación",
       "login_method": {
-        "hbauth": "Almacenamiento Seguro",
+        "hbauth": "Almacenamiento seguro",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",
@@ -179,8 +179,8 @@
     "hp_delegated_description": "Parte del HIVE POWER de {{username}} está delegado actualmente. La delegación se dona para influencia o para ayudar a nuevos usuarios a realizar acciones en Hive. La cantidad delegada puede variar.",
     "hp_apr_description": "HIVE POWER aumenta con una TAE de aproximadamente {{value}}%, sujeta a la variación de la blockchain.",
     "hive_dolar_description": "Tokens canjeables que pueden ser transferidos a cualquier sitio en cualquier momento.",
-    "savings_title": "AHORROS",
-    "savings_description": "El saldo está sujeto a 3 días de espera para la retirada. HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
+    "savings_title": "Ahorros",
+    "savings_description": "El saldo está sujeto a 3 días de espera para la retirada. Tasa de interés de HBD: {{rate}}% anual (según votan los <0>testigos</0>)",
     "estimated_account_value_title": "Valor de cuenta aproximado",
     "estimated_account_value_description": "El valor estimado está basado en el valor medio de 1HIVE en US dollars.",
     "account_history_title": "HISTORIA",
@@ -201,7 +201,7 @@
     "received_from_user": "Recibido {{value}} de ",
     "claim_rewards": "Reclamar recompensas: {{rewards}}",
     "author_reward": "Recompensa de autor: {{hbd}} y {{hive}} y {{hp}}",
-    "account_history_description": "Tenga cuidado con los enlaces de spam y phishing en los memos de transferencia. No abra enlaces de usuarios en los que no confíe. No proporcione sus claves privadas a sitios web de terceros. Las transacciones no aparecerán hasta que se confirmen en la blockchain, lo que puede tardar unos minutos.",
+    "account_history_description": "Ten cuidado con los enlaces de spam y phishing en los memos de transferencia. No abras enlaces de usuarios en los que no confíes. No compartas tus claves privadas con sitios web de terceros. Las transacciones no aparecerán hasta que se confirmen en la blockchain, lo que puede tardar unos minutos.",
     "hidden_transfers_bad_actors_one": "{{count}} transferencia de cuentas fraudulentas conocidas oculta",
     "hidden_transfers_bad_actors_many": "{{count}} transferencias de cuentas fraudulentas conocidas ocultas",
     "hidden_transfers_bad_actors_other": "{{count}} transferencias de cuentas fraudulentas conocidas ocultas",
@@ -316,7 +316,7 @@
     "you_can_vote_for_maximum_of_witnesses": "Puedes votar como máximo a 30 testigos",
     "witness_list_notes": "Notas: en la lista siguiente, los primeros 100 testigos no están filtrados; esto incluye testigos activos e inactivos. A partir del puesto 100, los testigos se eliminan de la lista si no han producido ningún bloque en los últimos 30 días.",
     "rank": "Rango",
-    "witness": "Testigos",
+    "witness": "Testigo",
     "votes_received": "Votos recibidos",
     "price_feed": "Precio publicado",
     "no_price_feed": "Sin precio publicado",
@@ -478,7 +478,7 @@
     "update_password": "Actualizar Contraseña",
     "required": "Requerido",
     "account_name_should_be_longer": "El nombre de usuario debería ser más largo.",
-    "backup_password_by_storing_it": "Haz una copia de seguridad guardándolo en tu monedero de contraseñas o en un archivo de texto",
+    "backup_password_by_storing_it": "Haz una copia de seguridad guardándola en tu gestor de contraseñas o en un archivo de texto",
     "passwords_do_not_match": "Las contraseñas no coinciden",
     "key_titles": {
       "master": "Contraseña maestra",
@@ -599,7 +599,7 @@
     "decode_memo_wallet_rejected": "La solicitud fue rechazada en {{wallet}}. Inténtalo de nuevo o descifra con la clave privada MEMO.",
     "decode_memo_wallet_error": "{{wallet}} no pudo descifrar el MEMO. Inténtalo de nuevo o descifra con la clave privada MEMO.",
     "decode_memo_wallet_no_answer": "No hay respuesta de {{wallet}}: es posible que la solicitud haya sido rechazada. Inténtalo de nuevo o descifra con la clave privada MEMO.",
-    "decode_memo_auto_trying": "Intentando descifrar con tu monedero conectado...",
+    "decode_memo_auto_trying": "Intentando descifrar con tu billetera conectada...",
     "encrypt_memo_title": "Cifrar mensaje MEMO",
     "encrypt_memo_description": "Este memo se cifrará antes de enviarlo. Proporciona la clave privada MEMO.",
     "encrypt_memo_description_with_wallet": "Este memo se cifrará antes de enviarlo. Proporciona la clave privada MEMO o usa {{wallet}}.",
@@ -727,7 +727,7 @@
     "reveal": "Mostrar",
     "keys_and_permissions": "Claves y permisos",
     "graphic_alt": "Diagrama de las claves de Hive y sus permisos",
-    "any_password": "Cuanto más se usa una contraseña o clave, más probable es que se vea comprometida. Por eso Hive usa un sistema jerárquico de claves para mantenerte seguro. Se te entregan cuatro claves con permisos diferentes. Por ejemplo, la clave de publicación (pensada para usarse con frecuencia) tiene un conjunto limitado de permisos para acciones sociales que requieren menos seguridad. Debes tener más cuidado con tu clave activa, ya que tiene permisos para realizar acciones relacionadas con el monedero",
+    "any_password": "Cuanto más se usa una contraseña o clave, más probable es que se vea comprometida. Por eso Hive usa un sistema jerárquico de claves para mantenerte seguro. Se te entregan cuatro claves con permisos diferentes. Por ejemplo, la clave de publicación (pensada para usarse con frecuencia) tiene un conjunto limitado de permisos para acciones sociales que requieren menos seguridad. Debes tener más cuidado con tu clave activa, ya que tiene permisos para realizar acciones relacionadas con la billetera",
     "note": "Toma nota de tus claves de Hive que aparecen a continuación. Lo ideal es usar un gestor de contraseñas (como 1Password o LastPass) o guardar una copia sin conexión en un lugar seguro (en un papel o en un archivo en una memoria USB).",
     "posting_key": {
       "name": "Clave de publicación",
@@ -747,7 +747,7 @@
     "active_key": {
       "name": "Clave activa",
       "info": "Esta clave tiene permisos adicionales para acciones monetarias más delicadas, como transferir e intercambiar tokens.",
-      "use": "Al realizar una acción relacionada con el monedero, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quedarse con tus tokens. Hazte un favor y guarda esta clave en un lugar seguro para no perder tokens en el futuro.",
+      "use": "Al realizar una acción relacionada con la billetera, es posible que se te pida autenticarte con tu clave activa. Introduce tu clave activa solo en aplicaciones de confianza, porque cualquiera con acceso a esta clave puede quitarte tus tokens. Guárdala en un lugar seguro.",
       "private": "Tu clave privada activa",
       "permissions": "Permisos de la clave activa",
       "to": "Usa tu clave activa para:",
@@ -906,7 +906,7 @@
     "authorities": "Autoridades",
     "change_password": "Cambiar contraseña",
     "create_communities": "Crear comunidades",
-    "healthchecker_description": "Comprobador de estado de las API del monedero"
+    "healthchecker_description": "Comprobador de estado de las API de la billetera"
   },
   "api_sets": {
     "description": "Cada familia de APIs de Hive va al nodo elegido para ella. Elige un nodo por familia o mantén la elección automática.",

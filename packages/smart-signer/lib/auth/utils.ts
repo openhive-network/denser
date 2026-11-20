@@ -5,7 +5,7 @@ import { TTransactionPackType } from '@hiveio/wax';
 
 export const username = z.string()
     .superRefine((val, ctx) => {
-        const result = validateHiveAccountName(val, (v) => v);
+        const result = validateHiveAccountName(val);
         if (result) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,

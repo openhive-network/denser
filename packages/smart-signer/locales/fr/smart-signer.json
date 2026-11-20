@@ -122,7 +122,7 @@
       "authenticated_description": "Vous avez été authentifié avec succès"
     },
     "zod_error": {
-      "password_length": "La longueur du mot de passe doit être supérieure à 6 caractères",
+      "password_length": "Le mot de passe doit comporter au moins 6 caractères.",
       "invalid_keytype": "Type de clé invalide",
       "keytype_required": "Le type de clé est requis",
       "invalid_wif": "Clé WIF invalide",
@@ -135,7 +135,9 @@
       "authorised_account_active_key": "Cette clé appartient à @{{owner}}, qui a l'autorité active sur @{{account}}. Elle sera acceptée avec « {{mode}} » désactivé",
       "authorised_account_posting_key": "Cette clé appartient à @{{owner}}, qui a l'autorité de publication sur @{{account}}. Elle sera acceptée avec « {{mode}} » désactivé",
       "other_account_active_key": "Cette clé appartient à @{{owner}}, pas à @{{account}}. Saisissez la clé active de @{{account}}",
-      "other_account_posting_key": "Cette clé appartient à @{{owner}}, pas à @{{account}}. Saisissez la clé de publication de @{{account}}"
+      "other_account_posting_key": "Cette clé appartient à @{{owner}}, pas à @{{account}}. Saisissez la clé de publication de @{{account}}",
+      "password_identical_characters": "Le mot de passe ne doit pas être composé d'un seul caractère répété.",
+      "password_too_long": "Le mot de passe doit comporter au plus 512 caractères."
     },
     "signin_with_keychain": "Extension Hive Keychain",
     "signin_with_wif": "Se connecter avec WIF (Legacy)",
@@ -293,5 +295,23 @@
     "locked": "Clés verrouillées",
     "locked_notice": "Vos clés sont verrouillées. La prochaine signature vous demandera votre mot de passe.",
     "locked_note": "Clés verrouillées : la prochaine signature demandera votre mot de passe"
+  },
+  "auth_error": {
+    "invalid_password": "Mot de passe invalide.",
+    "authentication_failed": "Échec de l'authentification.",
+    "user_already_logged_in": "Cet utilisateur est déjà connecté.",
+    "user_not_found": "Utilisateur introuvable.",
+    "wallet_locked": "Le stockage sécurisé est verrouillé.",
+    "unlock_failed": "Impossible de déverrouiller le stockage sécurisé.",
+    "key_not_added": "Impossible d'ajouter la clé au stockage sécurisé.",
+    "key_not_registered": "Cette clé n'est pas dans le stockage sécurisé.",
+    "operation_cancelled": "Annulé.",
+    "already_registered": "Cette clé est déjà dans le stockage sécurisé. Mettez-la plutôt à jour.",
+    "wallet_operation_failed": "Le stockage sécurisé n'a pas pu terminer l'opération.",
+    "operation_failed": "L'opération a échoué.",
+    "invalid_challenge": "Échec de la connexion : le défi de connexion est invalide.",
+    "account_not_found": "Le compte est introuvable sur la blockchain.",
+    "missing_authority": "Cette clé n'a pas l'autorité requise pour ce compte.",
+    "unknown": "Une erreur d'authentification s'est produite."
   }
 }

@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
@@ -18,8 +19,8 @@ export enum PasswordFormMode {
 // Hbauth password (de facto regular password)
 const passwordHbauth = z
   .string()
-  .min(1, 'Password must contain at least 1 character')
-  .max(512, 'Password must contain at most 512 characters');
+  .min(1, 'login_form.zod_error.password_required')
+  .max(512, 'login_form.zod_error.password_too_long');
 
 const passwordFormSchemaHbauth = z.object({
   password: passwordHbauth
@@ -160,7 +161,7 @@ export function PasswordForm({
     watch,
     setValue
   } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
-    resolver: zodResolver(resolver),
+    resolver: withTranslatedErrors(zodResolver(resolver), (key) => t(key)),
     defaultValues: passwordFormDefaultValues
   });
 

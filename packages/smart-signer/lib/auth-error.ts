@@ -64,40 +64,46 @@ export const AUTH_ERROR_MESSAGES = {
 } as const;
 
 /**
- * Patterns to match in error messages for categorization
+ * Patterns to match in error messages for categorization, each with the English message (for logs
+ * and errors thrown on) and the smart-signer translation key shown to the user.
  * Order matters - more specific patterns should come first
  */
-const ERROR_PATTERNS: { pattern: RegExp; message: string }[] = [
-  { pattern: /invalid wif checksum/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_CHECKSUM },
-  { pattern: /invalid wif format/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_FORMAT },
-  { pattern: /invalid wif/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_KEY },
-  { pattern: /invalid password/i, message: 'Invalid password' },
-  { pattern: /not authorized/i, message: AUTH_ERROR_MESSAGES.NOT_AUTHORIZED },
-  { pattern: /authentication failed/i, message: AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED },
-  { pattern: /invalid credentials/i, message: AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS },
-  { pattern: /user is already logged in/i, message: AUTH_ERROR_MESSAGES.USER_ALREADY_LOGGED_IN },
-  { pattern: /user not found/i, message: AUTH_ERROR_MESSAGES.USER_NOT_FOUND },
-  { pattern: /wallet.*locked/i, message: AUTH_ERROR_MESSAGES.WALLET_LOCKED },
-  { pattern: /unlock.*fail/i, message: AUTH_ERROR_MESSAGES.UNLOCK_FAILED },
-  { pattern: /fail.*unlock/i, message: AUTH_ERROR_MESSAGES.UNLOCK_FAILED },
-  { pattern: /registration.*fail/i, message: AUTH_ERROR_MESSAGES.REGISTRATION_FAILED },
-  { pattern: /fail.*registration/i, message: AUTH_ERROR_MESSAGES.REGISTRATION_FAILED },
-  { pattern: /key.*not.*registered/i, message: AUTH_ERROR_MESSAGES.KEY_NOT_REGISTERED },
-  { pattern: /import.*fail/i, message: AUTH_ERROR_MESSAGES.KEY_IMPORT_FAILED },
-  { pattern: /fail.*import/i, message: AUTH_ERROR_MESSAGES.KEY_IMPORT_FAILED },
-  { pattern: /cancelled|canceled/i, message: AUTH_ERROR_MESSAGES.OPERATION_CANCELLED },
-  { pattern: /already registered/i, message: 'Key already registered - update it instead' },
-  { pattern: /beekeeper.*error/i, message: 'Wallet operation failed' },
-  { pattern: /assert_exception/i, message: 'Operation failed' },
-  { pattern: /missing.*challenge/i, message: 'Login failed - invalid challenge' },
-  { pattern: /account not found on the blockchain/i, message: 'Account not found on the blockchain' },
-  { pattern: /missing (posting|active|owner) authority/i, message: 'Key does not have the required authority for this account' },
-  { pattern: /does not have.*authority/i, message: 'Key does not have the required authority for this account' }
+const ERROR_PATTERNS: { pattern: RegExp; message: string; key: string }[] = [
+  { pattern: /invalid wif checksum/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_CHECKSUM, key: 'chainvalidation_js.invalid_wif_checksum' },
+  { pattern: /invalid wif format/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_FORMAT, key: 'chainvalidation_js.invalid_wif_format' },
+  { pattern: /invalid wif/i, message: AUTH_ERROR_MESSAGES.INVALID_WIF_KEY, key: 'login_form.zod_error.invalid_wif' },
+  { pattern: /invalid password/i, message: 'Invalid password', key: 'auth_error.invalid_password' },
+  { pattern: /not authorized/i, message: AUTH_ERROR_MESSAGES.NOT_AUTHORIZED, key: 'auth_error.authentication_failed' },
+  { pattern: /authentication failed/i, message: AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED, key: 'auth_error.authentication_failed' },
+  { pattern: /invalid credentials/i, message: AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS, key: 'auth_error.authentication_failed' },
+  { pattern: /user is already logged in/i, message: AUTH_ERROR_MESSAGES.USER_ALREADY_LOGGED_IN, key: 'auth_error.user_already_logged_in' },
+  { pattern: /user not found/i, message: AUTH_ERROR_MESSAGES.USER_NOT_FOUND, key: 'auth_error.user_not_found' },
+  { pattern: /wallet.*locked/i, message: AUTH_ERROR_MESSAGES.WALLET_LOCKED, key: 'auth_error.wallet_locked' },
+  { pattern: /unlock.*fail/i, message: AUTH_ERROR_MESSAGES.UNLOCK_FAILED, key: 'auth_error.unlock_failed' },
+  { pattern: /fail.*unlock/i, message: AUTH_ERROR_MESSAGES.UNLOCK_FAILED, key: 'auth_error.unlock_failed' },
+  { pattern: /registration.*fail/i, message: AUTH_ERROR_MESSAGES.REGISTRATION_FAILED, key: 'auth_error.key_not_added' },
+  { pattern: /fail.*registration/i, message: AUTH_ERROR_MESSAGES.REGISTRATION_FAILED, key: 'auth_error.key_not_added' },
+  { pattern: /key.*not.*registered/i, message: AUTH_ERROR_MESSAGES.KEY_NOT_REGISTERED, key: 'auth_error.key_not_registered' },
+  { pattern: /import.*fail/i, message: AUTH_ERROR_MESSAGES.KEY_IMPORT_FAILED, key: 'auth_error.key_not_added' },
+  { pattern: /fail.*import/i, message: AUTH_ERROR_MESSAGES.KEY_IMPORT_FAILED, key: 'auth_error.key_not_added' },
+  { pattern: /cancelled|canceled/i, message: AUTH_ERROR_MESSAGES.OPERATION_CANCELLED, key: 'auth_error.operation_cancelled' },
+  { pattern: /already registered/i, message: 'Key already registered - update it instead', key: 'auth_error.already_registered' },
+  { pattern: /beekeeper.*error/i, message: 'Wallet operation failed', key: 'auth_error.wallet_operation_failed' },
+  { pattern: /assert_exception/i, message: 'Operation failed', key: 'auth_error.operation_failed' },
+  { pattern: /missing.*challenge/i, message: 'Login failed - invalid challenge', key: 'auth_error.invalid_challenge' },
+  { pattern: /account not found on the blockchain/i, message: 'Account not found on the blockchain', key: 'auth_error.account_not_found' },
+  { pattern: /missing (posting|active|owner) authority/i, message: 'Key does not have the required authority for this account', key: 'auth_error.missing_authority' },
+  { pattern: /does not have.*authority/i, message: 'Key does not have the required authority for this account', key: 'auth_error.missing_authority' }
 ];
 
+/** The smart-signer key of the message shown when an error is neither known nor readable. */
+const UNKNOWN_AUTH_ERROR_KEY = 'auth_error.unknown';
+
 export interface AuthErrorResult {
-  /** User-friendly error message to display */
+  /** User-friendly error message, in English */
   message: string;
+  /** The smart-signer translation key of `message`, for a well-known error */
+  messageKey?: string;
   /** Original error for logging/debugging */
   originalError: unknown;
   /** Whether this is a well-known/expected error */
@@ -133,10 +139,10 @@ function extractErrorMessage(error: unknown): string {
 /**
  * Find a matching well-known error pattern
  */
-function findMatchingPattern(message: string): string | null {
-  for (const { pattern, message: knownMessage } of ERROR_PATTERNS) {
+function findMatchingPattern(message: string): { message: string; key: string } | null {
+  for (const { pattern, message: knownMessage, key } of ERROR_PATTERNS) {
     if (pattern.test(message)) {
-      return knownMessage;
+      return { message: knownMessage, key };
     }
   }
   return null;
@@ -165,11 +171,12 @@ function findMatchingPattern(message: string): string | null {
  */
 export function parseAuthError(error: unknown, fallbackMessage?: string): AuthErrorResult {
   const rawMessage = extractErrorMessage(error);
-  const matchedMessage = findMatchingPattern(rawMessage);
+  const matched = findMatchingPattern(rawMessage);
 
-  if (matchedMessage) {
+  if (matched) {
     return {
-      message: matchedMessage,
+      message: matched.message,
+      messageKey: matched.key,
       originalError: error,
       isKnownError: true,
     };
@@ -204,6 +211,7 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
   // Fall back to provided message or generic error
   return {
     message: fallbackMessage || 'An authentication error occurred',
+    ...(fallbackMessage ? {} : { messageKey: UNKNOWN_AUTH_ERROR_KEY }),
     originalError: error,
     isKnownError: false
   };
@@ -215,19 +223,20 @@ export function parseAuthError(error: unknown, fallbackMessage?: string): AuthEr
  *
  * @param error - The error to handle
  * @param context - Context string for logging (e.g., 'onUpdateKey', 'onAuthenticate')
- * @param fallbackMessage - Optional fallback message if error cannot be parsed
- * @returns User-friendly error message string
+ * @param translate - Gives the text of a smart-signer translation key in the page's language
+ * @returns User-friendly error message string: translated for a well-known error, else the
+ *   error's own (hb-auth's) message
  *
  * @example
  * ```ts
  * catch (error) {
- *   const message = handleAuthError(error, 'onUpdateKey');
+ *   const message = handleAuthError(error, 'onUpdateKey', (key) => t(key, { ns: SMART_SIGNER_NAMESPACE }));
  *   setError(message);
  * }
  * ```
  */
-export function handleAuthError(error: unknown, context: string, fallbackMessage?: string): string {
-  const result = parseAuthError(error, fallbackMessage);
+export function handleAuthError(error: unknown, context: string, translate: (key: string) => string): string {
+  const result = parseAuthError(error);
 
   // Always log the original error for debugging
   logger.error('Auth error in %s: %s', context, result.originalError instanceof Error ? result.originalError.message : String(result.originalError));
@@ -237,7 +246,7 @@ export function handleAuthError(error: unknown, context: string, fallbackMessage
     logger.warn('Unknown auth error type in %s, message: %s', context, result.message);
   }
 
-  return result.message;
+  return result.messageKey ? translate(result.messageKey) : result.message;
 }
 
 /**

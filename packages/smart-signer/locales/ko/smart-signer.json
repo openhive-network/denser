@@ -90,7 +90,7 @@
       "hiveauth": "HiveAuth를 사용하면 모바일 지갑 앱에서 로그인과 트랜잭션을 승인하므로 키가 휴대폰에만 보관됩니다.",
       "wif": "개인 키(WIF)를 직접 입력합니다. 서명에만 사용되며, 저장을 선택하지 않으면 보관되지 않습니다.",
       "metamask": "MetaMask 확장 프로그램의 Hive Snap이 관리하는 Hive 키로 서명합니다.",
-      "google": "암호화된 키를 Google 드라이브에 보관하고 어느 기기에서든 해당 키로 서명합니다.",
+      "google": "암호화된 키를 Google Drive에 보관하고 어느 기기에서든 해당 키로 서명합니다.",
       "passkey": "패스키 서명 사이트가 패스키에서 Hive 키를 도출하고 자체 창에서 대신 서명합니다. 키는 절대 이 사이트로 전달되지 않습니다."
     },
     "signin_safe_storage": {
@@ -130,7 +130,7 @@
       "authenticated_description": "성공적으로 인증되었습니다"
     },
     "zod_error": {
-      "password_length": "비밀번호 길이는 6자 이상이어야 합니다",
+      "password_length": "비밀번호는 6자 이상이어야 합니다.",
       "invalid_keytype": "유효하지 않은 키 유형",
       "keytype_required": "키 유형이 필요합니다",
       "invalid_wif": "유효하지 않은 WIF 키",
@@ -143,7 +143,9 @@
       "authorised_account_active_key": "이 키는 @{{account}}에 대한 액티브 권한을 가진 @{{owner}}의 키입니다. \"{{mode}}\"를 끄면 사용할 수 있습니다",
       "authorised_account_posting_key": "이 키는 @{{account}}에 대한 포스팅 권한을 가진 @{{owner}}의 키입니다. \"{{mode}}\"를 끄면 사용할 수 있습니다",
       "other_account_active_key": "이 키는 @{{account}}가 아닌 @{{owner}}의 키입니다. @{{account}}의 액티브 키를 입력하세요",
-      "other_account_posting_key": "이 키는 @{{account}}가 아닌 @{{owner}}의 키입니다. @{{account}}의 포스팅 키를 입력하세요"
+      "other_account_posting_key": "이 키는 @{{account}}가 아닌 @{{owner}}의 키입니다. @{{account}}의 포스팅 키를 입력하세요",
+      "password_identical_characters": "비밀번호는 같은 문자의 반복만으로 이루어질 수 없습니다.",
+      "password_too_long": "비밀번호는 512자 이하여야 합니다."
     },
     "signin_with_keychain": "Hive Keychain 확장",
     "signin_with_peakvault": "PeakVault 확장",
@@ -152,7 +154,7 @@
     "extension_sign_in": {
       "keychain": "Hive Keychain으로 로그인",
       "peakvault": "PeakVault로 로그인",
-      "or_safe_storage": "또는 안전한 저장소 사용"
+      "or_safe_storage": "또는 안전 저장소 사용"
     },
     "sign_in_pending": "다른 로그인이 아직 응답을 기다리고 있습니다. 지갑 확장 프로그램에서 완료하거나 거부하거나, 취소한 후 다시 시작하세요.",
     "sign_in_pending_generic": "다른 로그인이 아직 응답을 기다리고 있습니다. 완료하거나, 취소한 후 다시 시작하세요.",
@@ -202,23 +204,23 @@
   "password_form": {
     "password_placeholder": "비밀번호",
     "password_form_title": "비밀번호를 입력하십시오",
-    "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호",
-    "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전한 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요.",
+    "google_drive_password_placeholder": "Google Drive 지갑 잠금 해제 비밀번호",
+    "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전 저장소 비밀번호를 입력하세요.",
     "remember_key_tab_label": "이 탭에서 기억",
-    "remember_key_device_label": "이 기기에서 기억 (안전한 저장소)",
-    "remember_key_hint": "이 탭에서 기억한 키는 새로고침하면 지워집니다. 안전한 저장소는 비밀번호로 암호화하여 이 기기에 보관합니다."
+    "remember_key_device_label": "이 기기에서 기억 (안전 저장소)",
+    "remember_key_hint": "이 탭에서 기억한 키는 새로고침하면 지워집니다. 안전 저장소는 비밀번호로 암호화하여 이 기기에 보관합니다."
   },
   "key_protection": {
     "dialog_title": "키가 보호 없이 저장되어 있습니다",
-    "dialog_description": "@{{username}}의 키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요.",
+    "dialog_description": "@{{username}}의 키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전 저장소로 보호하세요.",
     "set_password_button": "비밀번호 설정",
     "not_now_button": "나중에",
-    "password_title": "안전한 저장소로 키 보호",
-    "password_description_new": "@{{username}}의 안전한 저장소 비밀번호를 정하세요. 이 기기에서 키로 서명할 때 입력합니다.",
-    "password_description_existing": "키를 추가하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요.",
+    "password_title": "안전 저장소로 키 보호",
+    "password_description_new": "@{{username}}의 안전 저장소 비밀번호를 정하세요. 이 기기에서 키로 서명할 때 입력합니다.",
+    "password_description_existing": "키를 추가하려면 @{{username}}의 안전 저장소 비밀번호를 입력하세요.",
     "protect_button": "키 보호",
-    "protected": "키가 이제 안전한 저장소에 있습니다.",
-    "menu_notice": "키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전한 저장소로 보호하세요. 로그아웃하면 지워집니다.",
+    "protected": "키가 이제 안전 저장소에 있습니다.",
+    "menu_notice": "키가 이 브라우저에 보호 없이 저장되어 있습니다. 안전 저장소로 보호하세요. 로그아웃하면 지워집니다.",
     "forget_button": "저장된 키 지우기",
     "forget_title": "저장된 키를 지우시겠습니까?",
     "forget_description": "이 브라우저는 더 이상 키를 기억하지 않습니다. 다른 사본이 있는지 확인하세요.",
@@ -243,18 +245,18 @@
     "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요하므로 여기서는 사용할 수 없습니다.",
     "missing_active_authority": "이 작업에는 액티브 키(active)가 필요합니다. 액티브 키로 로그인한 후 다시 시도하세요.",
     "missing_posting_authority": "이 작업에는 포스팅 키(posting)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요.",
-    "safe_storage_missing_account": "이 브라우저의 안전한 저장소에 계정의 키가 없습니다. 다시 로그인하세요.",
+    "safe_storage_missing_account": "이 브라우저의 안전 저장소에 계정의 키가 없습니다. 다시 로그인하세요.",
     "not_enough_rc": "이 트랜잭션에 필요한 리소스 크레딧(RC)이 부족합니다. RC가 충전될 때까지 기다리거나 HIVE를 파워업하세요.",
     "not_enough_rc_amounts": "현재 RC는 {{current}}이며, 이 트랜잭션에는 {{needed}} RC가 필요합니다.",
     "keychain_no_message": "Hive Keychain이 요청을 완료하지 못했으며 이유를 알려 주지 않았습니다.",
-    "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전한 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전한 저장소에 다시 추가하세요.",
+    "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전 저장소에 다시 추가하세요.",
     "signed_out": "로그아웃된 상태입니다. 로그인한 후 다시 시도해 주세요.",
     "transaction_expired": "트랜잭션이 승인되기 전에 만료되어 아무것도 전송되지 않았습니다. 다시 시도하고 10분 이내에 승인하세요.",
     "transaction_expiration_too_far_ahead": "노드가 트랜잭션의 만료 시간을 거부하여 아무것도 전송되지 않았습니다. 기기의 시계가 정확한지 확인한 후 다시 시도하세요.",
-    "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요.",
-    "safe_storage_posting_key_not_authorized": "안전한 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
-    "safe_storage_active_key_not_authorized": "안전한 저장소에 보관된 액티브(active) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 액티브(active) 키로 다시 로그인해 주세요.",
-    "safe_storage_owner_key_not_authorized": "안전한 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요.",
+    "wrong_safe_storage_password": "안전 저장소 비밀번호가 올바르지 않습니다. 안전 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요.",
+    "safe_storage_posting_key_not_authorized": "안전 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
+    "safe_storage_active_key_not_authorized": "안전 저장소에 보관된 액티브(active) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 액티브(active) 키로 다시 로그인해 주세요.",
+    "safe_storage_owner_key_not_authorized": "안전 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요.",
     "keychain_signing_failed": "Hive Keychain에서 트랜잭션에 서명하는 중 오류가 발생했습니다.",
     "rewards_already_claimed": "보상이 이미 수령되었거나 표시된 것보다 적어 아무것도 수령되지 않았습니다.",
     "balance_too_low": "잔액이 이 금액보다 부족하여 아무것도 전송되지 않았습니다."
@@ -293,5 +295,23 @@
     "locked": "키 잠김",
     "locked_notice": "키가 잠겼습니다. 다음 서명 시 비밀번호를 묻습니다.",
     "locked_note": "키 잠김: 다음 서명 시 비밀번호를 묻습니다"
+  },
+  "auth_error": {
+    "invalid_password": "비밀번호가 올바르지 않습니다.",
+    "authentication_failed": "인증에 실패했습니다.",
+    "user_already_logged_in": "이 사용자는 이미 로그인되어 있습니다.",
+    "user_not_found": "사용자를 찾을 수 없습니다.",
+    "wallet_locked": "안전 저장소가 잠겨 있습니다.",
+    "unlock_failed": "안전 저장소의 잠금을 해제할 수 없습니다.",
+    "key_not_added": "키를 안전 저장소에 추가할 수 없습니다.",
+    "key_not_registered": "이 키는 안전 저장소에 없습니다.",
+    "operation_cancelled": "취소되었습니다.",
+    "already_registered": "이 키는 이미 안전 저장소에 있습니다. 대신 업데이트하세요.",
+    "wallet_operation_failed": "안전 저장소에서 작업을 완료할 수 없습니다.",
+    "operation_failed": "작업에 실패했습니다.",
+    "invalid_challenge": "로그인 실패: 로그인 챌린지가 유효하지 않습니다.",
+    "account_not_found": "블록체인에서 계정을 찾을 수 없습니다.",
+    "missing_authority": "이 키에는 이 계정에 필요한 권한이 없습니다.",
+    "unknown": "인증 오류가 발생했습니다."
   }
 }
