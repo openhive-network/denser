@@ -7,6 +7,8 @@ import { useHoverPopover } from '@/blog/components/hooks/use-hover-popover';
 import { useTranslation } from '@/blog/i18n/client';
 import type { TrimmedEntry } from './lib/card-entry';
 import PayoutHoverContent from './payout-hover-content';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDollars, formatNumber } from '@ui/lib/locale-format';
 
 type DetailsCardHoverProps = {
   post: TrimmedEntry;
@@ -17,6 +19,7 @@ type DetailsCardHoverProps = {
 
 export default function DetailsCardHover({ post, children, decline, post_page }: DetailsCardHoverProps) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { rootProps, triggerProps, contentProps } = useHoverPopover();
 
   if (decline) {
@@ -26,8 +29,7 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
         data-testid="post-payout-decline"
         title={t('cards.payout_declined')}
       >
-        {'$'}
-        {post.payout.toFixed(2)}
+        {formatDollars(post.payout, locale)}
       </div>
     );
   }
@@ -36,7 +38,7 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
     <Popover {...rootProps}>
       <PopoverTrigger
         className="flex items-center"
-        aria-label={t('amount_hover_card.show_breakdown', { value: post.payout.toFixed(2) })}
+        aria-label={t('amount_hover_card.show_breakdown', { value: formatNumber(post.payout, locale, 2) })}
         {...triggerProps}
       >
         {children}

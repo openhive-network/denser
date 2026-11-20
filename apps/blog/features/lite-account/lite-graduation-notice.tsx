@@ -9,6 +9,7 @@ import { graduationAmount } from './lite-graduation-state';
 import { useLiteGraduationAccess } from './use-lite-graduation';
 import { useLiteGraduationOffer } from './use-lite-graduation-offer';
 import { useStoredLiteIdentity } from './use-stored-lite-identity';
+import { useLocale } from '@ui/components/locale-context';
 
 const LiteGraduationDialog = dynamic(() => import('./lite-graduation-dialog'), { ssr: false });
 
@@ -19,6 +20,7 @@ const LiteGraduationDialog = dynamic(() => import('./lite-graduation-dialog'), {
  */
 export default function LiteGraduationNotice() {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const identity = useStoredLiteIdentity();
   const { available } = useLiteGraduationAccess(identity);
   const offer = useLiteGraduationOffer(identity, true);
@@ -37,7 +39,7 @@ export default function LiteGraduationNotice() {
     );
   }
   if (offer?.kind !== 'eligible' && offer?.kind !== 'progress') return null;
-  const amount = graduationAmount(t, offer);
+  const amount = graduationAmount(t, offer, locale);
 
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2" data-testid="lite-profile-upgrade">

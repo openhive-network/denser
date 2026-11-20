@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "و",
     "close": "إغلاق",
     "no_rewards": "لا توجد مكافآت معلقة للاسترداد.",
     "loading": "جار التحميل",
@@ -31,18 +30,6 @@
       "a_year": " سنة واحدة مضت"
     },
     "time": {
-      "a_few_seconds": "بضع ثوان",
-      "seconds": " ثانية",
-      "minutes": " دقيقة",
-      "a_minute": " دقيقة واحدة",
-      "hours": " ساعة",
-      "an_hour": " ساعة واحدة",
-      "days": " يوم",
-      "a_day": " يوم واحد",
-      "months": " شهر",
-      "a_month": " شهر واحد",
-      "years": " سنة",
-      "a_year": " سنة واحدة",
       "hours_count_zero": "{{count}} ساعة",
       "hours_count_one": "{{count}} ساعة",
       "hours_count_two": "{{count}} ساعتان",
@@ -281,7 +268,7 @@
       "response": "1 رد. ",
       "responses": "{{responses}} ردود. ",
       "click_to_respond": "انقر للرد",
-      "open_comments": "افتح التعليقات",
+      "open_comments": "{{responses}}افتح التعليقات",
       "reblog": "إعادة النشر",
       "you_reblogged": "أعدت النشر",
       "no_reblogs": "لا توجد إعادات نشر",
@@ -347,7 +334,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "مبلغ الدفعة المعلقة: ${{value}}",
     "breakdown": "التفصيل:",
-    "payout_in": "الدفعة في",
+    "payout_in": "الدفعة {{time}}",
     "past_payouts": "المدفوعات السابقة ${{value}}",
     "author": "المؤلف ${{value}}",
     "curators": "المنظمون ${{value}}",
@@ -569,7 +556,8 @@
     "set_title_for_user": "تعيين العنوان لـ @{{username}}",
     "mute": "كتم الصوت",
     "unmute": "إلغاء كتم الصوت",
-    "post_comment": "مشاركة/تعليق",
+    "mute_post_comment": "كتم المشاركة/التعليق",
+    "unmute_post_comment": "إلغاء كتم المشاركة/التعليق",
     "please_provide_a_note": "يرجى تقديم ملاحظة بخصوص قرارك بكتم هذا المحتوى.",
     "notes": "ملاحظات",
     "pin": "تثبيت",
@@ -730,7 +718,7 @@
       "no_responses": "لا توجد ردود. ",
       "response": "1 رد. ",
       "responses": "{{responses}} ردود. ",
-      "share_on": "مشاركة على ",
+      "share_on": "مشاركة على {{network}}",
       "share_form": {
         "copy": "نسخ",
         "copied": "تم النسخ!",

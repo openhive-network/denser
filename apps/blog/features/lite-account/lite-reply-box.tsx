@@ -23,6 +23,8 @@ import { useLiteReplyMutation } from './use-lite-reply-mutation';
 import { useRetryCountdown } from './use-retry-countdown';
 import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
 import { openLiteKeyStore } from './open-lite-key-store';
+import { useLocale } from '@ui/components/locale-context';
+import { joinSentences } from '@ui/lib/locale-format';
 
 const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
   ssr: false,
@@ -56,6 +58,7 @@ type Props = {
  */
 export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, discussionAuthor, discussionPermlink, observer, onSetReply }: Props) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const relay = useLiteRelayInfo();
   const { identity, create, markRegistered, clear, ensureClientId } = useLiteIdentity();
   const [text, setText, removeText] = useStorageWithTTL<string>(liteReplyDraftKey(parentAuthor, parentPermlink), '', StorageTTL.DRAFT);
@@ -88,7 +91,7 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
       setNotReady(null);
       toast({
         title: t('lite_account.gateway.unavailable_title'),
-        description: `${readinessText(t, ready)} ${t('lite_account.gateway.draft_kept')}`,
+        description: joinSentences([readinessText(t, ready, locale), t('lite_account.gateway.draft_kept')], locale),
         variant: 'destructive'
       });
     } else {
@@ -191,7 +194,7 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
       </div>
       {waitingForGateway && notReady ? (
         <p className="text-xs text-muted-foreground" data-testid="lite-reply-gateway-wait">
-          {readinessText(t, { ...notReady, availableInS: undefined })}
+          {readinessText(t, { ...notReady, availableInS: undefined }, locale)}
         </p>
       ) : null}
       <LiteNameDialog

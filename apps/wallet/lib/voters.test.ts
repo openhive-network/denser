@@ -1,8 +1,26 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
 import Big from 'big.js';
 import type { HafbeWitnessVoters } from '@hive/common-hiveio-packages/wax';
-import {
+import type { GovernanceAccount, Voter, WitnessVotersReads } from './voters.ts';
+
+// Node resolves neither the tsconfig path alias nor an extensionless import: point `@ui/…` at the
+// package's TypeScript source and give the package's relative imports their `.ts`.
+const UI_ALIAS = '@ui/';
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith(UI_ALIAS)) {
+      const source = new URL(`../../../packages/ui/${specifier.slice(UI_ALIAS.length)}.ts`, import.meta.url);
+      return nextResolve(source.href, context);
+    }
+    const inUi = context.parentURL?.includes('/packages/ui/');
+    if (inUi && specifier.startsWith('./') && !specifier.endsWith('.ts')) return nextResolve(`${specifier}.ts`, context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const {
   FIRST_WITNESS_VOTERS_PAGE,
   PROPOSAL_VOTES_BATCH_SIZE,
   VOTERS_PAGE_SIZE,
@@ -16,11 +34,8 @@ import {
   shareOf,
   sortByWeight,
   totalHpOf,
-  vestsToHp,
-  type GovernanceAccount,
-  type Voter,
-  type WitnessVotersReads
-} from './voters.ts';
+  vestsToHp
+} = await import('./voters.ts');
 
 const voter = (name: string, ownHp: number, proxyHp = 0): Voter => ({ name, weight: { ownHp, proxyHp } });
 
@@ -48,11 +63,12 @@ describe('shares', () => {
   });
 
   it('shows a share as a percentage with one decimal, a tiny one as below 0.1%', () => {
-    assert.equal(formatShare(0.42189), '42.2%');
-    assert.equal(formatShare(1), '100.0%');
-    assert.equal(formatShare(0), '0.0%');
-    assert.equal(formatShare(0.0004), '<0.1%');
-    assert.equal(formatShare(0.0005), '0.1%');
+    assert.equal(formatShare(0.42189, 'en'), '42.2%');
+    assert.equal(formatShare(1, 'en'), '100.0%');
+    assert.equal(formatShare(0, 'en'), '0.0%');
+    assert.equal(formatShare(0.0004, 'en'), '<0.1%');
+    assert.equal(formatShare(0.0005, 'en'), '0.1%');
+    assert.equal(formatShare(0.42189, 'pl'), '42,2%');
   });
 
   it('sorts by own and proxied weight together, then by name, and sums them', () => {

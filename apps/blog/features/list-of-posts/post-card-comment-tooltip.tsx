@@ -25,7 +25,7 @@ const PostCardCommentTooltip = ({ comments, url }: PostCardCommentTooltipProps) 
           <TooltipTrigger asChild>
             <Link
               href={url}
-              aria-label={`${responsesText}${t('cards.post_card.open_comments')}`}
+              aria-label={t('cards.post_card.open_comments', { responses: responsesText })}
               className="flex cursor-pointer items-center hover:text-destructive"
               data-testid="post-card-response-link"
             >

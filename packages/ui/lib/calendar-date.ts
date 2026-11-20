@@ -13,6 +13,7 @@ const CALENDAR_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 const calendarDateFormats = createLocaleFormatCache(
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
   (lang) => new Intl.DateTimeFormat(lang, CALENDAR_DATE_FORMAT_OPTIONS)
 );
 

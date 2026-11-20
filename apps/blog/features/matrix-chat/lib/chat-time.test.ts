@@ -1,6 +1,23 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatDayHeading, formatMessageTime, isSameDay } from './chat-time.ts';
+import { registerHooks } from 'node:module';
+
+// Node resolves neither the tsconfig path alias nor an extensionless import: point `@ui/…` at the
+// package's TypeScript source and give the package's relative imports their `.ts`.
+const UI_ALIAS = '@ui/';
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith(UI_ALIAS)) {
+      const source = new URL(`../../../../../packages/ui/${specifier.slice(UI_ALIAS.length)}.ts`, import.meta.url);
+      return nextResolve(source.href, context);
+    }
+    const inUi = context.parentURL?.includes('/packages/ui/');
+    if (inUi && specifier.startsWith('./') && !specifier.endsWith('.ts')) return nextResolve(`${specifier}.ts`, context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const { formatDayHeading, formatMessageTime, isSameDay } = await import('./chat-time.ts');
 
 /** Monday 26 October 2026, mid-morning in the browser's time zone */
 const NOW = new Date(2026, 9, 26, 10, 14).getTime();

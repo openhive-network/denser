@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { numberWithCommas } from '@ui/lib/utils';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getExpiringVestingDelegations } from '@/wallet/lib/hive';
-import { convertToFormattedHivePower } from '@/wallet/lib/utils';
+import { convertToHivePowerAmount } from '@/wallet/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime } from '@ui/lib/locale-format';
 
-dayjs.extend(localizedFormat);
 
 type DynamicGlobalProperties = Pick<
   GetDynamicGlobalPropertiesResponse,
@@ -23,6 +21,7 @@ const ReturningDelegationsTable = ({
   dynamicData: DynamicGlobalProperties;
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { data } = useQuery({
     queryKey: ['expiringVestingDelegations', account],
     queryFn: () => getExpiringVestingDelegations(account)
@@ -43,18 +42,17 @@ const ReturningDelegationsTable = ({
               data-testid="wallet-returning-delegation-item"
             >
               <td className="px-1 py-2 sm:px-4">
-                {numberWithCommas(
-                  convertToFormattedHivePower(
-                    element.vesting_shares,
-                    dynamicData.total_vesting_fund_hive,
-                    dynamicData.total_vesting_shares
-                  ).replace(' HIVE POWER', '')
+                {convertToHivePowerAmount(
+                  element.vesting_shares,
+                  dynamicData.total_vesting_fund_hive,
+                  dynamicData.total_vesting_shares,
+                  locale
                 )}{' '}
                 HP
               </td>
               <td className="px-1 py-2 sm:px-4">
                 {t('delegations_page.returns')}{' '}
-                <time dateTime={`${element.expiration}Z`}>{dayjs(`${element.expiration}Z`).format('lll')}</time>
+                <time dateTime={`${element.expiration}Z`}>{formatDateTime(element.expiration, locale, 'mediumDateTime')}</time>
               </td>
             </tr>
           ))}

@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "및",
     "close": "닫기",
     "no_rewards": "받을 보상이 없습니다.",
     "loading": "불러오는 중",
@@ -31,18 +30,6 @@
       "a_year": " 1년 전"
     },
     "time": {
-      "a_few_seconds": " 몇 초",
-      "seconds": " 초",
-      "minutes": " 분",
-      "a_minute": " 1분",
-      "hours": " 시간",
-      "an_hour": " 1시간",
-      "days": " 일",
-      "a_day": " 1일",
-      "months": " 개월",
-      "a_month": " 1개월",
-      "years": " 년",
-      "a_year": " 1년",
       "hours_count_other": "{{count}}시간",
       "minutes_count_other": "{{count}}분",
       "hours_and_minutes": "{{hours}} {{minutes}}"
@@ -271,7 +258,7 @@
       "response": "응답 1개. ",
       "responses": "응답 {{responses}}개. ",
       "click_to_respond": "클릭하여 응답",
-      "open_comments": "댓글 열기",
+      "open_comments": "{{responses}}댓글 열기",
       "reblog": "리블로그",
       "you_reblogged": "리블로그했습니다",
       "no_reblogs": "리블로그 없음",
@@ -337,7 +324,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "지급 예정 금액: ${{value}}",
     "breakdown": "세부 내역:",
-    "payout_in": "지급까지",
+    "payout_in": "지급: {{time}}",
     "past_payouts": "지난 지급 ${{value}}",
     "author": "저자 ${{value}}",
     "curators": "큐레이터 ${{value}}",
@@ -545,7 +532,8 @@
     "mute": "뮤트",
     "save": "저장",
     "unmute": "뮤트 해제",
-    "post_comment": " 게시물/댓글",
+    "mute_post_comment": "게시물/댓글 뮤트",
+    "unmute_post_comment": "게시물/댓글 뮤트 해제",
     "please_provide_a_note": "이 콘텐츠를 뮤트하기로 결정한 이유에 대한 메모를 남겨 주세요.",
     "notes": "메모",
     "pin": "고정",
@@ -705,7 +693,7 @@
       "no_responses": "답글 없음. ",
       "response": "답글 1개. ",
       "responses": "답글 {{responses}}개. ",
-      "share_on": "공유하기: ",
+      "share_on": "공유하기: {{network}}",
       "share_form": {
         "copy": "복사",
         "copied": "복사되었습니다!",

@@ -1,5 +1,4 @@
 import { Link } from '@hive/ui';
-import { formatUtcDate } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { Trans, useTranslation } from '@/blog/i18n/client';
 
@@ -8,6 +7,8 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
 import AuthorProfileLink from '../lite-account/author-profile-link';
 import { authorDisplayName } from '../lite-account/lite-did';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime } from '@ui/lib/locale-format';
 
 interface UserInfoProps extends UserPopoverCardProps {
   permlink: string;
@@ -35,6 +36,7 @@ function UserInfo({
   blacklist
 }: UserInfoProps) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   return (
     <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 py-2 text-sm" data-testid="author-data">
       <UserPopoverCard
@@ -90,7 +92,7 @@ function UserInfo({
         {community_title || `#${category}`}
       </Link>
       <span className="text-muted-foreground">•</span>
-      <span className="text-muted-foreground" title={formatUtcDate(created)}>
+      <span className="text-muted-foreground" title={formatDateTime(created, locale, 'weekdayDateYear', 'UTC')}>
         <TimeAgo date={created} />
       </span>
     </div>

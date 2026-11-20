@@ -1,8 +1,9 @@
 'use client';
 
-import { dateToRelative } from '@ui/lib/parse-date';
 import { Link } from '@hive/ui';
-import { amt, fmt } from '@/blog/lib/utils';
+import { useLocale } from '@ui/components/locale-context';
+import { formatAmount, formatDollars, formatList, formatNumber, formatPercent, getTimeAgoString } from '@ui/lib/locale-format';
+import { amt } from '@/blog/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import Loading from '@ui/components/loading';
@@ -22,6 +23,7 @@ const HBD_PRINT_RATE_MAX = 10000;
 
 export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { data, isPending } = useQuery({
     queryKey: ['feedHistory'],
     queryFn: () => getFeedHistory()
@@ -43,19 +45,28 @@ export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
   const pending_hbd = _hbd * (globalData.hbd_print_rate / HBD_PRINT_RATE_MAX);
   const pending_hive = normalized_price ? (_hbd - pending_hbd) / normalized_price : null;
   const pending_hp = normalized_price ? (pending_payout - _hbd) / normalized_price : null;
+  const breakdown = [
+    formatAmount(pending_hbd, 'HBD', locale, 2),
+    ...(globalData.hbd_print_rate !== HBD_PRINT_RATE_MAX && pending_hive !== null
+      ? [formatAmount(pending_hive, 'HIVE', locale, 2)]
+      : []),
+    ...(pending_hp !== null ? [formatAmount(pending_hp, 'HP', locale, 2)] : [])
+  ];
   const pastPayout = new Date() > new Date(`${post.payout_at}Z`);
   if (pastPayout) {
     return (
       <>
-        <span>{t('amount_hover_card.past_payouts', { value: post.payout.toFixed(2) })}</span>
+        <span>{t('amount_hover_card.past_payouts', { value: formatNumber(post.payout, locale, 2) })}</span>
         <span>
           -{' '}
-          {t('amount_hover_card.author', { value: convertStringToBig(post.author_payout_value).toFixed(2) })}
+          {t('amount_hover_card.author', {
+            value: formatNumber(convertStringToBig(post.author_payout_value), locale, 2)
+          })}
         </span>
         <span>
           -{' '}
           {t('amount_hover_card.curators', {
-            value: convertStringToBig(post.curator_payout_value).toFixed(2)
+            value: formatNumber(convertStringToBig(post.curator_payout_value), locale, 2)
           })}
         </span>
         <span>
@@ -66,11 +77,8 @@ export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
                   className="hover:cursor-pointer hover:text-destructive"
                   key={index}
                 >
-                  - {beneficiary.account}: $
-                  {Big(post.payout / 2)
-                    .times(beneficiary.weight)
-                    .div(10000)
-                    .toFixed(2)}
+                  - {beneficiary.account}:{' '}
+                  {formatDollars(Big(post.payout / 2).times(beneficiary.weight).div(10000), locale)}
                 </Link>
               ))
             : null}
@@ -81,13 +89,9 @@ export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
 
   return (
     <>
-      <span>{t('amount_hover_card.pending_payout_amount', { value: post.payout.toFixed(2) })}</span>
+      <span>{t('amount_hover_card.pending_payout_amount', { value: formatNumber(post.payout, locale, 2) })}</span>
       <span>
-        {t('amount_hover_card.breakdown')} {pending_hbd.toFixed(2)} HBD,{' '}
-        {globalData.hbd_print_rate !== HBD_PRINT_RATE_MAX && pending_hive !== null ? (
-          <>{pending_hive.toFixed(2)} HIVE, </>
-        ) : null}
-        {pending_hp !== null ? <>{pending_hp.toFixed(2)} HP</> : null}
+        {t('amount_hover_card.breakdown')} {formatList(breakdown, locale, 'unit')}
       </span>
       <>
         {post.beneficiaries.map((beneficiary: IBeneficiary, index: number) => (
@@ -96,16 +100,18 @@ export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
             className="hover:cursor-pointer hover:text-destructive"
             key={index}
           >
-            {beneficiary.account}: {fmt(parseFloat(String(beneficiary.weight)) / 100)}%
+            {beneficiary.account}: {formatPercent(Number(beneficiary.weight) / 100, locale, 2)}
           </Link>
         ))}
       </>
       <span>
-        {t('amount_hover_card.payout_in')} {dateToRelative(post.payout_at, t).replace('in', '')}
+        {t('amount_hover_card.payout_in', { time: getTimeAgoString(post.payout_at, locale, Date.now()) })}
       </span>
       {convertStringToBig(post.max_accepted_payout).lt(1000000) ? (
         <span>
-          {t('amount_hover_card.max_accepted_payout', { value: fmt(post.max_accepted_payout.split(' ')[0]) })}
+          {t('amount_hover_card.max_accepted_payout', {
+            value: formatNumber(convertStringToBig(post.max_accepted_payout), locale, 2)
+          })}
         </span>
       ) : null}
     </>

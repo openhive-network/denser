@@ -4,6 +4,8 @@ import { getNaiSymbols } from './asset-constants';
 export interface IFormatAssetOptions {
   /** Append the token name (`HIVE`, `HBD`, `VESTS`); default true. */
   appendTokenName?: boolean;
+  /** The locale whose grouping and decimal separator the amount takes; default the runtime's, as wax's. */
+  locale?: string;
 }
 
 export const isNaiAsset = (value: unknown): value is NaiAsset =>
@@ -18,11 +20,15 @@ export const isNaiAsset = (value: unknown): value is NaiAsset =>
 
 /**
  * The text wax's `chain.formatter.format(asset)` gives for a NaiAsset: the amount with all its
- * `precision` decimals, the integer part grouped and the decimal separator taken from the
- * runtime's default locale, then the token name (`"1,234.567 HIVE"`). Negative amounts keep their
+ * `precision` decimals, the integer part grouped and the decimal separator taken from `locale`
+ * (the runtime's default, as wax's, when absent; display code passes the active one), then the
+ * token name (`"1,234.567 HIVE"`, pl `"1 234,567 HIVE"`). Negative amounts keep their
  * exact value (wax's formatter misrenders them). Throws for a NAI that is not a Hive asset.
  */
-export function formatAsset(asset: NaiAsset, { appendTokenName = true }: IFormatAssetOptions = {}): string {
+export function formatAsset(
+  asset: NaiAsset,
+  { appendTokenName = true, locale }: IFormatAssetOptions = {}
+): string {
   const symbol = getNaiSymbols()[asset.nai];
   if (!symbol) throw new Error(`Unknown asset NAI: ${asset.nai}`);
 
@@ -31,7 +37,8 @@ export function formatAsset(asset: NaiAsset, { appendTokenName = true }: IFormat
   const absolute = negative ? -satoshis : satoshis;
   const scale = BigInt(10) ** BigInt(asset.precision);
 
-  const parts = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1 }).formatToParts(absolute / scale);
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  const parts = new Intl.NumberFormat(locale, { minimumFractionDigits: 1 }).formatToParts(absolute / scale);
   const decimalIndex = parts.findIndex((part) => part.type === 'decimal');
   const integer = parts
     .slice(0, decimalIndex === -1 ? parts.length : decimalIndex)
@@ -45,4 +52,5 @@ export function formatAsset(asset: NaiAsset, { appendTokenName = true }: IFormat
 }
 
 /** `formatAsset` of an operation's optional asset field: an empty string when it is absent. */
-export const formatOptionalAsset = (asset: NaiAsset | undefined): string => (asset ? formatAsset(asset) : '');
+export const formatOptionalAsset = (asset: NaiAsset | undefined, locale?: string): string =>
+  asset ? formatAsset(asset, { locale }) : '';

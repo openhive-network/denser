@@ -19,8 +19,8 @@ import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, useUserAvatarUrl,
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
-import { formatMonthYear } from '@ui/lib/month-year';
-import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
+import { formatMonthYear, formatNumber } from '@ui/lib/locale-format';
+import { convertToHP, netDelegatedVests } from '@ui/lib/utils';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -309,7 +309,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                     </Link>
                     <div className="flex flex-col items-center">
                       <span className="text-lg font-semibold sm:text-xl">
-                        {numberWithCommas(hp.toFixed(0))}
+                        {formatNumber(hp, i18n.language)}
                       </span>
                       <span className="text-xs text-white/70 sm:text-sm">HP</span>
                     </div>

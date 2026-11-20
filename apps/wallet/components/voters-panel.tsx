@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from
 import Big from 'big.js';
 import { Input } from '@ui/components/input';
 import Loading from '@ui/components/loading';
-import { getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { useLocale } from '@ui/components/locale-context';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/wallet/i18n/client';

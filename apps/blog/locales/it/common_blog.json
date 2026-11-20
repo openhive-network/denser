@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "e",
     "close": "Chiudi",
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Caricamento",
@@ -31,18 +30,6 @@
       "a_year": " un anno fa"
     },
     "time": {
-      "a_few_seconds": " pochi secondi",
-      "seconds": " secondi",
-      "minutes": " minuti",
-      "a_minute": " un minuto",
-      "hours": " ore",
-      "an_hour": " un'ora",
-      "days": " giorni",
-      "a_day": " un giorno",
-      "months": " mesi",
-      "a_month": " un mese",
-      "years": " anni",
-      "a_year": " un anno",
       "hours_count_one": "{{count}} ora",
       "hours_count_many": "{{count}} ore",
       "hours_count_other": "{{count}} ore",
@@ -275,7 +262,7 @@
       "response": "1 commento. ",
       "responses": "{{responses}} commenti. ",
       "click_to_respond": "Clicca per commentare.",
-      "open_comments": "Apri i commenti",
+      "open_comments": "{{responses}}Apri i commenti",
       "reblog": "Ricondividi",
       "you_reblogged": "Hai condiviso",
       "no_reblogs": "nessuna condivisione",
@@ -341,7 +328,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "Pagamento in attesa: ${{value}}",
     "breakdown": "Dettaglio:",
-    "payout_in": "Pagamento tra",
+    "payout_in": "Pagamento {{time}}",
     "past_payouts": "Pagamenti precedenti di {{value}}$",
     "author": "Autore {{value}}$",
     "curators": "Curatori {{value}}$",
@@ -555,7 +542,8 @@
     "mute": "Disattiva audio",
     "save": "Salva",
     "unmute": "Riattiva audio",
-    "post_comment": " pubblica/commenta",
+    "mute_post_comment": "Silenzia post/commento",
+    "unmute_post_comment": "Riattiva post/commento",
     "please_provide_a_note": "Si prega di fornire una nota riguardo la decisione di disattivare l'audio di questo contenuto.",
     "notes": "Note",
     "pin": "Fissa",
@@ -715,7 +703,7 @@
       "you_reblogged": "Hai condiviso",
       "reply": "Risposta",
       "edit": "Modificare",
-      "share_on": "Condividi su ",
+      "share_on": "Condividi su {{network}}",
       "share_form": {
         "copy": "Copia",
         "copied": "Copiato!",

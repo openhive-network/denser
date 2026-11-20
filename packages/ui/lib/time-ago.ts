@@ -1,6 +1,9 @@
 import { createLocaleFormatCache } from './locale-format-cache';
 
-const TIME_INTERVALS: [number, Intl.RelativeTimeFormatUnit][] = [
+/** The units a time span is counted in, largest first. */
+export type TimeUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+
+const TIME_INTERVALS: [number, TimeUnit][] = [
   [31536000, 'year'],
   [2592000, 'month'],
   [604800, 'week'],
@@ -62,7 +65,9 @@ type RelativeFormat = Pick<Intl.RelativeTimeFormat, 'format' | 'resolvedOptions'
 const SHORT_STYLE_UNITS: Record<string, readonly Intl.RelativeTimeFormatUnit[]> = { pl: ['hour'] };
 
 const createNarrowFormat = (lang: string): RelativeFormat => {
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
   const narrow = new Intl.RelativeTimeFormat(lang, { style: 'narrow', numeric: 'always' });
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
   const short = new Intl.RelativeTimeFormat(lang, { style: 'short', numeric: 'always' });
   if (!hasDirectionWords(narrow)) return short;
 
@@ -75,11 +80,16 @@ const createNarrowFormat = (lang: string): RelativeFormat => {
 };
 
 const relativeFormats = {
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
   long: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })),
   narrow: createLocaleFormatCache(createNarrowFormat),
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
   numeric: createLocaleFormatCache((lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'always' }))
 };
-const titleFormats = createLocaleFormatCache((lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS));
+const titleFormats = createLocaleFormatCache(
+  // eslint-disable-next-line no-restricted-syntax -- the locale formatting module's own formatter
+  (lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS)
+);
 
 /** Number of formatters each of this module's caches holds. */
 export const getTimeAgoFormatCacheSizes = (): {
@@ -128,14 +138,9 @@ export const getTimeAgoString = (
     if (-diff >= FUTURE_SKEW_TOLERANCE_SECONDS) {
       return formatFuture(-diff, rtf);
     }
-  } else {
-    for (const [secondsInUnit, unit] of TIME_INTERVALS) {
-      const value = Math.floor(diff / secondsInUnit);
-      if (value > 0) {
-        const [count, countUnit] = rollOverMonths(value, unit);
-        return rtf.format(-count, countUnit);
-      }
-    }
+  } else if (diff > 0) {
+    const [count, unit] = toLargestUnit(diff);
+    return rtf.format(-count, unit);
   }
   // The numeric narrow style would read "in 0s"; every style reads the present as "now".
   return relativeFormats.long.get(lang).format(0, 'second');
@@ -151,11 +156,20 @@ const formatFuture = (secondsLeft: number, rtf: RelativeFormat): string => {
 
 // A month counts 30 days, so 360 to 364 days make 12 of them: those read as a year, as a gap of 365
 // days does, and no time reads "12 months".
-const rollOverMonths = (
-  value: number,
-  unit: Intl.RelativeTimeFormatUnit
-): [number, Intl.RelativeTimeFormatUnit] =>
+const rollOverMonths = (value: number, unit: TimeUnit): [number, TimeUnit] =>
   unit === 'month' && value >= MONTHS_PER_YEAR ? [Math.floor(value / MONTHS_PER_YEAR), 'year'] : [value, unit];
+
+/**
+ * `seconds` counted in the largest unit it holds at least one whole of, truncated: 90 → 1 minute,
+ * 2 days 23 hours → 2 days, 360 days → 1 year. Less than a second is 0 seconds.
+ */
+export const toLargestUnit = (seconds: number): [number, TimeUnit] => {
+  for (const [secondsInUnit, unit] of TIME_INTERVALS) {
+    const value = Math.floor(seconds / secondsInUnit);
+    if (value > 0) return rollOverMonths(value, unit);
+  }
+  return [0, 'second'];
+};
 
 /**
  * `count` `unit`s ago in the long style, always numeric and with the locale's plural form: "2 years
@@ -163,6 +177,13 @@ const rollOverMonths = (
  */
 export const getUnitsAgoString = (count: number, unit: Intl.RelativeTimeFormatUnit, lang: string): string =>
   relativeFormats.numeric.get(lang).format(-count, unit);
+
+/**
+ * `value` `unit`s from now in the long style, named where the locale has a word for it: -1 day is
+ * "yesterday", 0 days "today", 2 days "in 2 days". Throws `RangeError` for a locale the runtime rejects.
+ */
+export const getRelativeUnitString = (value: number, unit: Intl.RelativeTimeFormatUnit, lang: string): string =>
+  relativeFormats.long.get(lang).format(value, unit);
 
 /**
  * `date` in the runtime's local timezone, as `Date.prototype.toLocaleString(lang)` prints it;

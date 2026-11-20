@@ -34,6 +34,8 @@ const POLICY = {
       'navigation.sidebar.faq',
       'communities.nsfw',
       'resource_credits.rc',
+      // Placeholders and punctuation only: a label and its value
+      'global.label_value',
       // Acknowledgement buttons
       'market_page.ok',
       'witnesses_page.ok',

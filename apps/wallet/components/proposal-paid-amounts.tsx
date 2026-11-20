@@ -1,6 +1,7 @@
 import type Big from 'big.js';
 import type { ReactNode } from 'react';
-import { cn, formatDecimal, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { cn } from '@hive/ui/lib/utils';
+import { formatDateTime, formatDecimal, getRoundedAbbreveration } from '@ui/lib/locale-format';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { useLocale } from '@ui/components/locale-context';
 import {
@@ -25,7 +26,6 @@ interface ProposalPaidAmountsProps {
 }
 
 const UNFUNDED_COLOR = 'text-amber-700 dark:text-amber-400';
-const LAST_PAID_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
 const HbdAmount = ({ amount, className }: { amount: Big; className?: string }) => {
   const { locale } = useLocale();
@@ -148,7 +148,7 @@ export function ProposalPaidAmounts({ proposal, total, totalDays, paid }: Propos
         lastPaid !== undefined ? (
           <span key="last-paid" data-testid="proposal-last-paid">
             {t('proposals_page.last_paid', {
-              date: new Intl.DateTimeFormat(locale, LAST_PAID_FORMAT).format(lastPaid)
+              date: formatDateTime(lastPaid, locale, 'dayMonth')
             })}
           </span>
         ) : null

@@ -66,7 +66,6 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
-import { formatUtcDate } from '@ui/lib/parse-date';
 import { buildSafePath } from '@ui/lib/sanitize-url';
 import { Clock, Link2, ShieldCheck, ShieldOff } from 'lucide-react';
 import { Link } from '@hive/ui';
@@ -89,6 +88,8 @@ import {
   useInitialFollowList
 } from '@/blog/components/observer-provider';
 import { StaleTime } from '@/blog/lib/react-query';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime, formatDollars } from '@ui/lib/locale-format';
 
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
@@ -138,6 +139,8 @@ const PostContent = () => {
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
 
   const { t } = useTranslation('common_blog');
+
+  const { locale } = useLocale();
   // Reply box state and drafts expire after 30 days
   // Empty key disables the hook entirely, preventing garbage entries
   const [storedReply, storeReply, removeReply] = useStorageWithTTL<boolean>(
@@ -690,7 +693,7 @@ const PostContent = () => {
                     {/* Meta info */}
                     <div className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
                       <Clock className="mr-1 h-4 w-4" />
-                      <span title={formatUtcDate(postData.created)} data-testid="post-footer-timestamp">
+                      <span title={formatDateTime(postData.created, locale, 'weekdayDateYear', 'UTC')} data-testid="post-footer-timestamp">
                         <TimeAgo date={postData.created} />
                       </span>
                       <span className="mx-1">·</span>
@@ -767,7 +770,7 @@ const PostContent = () => {
                               : ''
                           }`}
                         >
-                          ${postData.payout?.toFixed(2)}
+                          {formatDollars(postData.payout ?? 0, locale)}
                         </span>
                       </DetailsCardHover>
                       {postVoteCount ? (
@@ -937,7 +940,7 @@ const PostContent = () => {
                           <TooltipTrigger asChild>
                             <Link
                               href={`/${postData.category}/@${postData.author}/${postData.permlink}#comments`}
-                              aria-label={`${footerResponsesText}${t('cards.post_card.open_comments')}`}
+                              aria-label={t('cards.post_card.open_comments', { responses: footerResponsesText })}
                               className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
                               data-testid="comment-respons"
                             >

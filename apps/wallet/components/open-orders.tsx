@@ -4,13 +4,14 @@ import clsx from 'clsx';
 import { IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/wallet/i18n/client';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
-import { dateToFormatted } from '@ui/lib/parse-date';
 import { useState } from 'react';
 import Loading from '@ui/components/loading';
 import { Icons } from '@ui/components/icons';
 import { useCancelMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime, formatNumber, formatPercent } from '@ui/lib/locale-format';
 
 interface OpenOrderProps {
   user: string;
@@ -43,6 +44,7 @@ function useOrderCancel(user: string) {
 
 const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [sortAsc, setSortAsc] = useState(true);
   const { cancelOrder, isCancelling } = useOrderCancel(user);
 
@@ -93,20 +95,16 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
                   return (
                     <tr className="even:bg-background-tertiary" key={order.orderid}>
                       <td align="left" className="pl-4">
-                        {dateToFormatted(order.created, 'YYYY-MM-DD HH:mm:ss')}
+                        {formatDateTime(order.created, locale, 'dateTime')}
                       </td>
                       <td>
                         {isSellOrder ? t('market_page.sell') : t('market_page.buy')}
                       </td>
-                      <td>{realPrice.toFixed(6)}</td>
-                      <td>{hiveAmount.toFixed(3)}</td>
-                      <td>{hbdAmount.toFixed(3)}</td>
+                      <td>{formatNumber(realPrice, locale, 6)}</td>
+                      <td>{formatNumber(hiveAmount, locale, 3)}</td>
+                      <td>{formatNumber(hbdAmount, locale, 3)}</td>
                       <td>
-                        {(
-                          (1 - order.for_sale / 1000 / baseAmount.toNumber()) *
-                          100
-                        ).toFixed(2)}
-                        %
+                        {formatPercent((1 - order.for_sale / 1000 / baseAmount.toNumber()) * 100, locale, 2)}
                       </td>
                       <td>
                         {isCancelling(order.orderid) ? (

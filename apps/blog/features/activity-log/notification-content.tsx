@@ -16,6 +16,7 @@ import { LoadMoreButton } from './load-more-button';
 import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { getRewardsString } from '../../lib/utils';
+import { useLocale } from '@ui/components/locale-context';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive-api';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { useMarkAllRead } from './hooks/use-mark-all-read';
@@ -58,6 +59,7 @@ const NotificationActivities = ({
   onNewNotifications?: () => void;
 }) => {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const [state, setState] = useState(data);
   // Track the last ID we want to fetch MORE data after (for pagination)
   const [fetchAfterId, setFetchAfterId] = useState<number | string | null>(null);
@@ -192,7 +194,7 @@ const NotificationActivities = ({
         <div className="flex flex-col items-center justify-center px-2 py-4 md:flex-row md:justify-between">
           <span>
             {t('navigation.profile_notifications_tab_navbar.unclaimed_rewards')}
-            {getRewardsString(profileData, t)}
+            {getRewardsString(profileData, t, locale)}
           </span>
           <Button
             variant="redHover"

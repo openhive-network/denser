@@ -5,9 +5,12 @@ import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
 import { useTranslation } from '@/blog/i18n/client';
 import { keepCountedVotes } from './lib/counted-votes';
 import { countVotesAfterPayout } from './lib/votes-after-payout';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDollars } from '@ui/lib/locale-format';
 
 const VotersDetailsData = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const { data } = useActiveVotesQuery(post.author, post.permlink);
 
   const votes = data && prepareVotes(post, keepCountedVotes(data, post.payout_at));
@@ -34,8 +37,8 @@ const VotersDetailsData = ({ post }: { post: Entry }) => {
               {vote.voter}
               {vote.reward
                 ? Math.abs(parseFloat(vote.reward.toString())) < 0.0001
-                  ? `: $0`
-                  : `: $${Number(vote.reward).toFixed(2)}`
+                  ? `: ${formatDollars(0, locale, 0)}`
+                  : `: ${formatDollars(Number(vote.reward), locale)}`
                 : null}
               {vote.rshares < 0 ? '[-]' : ''}
             </BasePathLink>

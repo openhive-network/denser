@@ -6,9 +6,11 @@ import Big from 'big.js';
 import RCRow from './rc-row';
 import { useTranslation } from '@/wallet/i18n/client';
 import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
+import { useLocale } from '@ui/components/locale-context';
 
 const RCTable = ({ account }: { account: string }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const { data, isPending } = useQuery({
     queryKey: ['resourceCredits', account],
     queryFn: () => getDirectDelegations(account),
@@ -60,7 +62,7 @@ const RCTable = ({ account }: { account: string }) => {
         <tfoot>
           <tr>
             <td className="px-1 pt-2 text-center text-sm sm:px-4" data-testid="wallet-rc-delegations-total">
-              {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, RC_SUMMARY_DECIMALS) })}
+              {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, locale, RC_SUMMARY_DECIMALS) })}
             </td>
           </tr>
         </tfoot>

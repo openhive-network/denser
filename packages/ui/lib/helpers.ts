@@ -33,14 +33,16 @@ export function isVests(asset: NaiAsset): boolean {
 }
 
 /**
- * Formats a NaiAsset to a human-readable string like "1.234 HIVE"
+ * A NaiAsset in the chain's legacy string form, "1.234 HIVE": every decimal, no grouping, the token
+ * name after. For data the API speaks (an entry's `max_accepted_payout`), not for display: that is
+ * `formatAsset` with the active locale.
  * @param asset - The NaiAsset to format
  * @param overrideSymbol - Optional symbol override (e.g., 'HP' instead of 'HIVE')
- * @returns Formatted string like "1.234 HIVE"
  */
 export function formatNaiAsset(asset: NaiAsset, overrideSymbol?: string): string {
   const amount = Big(asset.amount).div(Big(10).pow(asset.precision));
   const naiSymbols = getNaiSymbols();
   const symbol = overrideSymbol || naiSymbols[asset.nai] || '';
+  // eslint-disable-next-line no-restricted-syntax -- the chain's own asset string, not display text
   return `${amount.toFixed(asset.precision)} ${symbol}`;
 }

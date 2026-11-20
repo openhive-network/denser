@@ -8,6 +8,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useIsKnownNotLiteAware } from './use-lite-api-info';
 import { readiness, readinessText, useLiteGatewayHealth } from './use-lite-gateway-health';
 import { useLiteRelaySelect } from './use-lite-relay-info';
+import { useLocale } from '@ui/components/locale-context';
 
 type Props = { open: boolean; onToggle: () => void; className: string; testId: string; children: ReactNode };
 
@@ -20,6 +21,7 @@ type Props = { open: boolean; onToggle: () => void; className: string; testId: s
  */
 export default function LiteReplyTrigger({ open, onToggle, className, testId, children }: Props) {
   const { t } = useTranslation('common_blog');
+  const { locale } = useLocale();
   const relayEnabled = useLiteRelaySelect((info) => info.enabled);
   const notLiteAware = useIsKnownNotLiteAware();
   const offered = relayEnabled && !notLiteAware;
@@ -42,7 +44,7 @@ export default function LiteReplyTrigger({ open, onToggle, className, testId, ch
     setChecking(false);
     const ready = readiness(fresh.data, 'reply');
     if (ready.ok) onToggle();
-    else toast({ title: t('lite_account.gateway.unavailable_title'), description: readinessText(t, ready), variant: 'destructive' });
+    else toast({ title: t('lite_account.gateway.unavailable_title'), description: readinessText(t, ready, locale), variant: 'destructive' });
   };
 
   if (offered && health.data && health.data.status !== 'down') {

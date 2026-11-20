@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableRow } from '@ui/components/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import TimeAgo from '@ui/components/time-ago';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
 import AccountHistoryError from '@/wallet/components/account-history-error';
 import { REWARD_TYPES, type RewardType } from './reward-types';
@@ -55,6 +56,7 @@ export default function RewardsHistoryPage({
   rewardType: RewardType;
 }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const config = REWARD_TYPES[rewardType];
   const { data, isLoading, dynamicData, isError, refetch } = useRewardsHistory(username, config.opType);
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,8 +70,8 @@ export default function RewardsHistoryPage({
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     const lastWeekRewards =
       data && dynamicData ? data.filter((reward) => new Date(reward.timestamp) > oneWeekAgo) : [];
-    return config.weeklyTotals(lastWeekRewards, dynamicData);
-  }, [config, data, dynamicData]);
+    return config.weeklyTotals(lastWeekRewards, dynamicData, locale);
+  }, [config, data, dynamicData, locale]);
 
   const pagination = (
     <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
@@ -147,7 +149,7 @@ export default function RewardsHistoryPage({
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex flex-col items-end">
-                        {config.payoutLines(reward.op, dynamicData).map((line, lineIndex) => (
+                        {config.payoutLines(reward.op, dynamicData, locale).map((line, lineIndex) => (
                           <span key={lineIndex}>{line}</span>
                         ))}
                       </div>

@@ -2,7 +2,7 @@
 
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { formatTime } from '@smart-signer/lib/format-time';
+import { formatDateTime } from '@ui/lib/locale-format';
 import type { EarlierBroadcastState } from '@transaction/lib/unconfirmed-broadcasts';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 
@@ -33,7 +33,7 @@ export function EarlierBroadcastPendingMessage({
     <TransactionNotConfirmedMessage
       transactionId={transactionId}
       explorerDomain={explorerDomain}
-      message={t(MESSAGE_KEYS[state], { time: formatTime(expiration, i18n.language) })}
+      message={t(MESSAGE_KEYS[state], { time: formatDateTime(expiration, i18n.language, 'time') })}
     />
   );
 }

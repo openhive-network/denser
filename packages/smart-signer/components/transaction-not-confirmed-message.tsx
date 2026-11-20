@@ -2,7 +2,7 @@
 
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { formatTime } from '@smart-signer/lib/format-time';
+import { formatDateTime } from '@ui/lib/locale-format';
 import { TransactionIdLine } from '@smart-signer/components/transaction-id-line';
 
 /**
@@ -30,7 +30,7 @@ export function TransactionNotConfirmedMessage({
       <p>{message ?? t('request_error.not_confirmed')}</p>
       {expiration ? (
         <p data-testid="transaction-not-confirmed-until">
-          {t('request_error.pending_until', { time: formatTime(expiration, i18n.language) })}
+          {t('request_error.pending_until', { time: formatDateTime(expiration, i18n.language, 'time') })}
         </p>
       ) : null}
       <TransactionIdLine

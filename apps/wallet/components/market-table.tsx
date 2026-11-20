@@ -8,6 +8,11 @@ import Big from 'big.js';
 import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { isHbd } from '@ui/lib/helpers';
+import { useLocale } from '@ui/components/locale-context';
+import { formatNumber } from '@ui/lib/locale-format';
+
+const AMOUNT_DECIMALS = 3;
+const PRICE_DECIMALS = 6;
 
 export interface OrdersItem {
   total: number;
@@ -32,9 +37,10 @@ const PAGE_SIZE = 10;
 /** Keyboard path to a row's price: its click bubbles to the row, which sets the price. */
 const UsePriceButton = ({ price }: { price: string }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   return (
-    <button type="button" className="font-semibold" aria-label={t('market_page.use_price', { price })}>
-      {price}
+    <button type="button" className="font-semibold" aria-label={t('market_page.use_price', { price: formatNumber(Number(price), locale, PRICE_DECIMALS) })}>
+      {formatNumber(Number(price), locale, PRICE_DECIMALS)}
     </button>
   );
 };
@@ -52,6 +58,7 @@ export function MarketTable({
   handleSetterPrices: (e: string) => void;
 }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [page, setPage] = useState(0);
   const sliceFrom = page * PAGE_SIZE;
   const sliceTo = page * PAGE_SIZE + 10;
@@ -79,9 +86,9 @@ export function MarketTable({
               >
                 {type === 'buy' ? (
                   <>
-                    <td data-testid={`${testIdPrefix}-row-${index}-total`}>{e.total.toFixed(3)}</td>
-                    <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{(e.hbd / 1000).toFixed(3)}</td>
-                    <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{(e.hive / 1000).toFixed(3)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-total`}>{formatNumber(e.total, locale, AMOUNT_DECIMALS)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{formatNumber(e.hbd / 1000, locale, AMOUNT_DECIMALS)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{formatNumber(e.hive / 1000, locale, AMOUNT_DECIMALS)}</td>
                     <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>
                       <UsePriceButton price={Big(e.real_price).toFixed(6)} />
                     </td>
@@ -92,9 +99,9 @@ export function MarketTable({
                     <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>
                       <UsePriceButton price={Big(e.real_price).toFixed(6)} />
                     </td>
-                    <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{(e.hive / 1000).toFixed(3)}</td>
-                    <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{(e.hbd / 1000).toFixed(3)}</td>
-                    <td data-testid={`${testIdPrefix}-row-${index}-total`}>{e.total.toFixed(3)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{formatNumber(e.hive / 1000, locale, AMOUNT_DECIMALS)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{formatNumber(e.hbd / 1000, locale, AMOUNT_DECIMALS)}</td>
+                    <td data-testid={`${testIdPrefix}-row-${index}-total`}>{formatNumber(e.total, locale, AMOUNT_DECIMALS)}</td>
                   </>
                 ) : null}
               </tr>
@@ -151,6 +158,7 @@ const TablePagination = ({
 
 export function HistoryTable({ data, params, label }: { data: any[]; params: string[]; label: string }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [page, setPage] = useState(0);
   const sliceFrom = page * PAGE_SIZE;
   const sliceTo = page * PAGE_SIZE + 10;
@@ -180,10 +188,10 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
                   data-testid={`${testIdPrefix}-row-${index}-price`}
                   data-trade-type={isHbd(e.current_pays) ? 'buy' : 'sell'}
                 >
-                  {e.hbd.div(e.hive).toFixed(6)}
+                  {formatNumber(e.hbd.div(e.hive), locale, PRICE_DECIMALS)}
                 </td>
-                <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{e.hive.toFixed(3)}</td>
-                <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-hbd`}>{e.hbd.toFixed(3)}</td>
+                <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{formatNumber(e.hive, locale, AMOUNT_DECIMALS)}</td>
+                <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-hbd`}>{formatNumber(e.hbd, locale, AMOUNT_DECIMALS)}</td>
               </tr>
             ))}
           </tbody>

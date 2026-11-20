@@ -23,7 +23,7 @@ const UNKNOWN_USER = 'unknownuser';
 /** The table shows the loaded operations 50 at a time (HISTORY_PAGE_SIZE in history-table.tsx). */
 const SHOWN_ROWS = 50;
 /** The newest operation of the recorded history page (0010): its HP comes from the recorded globals (0003). */
-const NEWEST_ROW = 'Claim rewards: 0.000 HBD and 0.000 HIVE and 48.289 HIVE POWER';
+const NEWEST_ROW = 'Claim rewards: 0.000 HBD, 0.000 HIVE, and 48.289 HIVE POWER';
 /** The two transfers among the first SHOWN_ROWS recorded operations. */
 const RECORDED_TRANSFER = 'Received 0.001 HIVE from hive-grove';
 

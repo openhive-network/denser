@@ -70,9 +70,9 @@ test.describe('Wallet returning delegations', () => {
     await expect(page.getByTestId('wallet-returning-delegations')).toContainText('Returning delegations');
     await expect(returningRows(page)).toHaveCount(2);
     await expect(returningRows(page).nth(0)).toContainText('1.800 HP');
-    await expect(returningRows(page).nth(0)).toContainText('Returns Oct 3, 2026 8:15 AM');
+    await expect(returningRows(page).nth(0)).toContainText(/Returns Oct 3, 2026, 8:15\sAM/);
     await expect(returningRows(page).nth(1)).toContainText('900.000 HP');
-    await expect(returningRows(page).nth(1)).toContainText('Returns Oct 5, 2026 6:30 PM');
+    await expect(returningRows(page).nth(1)).toContainText(/Returns Oct 5, 2026, 6:30\sPM/);
     expect(accounts).toContain(STUB_ACCOUNT);
   });
 

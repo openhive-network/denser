@@ -39,6 +39,8 @@ import { type AccountNameFormatError, checkAccountNameFormat } from '@ui/lib/acc
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
+import { useLocale } from '@ui/components/locale-context';
+import { formatAmount, formatDollars, formatNumber } from '@ui/lib/locale-format';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
@@ -79,15 +81,22 @@ const isPrivateKeyLeak = async (error: unknown) =>
   );
 
 type Amount = {
-  hive: string;
-  hbd: string;
-  reducedHP: string;
-  savingsHive: string;
-  savingsHbd: string;
+  hive: Big;
+  hbd: Big;
+  reducedHP: Big;
+  savingsHive: Big;
+  savingsHbd: Big;
   delegatedVesting: Big;
   to_withdraw: Big;
   withdraw: Big;
 };
+
+// The asset of the balance the dialog offers: HBD shows as dollars, HIVE POWER as a bare amount.
+type BalanceAsset = 'HIVE' | 'HBD' | 'HP';
+const DEFAULT_BALANCE_ASSET: BalanceAsset = 'HIVE';
+
+// Every amount the dialog shows has the chain's three decimals.
+const HIVE_DECIMALS = 3;
 
 export type TransferDialogType =
   | 'transfers'
@@ -118,6 +127,7 @@ export function TransferDialog({
   suggestedUsers: { username: string; about: string }[];
 }) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const fieldIdPrefix = useId();
   const fieldIds = {
     from: `${fieldIdPrefix}-from`,
@@ -130,7 +140,8 @@ export function TransferDialog({
   const defaultValue = {
     title: '',
     description: '',
-    amount: '',
+    amount: Big(0),
+    balanceAsset: DEFAULT_BALANCE_ASSET,
     advancedBtn: false,
     selectCurr: true,
     buttonTitle: t('transfers_page.next'),
@@ -227,11 +238,11 @@ export function TransferDialog({
         globals.total_vesting_fund_hive
       );
       return t('transfers_page.error.delegation_below_minimum', {
-        min: minHp.toFixed(3),
-        amount: convertStringToBig(value).toFixed(3)
+        min: formatNumber(minHp, locale, HIVE_DECIMALS),
+        amount: formatNumber(convertStringToBig(value), locale, HIVE_DECIMALS)
       });
     },
-    [queryClient, t, value]
+    [locale, queryClient, t, value]
   );
 
   switch (type) {
@@ -240,6 +251,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.transfers');
       data.description = t('transfers_page.transfer_to_account_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
+      data.balanceAsset = curr;
       data.onSubmit = async () => {
         const memo = memoToBroadcast(data.memo, data.to, encryptedMemo);
         if (memo === null) {
@@ -265,6 +277,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.transfer_to_savings');
       data.description = t('transfers_page.transfer_to_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
+      data.balanceAsset = curr;
       data.advancedBtn = true;
       data.onSubmit = async () => {
         await transfersTransaction(
@@ -285,6 +298,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.power_up');
       data.description = t('transfers_page.power_up_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
+      data.balanceAsset = curr;
       data.advancedBtn = true;
       data.selectCurr = false;
       data.buttonTitle = t('transfers_page.power_up');
@@ -302,6 +316,7 @@ export function TransferDialog({
       data.description = '';
       data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.reducedHP;
+      data.balanceAsset = 'HP';
       data.onSubmit = async () => {
         await transfersTransaction(
           'powerDown',
@@ -316,6 +331,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.delegate');
       data.description = '';
       data.amount = amount.reducedHP;
+      data.balanceAsset = 'HP';
       data.onSubmit = async () => {
         await transfersTransaction(
           'delegate',
@@ -331,6 +347,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.savings_withdraw');
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHive;
+      data.balanceAsset = 'HIVE';
       data.advancedBtn = true;
       data.onSubmit = async () => {
         await transfersTransaction(
@@ -352,6 +369,7 @@ export function TransferDialog({
       data.confirmTitle = t('transfers_page.confirm_title.savings_withdraw');
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHbd;
+      data.balanceAsset = 'HBD';
       data.advancedBtn = true;
       data.onSubmit = async () => {
         await transfersTransaction(
@@ -399,17 +417,19 @@ export function TransferDialog({
         amount: z
           .number({ message: t('transfers_page.error.amount_empty') })
           .positive({ message: t('transfers_page.error.amount_not_positive') })
-          .refine((amount) => amount <= Number(data.amount.replaceAll(',', '').match(/[-+]?\d*\.?\d+/)), {
+          .refine((amount) => data.amount.gte(amount), {
             message: t('transfers_page.error.insufficient_funds')
           })
           .refine((amount) => !minDelegation || minDelegation.lte(amount), {
-            message: t('transfers_page.error.min_delegation', { min: minDelegation?.toFixed(3) })
+            message: t('transfers_page.error.min_delegation', {
+              min: minDelegation ? formatNumber(minDelegation, locale, HIVE_DECIMALS) : ''
+            })
           })
           .refine((amount) => /^\d+(\.\d{1,3})?$/.test(amount.toString()), {
             message: t('transfers_page.error.precision')
           })
       }),
-    [data.amount, minDelegation, t]
+    [data.amount, locale, minDelegation, t]
   );
   type TransferFormValues = z.infer<typeof transferSchema>;
 
@@ -435,7 +455,13 @@ export function TransferDialog({
 
   // As each `onSubmit` above signs it: power down in HIVE, every other type in the selected currency.
   const confirmAsset = type === 'powerDown' ? 'HIVE' : curr;
-  const confirmAmount = `${convertStringToBig(value === '' ? '0' : value).toFixed(3)} ${confirmAsset}`;
+  const confirmAmount = formatAmount(convertStringToBig(value === '' ? '0' : value), confirmAsset, locale);
+  const balanceText =
+    data.balanceAsset === 'HBD'
+      ? formatDollars(data.amount, locale, HIVE_DECIMALS)
+      : data.balanceAsset === 'HIVE'
+        ? formatAmount(data.amount, 'HIVE', locale)
+        : formatNumber(data.amount, locale, HIVE_DECIMALS);
 
   // Set before the first await: until the mutation starts, the submission waits for the chain (`getAsset`).
   const submittingRef = useRef(false);
@@ -538,8 +564,8 @@ export function TransferDialog({
             {belowMinDelegation ? (
               <p role="alert" className="pt-4 text-sm text-destructive">
                 {t('transfers_page.error.cannot_delegate', {
-                  min: minDelegation.toFixed(3),
-                  available: amount.reducedHP
+                  min: formatNumber(minDelegation, locale, HIVE_DECIMALS),
+                  available: formatNumber(amount.reducedHP, locale, HIVE_DECIMALS)
                 })}
               </p>
             ) : null}
@@ -651,11 +677,11 @@ export function TransferDialog({
                     variant="link"
                     className="col-span-3 w-fit pl-0 underline underline-offset-4 hover:text-destructive"
                     onClick={() => {
-                      form.setValue('amount', Number(data.amount.replace(/[^0-9.]/g, '')));
-                      setValue(data.amount.replace(/[^0-9.]/g, ''));
+                      form.setValue('amount', data.amount.toNumber());
+                      setValue(data.amount.toFixed(HIVE_DECIMALS));
                     }}
                   >
-                    {t('transfers_page.balance')}: {data.amount}
+                    {t('transfers_page.balance')}: {balanceText}
                   </Button>
                 </div>
                 {type === 'transfers' && (
@@ -704,7 +730,7 @@ export function TransferDialog({
                 <Slider
                   dataTestId="downvote-slider"
                   defaultValue={[0]}
-                  max={Number(data.amount.replace(/[^0-9.]/g, ''))}
+                  max={data.amount.toNumber()}
                   step={0.001}
                   onValueChange={(e) => {
                     setValue(e[0].toString());
@@ -723,28 +749,30 @@ export function TransferDialog({
                     type="number"
                     step="any"
                     defaultValue={0}
-                    max={Number(data.amount.replace(/[^0-9.]/g, ''))}
+                    max={data.amount.toNumber()}
                   />
                   <span>HIVE</span>
                 </div>
                 <div className="flex flex-col gap-2 text-xs">
                   <p>
                     {t('transfers_page.per_week', {
-                      amount: convertStringToBig(value === '' ? '0' : value)
-                        .div(HIVE_VESTING_WITHDRAW_INTERVALS)
-                        .toFixed(1)
+                      amount: formatNumber(
+                        convertStringToBig(value === '' ? '0' : value).div(HIVE_VESTING_WITHDRAW_INTERVALS),
+                        locale,
+                        1
+                      )
                     })}
                   </p>
                   {withdrawinformation ? (
                     <p>
                       {t('transfers_page.already_power_down', {
-                        amount: amount.to_withdraw.toFixed(3),
-                        withdrawn: amount.withdraw.toFixed(3)
+                        amount: formatNumber(amount.to_withdraw, locale, HIVE_DECIMALS),
+                        withdrawn: formatNumber(amount.withdraw, locale, HIVE_DECIMALS)
                       })}
                     </p>
                   ) : null}
                   {delegated ? (
-                    <p>{t('transfers_page.delegating', { amount: amount.delegatedVesting.toFixed(3) })}</p>
+                    <p>{t('transfers_page.delegating', { amount: formatNumber(amount.delegatedVesting, locale, HIVE_DECIMALS) })}</p>
                   ) : null}
                 </div>
               </div>

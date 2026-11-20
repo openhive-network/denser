@@ -12,6 +12,7 @@ import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/
 import { handleError } from '@ui/lib/handle-error';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useLocale } from '@ui/components/locale-context';
 
 interface PendingSavingsWithdrawalsProps {
   username: string;
@@ -20,6 +21,7 @@ interface PendingSavingsWithdrawalsProps {
 
 const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWithdrawalsProps) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [cancelRequestId, setCancelRequestId] = useState<number | null>(null);
   const cancelTransferFromSavingsMutation = useCancelTransferFromSavingsMutation();
   const { user } = useUserClient();
@@ -52,7 +54,10 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
       <table className="max-w-6xl text-sm">
         <tbody>
           {withdrawals.withdrawals.map((withdrawal, index) => {
-            const withdrawMessage = `${t('transfers_page.withdraw')} ${getAmountFromWithdrawal(withdrawal)} ${t('transfers_page.to_lower')} ${withdrawal.to}`;
+            const withdrawMessage = t('transfers_page.withdraw_to', {
+              amount: getAmountFromWithdrawal(withdrawal, locale),
+              to: withdrawal.to
+            });
             return (
               <tr
                 className={cn('flex flex-col py-2 sm:table-row', {

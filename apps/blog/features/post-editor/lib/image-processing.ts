@@ -6,6 +6,7 @@
  * it receives a standard JPEG/PNG/WebP file.
  */
 
+import { formatFileSize } from '@ui/lib/locale-format';
 import { getLogger } from '@ui/lib/logging';
 import type { DetectedFormat, ProcessingOptions, ProcessingResult } from './image-processing-types';
 
@@ -326,8 +327,5 @@ export async function processImageForUpload(
   };
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+// The log lines and this module's errors are English.
+const formatBytes = (bytes: number): string => formatFileSize(bytes, 'en');

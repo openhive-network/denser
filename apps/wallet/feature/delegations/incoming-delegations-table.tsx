@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { formatAsset } from '@ui/lib/asset-format';
 import { Button } from '@ui/components/button';
@@ -9,8 +7,9 @@ import Loading from '@ui/components/loading';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getIncomingDelegations } from '@/wallet/lib/hive';
 import { toIncomingDelegationRows, type IncomingDelegationChainState } from './lib/incoming-delegations';
+import { useLocale } from '@ui/components/locale-context';
+import { formatDateTime } from '@ui/lib/locale-format';
 
-dayjs.extend(localizedFormat);
 
 const PAGE_SIZE = 25;
 
@@ -26,6 +25,7 @@ const IncomingDelegationsTable = ({
   dynamicData: IncomingDelegationChainState;
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const [page, setPage] = useState(0);
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ['incomingDelegations', account],
@@ -63,12 +63,12 @@ const IncomingDelegationsTable = ({
               data-testid="wallet-incoming-delegation-item"
             >
               <td className="px-1 py-2 sm:px-4">
-                {formatAsset(createNaiAsset('HIVE', row.hiveSatoshis), { appendTokenName: false })} HP
+                {formatAsset(createNaiAsset('HIVE', row.hiveSatoshis), { appendTokenName: false, locale })} HP
               </td>
               <td className="px-1 py-2 sm:px-4">{row.delegator}</td>
               <td className="px-1 py-2 sm:px-4">
                 {t('delegations_page.since')}{' '}
-                <time dateTime={row.since.toISOString()}>{dayjs(row.since).format('ll')}</time>
+                <time dateTime={row.since.toISOString()}>{formatDateTime(row.since, locale, 'mediumDate')}</time>
               </td>
             </tr>
           ))}

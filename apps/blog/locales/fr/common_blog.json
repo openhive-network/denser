@@ -1,6 +1,5 @@
 {
   "global": {
-    "and": "et",
     "close": "Fermer",
     "no_rewards": "Aucune récompense en attente d'échange.",
     "loading": "Chargement",
@@ -31,18 +30,6 @@
       "a_year": " il y a un an"
     },
     "time": {
-      "a_few_seconds": " quelques secondes",
-      "seconds": " secondes",
-      "minutes": " minutes",
-      "a_minute": " une minute",
-      "hours": " heures",
-      "an_hour": " une heure",
-      "days": " jours",
-      "a_day": " un jour",
-      "months": " mois",
-      "a_month": " un mois",
-      "years": " ans",
-      "a_year": " un an",
       "hours_count_one": "{{count}} heure",
       "hours_count_many": "{{count}} heures",
       "hours_count_other": "{{count}} heures",
@@ -275,7 +262,7 @@
       "response": "1 réponse. ",
       "responses": "{{responses}} réponses. ",
       "click_to_respond": "Cliquez ici pour répondre",
-      "open_comments": "Ouvrir les commentaires",
+      "open_comments": "{{responses}}Ouvrir les commentaires",
       "reblog": "Rebloguer",
       "you_reblogged": "Vous avez rebloggé",
       "no_reblogs": "aucun reblog",
@@ -341,7 +328,7 @@
   "amount_hover_card": {
     "pending_payout_amount": "{{value}}$ de gains en suspens",
     "breakdown": "Détail :",
-    "payout_in": "Paiement dans",
+    "payout_in": "Paiement {{time}}",
     "past_payouts": "Gains antérieurs: ${{value}}$",
     "author": "Auteur ${{value}}",
     "curators": "Curateurs ${{value}}",
@@ -555,7 +542,8 @@
     "mute": "Muet",
     "save": "Enregistrer",
     "unmute": "Réactiver le son",
-    "post_comment": " publier/commenter",
+    "mute_post_comment": "Masquer la publication/le commentaire",
+    "unmute_post_comment": "Ne plus masquer la publication/le commentaire",
     "please_provide_a_note": "Veuillez fournir une note concernant votre décision de masquer ce contenu.",
     "notes": "Notes",
     "pin": "Épingler",
@@ -715,7 +703,7 @@
       "you_reblogged": "Vous avez rebloggé",
       "reply": "Répondre",
       "edit": "Modifier",
-      "share_on": "Partager sur ",
+      "share_on": "Partager sur {{network}}",
       "share_form": {
         "copy": "COPIER",
         "copied": "Copié!",

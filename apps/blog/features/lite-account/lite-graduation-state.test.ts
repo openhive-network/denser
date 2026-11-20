@@ -1,7 +1,23 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
 
-const { formatHbd, graduationErrorKey, graduationOffer } = await import('./lite-graduation-state.ts');
+// Node resolves neither the tsconfig path alias nor an extensionless import: point `@ui/…` at the
+// package's TypeScript source and give the package's relative imports their `.ts`.
+const UI_ALIAS = '@ui/';
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith(UI_ALIAS)) {
+      const source = new URL(`../../../../packages/ui/${specifier.slice(UI_ALIAS.length)}.ts`, import.meta.url);
+      return nextResolve(source.href, context);
+    }
+    const inUi = context.parentURL?.includes('/packages/ui/');
+    if (inUi && specifier.startsWith('./') && !specifier.endsWith('.ts')) return nextResolve(`${specifier}.ts`, context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const { graduationAmount, graduationErrorKey, graduationOffer } = await import('./lite-graduation-state.ts');
 const { relaysLink } = await import('./lite-authority-state.ts');
 
 type View = Parameters<typeof graduationOffer>[0];
@@ -63,10 +79,19 @@ describe('graduationOffer', () => {
   });
 });
 
-describe('formatHbd', () => {
-  it('shows three decimals', () => {
-    assert.equal(formatHbd(1.25), '1.250');
-    assert.equal(formatHbd(3), '3.000');
+describe('graduationAmount', () => {
+  const t = (key: string, options: Record<string, string | number>) => `${key} ${JSON.stringify(options)}`;
+
+  it('shows the amounts with three decimals in the locale', () => {
+    const progress = { kind: 'progress', rewards: 1.25, threshold: 1200, percent: 0 } as const;
+    assert.equal(
+      graduationAmount(t, progress, 'en'),
+      'lite_account.graduation.progress {"rewards":"1.250","threshold":"1,200.000","percent":0}'
+    );
+    assert.equal(
+      graduationAmount(t, { kind: 'eligible', rewards: 3, threshold: null }, 'pl'),
+      'lite_account.graduation.earned {"rewards":"3,000"}'
+    );
   });
 });
 

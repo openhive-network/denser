@@ -71,7 +71,7 @@ const toastsTitled = (page: Page, title: string) => page.getByRole('listitem').f
 /** The success toast of a 9 HIVE buy order, in each locale checked. */
 const ORDER_PLACED_TOASTS = [
   { locale: 'en', title: 'Order placed', description: 'Buy 9.000 HIVE for 2.259 HBD' },
-  { locale: 'pl', title: 'Zlecenie złożone', description: 'Kupno 9.000 HIVE za 2.259 HBD' }
+  { locale: 'pl', title: 'Zlecenie złożone', description: 'Kupno 9,000 HIVE za 2,259 HBD' }
 ];
 
 const confirmOrder = async (page: Page, form: 'buy-form' | 'sell-form') => {

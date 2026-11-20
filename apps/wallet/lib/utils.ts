@@ -1,9 +1,9 @@
 import { TFunction } from 'i18next';
-import { convertStringToBig, isHive } from '@hive/ui/lib/helpers';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
-import { numberWithCommas } from '@ui/lib/utils';
+import { formatNumber } from '@ui/lib/locale-format';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import { joinSiteUrl } from '@ui/lib/site-url';
 import { createNaiAsset } from '@ui/lib/asset-constants';
@@ -42,12 +42,8 @@ export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 
-export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
-  const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;
-  const currency = isHive(withdrawal.amount) ? 'HIVE' : 'HBD';
-
-  return `${amount.toFixed(3)} ${currency}`;
-};
+export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number], locale: string) =>
+  formatAsset(withdrawal.amount, { locale });
 
 // The default is the blog domain
 export const getExternalLink = (path: string, baseUrl?: string) => {
@@ -127,31 +123,37 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
   }));
 }
 
-export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>, decimals = 1): string => {
+export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>, locale: string, decimals = 1): string => {
   return t('resource_credits.amount_billions', {
-    amount: numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(decimals))
+    amount: formatNumber(convertStringToBig(rc).div(1000000000), locale, decimals)
   });
 };
 type VestsToHiveSatoshis = typeof vestsToHiveSatoshis;
 
-const formatVestsAsHivePower = (
+const formatVestsAsHivePowerAmount = (
   toHiveSatoshis: VestsToHiveSatoshis,
   vests: NaiAsset | undefined,
   totalVestingFund: NaiAsset | undefined,
-  totalVestingShares: NaiAsset | undefined
+  totalVestingShares: NaiAsset | undefined,
+  locale: string
 ): string => {
   const hiveSatoshis =
     vests && totalVestingFund && totalVestingShares
       ? toHiveSatoshis(BigInt(vests.amount), BigInt(totalVestingFund.amount), BigInt(totalVestingShares.amount))
       : 0;
-  return formatAsset(createNaiAsset('HIVE', hiveSatoshis)).replace("HIVE", "HIVE POWER");
+  return formatAsset(createNaiAsset('HIVE', hiveSatoshis), { appendTokenName: false, locale });
 };
 
-export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
-  return formatVestsAsHivePower(vestsToHiveSatoshis, vests, totalVestingFund, totalVestingShares);
+/** The HIVE POWER `vests` are worth at the chain totals, as an amount in `locale` without a token name. */
+export function convertToHivePowerAmount(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, locale: string): string {
+  return formatVestsAsHivePowerAmount(vestsToHiveSatoshis, vests, totalVestingFund, totalVestingShares, locale);
+}
+
+export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, locale: string): string {
+  return `${convertToHivePowerAmount(vests, totalVestingFund, totalVestingShares, locale)} HIVE POWER`;
 }
 
 /** `convertToFormattedHivePower` rounded to the nearest satoshi, for VESTS converted from an amount entered in HP. */
-export function convertToNearestFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
-  return formatVestsAsHivePower(vestsToNearestHiveSatoshis, vests, totalVestingFund, totalVestingShares);
+export function convertToNearestFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, locale: string): string {
+  return `${formatVestsAsHivePowerAmount(vestsToNearestHiveSatoshis, vests, totalVestingFund, totalVestingShares, locale)} HIVE POWER`;
 }

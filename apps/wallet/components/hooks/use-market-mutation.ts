@@ -1,7 +1,9 @@
 import { asset } from '@hiveio/wax';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
-import { formatNaiAsset, isHive } from '@ui/lib/helpers';
+import { isHive } from '@ui/lib/helpers';
+import { formatAsset } from '@ui/lib/asset-format';
+import { useLocale } from '@ui/components/locale-context';
 import { useTranslation } from '@/wallet/i18n/client';
 
 const OPEN_ORDERS_REFRESH_DELAYS = [0, 4000, 10000, 20000];
@@ -17,6 +19,7 @@ type CreateOrderParams = {
 
 export const useCreateMarketOrder = () => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   return useOperationMutation({
     name: 'useCreateMarketOrder',
     run: ({ amountToSell, owner, minToReceive, orderId, fillOrKill, expiration }: CreateOrderParams) =>
@@ -32,7 +35,7 @@ export const useCreateMarketOrder = () => {
     successToast: (_data, { amountToSell, minToReceive }) => {
       const isSell = isHive(amountToSell);
       const [hive, hbd] = (isSell ? [amountToSell, minToReceive] : [minToReceive, amountToSell]).map((amount) =>
-        formatNaiAsset(amount)
+        formatAsset(amount, { locale })
       );
       return {
         title: t('market_page.order_placed'),

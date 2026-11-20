@@ -2,9 +2,16 @@ import { Link } from '@hive/ui';
 import { RankedWitness, WitnessProfile } from '@/wallet/lib/witness-list';
 import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
-import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
+import { blockGap } from '@hive/ui/lib/utils';
+import { convertStringToBig } from '@hive/ui/lib/helpers';
+import {
+  formatAbbreviatedAmount,
+  formatDollars,
+  formatLargestUnitDuration,
+  getRoundedAbbreveration,
+  parseUtcTimestamp
+} from '@ui/lib/locale-format';
 import { Icons } from '@hive/ui/components/icons';
-import { dateToRelative } from '@hive/ui/lib/parse-date';
 import { memo, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -76,19 +83,21 @@ function WitnessListItem({
 
   const nameTitle = [
     t('witnesses_page.navigate_to_witness_profile'),
-    disableUser ? null : t('witnesses_page.witness_age') + dateToRelative(data.created, t).replace('ago', '').trim(),
+    disableUser
+      ? null
+      : t('witnesses_page.witness_age', {
+          age: formatLargestUnitDuration((Date.now() - parseUtcTimestamp(data.created)) / 1000, locale)
+        }),
     `v${data.running_version}`
   ]
     .filter(Boolean)
     .join('\n');
-  const hp = `${getRoundedAbbreveration(data.vestsToHp, locale)} HP`;
+  const hp = formatAbbreviatedAmount(data.vestsToHp, 'HP', locale);
   const rankUp = data.requiredHpToRankUp ? getRoundedAbbreveration(data.requiredHpToRankUp, locale) : null;
   const rankUpText = rankUp
     ? t('witnesses_page.hp_to_rank_up', { value: rankUp, rank: data.rank - 1 })
     : null;
-  const priceFeed = `$${(
-    Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
-  ).toFixed(3)}`;
+  const priceFeed = formatDollars(convertStringToBig(data.hbd_exchange_rate.base), locale, 3);
   const feedPublished = hasPublishedFeed(data.last_hbd_exchange_update);
   const votersDialog = useLazyDialog();
   const showVotersLabel = t('witnesses_page.show_voters_label', { witness: data.owner });

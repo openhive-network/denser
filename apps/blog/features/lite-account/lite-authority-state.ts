@@ -1,4 +1,5 @@
 import type { AuthorityKeyMemberView, AuthorityMemberView, LiteAuthorityView } from '@hiveio/lite-account';
+import { formatDateTime } from '@ui/lib/locale-format';
 import type { LiteRelayInfo } from './lite-relay-info-query.ts';
 
 // No runtime import of @hiveio/lite-account: the header reads these on every page.
@@ -136,9 +137,4 @@ export function deviceLabelGuess(userAgent: string): string {
 
 /** A chain time as a date in `locale` (`October 23, 2026`, Polish `23 października 2026`). */
 export const formatChainDate = (time: string, locale: string): string =>
-  new Date(chainTimeMs(time)).toLocaleDateString(locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC'
-  });
+  formatDateTime(chainTimeMs(time), locale, 'date', 'UTC');
