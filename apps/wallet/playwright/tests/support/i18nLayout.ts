@@ -18,11 +18,7 @@ export const WALLET_USER_CONTENT = [
 /** Dates the wallet formats with `Intl`, which shows English for the pseudo-locale. */
 export const WALLET_INTL_FORMATTED = ['[data-testid="proposal-date"]'];
 
-/**
- * Each finding the check lets through, with the issue that fixes it; remove an entry with its fix.
- * The follow-ups of #1696 named here are still to be filed: replace `#1696` with their numbers.
- */
+/** Each finding the check lets through, with the issue that fixes it; remove an entry with its fix. */
 export const WALLET_KNOWN_I18N_ISSUES: IKnownI18nIssue[] = [
-  // Follow-up of #1696: "Transfer recipient suggestions cut off the previous-transfer count without a title"
-  { kind: 'clipped', match: /^stub-sender \(/, issue: '#1696 (transfer recipient suggestions)' }
+  { kind: 'clipped', match: /^stub-sender \(/, issue: '#1713' }
 ];
