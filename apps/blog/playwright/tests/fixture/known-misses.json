@@ -47,6 +47,11 @@
     "hash": "efd4dd747a98c2a9"
   },
   {
+    "spec": "i18nLayoutCommunities.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
     "spec": "liteGraduation.spec.ts",
     "method": "bridge.does_user_follow_any_lists",
     "hash": "acc3b29a22e5dfc6"
