@@ -97,6 +97,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/site-url.test.ts packages/ui/lib/operation-mutation.test.ts \
     packages/ui/lib/account-name-rules.test.ts packages/ui/lib/asset-math.test.ts \
     packages/ui/lib/math-utils.test.ts packages/ui/lib/locale-format.test.ts \
+    packages/ui/lib/followed-locale.test.ts \
     packages/ui/lib/memo-secret-check.test.ts packages/ui/lib/common-instrumentation.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/locale-negotiation.test.ts \

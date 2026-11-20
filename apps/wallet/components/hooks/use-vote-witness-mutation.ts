@@ -14,7 +14,7 @@ export function useWitnessVoteMutation() {
     run: ({ account, witness, approve }: WitnessVoteParams) =>
       transactionService.witnessVote(account, witness, approve, OBSERVE),
     successToast: (_data, { approve, witness }) => ({
-      description: approve
+      title: approve
         ? t('witnesses_page.vote_success', { witness })
         : t('witnesses_page.unvote_success', { witness })
     }),

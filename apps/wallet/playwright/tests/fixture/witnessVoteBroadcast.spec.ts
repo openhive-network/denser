@@ -2,6 +2,7 @@ import type { Server } from 'node:http';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { confirmBroadcastsInBlocks } from '../support/blockConfirmation';
 import { expectAccountWitnessVoteOperation } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -51,12 +52,20 @@ test.beforeEach(async ({ context }) => {
  * Opens the witness page logged in as STUB_ACCOUNT, with its active key stored unless `storeKey`
  * is false (then signing asks for it), once the page shows the account's votes.
  */
-const openWitnessesPage = async (page: Page, { storeKey }: { storeKey: boolean }) => {
+const openWitnessesPage = async (
+  page: Page,
+  { storeKey, confirmInBlocks = false, votesRemaining = 'You have 29 votes remaining.' }: {
+    storeKey: boolean;
+    confirmInBlocks?: boolean;
+    votesRemaining?: string;
+  }
+) => {
   const broadcasts = await installBroadcastInterceptor(page);
+  if (confirmInBlocks) await confirmBroadcastsInBlocks(page);
   await logInAsStubAccount(page, 'active');
   if (storeKey) await storeStubAccountKey(page, 'active', ACTIVE_WIF);
   await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
-  await expect(page.getByTestId('witness-header-vote-remaining')).toHaveText('You have 29 votes remaining.', {
+  await expect(page.getByTestId('witness-header-vote-remaining')).toHaveText(votesRemaining, {
     timeout: HYDRATION_TIMEOUT
   });
   return broadcasts;
@@ -80,21 +89,46 @@ const voteUntilPending = (control: Locator, vote: () => Promise<void>) =>
     await expect(control.locator('.animate-spin')).toBeVisible({ timeout: ATTEMPT_TIMEOUT });
   }).toPass({ timeout: HYDRATION_TIMEOUT });
 
+/** The witness page's texts for STUB_ACCOUNT, and the success toasts of a vote and a removal, in each locale checked. */
+const WITNESS_VOTE_LOCALES = [
+  {
+    locale: 'en',
+    votesRemaining: 'You have 29 votes remaining.',
+    removeTitle: `Remove your vote for witness @${VOTED_WITNESS}`,
+    removeConfirmation: `Remove your vote for @${VOTED_WITNESS}?`,
+    cancel: 'Cancel',
+    voted: `Voted for witness @${UNVOTED_WITNESS}`,
+    removed: `Removed your vote for witness @${VOTED_WITNESS}`
+  },
+  {
+    locale: 'pl',
+    votesRemaining: 'Pozostało ci 29 głosów.',
+    removeTitle: `Wycofaj głos na świadka @${VOTED_WITNESS}`,
+    removeConfirmation: `Wycofać swój głos na @${VOTED_WITNESS}?`,
+    cancel: 'Anuluj',
+    voted: `Oddano głos na świadka @${UNVOTED_WITNESS}`,
+    removed: `Wycofano głos na świadka @${VOTED_WITNESS}`
+  }
+];
+
 /**
  * Removes the vote for VOTED_WITNESS through its confirmation dialog, which names the witness;
  * resolves once it is pending.
  */
-const removeVote = (page: Page) => {
+const removeVote = (page: Page, labels = WITNESS_VOTE_LOCALES[0]) => {
   const control = witnessVote(page, VOTED_WITNESS);
   const confirm = page
     .getByRole('dialog')
-    .filter({ hasText: `Remove your vote for witness @${VOTED_WITNESS}` })
-    .filter({ hasText: `Remove your vote for @${VOTED_WITNESS}?` });
+    .filter({ hasText: labels.removeTitle })
+    .filter({ hasText: labels.removeConfirmation });
   return voteUntilPending(control, async () => {
     await control.locator('svg').click({ timeout: ATTEMPT_TIMEOUT });
     await confirm.getByRole('button', { name: 'OK', exact: true }).click({ timeout: ATTEMPT_TIMEOUT });
   });
 };
+
+/** The page's toasts holding `text`: the notification list's items, not the announcement Radix reads out. */
+const toastsWith = (page: Page, text: string) => page.getByRole('listitem').filter({ hasText: text });
 
 test.describe('Witness vote broadcast', () => {
   test('WALLET-TX-WITNESS-VOTE-01 — voting for a witness broadcasts the account, the witness and approve true', async ({
@@ -191,4 +225,53 @@ test.describe('Witness vote broadcast', () => {
     await expect(witnessVote(page, VOTED_WITNESS).locator('.animate-spin')).toBeHidden();
     expect(broadcasts.calls).toHaveLength(0);
   });
+
+  for (const labels of WITNESS_VOTE_LOCALES) {
+    test.describe(`in ${labels.locale}`, () => {
+      test.beforeEach(async ({ context, baseURL }) => {
+        await context.addCookies([{ name: 'NEXT_LOCALE', value: labels.locale, url: baseURL }]);
+      });
+
+      test(`WALLET-TX-WITNESS-VOTE-04-${labels.locale} — a vote included in a block shows one success toast naming the witness`, async ({
+        page
+      }) => {
+        const broadcasts = await openWitnessesPage(page, { storeKey: true, confirmInBlocks: true, ...labels });
+
+        const control = witnessVote(page, UNVOTED_WITNESS);
+        await voteUntilPending(control, () => control.locator('svg').click({ timeout: ATTEMPT_TIMEOUT }));
+
+        await broadcasts.waitForCount(1);
+        await expect(toastsWith(page, labels.voted)).toHaveCount(1);
+        await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+      });
+
+      test(`WALLET-TX-WITNESS-UNVOTE-03-${labels.locale} — a removal included in a block shows one success toast naming the witness`, async ({
+        page
+      }) => {
+        const broadcasts = await openWitnessesPage(page, { storeKey: true, confirmInBlocks: true, ...labels });
+
+        await removeVote(page, labels);
+
+        await broadcasts.waitForCount(1);
+        await expect(toastsWith(page, labels.removed)).toHaveCount(1);
+        await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+      });
+
+      test(`WALLET-TX-WITNESS-UNVOTE-04-${labels.locale} — cancelling the removal shows no toast`, async ({ page }) => {
+        const broadcasts = await openWitnessesPage(page, { storeKey: true, confirmInBlocks: true, ...labels });
+
+        const control = witnessVote(page, VOTED_WITNESS);
+        const confirm = page.getByRole('dialog').filter({ hasText: labels.removeConfirmation });
+        await expect(async () => {
+          await control.locator('svg').click({ timeout: ATTEMPT_TIMEOUT });
+          await expect(confirm).toBeVisible({ timeout: ATTEMPT_TIMEOUT });
+        }).toPass({ timeout: HYDRATION_TIMEOUT });
+        await confirm.getByRole('button', { name: labels.cancel, exact: true }).click();
+
+        await expect(confirm).toBeHidden();
+        await expect(page.getByRole('listitem').filter({ hasText: `@${VOTED_WITNESS}` })).toHaveCount(0);
+        expect(broadcasts.calls).toHaveLength(0);
+      });
+    });
+  }
 });
