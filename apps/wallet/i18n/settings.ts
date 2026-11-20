@@ -2,15 +2,21 @@ import { DEFAULT_LOCALE } from '@hive/ui/lib/locale-cookie.ts';
 import { withPseudoLocale } from '@hive/ui/lib/pseudo-locale.ts';
 
 export const defaultLocale = DEFAULT_LOCALE;
-/** The UI languages, and the pseudo-locale where it is enabled (`@hive/ui/lib/pseudo-locale`). */
-export const languages = withPseudoLocale(['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh']);
+/** The languages the wallet has translations for: it renders texts, numbers and `<html lang>` in one of them, and the pseudo-locale where it is enabled (`@hive/ui/lib/pseudo-locale`). */
+export const languages = withPseudoLocale(['en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh']);
+/**
+ * The `NEXT_LOCALE` values the wallet keeps (and offers a first visit): its own languages and those
+ * only the other apps of the origin translate, which the wallet renders as `defaultLocale`.
+ */
+export const cookieLanguages = ['ar', ...languages];
 export const defaultNS = 'common_wallet';
 export const cookieName = 'NEXT_LOCALE';
 
 /**
  * The language the wallet renders for a `NEXT_LOCALE` cookie value: the value when the wallet has
- * translations for it, else `defaultLocale`. The cookie is shared with the other apps of the origin,
- * so it can name a language only they support.
+ * translations for it, else `defaultLocale`, the language its texts fall back to, so that numbers and
+ * lists agree with the text. The cookie is shared with the other apps of the origin, so it can name a
+ * language only they support.
  */
 export function resolveLocale(cookieValue: string | undefined): string {
   return cookieValue && languages.includes(cookieValue) ? cookieValue : defaultLocale;

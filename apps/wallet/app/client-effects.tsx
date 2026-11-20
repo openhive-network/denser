@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale } from '@ui/components/locale-context';
 import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
 import { browserLanguages, pickSupportedLocale } from '@ui/lib/locale-negotiation';
-import { languages, defaultLocale } from '@/wallet/i18n/settings';
+import { cookieLanguages, defaultLocale, resolveLocale } from '@/wallet/i18n/settings';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useApiSetsEffects, type IApiSetSwitch } from '@ui/hooks/use-api-sets-effects';
 
@@ -20,7 +20,9 @@ export default function ClientEffects() {
   // Set the locale cookie, to the browser's language, if missing or invalid, and the document
   // direction for RTL languages
   useEffect(() => {
-    const locale = ensureLocaleCookie(pickSupportedLocale(browserLanguages(), languages) ?? defaultLocale, languages);
+    const locale = resolveLocale(
+      ensureLocaleCookie(pickSupportedLocale(browserLanguages(), cookieLanguages) ?? defaultLocale, cookieLanguages)
+    );
     document.body.setAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
     if (locale !== renderedLocale) {
       document.documentElement.lang = locale;

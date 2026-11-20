@@ -1,7 +1,11 @@
 import { PieChart, Pie } from 'recharts';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
+import { formatPercent } from '@ui/lib/locale-format';
 
 const chart = [{ name: '', value: 1 }];
+// Manabar percentages come in hundredths of a percent
+const PERCENT_DECIMALS = 2;
 
 const RCStats = ({
   current,
@@ -21,6 +25,7 @@ const RCStats = ({
   percentageValue: number;
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   return (
     <div className="flex w-fit flex-col">
       <h4 className="text-center font-semibold">{title}</h4>
@@ -47,7 +52,7 @@ const RCStats = ({
             dataKey="value"
           ></Pie>
         </PieChart>
-        <span>{`${percentageValue}%`}</span>
+        <span>{formatPercent(percentageValue, locale, PERCENT_DECIMALS)}</span>
       </div>
       {!!restoreTime ? (
         <div className="flex flex-col justify-center">

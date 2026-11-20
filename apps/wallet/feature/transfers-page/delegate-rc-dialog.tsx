@@ -25,6 +25,7 @@ import { Slider } from '@ui/components/slider';
 import { Autocompleter } from '@/wallet/components/autocompleter';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useLocale } from '@ui/components/locale-context';
+import { formatPercent } from '@ui/lib/locale-format';
 import {
   RC_INPUT_DECIMALS,
   billionsToRawRc,
@@ -293,7 +294,7 @@ const DelegateRCDialog = ({
                 disabled={delegateMutation.isPending}
                 className="transition-all duration-200"
               >
-                {preset}%
+                {formatPercent(preset, locale)}
               </Button>
             ))}
           </div>

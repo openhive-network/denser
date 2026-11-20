@@ -6,7 +6,7 @@ import {
   type CondenserMigrationProfile
 } from '@smart-signer/lib/condenser-migration';
 import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
-import { cookieName, languages } from '@/wallet/i18n/settings';
+import { cookieLanguages, cookieName } from '@/wallet/i18n/settings';
 
 // Direct localStorage access is intentional: we write Denser's legacy `node-endpoint`
 // key, which has no TTL structure.
@@ -23,7 +23,7 @@ function migrateLanguage(): void {
     // Skip if Denser already has a language set via cookie
     if (readLocaleCookie()) return;
 
-    const locale = readCondenserLanguage(languages);
+    const locale = readCondenserLanguage(cookieLanguages);
     if (locale) {
       writeLocaleCookie(locale);
       logger.info('Condenser wallet migration: language "%s" migrated to %s cookie', locale, cookieName);
