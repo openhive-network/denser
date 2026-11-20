@@ -54,6 +54,16 @@ issues:
   # Reports about this project's work are filed against this project.
   watcher_reports: self
 
+# Translation rules injected into agent prompts and the machine translation review
+# of changes touching locale files (aidev#19042). ar ships only in the blog; the
+# review skips a locale whose counterpart file does not exist (aidev#19089).
+i18n:
+  locales: [en, ar, es, fr, it, ja, ko, pl, ru, zh]
+  source_locale: en
+  locale_files: ["apps/*/locales/**/*.json", "packages/*/locales/**/*.json"]
+  glossary: ".aidev/i18n/glossary.{lang}.md"
+  review_locale: pl
+
 # Verification slots. Every suite runs in the image above, offline; each
 # writes junit under test-results/, the per-test evidence AIDEV records.
 # AIDEV does not run the `static` or `system` slots for a project, so the static
