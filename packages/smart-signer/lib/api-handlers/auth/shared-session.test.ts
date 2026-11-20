@@ -37,7 +37,7 @@ const STUBS: Record<string, string> = {
   '@transaction/lib/chain': stub(
     'export const getChain = async () => ({ api: { database_api: { verify_authority: async () => ({}) } } });'
   ),
-  '@smart-signer/lib/verify-login-challenge': stub('export const verifyLoginChallenge = async () => false;'),
+  '@smart-signer/lib/verify-login-challenge': stub('export const verifyLoginChallenge = async () => null;'),
   '@smart-signer/lib/verify-login': stub('export const verifyLogin = async () => ({ isLoggedIn: true, strict: true });'),
   '@smart-signer/lib/login-operation': stub('export const getLoginChallengeFromTransactionForLogin = (tx) => tx.challenge;'),
   '@hive/ui/lib/logging': stub(LOGGER),

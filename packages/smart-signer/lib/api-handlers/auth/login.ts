@@ -52,6 +52,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   let result: boolean = false;
   let verifiedUser: User | undefined;
+  let signInPublicKey: string | undefined;
 
   if (JSON.parse(data.txJSON)) {
     const parsedTx = JSON.parse(data.txJSON);
@@ -87,12 +88,15 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     try {
       verifiedUser = await verifyLogin(data, chainAccount);
       result = verifiedUser.isLoggedIn;
+      signInPublicKey = verifiedUser.signInPublicKey;
     } catch (error) {
       logger.error(error, 'Failed to create user object for %s', username);
     }
   } else if (loginType === LoginType.hiveauth && loginChallenge) {
     // A HiveAuth wallet app signs the login challenge, not a transaction
-    result = await verifyLoginChallenge(chainAccount, signatures, hiveAuthLoginMessage(loginChallenge), keyType);
+    const challengeKey = await verifyLoginChallenge(chainAccount, signatures, hiveAuthLoginMessage(loginChallenge), keyType);
+    result = challengeKey !== null;
+    signInPublicKey = challengeKey ?? undefined;
   }
 
   if (!result) {
@@ -128,7 +132,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     authenticateOnBackend,
     chatAuthToken,
     oauthConsent,
-    strict: verifiedUser?.strict ? true : false
+    strict: verifiedUser?.strict ? true : false,
+    ...(signInPublicKey && { signInPublicKey })
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   // The same user signing in again keeps their Matrix devices, which Element in the drawer still uses

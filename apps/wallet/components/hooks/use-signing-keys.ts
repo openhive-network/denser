@@ -19,13 +19,15 @@ export interface AccountSigningKeys {
 const NONE: AccountSigningKeys = { session: NO_SIGNING_KEYS, safeStorage: NO_SIGNING_KEYS, passkey: NO_SIGNING_KEYS };
 
 /**
- * The session's keys: a WIF session's are the keys it keeps in this tab, known exactly, else the
- * role it signed in with; a passkey session's the posting key its signer derives; a safe storage
- * session's the roles it holds a key of; a signer's the role it signed in with.
+ * The session's keys: the key it signed in with, when known exactly, and besides it a WIF session's
+ * keys it keeps in this tab, else the role it signed in with; a passkey session's the posting key its
+ * signer derives; a safe storage session's the roles it holds a key of; a signer's the role it
+ * signed in with.
  */
 async function readSigningKeys(user: User, storedKeyTypes: readonly string[]): Promise<AccountSigningKeys> {
-  const { username, loginType, keyType } = user;
+  const { username, loginType, keyType, signInPublicKey } = user;
   const roles = [...new Set([keyType, ...storedKeyTypes])];
+  const signInKeys = signInPublicKey ? [signInPublicKey] : [];
   const binding = passkeyBindingOf(username);
   const passkey = binding ? { publicKeys: [binding.publicKey], roles: [] } : NO_SIGNING_KEYS;
   switch (loginMethodOf(loginType)) {
@@ -34,7 +36,7 @@ async function readSigningKeys(user: User, storedKeyTypes: readonly string[]): P
       const chain = heldWifs.length ? await getChain() : undefined;
       return {
         session: {
-          publicKeys: chain ? heldWifs.map((wif) => chain.calculatePublicKey(wif)) : [],
+          publicKeys: [...signInKeys, ...(chain ? heldWifs.map((wif) => chain.calculatePublicKey(wif)) : [])],
           roles: roles.filter((role) => getTabWif(username, role) === null)
         },
         safeStorage: NO_SIGNING_KEYS,
@@ -42,11 +44,11 @@ async function readSigningKeys(user: User, storedKeyTypes: readonly string[]): P
       };
     }
     case 'safe_storage':
-      return { session: { publicKeys: [], roles }, safeStorage: { publicKeys: [], roles }, passkey };
+      return { session: { publicKeys: signInKeys, roles }, safeStorage: { publicKeys: [], roles }, passkey };
     case 'passkey':
       return { session: passkey, safeStorage: NO_SIGNING_KEYS, passkey };
     default:
-      return { session: { publicKeys: [], roles: [keyType] }, safeStorage: NO_SIGNING_KEYS, passkey };
+      return { session: { publicKeys: signInKeys, roles: [keyType] }, safeStorage: NO_SIGNING_KEYS, passkey };
   }
 }
 
@@ -58,7 +60,7 @@ export function useSigningKeys(user: User, username: string): AccountSigningKeys
   const own = user.isLoggedIn && user.username === username;
   const { keyTypes, isPending } = useStoredKeyTypes(user);
   const query = useQuery({
-    queryKey: ['signingKeys', user.loginType, username, user.keyType, keyTypes],
+    queryKey: ['signingKeys', user.loginType, username, user.keyType, user.signInPublicKey, keyTypes],
     queryFn: () => readSigningKeys(user, keyTypes ?? []),
     enabled: own && !isPending
   });
