@@ -20,7 +20,8 @@ export async function verifyLogin(data: PostLoginSchema, account?: AccountAuthor
 
   try {
     // Loaded on sign-in only: it brings wax, which a signed-in user's page must not load
-    const { isStrictLogin } = await import('@smart-signer/lib/auth/strict-login');
+    const { readLoginKeys } = await import('@smart-signer/lib/auth/strict-login');
+    const { strict, signInPublicKey } = await readLoginKeys(data, account);
     // Create User object from login data
     const user: User = {
       isLoggedIn: true,
@@ -31,7 +32,8 @@ export async function verifyLogin(data: PostLoginSchema, account?: AccountAuthor
       authenticateOnBackend: false,
       chatAuthToken: '',
       oauthConsent: {},
-      strict: await isStrictLogin(data, account)
+      strict,
+      ...(signInPublicKey && { signInPublicKey })
     };
     return user;
   } catch (error) {

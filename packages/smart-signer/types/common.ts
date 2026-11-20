@@ -30,6 +30,8 @@ export type User = {
     chatAuthToken: string;
     oauthConsent: { [key: string]: boolean } // `key` is oauth client_id
     strict: boolean;
+    /** The public key the sign-in was signed with, when known; never a private key */
+    signInPublicKey?: string;
 }
 
 export interface OAuthState {
