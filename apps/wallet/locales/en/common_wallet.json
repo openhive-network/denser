@@ -41,7 +41,10 @@
     "profile_picture": "Profile picture",
     "notifications_region": "Notifications ({hotkey})",
     "offline_notice": "You're offline. The wallet will refresh once your connection is back.",
-    "select_placeholder": "Select..."
+    "select_placeholder": "Select...",
+    "unexpected_error": "An unexpected error occurred. Please try again.",
+    "copied": "Copied!",
+    "profile_picture_of": "{{username}} profile picture"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "Privacy Policy",
       "terms_of_service": "Terms of Service",
       "currency_market": "Currency Market",
-      "third_party_exchanges": "Third-party exchanges:"
+      "third_party_exchanges": "Third-party exchanges:",
+      "healthchecker": "Healthchecker",
+      "version": "Version: {{version}}"
     },
     "profile_navbar": {
       "blog": "Blog",
@@ -255,7 +260,8 @@
     "fill_recurrent_transfer_from": "Received recurring transfer of {{value}} ({{remaining}} remaining) from ",
     "failed_recurrent_transfer_to": "Failed to send recurring transfer of {{value}} ({{failures}} consecutive failures) to ",
     "failed_recurrent_transfer_from": "Failed recurring transfer of {{value}} from ",
-    "recurrent_transfer_deleted": " - the recurring transfer was cancelled after too many failures"
+    "recurrent_transfer_deleted": " - the recurring transfer was cancelled after too many failures",
+    "unformatted_operation": "error"
   },
   "market_page": {
     "last_price": "Last price",
@@ -808,6 +814,9 @@
       "passkey": "Your posting key is derived from your passkey on {{origin}}.",
       "passkey_signer": "the passkey signer",
       "session_marked": "The keys this session signs with are marked “This session” in the list above."
+    },
+    "master_key": {
+      "info": "The master password derives all your other keys, the owner key among them. Anyone who has it controls your account, so store it securely offline."
     }
   },
   "communities": {
@@ -849,7 +858,8 @@
       "minimum_characters": "Minimum {{value}} characters",
       "pick_one": "Pick one"
     },
-    "no_payment_option": "You need {{hive}} HIVE or {{tokens}} account creation token to create a community"
+    "no_payment_option": "You need {{hive}} HIVE or {{tokens}} account creation token to create a community",
+    "created_toast": "Community created"
   },
   "settings": {
     "preferences": "Preferences",
@@ -872,7 +882,9 @@
     "hours_other": "{{count}} hours",
     "minutes_one": "{{count}} minute",
     "minutes_other": "{{count}} minutes",
-    "hours_and_minutes": "{{hours}} and {{minutes}}"
+    "hours_and_minutes": "{{hours}} and {{minutes}}",
+    "rc_level": "(RC) level: {{value}}%",
+    "full_in_hours": "Full in {{hours}}h"
   },
   "page_titles": {
     "home": "Home",
@@ -888,14 +900,21 @@
     "permissions": "Permissions",
     "authorities": "Authorities",
     "change_password": "Change Password",
-    "create_communities": "Create Communities"
+    "create_communities": "Create Communities",
+    "healthchecker_description": "Health checker for wallet APIs"
   },
   "api_sets": {
     "description": "Each family of Hive APIs goes to the node chosen for it. Pick a node per family, or keep the automatic choice.",
     "check_nodes": "Check the nodes",
     "stop_checking": "Stop checking",
     "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers.",
-    "catalog_only": "Only the listed nodes can be chosen: the site may call no others."
+    "catalog_only": "Only the listed nodes can be chosen: the site may call no others.",
+    "title": "API switch and HealthChecker",
+    "checks": {
+      "find_accounts": "Database - Find accounts",
+      "savings_withdrawals": "Database - saving withdrawals",
+      "operation_types": "HAFAH - Operation types"
+    }
   },
   "account_keys": {
     "this_session": "This session",
@@ -909,5 +928,18 @@
       "safe_storage_replaced": "The new keys will replace the ones stored in Safe Storage in this browser.",
       "none": "A key this tab keeps is replaced with the new one; otherwise, enter the new key the next time you sign."
     }
+  },
+  "recovery_page": {
+    "title": "Stolen accounts recovery",
+    "description": "From time to time, a Hiver's owner key may be compromised. Stolen Account Recovery gives the rightful account owner 30 days to recover their account from the moment the thief changed their owner key. Stolen Account Recovery can only be used on hive.blog if the account owner had previously listed 'Hive' as their account trustee and complied with Hive's Terms of Service.",
+    "account_name": "Account name",
+    "recent_password": "Recent password",
+    "begin_recovery": "Begin recovery",
+    "verify_identity": "We need to verify your identity. Please enter your email address below to begin the verification.",
+    "email": "Email",
+    "continue_with_email": "Continue with email",
+    "account_not_found": "Account not found",
+    "owner_not_changed": "We are unable to recover this account, it has not changed ownership recently",
+    "password_not_used": "This password was not used on this account in the last 30 days."
   }
 }

@@ -11,6 +11,7 @@ import {
 } from '@ui/components/alert-dialog';
 import { Input, Separator } from '@ui/components';
 import { ReactNode, useState } from 'react';
+import { X } from 'lucide-react';
 import ln2list from '../../lib/ln2list';
 import { useTranslation } from '@/blog/i18n/client';
 import { useFlagMutation } from '../../components/hooks/use-flag-mutation';
@@ -87,8 +88,12 @@ export function AlertDialogFlag({
               <AlertDialogTitle data-testid="flag-dialog-header">
                 {t('post_content.flag.flag_post')}
               </AlertDialogTitle>
-              <AlertDialogCancel className="border-none hover:text-destructive" data-testid="flag-dialog-close">
-                X
+              <AlertDialogCancel
+                className="border-none hover:text-destructive"
+                aria-label={t('global.close')}
+                data-testid="flag-dialog-close"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
               </AlertDialogCancel>
             </div>
             <AlertDialogDescription className="flex flex-col gap-2" data-testid="flag-dialog-description">

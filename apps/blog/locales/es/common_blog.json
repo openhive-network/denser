@@ -52,7 +52,14 @@
       "hours_and_minutes": "{{hours}} y {{minutes}}"
     },
     "profile_picture": "Foto de perfil",
-    "notifications_region": "Notificaciones ({hotkey})"
+    "notifications_region": "Notificaciones ({hotkey})",
+    "profile_picture_of": "Foto de perfil de {{username}}",
+    "loading_more": "Cargando...",
+    "no_data_available": "No hay datos disponibles",
+    "fetching_data_failed": "Hubo un problema al obtener los datos.",
+    "check_permlink_or_node": "Comprueba que el permlink sea correcto o que el nodo funcione bien.",
+    "unexpected_error": "Se produjo un error inesperado. Inténtalo de nuevo.",
+    "page_load_failed": "No pudimos cargar esta página. Inténtalo de nuevo."
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +76,8 @@
       "create_post": "Crear publicación",
       "theme": "Tema",
       "language": "Idioma",
-      "menu_panel": "Panel de menú"
+      "menu_panel": "Panel de menú",
+      "ai_tag": "IA"
     },
     "sidebar": {
       "welcome": "Bienvenido",
@@ -84,7 +92,9 @@
       "privacy_policy": "Política de Privacidad",
       "terms_of_service": "Términos del Servicio",
       "not_available_yet": "Aún no disponible",
-      "login_required": "Inicia sesión para usar esta opción"
+      "login_required": "Inicia sesión para usar esta opción",
+      "healthchecker": "Comprobador de estado",
+      "version": "Versión: {{version}}"
     },
     "communities_nav": {
       "my_friends": "Mis amigos",
@@ -190,6 +200,13 @@
       "add_active_key": "Añadir clave activa",
       "add_posting_key": "Añadir clave de publicación",
       "switch_to_posting_key": "Cambiar a la clave de publicación"
+    },
+    "manabars": {
+      "resource_credits": "Créditos de recursos",
+      "rc_level": "Nivel (RC): {{value}} %",
+      "voting_power": "Poder de voto: {{value}} %",
+      "downvote_power": "Poder de voto negativo: {{value}} %",
+      "full_in": "Completo en: {{time}}"
     }
   },
   "select_sort": {
@@ -297,7 +314,11 @@
     "reveal_nsfw_post": "Mostrar esta publicación NSFW",
     "my_blacklist": "Mi lista negra",
     "post_image": "Imagen de la publicación",
-    "payout_declined": "Pago rechazado"
+    "payout_declined": "Pago rechazado",
+    "cross_posted": "<author>{{author}}</author> compartió <original>@{{original}}</original>",
+    "nsfw_hidden_logged_in": "<reveal>Mostrar esta publicación</reveal> o ajusta tus <settings>preferencias de visualización</settings>.",
+    "nsfw_hidden_logged_out": "<reveal>Mostrar esta publicación</reveal> o <account>crea una cuenta</account> para guardar tus preferencias.",
+    "no_image": "Sin imagen"
   },
   "alert_dialog_reblog": {
     "action": "Aceptar",
@@ -305,7 +326,9 @@
     "description": "Esta publicación se añadirá a tu blog y se compartirá con tus seguidores.",
     "already_reblogged": "Ya has reblogueado esta publicación.",
     "title": "Rebloguear esta publicación",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "toast_title": "Reblogueado",
+    "toast_description": "Has reblogueado la publicación."
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Quitar voto positivo",
@@ -480,7 +503,9 @@
       "followed_you": "@{{username}} te ha seguido",
       "mentioned_you_and_others": "@{{username}} te mencionó a ti y a {{others}} más",
       "mentioned_you": "@{{username}} te mencionó",
-      "subscribed_to": "@{{username}} se suscribió a {{community}}"
+      "subscribed_to": "@{{username}} se suscribió a {{community}}",
+      "marked_read_title": "Notificaciones marcadas como leídas",
+      "marked_read_description": "Todas las notificaciones se han marcado como leídas."
     },
     "load_more_failed": "No se pudieron cargar más publicaciones.",
     "load_more_retry": "Reintentar",
@@ -498,7 +523,32 @@
       "unfollowed_description": "Has dejado de seguir a {{username}}.",
       "unfollowed_all_title": "Dejaste de seguir a todos",
       "unfollowed_all_description": "Ya no sigues a nadie."
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "Blog añadido a la lista negra",
+      "blacklisted_description": "El blog {{blog}} se ha añadido a tu lista negra.",
+      "unblacklisted_title": "Blog quitado de la lista negra",
+      "unblacklisted_description": "El blog {{blog}} se ha quitado de tu lista negra.",
+      "blacklist_reset_title": "Lista negra restablecida",
+      "blacklist_reset_description": "Se han quitado todos los blogs de la lista negra.",
+      "list_followed_title": "Lista del blog seguida",
+      "blacklist_followed_description": "El blog {{blog}} se ha añadido a tus listas negras seguidas.",
+      "list_unfollowed_title": "Has dejado de seguir la lista del blog",
+      "blacklist_unfollowed_description": "El blog {{blog}} se ha quitado de tus listas negras seguidas.",
+      "followed_blacklists_reset_title": "Listas negras seguidas restablecidas",
+      "followed_blacklists_reset_description": "Se han quitado todos los blogs de tus listas negras seguidas.",
+      "muted_list_followed_description": "El blog {{blog}} se ha añadido a tus listas de silenciados seguidas.",
+      "muted_list_unfollowed_description": "El blog {{blog}} se ha quitado de tus listas de silenciados seguidas.",
+      "followed_muted_lists_reset_title": "Listas de silenciados seguidas restablecidas",
+      "followed_muted_lists_reset_description": "Se han restablecido tus listas de silenciados seguidas.",
+      "muted_title": "Silenciado",
+      "muted_description": "Has silenciado a {{username}}.",
+      "unmuted_title": "Ya no está silenciado",
+      "unmuted_description": "Has dejado de silenciar a {{username}}.",
+      "muted_list_reset_title": "Lista de silenciados restablecida",
+      "muted_list_reset_description": "Se ha restablecido tu lista de silenciados."
+    },
+    "level_badge_alt": "Nivel {{level}}"
   },
   "communities": {
     "set_title_for_user": "Establecer título para @{{username}}",
@@ -549,7 +599,11 @@
       "subscribed_title": "Suscrito",
       "subscribed_description": "Te has suscrito a {{community}}.",
       "unsubscribed_title": "Suscripción cancelada",
-      "unsubscribed_description": "Has cancelado tu suscripción a {{community}}."
+      "unsubscribed_description": "Has cancelado tu suscripción a {{community}}.",
+      "role_updated_title": "Listo",
+      "role_updated_description": "Se ha actualizado el rol de {{username}} en la comunidad {{community}}.",
+      "updated_title": "Comunidad actualizada",
+      "updated_description": "Has actualizado la comunidad {{community}}."
     },
     "buttons": {
       "subscribe": "Suscribirse",
@@ -721,7 +775,33 @@
       "updated_description": "Tu comentario se ha actualizado.",
       "deleted_title": "Comentario eliminado",
       "deleted_description": "Tu comentario se ha eliminado."
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "Fijada",
+      "pinned_description": "La publicación se ha fijado.",
+      "unpinned_title": "Desfijada",
+      "unpinned_description": "La publicación ya no está fijada.",
+      "muted_title": "Publicación silenciada",
+      "muted_description": "La publicación se ha silenciado.",
+      "unmuted_title": "Publicación ya no silenciada",
+      "unmuted_description": "La publicación ya no está silenciada.",
+      "flagged_title": "Denuncia enviada",
+      "flagged_description": "Has denunciado la publicación en {{community}}."
+    },
+    "vote_toasts": {
+      "title": "Voto registrado",
+      "upvoted_description": "Has dado un voto positivo.",
+      "downvoted_description": "Has dado un voto negativo.",
+      "removed_description": "Tu voto se ha retirado."
+    },
+    "delete_dialog": {
+      "title_post": "Confirmar eliminación de la publicación",
+      "title_comment": "Confirmar eliminación del comentario",
+      "description": "¿Estás seguro?",
+      "cancel": "Cancelar"
+    },
+    "cross_posted_banner": "<author>{{author}}</author> compartió <post>esta publicación</post> en <community>{{community}}</community>",
+    "authored_by": "(escrito por <author>@{{author}}</author>)"
   },
   "submit_page": {
     "log_in_to_post": "Inicia sesión para publicar.",
@@ -866,7 +946,14 @@
       "unordered_list": "Lista con viñetas",
       "ordered_list": "Lista numerada",
       "task_list": "Lista de tareas"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "Publicación enviada",
+      "submitted_description": "Tu publicación se ha enviado",
+      "deleted_title": "Publicación eliminada",
+      "deleted_description": "Tu publicación se ha eliminado"
+    },
+    "submitting": "Enviando..."
   },
   "search_page": {
     "placeholder": "Buscar",
@@ -943,7 +1030,11 @@
     "error_already_exists": "Este punto final ya está en la lista",
     "error_cant_remove_active": "No puedes eliminar el punto final preferido actual. Por favor, selecciona primero un nuevo punto final preferido",
     "error_cant_remove_all": "Debes tener al menos un punto final en la lista",
-    "changes_saved": "Cambios guardados"
+    "changes_saved": "Cambios guardados",
+    "profile_toasts": {
+      "updated_title": "Perfil actualizado",
+      "updated_description": "Tu perfil se ha actualizado."
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "¡Lo siento! Esta página no existe.",
@@ -1000,7 +1091,8 @@
       "pending": "pendiente",
       "roles": "roles"
     },
-    "for_you_posts": "Para ti"
+    "for_you_posts": "Para ti",
+    "community_description": "Comunidad {{community}}."
   },
   "chat_widget": {
     "chat": "Chat",
@@ -1056,7 +1148,8 @@
       "account": "Usuarios",
       "user_topic": "Publicaciones de un usuario por tema",
       "tag": "Etiquetas"
-    }
+    },
+    "sort_by": "Ordenar por:"
   },
   "for_you_feed": {
     "sign_in_prompt": "Inicia sesión para ver tu feed.",
@@ -1361,13 +1454,41 @@
       "locked": "Claves en el almacenamiento seguro: bloqueadas",
       "unlocked": "Claves en el almacenamiento seguro: desbloqueadas",
       "lock": "Bloquear"
-    }
+    },
+    "reply_failed_title": "No se pudo enviar la respuesta"
   },
   "api_sets": {
     "description": "Cada familia de APIs de Hive va al nodo elegido para ella. Elige un nodo por familia o mantén la elección automática.",
     "check_nodes": "Comprobar los nodos",
     "stop_checking": "Detener la comprobación",
     "node_unavailable": "{{selected}} no está disponible para {{set}}; se usa {{node}} hasta que se recupere.",
-    "catalog_only": "Solo se pueden elegir los nodos de la lista: el sitio no puede llamar a otros."
+    "catalog_only": "Solo se pueden elegir los nodos de la lista: el sitio no puede llamar a otros.",
+    "title": "Selector de API y comprobador de estado",
+    "checks": {
+      "find_accounts": "Base de datos - Buscar cuentas",
+      "get_post": "Bridge - Obtener publicación",
+      "list_communities": "Bridge - Listar comunidades",
+      "get_ranked_posts": "Bridge - Obtener publicaciones clasificadas",
+      "ai_search": "Búsqueda con IA",
+      "ai_similar_posts": "Publicaciones similares con IA"
+    }
+  },
+  "service_unavailable": {
+    "title": "Servicio no disponible temporalmente",
+    "description": "Tenemos problemas para conectar con la red Hive. Suele ser algo temporal.",
+    "what_you_can_do": "Qué puedes hacer",
+    "refresh": "Prueba a recargar la página en unos instantes",
+    "check_api_status": "Comprueba el estado de la API en el comprobador de estado",
+    "check_back": "Vuelve en breve: estamos trabajando en ello"
+  },
+  "oidc": {
+    "interaction_title": "Interacción",
+    "consent_title": "Consentimiento",
+    "consent_request": "Necesitamos tu consentimiento en el flujo OAuth para la aplicación {{application}}. Esta aplicación quiere:",
+    "create_account": "Crear una cuenta para ti.",
+    "read_profile": "Conocer los datos de tu perfil público de Hive.",
+    "choose": "Haz clic en el botón correspondiente:",
+    "consent_yes": "Sí, doy mi consentimiento",
+    "consent_no": "No, no doy mi consentimiento"
   }
 }

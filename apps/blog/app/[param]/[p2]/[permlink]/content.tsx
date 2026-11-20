@@ -43,7 +43,7 @@ import UserInfo from '@/blog/features/post-rendering/user-info';
 import { UserPopoverCard } from '@/blog/features/post-rendering/user-popover-card';
 import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
-import { useTranslation } from '@/blog/i18n/client';
+import { Trans, useTranslation } from '@/blog/i18n/client';
 import { postContainerClasses } from '@/blog/lib/post-layout-classes';
 import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 import { getBasePath } from '@ui/lib/path-utils';
@@ -495,20 +495,27 @@ const PostContent = () => {
               <div className="mb-4 flex items-center gap-2 bg-background-secondary p-5 text-sm">
                 <Icons.crossPost className="h-4 w-4" />
                 <span>
-                  <BasePathLink href={`/@${postData?.author}`} className="font-bold hover:text-destructive">
-                    {postData?.author}{' '}
-                  </BasePathLink>
-                  cross-posted{' '}
-                  <Link
-                    href={`/@${postData?.json_metadata.original_author}/${postData?.json_metadata.original_permlink}`}
-                    className="font-bold hover:text-destructive"
-                  >
-                    this post{' '}
-                  </Link>
-                  in{' '}
-                  <Link href={`/created/${postData?.community}`} className="font-bold hover:text-destructive">
-                    {postData?.community_title ?? postData?.community}
-                  </Link>
+                  <Trans
+                    i18nKey="post_content.cross_posted_banner"
+                    values={{ author: postData?.author, community: postData?.community_title ?? postData?.community }}
+                    components={{
+                      author: (
+                        // Trans fills in the children from the translation.
+                        <BasePathLink href={`/@${postData?.author}`} className="font-bold hover:text-destructive">
+                          {postData?.author}
+                        </BasePathLink>
+                      ),
+                      post: (
+                        <Link
+                          href={`/@${postData?.json_metadata.original_author}/${postData?.json_metadata.original_permlink}`}
+                          className="font-bold hover:text-destructive"
+                        />
+                      ),
+                      community: (
+                        <Link href={`/created/${postData?.community}`} className="font-bold hover:text-destructive" />
+                      )
+                    }}
+                  />
                 </span>
               </div>
             ) : null}
@@ -890,7 +897,7 @@ const PostContent = () => {
                             action={(permlink) => {
                               deleteComment(permlink);
                             }}
-                            label="Post"
+                            kind="post"
                           >
                             <button
                               disabled={edit || deletePostMutation.isPending}

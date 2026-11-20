@@ -6,6 +6,9 @@ export type { MetadataProps } from '@hive/common-hiveio-packages/wax';
 
 const DEFAULT_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
 
+/** Hive's slogan: page descriptions end with it, untranslated, in every language. */
+export const HIVE_TAGLINE = 'Hive: Communities Without Borders.';
+
 /**
  * Build metadata for a user account page
  * @param account - The account, as getAccountFull returns it
@@ -23,7 +26,7 @@ export const buildAccountMetadata = (account: FullAccount, descriptionText: stri
       displayName === account.name
         ? `${descriptionText} ${displayName} - Hive`
         : `${descriptionText} ${displayName} (${firstParam}) - Hive`,
-    description: account.profile?.about || `${descriptionText} ${firstParam}. Hive: Communities Without Borders.`
+    description: account.profile?.about || `${descriptionText} ${firstParam}. ${HIVE_TAGLINE}`
   };
 };
 
@@ -65,7 +68,7 @@ export const getCommunityMetadata = async (
     const communityName = data?.title ?? data.name;
     metadata.tabTitle = `${communityName} / ${firstParam} - Hive`;
     metadata.description =
-      data?.description || `${descriptionText} ${secondParam}. Hive: Communities Without Borders.`;
+      data?.description || `${descriptionText} ${secondParam}. ${HIVE_TAGLINE}`;
     metadata.image = data?.avatar_url || DEFAULT_IMAGE;
     metadata.title = communityName;
   } catch (error) {

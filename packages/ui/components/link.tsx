@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-restricted-imports -- this is the Link wrapper the rule sends imports to
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import { AnchorHTMLAttributes, forwardRef } from 'react';
 
+// eslint-disable-next-line no-restricted-imports -- this is the Link wrapper the rule sends imports to
 export { useLinkStatus } from 'next/link';
 
 export interface LinkProps

@@ -1,3 +1,4 @@
+import { useTranslation } from '@/wallet/i18n/client';
 import { ESupportedLanguages } from '@hiveio/wax';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
@@ -43,8 +44,9 @@ function createCommunityAccount({ memoKey, communityTag, creator, claimed }: Cre
       );
 }
 
-export const useCreateCommunityMutation = () =>
-  useOperationMutation({
+export const useCreateCommunityMutation = () => {
+  const { t } = useTranslation('common_wallet');
+  return useOperationMutation({
     name: 'useCreateCommunityMutation',
     run: async (params: CreateCommunityMutationParams) => {
       const { communityTag, title, about, creator, lang, nsfw, flagText, description } = params;
@@ -62,6 +64,7 @@ export const useCreateCommunityMutation = () =>
       );
       return { createAccountResult, communityActions };
     },
-    successToast: () => ({ title: 'Community created', duration: 5000 }),
+    successToast: () => ({ title: t('communities.created_toast'), duration: 5000 }),
     reportErrors: false
   });
+};

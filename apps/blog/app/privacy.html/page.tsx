@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- The privacy policy is an English legal text, like tos.md and faq.md. */
 const PrivacyPage = () => {
   return (
     <div className="my-12 flex flex-col items-center p-2">

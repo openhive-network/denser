@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { Button } from '@ui/components/button';
 import { handleError } from '@ui/lib/handle-error';
+import { useTranslation } from '@/blog/i18n/client';
 import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import ProfileLoadError from '@/blog/features/layouts/user-profile/profile-load-error';
 
@@ -15,6 +16,7 @@ export default function ParamError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useTranslation('common_blog');
   const router = useRouter();
   const segment = useSelectedLayoutSegment();
 
@@ -28,12 +30,12 @@ export default function ParamError({
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <h3 className="text-xl font-bold">Something went wrong</h3>
-      <p className="text-muted-foreground">We couldn't load this page. Please try again.</p>
+      <h3 className="text-xl font-bold">{t('global.something_went_wrong')}</h3>
+      <p className="text-muted-foreground">{t('global.page_load_failed')}</p>
       <div className="flex gap-2">
-        <Button onClick={() => reset()}>Try again</Button>
+        <Button onClick={() => reset()}>{t('chat_widget.retry')}</Button>
         <Button variant="outline" onClick={() => router.push('/')}>
-          Go home
+          {t('user_profile.go_home')}
         </Button>
       </div>
     </div>

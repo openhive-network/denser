@@ -10,6 +10,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-floating-promises': 'error',
     // Playwright fixtures call their `use` argument, which this rule mistakes for a React hook.
-    'react-hooks/rules-of-hooks': 'warn'
+    'react-hooks/rules-of-hooks': 'warn',
+    // Test data (post titles, toast texts to expect) is not text the app shows.
+    'no-restricted-syntax': 'off'
   }
 };

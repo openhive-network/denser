@@ -41,7 +41,10 @@
     "profile_picture": "프로필 사진",
     "notifications_region": "알림 ({hotkey})",
     "offline_notice": "오프라인 상태입니다. 연결이 복구되면 지갑이 새로 고쳐집니다.",
-    "select_placeholder": "선택..."
+    "select_placeholder": "선택...",
+    "unexpected_error": "예기치 않은 오류가 발생했습니다. 다시 시도하세요.",
+    "copied": "복사했습니다!",
+    "profile_picture_of": "{{username}}님의 프로필 사진"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "개인정보 처리방침",
       "terms_of_service": "서비스 약관",
       "currency_market": "화폐 마켓",
-      "third_party_exchanges": "외부 거래소:"
+      "third_party_exchanges": "외부 거래소:",
+      "healthchecker": "상태 점검",
+      "version": "버전: {{version}}"
     },
     "profile_navbar": {
       "blog": "블로그",
@@ -252,7 +257,8 @@
     "fill_recurrent_transfer_from": "{{value}} 정기 송금 받음 ({{remaining}}회 남음), 보낸 사람: ",
     "failed_recurrent_transfer_to": "{{value}} 정기 송금 실패 (연속 {{failures}}회 실패), 받는 사람: ",
     "failed_recurrent_transfer_from": "{{value}} 정기 송금 실패, 보낸 사람: ",
-    "recurrent_transfer_deleted": " - 실패가 너무 많아 정기 송금이 취소되었습니다"
+    "recurrent_transfer_deleted": " - 실패가 너무 많아 정기 송금이 취소되었습니다",
+    "unformatted_operation": "오류"
   },
   "market_page": {
     "last_price": "최근 가격",
@@ -795,6 +801,9 @@
       "passkey": "포스팅 키는 {{origin}}의 패스키에서 파생됩니다.",
       "passkey_signer": "패스키 서명자",
       "session_marked": "이 세션이 서명에 사용하는 키는 위 목록에 '이 세션'으로 표시됩니다."
+    },
+    "master_key": {
+      "info": "마스터 비밀번호로 소유자 키를 포함한 다른 모든 키가 생성됩니다. 이 비밀번호를 가진 사람은 계정을 제어할 수 있으므로 오프라인에 안전하게 보관하세요."
     }
   },
   "communities": {
@@ -836,7 +845,8 @@
       "minimum_characters": "최소 {{value}}자",
       "pick_one": "하나를 선택하세요"
     },
-    "no_payment_option": "커뮤니티를 만들려면 {{hive}} HIVE 또는 계정 생성 토큰 {{tokens}}개가 필요합니다"
+    "no_payment_option": "커뮤니티를 만들려면 {{hive}} HIVE 또는 계정 생성 토큰 {{tokens}}개가 필요합니다",
+    "created_toast": "커뮤니티 생성됨"
   },
   "settings": {
     "preferences": "환경설정",
@@ -857,7 +867,9 @@
     "amount_billions": "{{amount}}×10억",
     "hours_other": "{{count}}시간",
     "minutes_other": "{{count}}분",
-    "hours_and_minutes": "{{hours}} {{minutes}}"
+    "hours_and_minutes": "{{hours}} {{minutes}}",
+    "rc_level": "(RC) 수준: {{value}}%",
+    "full_in_hours": "완전 충전까지 {{hours}}시간"
   },
   "page_titles": {
     "home": "홈",
@@ -873,14 +885,21 @@
     "permissions": "권한",
     "authorities": "계정 권한",
     "change_password": "비밀번호 변경",
-    "create_communities": "커뮤니티 만들기"
+    "create_communities": "커뮤니티 만들기",
+    "healthchecker_description": "지갑 API 상태 점검"
   },
   "api_sets": {
     "description": "Hive API의 각 계열은 그 계열에 선택된 노드로 보내집니다. 계열마다 노드를 고르거나 자동 선택을 유지하세요.",
     "check_nodes": "노드 확인",
     "stop_checking": "확인 중지",
     "node_unavailable": "{{selected}}을(를) {{set}}에 사용할 수 없어 복구될 때까지 {{node}}을(를) 사용합니다.",
-    "catalog_only": "목록의 노드만 선택할 수 있습니다. 사이트는 다른 노드에 연결할 수 없습니다."
+    "catalog_only": "목록의 노드만 선택할 수 있습니다. 사이트는 다른 노드에 연결할 수 없습니다.",
+    "title": "API 전환 및 상태 점검",
+    "checks": {
+      "find_accounts": "데이터베이스 - 계정 찾기",
+      "savings_withdrawals": "데이터베이스 - 저축 인출",
+      "operation_types": "HAFAH - 작업 유형"
+    }
   },
   "account_keys": {
     "this_session": "이 세션",
@@ -894,5 +913,18 @@
       "safe_storage_replaced": "새 키가 이 브라우저의 안전 저장소에 저장된 키를 대체합니다.",
       "none": "이 탭이 보관하는 키는 새 키로 교체됩니다. 그렇지 않으면 다음에 서명할 때 새 키를 입력하세요."
     }
+  },
+  "recovery_page": {
+    "title": "도난 계정 복구",
+    "description": "Hive 사용자의 소유자 키가 유출될 수 있습니다. 도난 계정 복구는 도둑이 소유자 키를 바꾼 시점부터 30일 동안 정당한 소유자가 계정을 되찾을 수 있게 합니다. hive.blog에서는 소유자가 이전에 'Hive'를 계정 수탁자로 지정하고 Hive 서비스 약관을 지킨 경우에만 사용할 수 있습니다.",
+    "account_name": "계정 이름",
+    "recent_password": "최근 비밀번호",
+    "begin_recovery": "복구 시작",
+    "verify_identity": "본인 확인이 필요합니다. 확인을 시작하려면 아래에 이메일 주소를 입력하세요.",
+    "email": "이메일",
+    "continue_with_email": "이메일로 계속",
+    "account_not_found": "계정을 찾을 수 없습니다",
+    "owner_not_changed": "이 계정은 최근 소유권이 바뀌지 않아 복구할 수 없습니다",
+    "password_not_used": "이 비밀번호는 최근 30일 동안 이 계정에서 사용되지 않았습니다."
   }
 }

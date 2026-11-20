@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
@@ -23,6 +24,7 @@ const ownPostKey = (username: string, permlink: string) => [
 
 /** Makes post transaction; a new post's page is available from the cache right after broadcast. */
 export function usePostMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   return useOperationMutation({
     name: 'usePostMutation',
@@ -59,8 +61,8 @@ export function usePostMutation() {
       removeStorageItem(shadowPostKey(context.username, context.permlink));
     },
     successToast: () => ({
-      title: 'Post submitted successfully',
-      description: 'Your post has been submitted'
+      title: t('submit_page.post_toasts.submitted_title'),
+      description: t('submit_page.post_toasts.submitted_description')
     }),
     invalidate: () => [['entriesInfinite'], ['accountEntriesInfinite']],
     invalidateDelays: FEED_REFRESH_DELAYS
@@ -68,12 +70,16 @@ export function usePostMutation() {
 }
 
 export function useDeletePostMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   return useOperationMutation({
     name: 'useDeletePostMutation',
     run: ({ permlink }: { permlink: string }) =>
       transactionService.deleteComment(permlink, { observe: false }),
-    successToast: () => ({ title: 'Post deleted successfully', description: 'Your post has been deleted' }),
+    successToast: () => ({
+      title: t('submit_page.post_toasts.deleted_title'),
+      description: t('submit_page.post_toasts.deleted_description')
+    }),
     invalidate: ({ permlink }) => [['postData', username, permlink, username], ['entriesInfinite']],
     invalidateDelays: FEED_REFRESH_DELAYS
   });

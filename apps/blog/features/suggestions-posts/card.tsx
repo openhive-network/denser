@@ -38,7 +38,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
             </div>
           ) : (
             <div className="flex h-24 items-center justify-center bg-background-secondary text-xs text-muted-foreground">
-              No image
+              {t('cards.no_image')}
             </div>
           )}
           <div className="p-2">

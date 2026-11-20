@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { useTranslation } from '@/blog/i18n/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postLiteReply } from '@hiveio/lite-account';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -15,6 +16,7 @@ const logger = getLogger('app');
 
 /** Posts a guest reply through the relay with an optimistic cache insert, like useCommentMutation. */
 export function useLiteReplyMutation(onFirstPostSucceeded: () => void) {
+  const { t } = useTranslation('common_blog');
   const queryClient = useQueryClient();
   const cleanupRef = useRef<(() => void) | null>(null);
 
@@ -48,7 +50,11 @@ export function useLiteReplyMutation(onFirstPostSucceeded: () => void) {
       else if (context?.queryKey) queryClient.removeQueries({ queryKey: context.queryKey, exact: true });
       logger.error(error);
       if (isLiteNameTaken(error)) return; // the reply box reopens the name dialog instead
-      toast({ title: 'Reply failed', description: error instanceof Error ? error.message : 'unknown error', variant: 'destructive' });
+      toast({
+        title: t('lite_account.reply_failed_title'),
+        description: error instanceof Error ? error.message : t('lite_account.social.errors.unknown'),
+        variant: 'destructive'
+      });
     }
   });
 }

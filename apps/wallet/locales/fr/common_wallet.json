@@ -41,7 +41,10 @@
     "profile_picture": "Photo de profil",
     "notifications_region": "Notifications ({hotkey})",
     "offline_notice": "Vous êtes hors ligne. Le portefeuille se mettra à jour dès le retour de la connexion.",
-    "select_placeholder": "Sélectionner..."
+    "select_placeholder": "Sélectionner...",
+    "unexpected_error": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "copied": "Copié !",
+    "profile_picture_of": "Photo de profil de {{username}}"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "Politique de confidentialité",
       "terms_of_service": "Conditions d'utilisation",
       "currency_market": "Marché des devises",
-      "third_party_exchanges": "Plateformes d'échange tierces :"
+      "third_party_exchanges": "Plateformes d'échange tierces :",
+      "healthchecker": "Vérificateur d'état",
+      "version": "Version : {{version}}"
     },
     "profile_navbar": {
       "blog": "Blog",
@@ -259,7 +264,8 @@
     "fill_recurrent_transfer_from": "Transfert récurrent de {{value}} reçu ({{remaining}} restants) de ",
     "failed_recurrent_transfer_to": "Échec de l'envoi du transfert récurrent de {{value}} ({{failures}} échecs consécutifs) à ",
     "failed_recurrent_transfer_from": "Échec du transfert récurrent de {{value}} de ",
-    "recurrent_transfer_deleted": " - le transfert récurrent a été annulé après trop d'échecs"
+    "recurrent_transfer_deleted": " - le transfert récurrent a été annulé après trop d'échecs",
+    "unformatted_operation": "erreur"
   },
   "market_page": {
     "last_price": "Dernier cours",
@@ -822,6 +828,9 @@
       "passkey": "Votre clé de publication est dérivée de votre passkey sur {{origin}}.",
       "passkey_signer": "le signataire passkey",
       "session_marked": "Les clés avec lesquelles cette session signe sont marquées « Cette session » dans la liste ci-dessus."
+    },
+    "master_key": {
+      "info": "Le mot de passe principal génère toutes vos autres clés, dont la clé propriétaire. Quiconque le possède contrôle votre compte : conservez-le en lieu sûr, hors ligne."
     }
   },
   "communities": {
@@ -863,7 +872,8 @@
       "minimum_characters": "{{value}} caractères minimum",
       "pick_one": "Choisissez-en un"
     },
-    "no_payment_option": "Il vous faut {{hive}} HIVE ou {{tokens}} jeton de création de compte pour créer une communauté"
+    "no_payment_option": "Il vous faut {{hive}} HIVE ou {{tokens}} jeton de création de compte pour créer une communauté",
+    "created_toast": "Communauté créée"
   },
   "settings": {
     "preferences": "Préférences",
@@ -888,7 +898,9 @@
     "minutes_one": "{{count}} minute",
     "minutes_many": "{{count}} minutes",
     "minutes_other": "{{count}} minutes",
-    "hours_and_minutes": "{{hours}} et {{minutes}}"
+    "hours_and_minutes": "{{hours}} et {{minutes}}",
+    "rc_level": "Niveau (RC) : {{value}} %",
+    "full_in_hours": "Complet dans {{hours}} h"
   },
   "page_titles": {
     "home": "Accueil",
@@ -904,14 +916,21 @@
     "permissions": "Permissions",
     "authorities": "Autorités",
     "change_password": "Changer le mot de passe",
-    "create_communities": "Créer des communautés"
+    "create_communities": "Créer des communautés",
+    "healthchecker_description": "Vérificateur d'état des API du portefeuille"
   },
   "api_sets": {
     "description": "Chaque famille d'API Hive est envoyée au nœud choisi pour elle. Choisissez un nœud par famille ou gardez le choix automatique.",
     "check_nodes": "Vérifier les nœuds",
     "stop_checking": "Arrêter la vérification",
     "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement.",
-    "catalog_only": "Seuls les nœuds listés peuvent être choisis : le site ne peut en appeler aucun autre."
+    "catalog_only": "Seuls les nœuds listés peuvent être choisis : le site ne peut en appeler aucun autre.",
+    "title": "Sélecteur d'API et vérificateur d'état",
+    "checks": {
+      "find_accounts": "Base de données - Rechercher des comptes",
+      "savings_withdrawals": "Base de données - retraits d'épargne",
+      "operation_types": "HAFAH - Types d'opérations"
+    }
   },
   "account_keys": {
     "this_session": "Cette session",
@@ -925,5 +944,18 @@
       "safe_storage_replaced": "Les nouvelles clés remplaceront celles enregistrées dans le stockage sécurisé de ce navigateur.",
       "none": "Une clé conservée par cet onglet est remplacée par la nouvelle ; sinon, saisissez la nouvelle clé la prochaine fois que vous signez."
     }
+  },
+  "recovery_page": {
+    "title": "Récupération de comptes volés",
+    "description": "Il arrive que la clé propriétaire d'un utilisateur de Hive soit compromise. La récupération de comptes volés laisse au propriétaire légitime 30 jours pour récupérer son compte à partir du moment où le voleur a changé sa clé propriétaire. Elle n'est possible sur hive.blog que si le propriétaire avait désigné 'Hive' comme fiduciaire de son compte et respecté les conditions d'utilisation de Hive.",
+    "account_name": "Nom du compte",
+    "recent_password": "Mot de passe récent",
+    "begin_recovery": "Commencer la récupération",
+    "verify_identity": "Nous devons vérifier votre identité. Saisissez votre adresse e-mail ci-dessous pour commencer la vérification.",
+    "email": "E-mail",
+    "continue_with_email": "Continuer avec l'e-mail",
+    "account_not_found": "Compte introuvable",
+    "owner_not_changed": "Impossible de récupérer ce compte : son propriétaire n'a pas changé récemment",
+    "password_not_used": "Ce mot de passe n'a pas été utilisé sur ce compte au cours des 30 derniers jours."
   }
 }

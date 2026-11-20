@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import type { ESupportedLanguages } from '@hiveio/wax';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Community } from '@hive/common-hiveio-packages/wax';
@@ -14,8 +15,9 @@ interface UpdateCommunityParams {
   description: string;
 }
 
-export const useUpdateCommunityMutation = () =>
-  useOperationMutation({
+export const useUpdateCommunityMutation = () => {
+  const { t } = useTranslation('common_blog');
+  return useOperationMutation({
     name: 'useUpdateCommunityMutation',
     run: ({
       communityName,
@@ -61,9 +63,10 @@ export const useUpdateCommunityMutation = () =>
       });
     },
     successToast: (_data, { communityName }) => ({
-      title: 'Community updated',
-      description: `You have successfully updated the community ${communityName}.`
+      title: t('communities.toasts.updated_title'),
+      description: t('communities.toasts.updated_description', { community: communityName })
     }),
     invalidate: ({ communityName }) => [['community', communityName]],
     invalidateDelays: [4000]
   });
+};

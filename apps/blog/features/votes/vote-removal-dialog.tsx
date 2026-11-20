@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import { X } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,9 +46,10 @@ export function VoteRemovalDialog({
             <AlertDialogTitle data-testid="vote-removal-dialog-header">{title}</AlertDialogTitle>
             <AlertDialogCancel
               className="border-none hover:text-red-800"
+              aria-label={t('global.close')}
               data-testid="vote-removal-dialog-close"
             >
-              X
+              <X className="h-4 w-4" aria-hidden="true" />
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="vote-removal-dialog-description">

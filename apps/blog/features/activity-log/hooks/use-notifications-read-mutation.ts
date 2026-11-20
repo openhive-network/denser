@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { IUnreadNotifications } from '@hive/common-hiveio-packages/wax';
@@ -15,6 +16,7 @@ import { unreadNotificationsKey } from './use-unread-notifications';
 const naiveUtcNow = (): string => new Date().toISOString().slice(0, -5);
 
 export function useMarkAllNotificationsAsReadMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const queryKey = unreadNotificationsKey(username);
   return useOperationMutation({
@@ -50,8 +52,8 @@ export function useMarkAllNotificationsAsReadMutation() {
       );
     },
     successToast: () => ({
-      title: 'Notifications marked as read',
-      description: 'All notifications have been marked as read successfully.'
+      title: t('user_profile.notifications_tab.marked_read_title'),
+      description: t('user_profile.notifications_tab.marked_read_description')
     })
   });
 }

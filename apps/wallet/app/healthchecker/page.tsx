@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title,
-      description: 'Health checker for wallet APIs'
+      description: t('page_titles.healthchecker_description')
     }
   };
 }

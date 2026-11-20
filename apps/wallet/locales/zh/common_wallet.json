@@ -41,7 +41,10 @@
     "profile_picture": "头像",
     "notifications_region": "通知 ({hotkey})",
     "offline_notice": "您已离线。连接恢复后钱包将自动刷新。",
-    "select_placeholder": "请选择..."
+    "select_placeholder": "请选择...",
+    "unexpected_error": "发生意外错误。请重试。",
+    "copied": "已复制！",
+    "profile_picture_of": "{{username}} 的头像"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "隐私政策",
       "terms_of_service": "服务条款",
       "currency_market": "货币市场",
-      "third_party_exchanges": "第三方交易所："
+      "third_party_exchanges": "第三方交易所：",
+      "healthchecker": "节点健康检查",
+      "version": "版本：{{version}}"
     },
     "profile_navbar": {
       "blog": "博客",
@@ -252,7 +257,8 @@
     "fill_recurrent_transfer_from": "已收到定期转账 {{value}}（剩余 {{remaining}} 次），来自 ",
     "failed_recurrent_transfer_to": "定期转账 {{value}} 发送失败（连续失败 {{failures}} 次），收款人 ",
     "failed_recurrent_transfer_from": "定期转账 {{value}} 失败，来自 ",
-    "recurrent_transfer_deleted": " - 因失败次数过多，该定期转账已被取消"
+    "recurrent_transfer_deleted": " - 因失败次数过多，该定期转账已被取消",
+    "unformatted_operation": "错误"
   },
   "market_page": {
     "last_price": "上一个成交价格",
@@ -795,6 +801,9 @@
       "passkey": "你的 Posting 密钥由 {{origin}} 上的通行密钥派生。",
       "passkey_signer": "通行密钥签名服务",
       "session_marked": "当前会话用于签名的密钥在上方列表中标有“当前会话”。"
+    },
+    "master_key": {
+      "info": "主密码可以派生出你的所有其他密钥，包括 Owner 密钥。拥有它的人就能控制你的账户，请将其安全地离线保存。"
     }
   },
   "communities": {
@@ -836,7 +845,8 @@
       "minimum_characters": "至少 {{value}} 个字符",
       "pick_one": "请选择一项"
     },
-    "no_payment_option": "创建社区需要 {{hive}} HIVE 或 {{tokens}} 个账户创建代币"
+    "no_payment_option": "创建社区需要 {{hive}} HIVE 或 {{tokens}} 个账户创建代币",
+    "created_toast": "社区已创建"
   },
   "settings": {
     "preferences": "偏好设置",
@@ -857,7 +867,9 @@
     "amount_billions": "{{amount}} 十亿",
     "hours_other": "{{count}} 小时",
     "minutes_other": "{{count}} 分钟",
-    "hours_and_minutes": "{{hours}} {{minutes}}"
+    "hours_and_minutes": "{{hours}} {{minutes}}",
+    "rc_level": "（RC）水平：{{value}}%",
+    "full_in_hours": "{{hours}} 小时后充满"
   },
   "page_titles": {
     "home": "首页",
@@ -873,14 +885,21 @@
     "permissions": "权限",
     "authorities": "授权",
     "change_password": "修改密码",
-    "create_communities": "创建社区"
+    "create_communities": "创建社区",
+    "healthchecker_description": "钱包 API 健康检查"
   },
   "api_sets": {
     "description": "每一类 Hive API 都会发送到为其选定的节点。请为每一类选择节点，或保留自动选择。",
     "check_nodes": "检查节点",
     "stop_checking": "停止检查",
     "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。",
-    "catalog_only": "只能选择列出的节点：本站无法连接其他节点。"
+    "catalog_only": "只能选择列出的节点：本站无法连接其他节点。",
+    "title": "API 切换与节点健康检查",
+    "checks": {
+      "find_accounts": "数据库 - 查找账户",
+      "savings_withdrawals": "数据库 - 储蓄提取",
+      "operation_types": "HAFAH - 操作类型"
+    }
   },
   "account_keys": {
     "this_session": "当前会话",
@@ -894,5 +913,18 @@
       "safe_storage_replaced": "新密钥将替换此浏览器安全存储中保存的密钥。",
       "none": "此标签页保存的密钥会替换为新密钥；否则，请在下次签名时输入新密钥。"
     }
+  },
+  "recovery_page": {
+    "title": "被盗账户恢复",
+    "description": "Hive 用户的 Owner 密钥有时可能泄露。被盗账户恢复让合法所有者在窃贼更改 Owner 密钥后的 30 天内找回账户。只有当账户所有者之前将“Hive”设为账户受托人并遵守了 Hive 服务条款时，才能在 hive.blog 上使用此功能。",
+    "account_name": "账户名",
+    "recent_password": "最近使用的密码",
+    "begin_recovery": "开始恢复",
+    "verify_identity": "我们需要验证你的身份。请在下方输入你的电子邮件地址以开始验证。",
+    "email": "电子邮件",
+    "continue_with_email": "使用电子邮件继续",
+    "account_not_found": "未找到账户",
+    "owner_not_changed": "无法恢复此账户：其所有权最近没有变更",
+    "password_not_used": "过去 30 天内此账户未使用过该密码。"
   }
 }

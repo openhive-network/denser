@@ -1,4 +1,6 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { useRef } from 'react';
+import type { TFunction } from 'i18next';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { CONFIRM_IN_BACKGROUND, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
@@ -15,15 +17,16 @@ const hasActiveVote = (data: unknown): boolean => {
   return Array.isArray(votes) && votes.length > 0 && votes[0].vote_percent !== 0;
 };
 
-const voteDescription = (weight: number) =>
+const voteDescription = (t: TFunction<'common_blog'>, weight: number) =>
   weight > 0
-    ? 'You have successfully upvoted.'
+    ? t('post_content.vote_toasts.upvoted_description')
     : weight < 0
-      ? 'You have successfully downvoted.'
-      : 'Your vote has been removed.';
+      ? t('post_content.vote_toasts.downvoted_description')
+      : t('post_content.vote_toasts.removed_description');
 
 /** Makes vote transaction; the vote shows in the cache before the broadcast. */
 export function useVoteMutation() {
+  const { t } = useTranslation('common_blog');
   const cleanupRef = useRef<(() => void) | null>(null);
   const confirmInBackground = useBackgroundConfirmation('vote');
 
@@ -79,7 +82,10 @@ export function useVoteMutation() {
       queryClient.setQueryData(context.queryKey, context.prevVoteData ?? { votes: [] });
       for (const { queryKey, data } of context.prevCacheSnapshots) queryClient.setQueryData(queryKey, data);
     },
-    successToast: (_data, { weight }) => ({ title: 'Vote successful', description: voteDescription(weight) }),
+    successToast: (_data, { weight }) => ({
+      title: t('post_content.vote_toasts.title'),
+      description: voteDescription(t, weight)
+    }),
     // Hivemind takes longer to reflect votes in aggregated data; total_votes is optimistic meanwhile
     invalidate: ({ author, permlink }) => [
       ['entriesInfinite'],

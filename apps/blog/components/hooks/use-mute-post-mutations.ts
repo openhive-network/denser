@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import type { QueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Entry, EntryStat } from '@hive/common-hiveio-packages/wax';
@@ -43,8 +45,9 @@ function markPostTemporary(queryClient: QueryClient, params: MutePostParams) {
 function useModeratePostMutation(
   name: string,
   broadcast: typeof transactionService.mutePost,
-  successToast: OperationToast
+  successToast: (t: TFunction<'common_blog'>) => OperationToast
 ) {
+  const { t } = useTranslation('common_blog');
   return useOperationMutation({
     name,
     optimistic: async (params: MutePostParams, queryClient) => {
@@ -65,7 +68,7 @@ function useModeratePostMutation(
       if (context?.prevDiscussionData)
         queryClient.setQueryData(discussionKey(params), context.prevDiscussionData);
     },
-    successToast: () => successToast,
+    successToast: () => successToast(t),
     invalidate: (params) => [postDataKey(params), discussionKey(params)],
     invalidateDelays: [4000, 10000, 20000]
   });
@@ -73,14 +76,14 @@ function useModeratePostMutation(
 
 /** Mutes a post in a community. */
 export const useMutePostMutation = () =>
-  useModeratePostMutation('useMutePostMutation', transactionService.mutePost, {
-    title: 'Post muted',
-    description: 'Post has been muted successfully.'
-  });
+  useModeratePostMutation('useMutePostMutation', transactionService.mutePost, (t) => ({
+    title: t('post_content.moderation_toasts.muted_title'),
+    description: t('post_content.moderation_toasts.muted_description')
+  }));
 
 /** Unmutes a post in a community. */
 export const useUnmutePostMutation = () =>
-  useModeratePostMutation('useUnmutePostMutation', transactionService.unmutePost, {
-    title: 'Post unmuted',
-    description: 'Post has been unmuted successfully.'
-  });
+  useModeratePostMutation('useUnmutePostMutation', transactionService.unmutePost, (t) => ({
+    title: t('post_content.moderation_toasts.unmuted_title'),
+    description: t('post_content.moderation_toasts.unmuted_description')
+  }));

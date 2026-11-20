@@ -48,7 +48,14 @@
       "hours_and_minutes": "{{hours}}{{minutes}}"
     },
     "profile_picture": "プロフィール画像",
-    "notifications_region": "通知 ({hotkey})"
+    "notifications_region": "通知 ({hotkey})",
+    "profile_picture_of": "{{username}} のプロフィール画像",
+    "loading_more": "読み込み中...",
+    "no_data_available": "データがありません",
+    "fetching_data_failed": "データの取得中に問題が発生しました。",
+    "check_permlink_or_node": "パーマリンクが正しいか、ノードが正常に動作しているか確認してください。",
+    "unexpected_error": "予期しないエラーが発生しました。もう一度お試しください。",
+    "page_load_failed": "このページを読み込めませんでした。もう一度お試しください。"
   },
   "navigation": {
     "main_nav_bar": {
@@ -65,7 +72,8 @@
       "create_post": "投稿を作成",
       "theme": "テーマ",
       "language": "言語",
-      "menu_panel": "メニューパネル"
+      "menu_panel": "メニューパネル",
+      "ai_tag": "AI"
     },
     "sidebar": {
       "welcome": "ようこそ",
@@ -80,7 +88,9 @@
       "privacy_policy": "プライバシーポリシー",
       "terms_of_service": "利用規約",
       "not_available_yet": "まだ利用できません",
-      "login_required": "このオプションを使用するにはログインしてください"
+      "login_required": "このオプションを使用するにはログインしてください",
+      "healthchecker": "ヘルスチェッカー",
+      "version": "バージョン: {{version}}"
     },
     "communities_nav": {
       "my_friends": "マイフレンド",
@@ -186,6 +196,13 @@
       "add_active_key": "アクティブキーを追加",
       "add_posting_key": "投稿キーを追加",
       "switch_to_posting_key": "投稿キーに切り替える"
+    },
+    "manabars": {
+      "resource_credits": "リソースクレジット",
+      "rc_level": "（RC）レベル: {{value}} %",
+      "voting_power": "投票パワー: {{value}} %",
+      "downvote_power": "反対票パワー: {{value}} %",
+      "full_in": "満了まで: {{time}}"
     }
   },
   "select_sort": {
@@ -293,7 +310,11 @@
     "reveal_nsfw_post": "このNSFW投稿を表示",
     "my_blacklist": "マイブラックリスト",
     "post_image": "投稿画像",
-    "payout_declined": "報酬辞退"
+    "payout_declined": "報酬辞退",
+    "cross_posted": "<author>{{author}}</author> が <original>@{{original}}</original> をクロス投稿しました",
+    "nsfw_hidden_logged_in": "<reveal>この投稿を表示</reveal>するか、<settings>表示設定</settings>を変更してください。",
+    "nsfw_hidden_logged_out": "<reveal>この投稿を表示</reveal>するか、<account>アカウントを作成</account>して設定を保存してください。",
+    "no_image": "画像なし"
   },
   "alert_dialog_reblog": {
     "action": "確認",
@@ -301,7 +322,9 @@
     "description": "この投稿はあなたのブログに追加され、フォロワーと共有されます。",
     "already_reblogged": "この投稿はすでにReblogしています。",
     "title": "この投稿をReblog",
-    "close": "閉じる"
+    "close": "閉じる",
+    "toast_title": "リブログしました",
+    "toast_description": "投稿をリブログしました。"
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "アップボートを取り消す",
@@ -470,7 +493,9 @@
       "followed_you": "@{{username}}さんがあなたをフォローしました",
       "mentioned_you_and_others": "@{{username}} があなたと他{{others}}人をメンションしました",
       "mentioned_you": "@{{username}} があなたをメンションしました",
-      "subscribed_to": "@{{username}} が {{community}} を購読しました"
+      "subscribed_to": "@{{username}} が {{community}} を購読しました",
+      "marked_read_title": "通知を既読にしました",
+      "marked_read_description": "すべての通知を既読にしました。"
     },
     "load_more_failed": "これ以上投稿を読み込めませんでした。",
     "load_more_retry": "再試行",
@@ -488,7 +513,32 @@
       "unfollowed_description": "{{username}} のフォローを解除しました。",
       "unfollowed_all_title": "すべてのフォローを解除しました",
       "unfollowed_all_description": "誰もフォローしていません。"
-    }
+    },
+    "list_toasts": {
+      "blacklisted_title": "ブログをブラックリストに追加しました",
+      "blacklisted_description": "ブログ {{blog}} をブラックリストに追加しました。",
+      "unblacklisted_title": "ブログをブラックリストから削除しました",
+      "unblacklisted_description": "ブログ {{blog}} をブラックリストから削除しました。",
+      "blacklist_reset_title": "ブラックリストをリセットしました",
+      "blacklist_reset_description": "ブラックリストのブログをすべて削除しました。",
+      "list_followed_title": "ブログのリストをフォローしました",
+      "blacklist_followed_description": "ブログ {{blog}} をフォロー中のブラックリストに追加しました。",
+      "list_unfollowed_title": "ブログのリストのフォローを解除しました",
+      "blacklist_unfollowed_description": "ブログ {{blog}} をフォロー中のブラックリストから削除しました。",
+      "followed_blacklists_reset_title": "フォロー中のブラックリストをリセットしました",
+      "followed_blacklists_reset_description": "フォロー中のブラックリストからすべてのブログを削除しました。",
+      "muted_list_followed_description": "ブログ {{blog}} をフォロー中のミュートリストに追加しました。",
+      "muted_list_unfollowed_description": "ブログ {{blog}} をフォロー中のミュートリストから削除しました。",
+      "followed_muted_lists_reset_title": "フォロー中のミュートリストをリセットしました",
+      "followed_muted_lists_reset_description": "フォロー中のミュートリストをリセットしました。",
+      "muted_title": "ミュートしました",
+      "muted_description": "{{username}} をミュートしました。",
+      "unmuted_title": "ミュートを解除しました",
+      "unmuted_description": "{{username}} のミュートを解除しました。",
+      "muted_list_reset_title": "ミュートリストをリセットしました",
+      "muted_list_reset_description": "ミュートリストをリセットしました。"
+    },
+    "level_badge_alt": "{{level}} レベル"
   },
   "communities": {
     "set_title_for_user": "@{{username}}のタイトルを設定",
@@ -539,7 +589,11 @@
       "subscribed_title": "購読しました",
       "subscribed_description": "{{community}} を購読しました。",
       "unsubscribed_title": "購読を解除しました",
-      "unsubscribed_description": "{{community}} の購読を解除しました。"
+      "unsubscribed_description": "{{community}} の購読を解除しました。",
+      "role_updated_title": "完了",
+      "role_updated_description": "コミュニティ {{community}} での {{username}} のロールを更新しました。",
+      "updated_title": "コミュニティを更新しました",
+      "updated_description": "コミュニティ {{community}} を更新しました。"
     },
     "buttons": {
       "subscribe": "購読する",
@@ -711,7 +765,33 @@
       "updated_description": "コメントが更新されました。",
       "deleted_title": "コメントを削除しました",
       "deleted_description": "コメントが削除されました。"
-    }
+    },
+    "moderation_toasts": {
+      "pinned_title": "固定しました",
+      "pinned_description": "投稿を固定しました。",
+      "unpinned_title": "固定を解除しました",
+      "unpinned_description": "投稿の固定を解除しました。",
+      "muted_title": "投稿をミュートしました",
+      "muted_description": "投稿をミュートしました。",
+      "unmuted_title": "投稿のミュートを解除しました",
+      "unmuted_description": "投稿のミュートを解除しました。",
+      "flagged_title": "報告しました",
+      "flagged_description": "{{community}} の投稿を報告しました。"
+    },
+    "vote_toasts": {
+      "title": "投票しました",
+      "upvoted_description": "賛成票を投じました。",
+      "downvoted_description": "反対票を投じました。",
+      "removed_description": "投票を取り消しました。"
+    },
+    "delete_dialog": {
+      "title_post": "投稿の削除を確認",
+      "title_comment": "コメントの削除を確認",
+      "description": "よろしいですか？",
+      "cancel": "キャンセル"
+    },
+    "cross_posted_banner": "<author>{{author}}</author> が<post>この投稿</post>を<community>{{community}}</community>にクロス投稿しました",
+    "authored_by": "（作成者: <author>@{{author}}</author>）"
   },
   "submit_page": {
     "log_in_to_post": "投稿するにはログインしてください。",
@@ -856,7 +936,14 @@
       "unordered_list": "箇条書きリスト",
       "ordered_list": "番号付きリスト",
       "task_list": "タスクリスト"
-    }
+    },
+    "post_toasts": {
+      "submitted_title": "投稿しました",
+      "submitted_description": "投稿を送信しました",
+      "deleted_title": "投稿を削除しました",
+      "deleted_description": "投稿を削除しました"
+    },
+    "submitting": "送信中..."
   },
   "search_page": {
     "placeholder": "検索",
@@ -933,7 +1020,11 @@
     "error_already_exists": "このエンドポイントはすでにリストに存在しています",
     "error_cant_remove_active": "現在の優先エンドポイントを削除することはできません。まず新しい優先エンドポイントを選択してください",
     "error_cant_remove_all": "リストには少なくとも1つのエンドポイントが必要です",
-    "changes_saved": "変更が保存されました"
+    "changes_saved": "変更が保存されました",
+    "profile_toasts": {
+      "updated_title": "プロフィールを更新しました",
+      "updated_description": "プロフィールを更新しました。"
+    }
   },
   "four_oh_four": {
     "this_page_does_not_exist": "申し訳ありません！ このページは存在しません。",
@@ -990,7 +1081,8 @@
       "pending": "保留中",
       "roles": "役割"
     },
-    "for_you_posts": "おすすめ"
+    "for_you_posts": "おすすめ",
+    "community_description": "{{community}} コミュニティ。"
   },
   "chat_widget": {
     "chat": "チャット",
@@ -1046,7 +1138,8 @@
       "account": "ユーザー",
       "user_topic": "トピック別のユーザー投稿",
       "tag": "タグ"
-    }
+    },
+    "sort_by": "並べ替え:"
   },
   "for_you_feed": {
     "sign_in_prompt": "ログインすると、あなたのフィードが表示されます。",
@@ -1351,13 +1444,41 @@
       "locked": "安全なストレージの鍵：ロック中",
       "unlocked": "安全なストレージの鍵：ロック解除済み",
       "lock": "ロック"
-    }
+    },
+    "reply_failed_title": "返信できませんでした"
   },
   "api_sets": {
     "description": "Hive API の各ファミリーは、そのファミリー用に選ばれたノードに送られます。ファミリーごとにノードを選ぶか、自動選択のままにしてください。",
     "check_nodes": "ノードを確認",
     "stop_checking": "確認を停止",
     "node_unavailable": "{{selected}} は {{set}} で利用できません。復旧するまで {{node}} を使用します。",
-    "catalog_only": "選択できるのは一覧のノードだけです。サイトは他のノードに接続できません。"
+    "catalog_only": "選択できるのは一覧のノードだけです。サイトは他のノードに接続できません。",
+    "title": "API 切り替えとヘルスチェッカー",
+    "checks": {
+      "find_accounts": "データベース - アカウント検索",
+      "get_post": "Bridge - 投稿の取得",
+      "list_communities": "Bridge - コミュニティ一覧",
+      "get_ranked_posts": "Bridge - ランキング投稿の取得",
+      "ai_search": "AI検索",
+      "ai_similar_posts": "AIによる類似投稿"
+    }
+  },
+  "service_unavailable": {
+    "title": "サービスは一時的に利用できません",
+    "description": "Hive ネットワークへの接続に問題が発生しています。通常は一時的なものです。",
+    "what_you_can_do": "できること",
+    "refresh": "しばらくしてからページを再読み込みしてください",
+    "check_api_status": "ヘルスチェッカーで API の状態を確認してください",
+    "check_back": "少し時間をおいて再度アクセスしてください。対応中です"
+  },
+  "oidc": {
+    "interaction_title": "インタラクション",
+    "consent_title": "同意",
+    "consent_request": "アプリケーション {{application}} の OAuth フローで同意が必要です。このアプリケーションは次のことを求めています:",
+    "create_account": "あなたのアカウントを作成する。",
+    "read_profile": "Hive の公開プロフィール情報を取得する。",
+    "choose": "下のいずれかのボタンをクリックしてください:",
+    "consent_yes": "はい、同意します",
+    "consent_no": "いいえ、同意しません"
   }
 }

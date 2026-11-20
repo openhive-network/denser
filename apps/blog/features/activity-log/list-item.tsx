@@ -96,12 +96,12 @@ const NotificationListItem = ({
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={getUserAvatarUrl(avatarUsername, 'small')}
-              alt={`${avatarUsername} profile picture`}
+              alt={t('global.profile_picture_of', { username: avatarUsername })}
             />
             <AvatarFallback className="bg-transparent">
               <img
                 className="h-10 w-10 rounded-full"
-                alt={`${avatarUsername} profile picture`}
+                alt={t('global.profile_picture_of', { username: avatarUsername })}
                 src={getImageSrc('/defaultavatar.png')}
               />
             </AvatarFallback>

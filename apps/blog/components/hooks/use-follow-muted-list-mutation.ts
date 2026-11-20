@@ -10,9 +10,9 @@ export const useFollowMutedBlogMutation = () =>
   useAddToFollowListMutation('follow_muted', {
     name: 'useFollowMutedBlogMutation',
     run: ({ otherBlogs, blog }) => transactionService.followMutedBlog(otherBlogs, blog, OBSERVE),
-    toast: ({ otherBlogs }) => ({
-      title: 'Blog followed successfully',
-      description: `The blog ${otherBlogs} has been added to your followed muted list.`
+    toast: (t, { otherBlogs }) => ({
+      title: t('user_profile.list_toasts.list_followed_title'),
+      description: t('user_profile.list_toasts.muted_list_followed_description', { blog: otherBlogs })
     })
   });
 
@@ -20,9 +20,9 @@ export const useUnfollowMutedBlogMutation = () =>
   useRemoveFromFollowListMutation('follow_muted', {
     name: 'useUnfollowMutedBlogMutation',
     run: ({ blog }) => transactionService.unfollowMutedBlog(blog, OBSERVE),
-    toast: ({ blog }) => ({
-      title: 'Blog unfollowed successfully',
-      description: `The blog ${blog} has been removed from your followed muted list.`
+    toast: (t, { blog }) => ({
+      title: t('user_profile.list_toasts.list_unfollowed_title'),
+      description: t('user_profile.list_toasts.muted_list_unfollowed_description', { blog })
     })
   });
 
@@ -30,8 +30,8 @@ export const useResetFollowMutedBlogMutation = () =>
   useResetFollowListMutation('follow_muted', {
     name: 'useResetFollowMutedBlogMutation',
     run: () => transactionService.resetFollowMutedBlog(OBSERVE),
-    toast: () => ({
-      title: 'Muted blogs reset successfully',
-      description: 'Your followed muted blogs have been reset.'
+    toast: (t) => ({
+      title: t('user_profile.list_toasts.followed_muted_lists_reset_title'),
+      description: t('user_profile.list_toasts.followed_muted_lists_reset_description')
     })
   });

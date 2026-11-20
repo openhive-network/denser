@@ -41,7 +41,10 @@
     "profile_picture": "Foto de perfil",
     "notifications_region": "Notificaciones ({hotkey})",
     "offline_notice": "Estás sin conexión. La billetera se actualizará cuando vuelva la conexión.",
-    "select_placeholder": "Seleccionar..."
+    "select_placeholder": "Seleccionar...",
+    "unexpected_error": "Se produjo un error inesperado. Inténtalo de nuevo.",
+    "copied": "¡Copiado!",
+    "profile_picture_of": "Foto de perfil de {{username}}"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "Política de Privacidad",
       "terms_of_service": "Términos del Servicio",
       "currency_market": "Mercado de divisas",
-      "third_party_exchanges": "Exchanges de terceros:"
+      "third_party_exchanges": "Exchanges de terceros:",
+      "healthchecker": "Comprobador de estado",
+      "version": "Versión: {{version}}"
     },
     "profile_navbar": {
       "blog": "Blog",
@@ -259,7 +264,8 @@
     "fill_recurrent_transfer_from": "Transferencia recurrente de {{value}} recibida ({{remaining}} restantes) de ",
     "failed_recurrent_transfer_to": "Error al enviar la transferencia recurrente de {{value}} ({{failures}} fallos consecutivos) a ",
     "failed_recurrent_transfer_from": "Transferencia recurrente fallida de {{value}} de ",
-    "recurrent_transfer_deleted": " - la transferencia recurrente se canceló tras demasiados fallos"
+    "recurrent_transfer_deleted": " - la transferencia recurrente se canceló tras demasiados fallos",
+    "unformatted_operation": "error de formato"
   },
   "market_page": {
     "last_price": "Último precio",
@@ -822,6 +828,9 @@
       "passkey": "Tu clave de publicación se deriva de tu passkey en {{origin}}.",
       "passkey_signer": "el firmante de passkey",
       "session_marked": "Las claves con las que firma esta sesión están marcadas con «Esta sesión» en la lista de arriba."
+    },
+    "master_key": {
+      "info": "La contraseña maestra genera todas tus demás claves, incluida la clave de propietario. Quien la tenga controla tu cuenta, así que guárdala de forma segura y sin conexión."
     }
   },
   "communities": {
@@ -863,7 +872,8 @@
       "minimum_characters": "Mínimo {{value}} caracteres",
       "pick_one": "Elige una opción"
     },
-    "no_payment_option": "Necesitas {{hive}} HIVE o {{tokens}} token de creación de cuenta para crear una comunidad"
+    "no_payment_option": "Necesitas {{hive}} HIVE o {{tokens}} token de creación de cuenta para crear una comunidad",
+    "created_toast": "Comunidad creada"
   },
   "settings": {
     "preferences": "Preferencias",
@@ -888,7 +898,9 @@
     "minutes_one": "{{count}} minuto",
     "minutes_many": "{{count}} minutos",
     "minutes_other": "{{count}} minutos",
-    "hours_and_minutes": "{{hours}} y {{minutes}}"
+    "hours_and_minutes": "{{hours}} y {{minutes}}",
+    "rc_level": "Nivel (RC): {{value}} %",
+    "full_in_hours": "Completo en {{hours}} h"
   },
   "page_titles": {
     "home": "Inicio",
@@ -904,14 +916,21 @@
     "permissions": "Permisos",
     "authorities": "Autoridades",
     "change_password": "Cambiar contraseña",
-    "create_communities": "Crear comunidades"
+    "create_communities": "Crear comunidades",
+    "healthchecker_description": "Comprobador de estado de las API del monedero"
   },
   "api_sets": {
     "description": "Cada familia de APIs de Hive va al nodo elegido para ella. Elige un nodo por familia o mantén la elección automática.",
     "check_nodes": "Comprobar los nodos",
     "stop_checking": "Detener la comprobación",
     "node_unavailable": "{{selected}} no está disponible para {{set}}; se usa {{node}} hasta que se recupere.",
-    "catalog_only": "Solo se pueden elegir los nodos de la lista: el sitio no puede llamar a otros."
+    "catalog_only": "Solo se pueden elegir los nodos de la lista: el sitio no puede llamar a otros.",
+    "title": "Selector de API y comprobador de estado",
+    "checks": {
+      "find_accounts": "Base de datos - Buscar cuentas",
+      "savings_withdrawals": "Base de datos - retiros de ahorros",
+      "operation_types": "HAFAH - Tipos de operación"
+    }
   },
   "account_keys": {
     "this_session": "Esta sesión",
@@ -925,5 +944,18 @@
       "safe_storage_replaced": "Las nuevas claves reemplazarán las guardadas en el almacenamiento seguro de este navegador.",
       "none": "Una clave que guarda esta pestaña se reemplaza por la nueva; si no, introduce la nueva clave la próxima vez que firmes."
     }
+  },
+  "recovery_page": {
+    "title": "Recuperación de cuentas robadas",
+    "description": "A veces, la clave de propietario de un usuario de Hive puede verse comprometida. La recuperación de cuentas robadas da al legítimo propietario 30 días para recuperar su cuenta desde el momento en que el ladrón cambió su clave de propietario. Solo puede usarse en hive.blog si el propietario había designado antes a 'Hive' como fiduciario de su cuenta y cumplió los Términos de servicio de Hive.",
+    "account_name": "Nombre de cuenta",
+    "recent_password": "Contraseña reciente",
+    "begin_recovery": "Iniciar recuperación",
+    "verify_identity": "Necesitamos verificar tu identidad. Introduce tu dirección de correo electrónico para comenzar la verificación.",
+    "email": "Correo electrónico",
+    "continue_with_email": "Continuar con el correo electrónico",
+    "account_not_found": "Cuenta no encontrada",
+    "owner_not_changed": "No podemos recuperar esta cuenta: su propietario no ha cambiado recientemente",
+    "password_not_used": "Esta contraseña no se usó en esta cuenta en los últimos 30 días."
   }
 }

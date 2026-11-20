@@ -244,7 +244,7 @@ const CommentListItemContent = memo(function CommentListItemContent({
                 <PostDeleteDialog
                   permlink={comment.permlink}
                   action={dialogAction}
-                  label="Comment"
+                  kind="comment"
                 >
                   <button
                     disabled={edit || deleteCommentMutation.isPending}

@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { updateOwnListsAfterChange } from '@transaction/lib/observer-lists';
@@ -12,6 +13,7 @@ import { hiddenAuthorsQueryKey } from '@/blog/components/hooks/use-hidden-author
 type MuteParams = { username: string };
 
 export function useMuteMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const mutedQueryKey = ['muted', username];
   return useOperationMutation({
@@ -28,7 +30,10 @@ export function useMuteMutation() {
       postSocialChanged(username);
     },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
-    successToast: (_data, params) => ({ title: 'Muted', description: `You have muted ${params.username}.` }),
+    successToast: (_data, params) => ({
+      title: t('user_profile.list_toasts.muted_title'),
+      description: t('user_profile.list_toasts.muted_description', { username: params.username })
+    }),
     invalidate: ({ username: otherUsername }) => [
       ['followingData', otherUsername],
       ['followingData', username],
@@ -45,6 +50,7 @@ export function useMuteMutation() {
 }
 
 export function useUnmuteMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   return useOperationMutation({
     name: 'useUnmuteMutation',
@@ -63,8 +69,8 @@ export function useUnmuteMutation() {
       }
     },
     successToast: (_data, params) => ({
-      title: 'Unmuted',
-      description: `You have unmuted ${params.username}.`
+      title: t('user_profile.list_toasts.unmuted_title'),
+      description: t('user_profile.list_toasts.unmuted_description', { username: params.username })
     }),
     invalidate: ({ username: otherUsername }) => [
       ['muted', username],
@@ -80,6 +86,7 @@ export function useUnmuteMutation() {
 }
 
 export function useResetBlogListMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const mutedQueryKey = ['muted', username];
   return useOperationMutation({
@@ -95,7 +102,10 @@ export function useResetBlogListMutation() {
       postSocialChanged(username);
     },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
-    successToast: () => ({ title: 'Blog list reset', description: 'Your blog list has been reset.' }),
+    successToast: () => ({
+      title: t('user_profile.list_toasts.muted_list_reset_title'),
+      description: t('user_profile.list_toasts.muted_list_reset_description')
+    }),
     invalidate: () => [
       mutedQueryKey,
       ['profileData', username],

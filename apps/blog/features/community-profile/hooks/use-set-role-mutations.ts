@@ -1,3 +1,4 @@
+import { useTranslation } from '@/blog/i18n/client';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Community } from '@hive/common-hiveio-packages/wax';
@@ -11,8 +12,9 @@ function withRole(list: string[][], { username, role }: SetRoleParams, newItem: 
   return list.map((item) => (item[0] === username ? [username, role, item[2]] : item));
 }
 
-export const useSetRoleMutation = () =>
-  useOperationMutation({
+export const useSetRoleMutation = () => {
+  const { t } = useTranslation('common_blog');
+  return useOperationMutation({
     name: 'useSetRoleMutation',
     run: ({ community, username, role }: SetRoleParams) =>
       transactionService.setRole(community, username, role, OBSERVE),
@@ -31,8 +33,8 @@ export const useSetRoleMutation = () =>
       }
     },
     successToast: (_data, { community, username }) => ({
-      title: 'Success',
-      description: `Role updated successfully for ${username} in community ${community}.`
+      title: t('communities.toasts.role_updated_title'),
+      description: t('communities.toasts.role_updated_description', { username, community })
     }),
     invalidate: ({ community }) => [
       ['rolesList', community],
@@ -41,3 +43,4 @@ export const useSetRoleMutation = () =>
     invalidateDelays: [4000],
     reportErrors: false
   });
+};

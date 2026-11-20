@@ -41,7 +41,10 @@
     "profile_picture": "プロフィール画像",
     "notifications_region": "通知 ({hotkey})",
     "offline_notice": "オフラインです。接続が回復するとウォレットが更新されます。",
-    "select_placeholder": "選択..."
+    "select_placeholder": "選択...",
+    "unexpected_error": "予期しないエラーが発生しました。もう一度お試しください。",
+    "copied": "コピーしました！",
+    "profile_picture_of": "{{username}} のプロフィール画像"
   },
   "navigation": {
     "main_nav_bar": {
@@ -69,7 +72,9 @@
       "privacy_policy": "プライバシーポリシー",
       "terms_of_service": "利用規約",
       "currency_market": "通貨市場",
-      "third_party_exchanges": "サードパーティの取引所:"
+      "third_party_exchanges": "サードパーティの取引所:",
+      "healthchecker": "ヘルスチェッカー",
+      "version": "バージョン: {{version}}"
     },
     "profile_navbar": {
       "blog": "ブログ",
@@ -252,7 +257,8 @@
     "fill_recurrent_transfer_from": "{{value}}の定期送金を受け取りました（残り{{remaining}}回）送金元: ",
     "failed_recurrent_transfer_to": "{{value}}の定期送金に失敗しました（{{failures}}回連続失敗）送金先: ",
     "failed_recurrent_transfer_from": "{{value}}の定期送金に失敗しました。送金元: ",
-    "recurrent_transfer_deleted": " - 失敗が多すぎたため定期送金はキャンセルされました"
+    "recurrent_transfer_deleted": " - 失敗が多すぎたため定期送金はキャンセルされました",
+    "unformatted_operation": "エラー"
   },
   "market_page": {
     "last_price": "現在値",
@@ -795,6 +801,9 @@
       "passkey": "ポスティングキーは {{origin}} のパスキーから導出されています。",
       "passkey_signer": "パスキー署名サービス",
       "session_marked": "このセッションが署名に使うキーには、上の一覧で「このセッション」と表示されています。"
+    },
+    "master_key": {
+      "info": "マスターパスワードからオーナーキーを含む他のすべてのキーが生成されます。これを持つ人はあなたのアカウントを管理できるため、オフラインで安全に保管してください。"
     }
   },
   "communities": {
@@ -836,7 +845,8 @@
       "minimum_characters": "最低{{value}}文字",
       "pick_one": "1つ選択してください"
     },
-    "no_payment_option": "コミュニティを作成するには{{hive}} HIVEまたは{{tokens}}個のアカウント作成トークンが必要です"
+    "no_payment_option": "コミュニティを作成するには{{hive}} HIVEまたは{{tokens}}個のアカウント作成トークンが必要です",
+    "created_toast": "コミュニティを作成しました"
   },
   "settings": {
     "preferences": "設定",
@@ -857,7 +867,9 @@
     "amount_billions": "{{amount}}×10億",
     "hours_other": "{{count}}時間",
     "minutes_other": "{{count}}分",
-    "hours_and_minutes": "{{hours}}{{minutes}}"
+    "hours_and_minutes": "{{hours}}{{minutes}}",
+    "rc_level": "（RC）レベル: {{value}} %",
+    "full_in_hours": "満了まで {{hours}} 時間"
   },
   "page_titles": {
     "home": "ホーム",
@@ -873,14 +885,21 @@
     "permissions": "権限",
     "authorities": "権限設定",
     "change_password": "パスワードの変更",
-    "create_communities": "コミュニティを作成"
+    "create_communities": "コミュニティを作成",
+    "healthchecker_description": "ウォレット API のヘルスチェッカー"
   },
   "api_sets": {
     "description": "Hive API の各ファミリーは、そのファミリー用に選ばれたノードに送られます。ファミリーごとにノードを選ぶか、自動選択のままにしてください。",
     "check_nodes": "ノードを確認",
     "stop_checking": "確認を停止",
     "node_unavailable": "{{selected}} は {{set}} で利用できません。復旧するまで {{node}} を使用します。",
-    "catalog_only": "選択できるのは一覧のノードだけです。サイトは他のノードに接続できません。"
+    "catalog_only": "選択できるのは一覧のノードだけです。サイトは他のノードに接続できません。",
+    "title": "API 切り替えとヘルスチェッカー",
+    "checks": {
+      "find_accounts": "データベース - アカウント検索",
+      "savings_withdrawals": "データベース - 貯蓄からの引き出し",
+      "operation_types": "HAFAH - 操作の種類"
+    }
   },
   "account_keys": {
     "this_session": "このセッション",
@@ -894,5 +913,18 @@
       "safe_storage_replaced": "新しいキーは、このブラウザの安全なストレージに保存されているキーを置き換えます。",
       "none": "このタブが保持しているキーは新しいキーに置き換えられます。保持していない場合は、次に署名するときに新しいキーを入力してください。"
     }
+  },
+  "recovery_page": {
+    "title": "盗まれたアカウントの復旧",
+    "description": "Hive ユーザーのオーナーキーが漏えいすることがあります。盗まれたアカウントの復旧では、盗んだ者がオーナーキーを変更した時点から 30 日間、正当な所有者がアカウントを取り戻せます。hive.blog で利用できるのは、所有者が以前に「Hive」をアカウントの受託者に指定し、Hive の利用規約を守っていた場合だけです。",
+    "account_name": "アカウント名",
+    "recent_password": "最近のパスワード",
+    "begin_recovery": "復旧を開始",
+    "verify_identity": "本人確認が必要です。確認を始めるには、下にメールアドレスを入力してください。",
+    "email": "メールアドレス",
+    "continue_with_email": "メールで続ける",
+    "account_not_found": "アカウントが見つかりません",
+    "owner_not_changed": "このアカウントは最近所有者が変更されていないため、復旧できません",
+    "password_not_used": "このパスワードは過去 30 日間にこのアカウントで使われていません。"
   }
 }

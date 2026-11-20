@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import type { TransactionBroadcastResult } from '@transaction/index';
@@ -22,7 +24,7 @@ export const FOLLOW_LIST_REFRESH_DELAYS = [4000, 10000, 20000];
 interface FollowListOperation<TVariables> {
   name: string;
   run: (variables: TVariables) => Promise<TransactionBroadcastResult>;
-  toast: (variables: TVariables) => OperationToast;
+  toast: (t: TFunction<'common_blog'>, variables: TVariables) => OperationToast;
 }
 
 type ApplyListChange<TVariables> = (
@@ -44,6 +46,7 @@ function useFollowListMutation<TVariables>(
   { name, run, toast }: FollowListOperation<TVariables>,
   { addsAccount, optimistic, onSuccess, rollback = restoreList }: ListChange<TVariables>
 ) {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const queryKey = [list, username];
   return useOperationMutation({
@@ -60,7 +63,7 @@ function useFollowListMutation<TVariables>(
       postSocialChanged(username);
     },
     rollback: (context, _variables, queryClient) => rollback(queryClient, queryKey, context),
-    successToast: (_data, variables) => toast(variables),
+    successToast: (_data, variables) => toast(t, variables),
     invalidate: () => [queryKey, hiddenAuthorsQueryKey(username), ['entriesInfinite']],
     invalidateDelays: FOLLOW_LIST_REFRESH_DELAYS
   });

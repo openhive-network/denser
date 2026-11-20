@@ -28,7 +28,6 @@ export const siteConfig = {
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
   ogImage: '',
-  description: 'Social media site for Hive Blockchain',
   links: {
     twitter: '/',
     github: '/'

@@ -134,7 +134,7 @@ function WitnessListItem({
               height="32"
               width="32"
               src={getUserAvatarUrl(data.owner, 'small')}
-              alt={`${data.owner} profile picture`}
+              alt={t('global.profile_picture_of', { username: data.owner })}
             />
           </Link>
           <div className="min-w-0 flex-1 leading-5">
@@ -191,7 +191,7 @@ function WitnessListItem({
                 )}
                 {isOutdated && (
                   <span className="shrink-0 rounded-sm bg-amber-200 px-1 text-[11px] leading-4 text-amber-900 sm:hidden dark:bg-amber-900 dark:text-amber-100">
-                    v{data.running_version}
+                    {`v${data.running_version}`}
                   </span>
                 )}
               </div>

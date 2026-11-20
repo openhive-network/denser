@@ -6,6 +6,7 @@ import BasePathLink from '../../../components/base-path-link';
 import { ReactNode } from 'react';
 import { Badge } from '@ui/components';
 import ChangeTitleDialog from '../../community-profile/change-title-dialog';
+import { useTranslation } from '@/blog/i18n/client';
 
 export function SubsListDialog({
   community,
@@ -20,13 +21,14 @@ export function SubsListDialog({
   subs: string[][] | null | undefined;
   title: string;
 }) {
+  const { t } = useTranslation('common_blog');
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer" asChild>
         {children}
       </DialogTrigger>
       <DialogContent className=" h-5/6 overflow-auto sm:max-w-[425px]">
-        <div>Latest {title} Subscribers</div>
+        <div>{t('communities.latest_subscribers', { username: title })}</div>
         <ul>
           {subs?.map((e: string[]) => (
             <li key={e[0]} className="flex items-center gap-1 p-[1.5px] text-sm">

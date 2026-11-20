@@ -1,6 +1,7 @@
 import { cn } from '@ui/lib/utils';
 import { Check } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from '@/wallet/i18n/client';
 
 interface CopyToKeyboardProps {
   value?: string;
@@ -9,6 +10,7 @@ interface CopyToKeyboardProps {
 }
 
 const CopyToKeyboard: React.FC<CopyToKeyboardProps> = ({ value, displayValue, className }) => {
+  const { t } = useTranslation('common_wallet');
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (key?: string) => {
@@ -30,7 +32,7 @@ const CopyToKeyboard: React.FC<CopyToKeyboardProps> = ({ value, displayValue, cl
       {copied ? (
         <div className="absolute flex items-center rounded-xl bg-background-tertiary p-2">
           <Check className="text-explorer-light-green h-5 w-5" />
-          <span className="ml-1">Copied!</span>
+          <span className="ml-1">{t('global.copied')}</span>
         </div>
       ) : null}
     </>

@@ -118,6 +118,7 @@ const UserMenu = ({
                     <LoginMethodIcon loginType={user.loginType} />
                     <div className="flex flex-col text-sm font-semibold">
                       <span>Hive</span>
+                      {/* eslint-disable-next-line no-restricted-syntax -- the "Hive Blog" wordmark */}
                       <span className="text-destructive">Blog</span>
                     </div>
                   </div>

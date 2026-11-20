@@ -123,11 +123,13 @@ const Sidebar = () => {
             <Item href={`${envURL}/privacy.html`} target>
               {t('navigation.sidebar.privacy_policy')}
             </Item>
-            <Item href={`/healthchecker`}>Healthchecker</Item>
+            <Item href={`/healthchecker`}>{t('navigation.sidebar.healthchecker')}</Item>
             <Item href={`${envURL}/tos.html`} target>
               {t('navigation.sidebar.terms_of_service')}
             </Item>
-            <span className="text-center text-xs font-light">Version: {env('GIT_COMMIT_SHA')?.slice(0, 8)}</span>
+            <span className="text-center text-xs font-light">
+              {t('navigation.sidebar.version', { version: env('GIT_COMMIT_SHA')?.slice(0, 8) })}
+            </span>
           </ul>
         </div>
       </SheetContent>

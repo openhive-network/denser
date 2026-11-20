@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+import { useTranslation } from '@/blog/i18n/client';
 import type { QueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Entry } from '@hive/common-hiveio-packages/wax';
@@ -29,13 +31,14 @@ function markPinnedPostTemporary(queryClient: QueryClient, { username, permlink 
 function usePinStateMutation(
   name: string,
   broadcast: typeof transactionService.pin,
-  successToast: OperationToast
+  successToast: (t: TFunction<'common_blog'>) => OperationToast
 ) {
+  const { t } = useTranslation('common_blog');
   return useOperationMutation({
     name,
     run: ({ community, username, permlink }: PinParams) => broadcast(community, username, permlink, OBSERVE),
     onSuccess: (_data, params, queryClient) => markPinnedPostTemporary(queryClient, params),
-    successToast: () => successToast,
+    successToast: () => successToast(t),
     invalidate: ({ permlink }) => [['discussionData', permlink]],
     invalidateDelays: [4000]
   });
@@ -43,14 +46,14 @@ function usePinStateMutation(
 
 /** Pins a post in a community. */
 export const usePinMutation = () =>
-  usePinStateMutation('usePinMutation', transactionService.pin, {
-    title: 'Pinned',
-    description: 'Post has been pinned successfully.'
-  });
+  usePinStateMutation('usePinMutation', transactionService.pin, (t) => ({
+    title: t('post_content.moderation_toasts.pinned_title'),
+    description: t('post_content.moderation_toasts.pinned_description')
+  }));
 
 /** Unpins a post in a community. */
 export const useUnpinMutation = () =>
-  usePinStateMutation('useUnpinMutation', transactionService.unpin, {
-    title: 'Unpinned',
-    description: 'Post has been unpinned successfully.'
-  });
+  usePinStateMutation('useUnpinMutation', transactionService.unpin, (t) => ({
+    title: t('post_content.moderation_toasts.unpinned_title'),
+    description: t('post_content.moderation_toasts.unpinned_description')
+  }));

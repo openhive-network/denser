@@ -181,7 +181,7 @@ export function ProposalListItem({
               height="24"
               width="24"
               src={getUserAvatarUrl(proposalData.creator, 'small')}
-              alt={`${proposalData.creator} profile picture`}
+              alt={t('global.profile_picture_of', { username: proposalData.creator })}
             />
           </Link>
           {/* The author is never cut short: the figures after it wrap onto another line instead */}

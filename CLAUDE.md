@@ -421,7 +421,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 **Shared packages** (`@hive/ui`) don't own locale files: take the app's `t` as a prop (see `ModeSwitchInput`) or the translated text (see `Toaster`'s `label`).
 
-ESLint (`no-restricted-syntax`, an error) rejects a string literal in `aria-label`, `placeholder`, `title` or `alt`.
+ESLint (`no-restricted-syntax` in `@hive/eslint-config-custom`, an error) rejects hard-coded user-facing text in the apps, `packages/ui` and `packages/smart-signer`:
+- JSX text children, and strings, `?:`/`||` branches and templates with words rendered as JSX children;
+- string literals or worded templates in `aria-label`, `placeholder`, `title` and `alt`;
+- the `title`, `description` and `label` of any object (toasts and their builders, select options, page metadata), and `message` in a `toast()`/`handleError()` argument;
+- string defaults of `label`, `text`, `title` and `*Label`/`*Text`/`*Title` parameters (take the translated text as a prop, or use `DefaultCloseLabel`).
+
+It lets through text without Latin letters (punctuation, numbers), bare URLs, dotted translation keys handed on to a later `t()`, and the untranslated names of `.aidev/i18n/glossary.en.md` (`UNTRANSLATED_NAMES` in the config: Hive, HBD, HP, RC, NSFW, ...). Unit tests may build objects with titles; Playwright code is not checked. Text that truly is not for translation (a dev-only overlay, an English legal page, Hive entry data) takes an `// eslint-disable-next-line no-restricted-syntax -- <why>` comment.
 
 **Glossaries:** before writing or changing a string in any locale (blog, wallet or smart-signer), read `.aidev/i18n/glossary.<lang>.md` and follow it: its terms, register (formal or informal address), plural forms, number/date conventions and untranslated names. An `agreed` term was settled by the tester; keep it unless a new tester decision changes it. A term the glossary lacks: use the locale's most frequent rendering and add it as `unreviewed` in the same change. Don't copy a string listed under "Known drift". `.aidev/i18n/README.md` explains the format.
 
@@ -441,7 +447,7 @@ pnpm --filter @hive/blog lint:translations
 - Values identical to English (untranslated), in every locale, a one-word label as much as a sentence. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
 - Missing translation files
 
-Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`), with the same sync check for the smart-signer package's locales (`node scripts/check-smart-signer-translations.js`).
+Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`), with the same sync check for the smart-signer package's locales (`node scripts/check-smart-signer-translations.js`) and the usage checks of the wallet and both packages below.
 
 #### 2. Translation usage validation
 Validates that all `t('key')` and `<Trans i18nKey="key">` calls in code reference existing translation keys.
@@ -453,6 +459,8 @@ pnpm --filter @hive/blog lint:translations:usage
 # Also show potentially unused keys (-- passes flag to the script)
 pnpm --filter @hive/blog lint:translations:usage -- --unused
 ```
+
+The same check covers the wallet (`pnpm --filter @hive/wallet lint:translations:usage`), `packages/smart-signer` (`node scripts/check-smart-signer-translation-usage.js`: its own `smart-signer.json` or the apps' namespace) and `packages/ui` (`node scripts/check-ui-translation-usage.js`: the blog's or the wallet's namespace, since the package owns no locales).
 
 **What it checks:**
 - All `t('key')` function calls reference existing keys
@@ -467,7 +475,7 @@ pnpm --filter @hive/blog lint:translations:usage -- --unused
 2. Missing keys in locales: Copy from English and translate
 3. Extra keys: Remove outdated keys or add to English if valid
 
-**Scripts location:** `scripts/check-blog-translations.js` (policy) + `scripts/translation-validator.js` (shared with Wallet), `scripts/check-blog-translation-usage.js`
+**Scripts location:** `scripts/check-blog-translations.js` (policy) + `scripts/translation-validator.js` (shared with Wallet), `scripts/check-*-translation-usage.js` (one per code base) + `scripts/translation-usage.js` (shared)
 
 **Translations location:** `apps/blog/locales/[lang]/common_blog.json`
 

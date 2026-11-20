@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import { X } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import {
@@ -70,7 +71,7 @@ export function ReblogDialog({
               aria-label={t('alert_dialog_reblog.close')}
               data-testid="reblog-dialog-close"
             >
-              <span aria-hidden="true">X</span>
+              <X className="h-4 w-4" aria-hidden="true" />
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="reblog-dialog-description">

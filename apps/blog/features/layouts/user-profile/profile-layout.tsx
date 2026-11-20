@@ -234,7 +234,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                         data-testid="profile-level-link"
                       >
                         <img
-                          alt={`${getLevelDisplayName(userLevel)} level`}
+                          alt={t('user_profile.level_badge_alt', { level: getLevelDisplayName(userLevel) })}
                           title={t('user_profile.user_level_title', {
                             level: getLevelDisplayName(userLevel),
                             username: profileData.name
