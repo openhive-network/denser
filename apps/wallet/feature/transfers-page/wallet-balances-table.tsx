@@ -64,7 +64,8 @@ const WalletBalancesTable = ({
 
   // Calculate balances
   const hours = dayjs(accountData.next_vesting_withdrawal).diff(dayjs(), 'hour');
-  const totalTime = formatDuration({ day: Math.floor(hours / 24), hour: hours % 24 }, locale);
+  // The sentence puts the duration after "in" (pl "za", ru "через"), which takes the accusative.
+  const totalTime = formatDuration({ day: Math.floor(hours / 24), hour: hours % 24 }, locale, 'accusative');
 
   const vestingHiveNai = vestsToHive(
     accountData.vesting_shares,

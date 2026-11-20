@@ -1,7 +1,28 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
 import Big from 'big.js';
-import {
+
+// Node resolves neither the tsconfig path alias nor an extensionless import: point `@ui/…` at the
+// package's TypeScript source and give the package's relative imports their `.ts`.
+const UI_ALIAS = '@ui/';
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith(UI_ALIAS)) {
+      const source = new URL(
+        `../../../../../packages/ui/${specifier.slice(UI_ALIAS.length)}.ts`,
+        import.meta.url
+      );
+      return nextResolve(source.href, context);
+    }
+    const inUi = context.parentURL?.includes('/packages/ui/');
+    if (inUi && specifier.startsWith('./') && !specifier.endsWith('.ts'))
+      return nextResolve(`${specifier}.ts`, context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const {
   billionsToRawRc,
   delegatableRawRc,
   formatRcInput,
@@ -11,7 +32,7 @@ import {
   rawRcToBillions,
   rcForPercent,
   rcPercentOf
-} from './rc-amount.ts';
+} = await import('./rc-amount.ts');
 
 const MAX = rawRcToBillions('5797055662');
 
@@ -26,12 +47,19 @@ describe('RC amounts in billions', () => {
     assert.equal(formatRcInput(MAX), '5.797055662');
     assert.equal(formatRcInput(new Big('100')), '100');
     assert.equal(formatRcInput(new Big('0')), '0');
-    assert.equal(formatRcSummary(MAX), '5.80');
+    assert.equal(formatRcSummary(MAX, 'en'), '5.80');
+  });
+
+  it('states the summary in the reader’s locale and the minimum in the input’s machine format', () => {
+    const amount = rawRcToBillions('1449263915');
+    assert.equal(formatRcSummary(amount, 'pl'), '1,45');
+    assert.equal(formatRcSummary(new Big('1000'), 'en'), '1,000.00');
+    assert.equal(formatRcMinimum(amount), '1.45');
   });
 
   it('states a minimum rounded up, so the stated amount is never below it', () => {
     const minimum = rawRcToBillions('1604473654');
-    assert.equal(formatRcSummary(minimum), '1.60');
+    assert.equal(formatRcSummary(minimum, 'en'), '1.60');
     assert.equal(formatRcMinimum(minimum), '1.61');
     assert.ok(parseRcBillions(formatRcMinimum(minimum)).gte(minimum));
     assert.equal(formatRcMinimum(rawRcToBillions('1600000000')), '1.60');

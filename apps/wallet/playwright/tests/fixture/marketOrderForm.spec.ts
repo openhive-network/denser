@@ -105,11 +105,11 @@ test.describe('Market order form', () => {
   });
 
   test('WALLET-MARKET-FORM-04 — inputs are named by side and unit, sections are headings', async ({ page }) => {
-    await expect(page.getByRole('spinbutton', { name: 'Buy HIVE Price HBD/HIVE' })).toBeVisible({
+    await expect(page.getByRole('textbox', { name: 'Buy HIVE Price HBD/HIVE' })).toBeVisible({
       timeout: HYDRATION_TIMEOUT
     });
-    await expect(page.getByRole('spinbutton', { name: 'Buy HIVE Amount HIVE' })).toBeVisible();
-    await expect(page.getByRole('spinbutton', { name: 'Sell HIVE Total HBD ($)' })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Buy HIVE Amount HIVE' })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Sell HIVE Total HBD ($)' })).toBeVisible();
 
     for (const name of ['Buy HIVE', 'Sell HIVE', 'Buy Orders', 'Sell Orders', 'Trade History', 'Open Orders']) {
       await expect(page.getByRole('heading', { level: 2, name, exact: true })).toBeVisible();

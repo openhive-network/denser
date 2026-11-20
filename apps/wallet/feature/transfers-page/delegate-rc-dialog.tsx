@@ -19,10 +19,12 @@ import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
 import { findInsufficientDelegatableRc, findRcDelegationMinimum } from '@transaction/lib/not-enough-rc';
 import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
+import { withDecimalPoint } from '@/wallet/lib/decimal-input';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import { Autocompleter } from '@/wallet/components/autocompleter';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
 import {
   RC_INPUT_DECIMALS,
   billionsToRawRc,
@@ -68,6 +70,7 @@ const DelegateRCDialog = ({
   suggestedUsers: { username: string; about: string }[];
 }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const delegateMutation = useDelegateRCMutation();
   const [form, setForm] = useState(defaultForm);
   const [open, setOpen] = useState(false);
@@ -96,7 +99,7 @@ const DelegateRCDialog = ({
   const setPercent = (next: number) => setAmount(formatRcInput(rcForPercent(maxBillions, next)));
 
   const onAmountInput = (input: string) => {
-    const typed = input.trim();
+    const typed = withDecimalPoint(input);
     if (!AMOUNT_INPUT_PATTERN.test(typed)) return;
     setAmount(parseRcBillions(typed).gt(maxBillions) ? formatRcInput(maxBillions) : typed);
   };
@@ -112,8 +115,8 @@ const DelegateRCDialog = ({
         logger.error(error, 'Delegating %s RC to %s exceeded the delegatable RC', rawToSend, toAccount);
         toast({
           description: t('transfers_page.delegate_rc.insufficient_rc', {
-            current: formatRcSummary(rawRcToBillions(String(shortfall.current))),
-            needed: formatRcSummary(rawRcToBillions(String(shortfall.needed)))
+            current: formatRcSummary(rawRcToBillions(String(shortfall.current)), locale),
+            needed: formatRcSummary(rawRcToBillions(String(shortfall.needed)), locale)
           }),
           variant: 'destructive'
         });
@@ -150,7 +153,10 @@ const DelegateRCDialog = ({
   const isAmountValid = amountBillions.gt(0) && amountBillions.lte(maxBillions) && !isBelowMinimum;
   const isFormValid = isAmountValid && accountStatus === 'found' && !delegateMutation.isPending;
   const accountStatusKey = ACCOUNT_STATUS_KEYS[accountStatus];
-  const summary = { amount: formatRcSummary(amountBillions), max: formatRcSummary(maxBillions) };
+  const summary = {
+    amount: formatRcSummary(amountBillions, locale),
+    max: formatRcSummary(maxBillions, locale)
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -195,10 +201,8 @@ const DelegateRCDialog = ({
             </Label>
             <div className="space-y-3">
               <Input
-                type="number"
-                min={0}
-                step={`0.${'0'.repeat(RC_INPUT_DECIMALS - 1)}1`}
-                max={maxBillions.toString()}
+                type="text"
+                inputMode="decimal"
                 disabled={delegateMutation.isPending}
                 id="amount"
                 aria-invalid={isBelowMinimum}
@@ -243,7 +247,7 @@ const DelegateRCDialog = ({
                 {existingBillions.gt(0) ? (
                   <p className="text-xs text-primary/70">
                     {t('transfers_page.delegate_rc.existing_delegation_note', {
-                      existing: formatRcSummary(existingBillions),
+                      existing: formatRcSummary(existingBillions, locale),
                       account: toAccount,
                       max: summary.max
                     })}
@@ -252,7 +256,7 @@ const DelegateRCDialog = ({
                 {creationAdjustmentBillions.gt(0) ? (
                   <p className="text-xs text-primary/70">
                     {t('transfers_page.delegate_rc.creation_adjustment_note', {
-                      reserved: formatRcSummary(creationAdjustmentBillions)
+                      reserved: formatRcSummary(creationAdjustmentBillions, locale)
                     })}
                   </p>
                 ) : null}

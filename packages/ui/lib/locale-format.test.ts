@@ -99,6 +99,12 @@ describe('numbers and amounts', () => {
     assert.equal(formatPercent(NaN, 'en'), '');
   });
 
+  it('formats a number and an amount for a tag the runtime rejects in English, without throwing', () => {
+    assert.equal(formatNumber(new Big('1234.5'), 'not a tag!', 2), '1,234.50');
+    assert.equal(formatAmount(1234.5, 'HBD', 'not a tag!'), '1,234.500 HBD');
+    assert.equal(formatAbbreviatedAmount(new Big('651700'), 'HBD', 'not a tag!'), '651.7K HBD');
+  });
+
   it('writes a file size in the locale', () => {
     assert.equal(formatFileSize(12.34 * 1024, 'en'), '12.3 kB');
     assert.equal(formatFileSize(3 * 1024 * 1024, 'pl'), '3 MB');
@@ -176,6 +182,21 @@ describe('relative time and durations', () => {
     assert.equal(formatDuration({ day: 0, hour: 5 }, 'en'), '5 hours');
     assert.equal(formatDuration({ day: 1, hour: 0 }, 'pl'), '1 dzień');
     assert.equal(formatDuration({ day: 0, hour: 0 }, 'en'), '0 hours');
+  });
+
+  it('puts a duration after "in" in the accusative where the locale has one: pl "za", ru "через"', () => {
+    expectPerLocale((lang) => formatDuration({ day: 2, hour: 1 }, lang, 'accusative'), {
+      en: '2 days, 1 hour',
+      pl: '2 dni i 1 godzinę',
+      ru: '2 дня 1 час',
+      ja: '2 日 1 時間',
+      ar: 'يومان وساعة'
+    });
+    assert.equal(formatDuration({ day: 2, hour: 1 }, 'pl'), '2 dni i 1 godzina');
+    assert.equal(formatDuration({ minute: 1 }, 'ru', 'accusative'), '1 минуту');
+    assert.equal(formatDuration({ week: 21, second: 1 }, 'ru', 'accusative'), '21 неделю 1 секунду');
+    assert.equal(formatDuration({ minute: 22 }, 'pl', 'accusative'), '22 minuty');
+    assert.equal(formatDuration({ hour: 1 }, 'not a tag!', 'accusative'), '1 hour');
   });
 
   it('counts a long time in its largest unit, twelve months as a year', () => {

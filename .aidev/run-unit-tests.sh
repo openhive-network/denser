@@ -283,6 +283,8 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/scam-transfer-filter.test.ts \
     apps/wallet/lib/market-order-form.test.ts \
     apps/wallet/lib/financial-report.test.ts \
+    apps/wallet/lib/financial-report-csv.test.ts \
+    apps/wallet/lib/decimal-input.test.ts \
     apps/wallet/lib/dhf-funding.test.ts \
     apps/wallet/lib/dhf-faq.test.ts \
     apps/wallet/lib/proposals-list.test.ts \

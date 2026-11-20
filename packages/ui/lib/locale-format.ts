@@ -24,7 +24,12 @@ export {
 export { formatCalendarDate } from './calendar-date';
 export { formatMonthYear } from './month-year';
 export { formatDateTime, type DateTimeFormatName, type DateTimeZone } from './date-format';
-export { formatDuration, formatLargestUnitDuration, type Duration } from './duration-format';
+export {
+  formatDuration,
+  formatLargestUnitDuration,
+  type Duration,
+  type DurationCase
+} from './duration-format';
 
 /** Token names an amount is shown with; every locale keeps them as they are. */
 export type AmountSymbol = 'HIVE' | 'HBD' | 'HP' | 'HIVE POWER' | 'VESTS';

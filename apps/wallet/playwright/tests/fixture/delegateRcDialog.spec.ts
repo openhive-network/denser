@@ -96,7 +96,7 @@ test.describe('Delegate RC dialog', () => {
     const amount = dialog.getByLabel('RC amount (billions)');
 
     await expect(dialog).toHaveAttribute('aria-modal', 'true');
-    await expect(dialog.getByText('0.00 bil / 1000.00 bil RC')).toBeVisible();
+    await expect(dialog.getByText('0.00 bil / 1,000.00 bil RC')).toBeVisible();
 
     await slider.focus();
     await page.keyboard.press('ArrowRight');
@@ -107,7 +107,7 @@ test.describe('Delegate RC dialog', () => {
     await page.keyboard.press('PageUp');
     await expect(slider).toHaveAttribute('aria-valuenow', '11');
     await expect(amount).toHaveValue('110');
-    await expect(dialog.getByText('110.00 bil / 1000.00 bil RC')).toBeVisible();
+    await expect(dialog.getByText('110.00 bil / 1,000.00 bil RC')).toBeVisible();
 
     await page.keyboard.press('End');
     await expect(slider).toHaveAttribute('aria-valuenow', '100');
@@ -239,7 +239,7 @@ test.describe('Delegate RC dialog', () => {
       await trigger.click();
       await expect(dialog).toBeVisible({ timeout: 1000 });
     }).toPass({ timeout: HYDRATION_TIMEOUT });
-    await expect(dialog.getByText('0.00 mld / 1000.00 mld RC')).toBeVisible();
+    await expect(dialog.getByText('0,00 mld / 1000,00 mld RC')).toBeVisible();
     await dialog.getByRole('combobox', { name: 'Do konta' }).fill('stub-fo');
     await expect(dialog.getByRole('option', { name: `${STUB_FOLLOWED} (obserwujesz)` })).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Zamknij', exact: true })).toBeVisible();
@@ -342,7 +342,9 @@ test.describe('Delegate RC dialog', () => {
     await expect(amount).toHaveAttribute('aria-invalid', 'true');
     await expect(submit).toBeDisabled();
 
-    await amount.fill('1.84');
+    // A decimal comma, as a pl or ru reader types it, is the decimal point.
+    await amount.fill('1,84');
+    await expect(amount).toHaveValue('1.84');
     await expect(amount).toHaveAttribute('aria-invalid', 'false');
     await expect(submit).toBeEnabled();
   });
