@@ -6,14 +6,20 @@ export type PasskeyOfferClient = Pick<OnlineClient | OfflineClient, 'isPasskeySu
 
 /**
  * Whether to offer `username` a passkey (fingerprint, Face ID, device PIN) to unlock safe storage
- * with after a password sign-in: the browser supports it, the user has none, and has not dismissed
- * the offer. False on any error: the offer is not worth failing the sign-in for.
+ * with after a password sign-in: the browser supports it, the user has none, or has one whose
+ * unlock just failed (`passkeyUnlockFailed`: the browser answers a passkey deleted from the
+ * password manager as it does a cancel, so enabling again is what replaces it), and has not
+ * dismissed the offer. False on any error: the offer is not worth failing the sign-in for.
  */
-export async function shouldOfferPasskey(client: PasskeyOfferClient, username: string): Promise<boolean> {
+export async function shouldOfferPasskey(
+  client: PasskeyOfferClient,
+  username: string,
+  passkeyUnlockFailed = false
+): Promise<boolean> {
   try {
     const supported = await client.isPasskeySupported();
     const hasPasskey = await client.hasPasskey(username);
-    return supported && !hasPasskey && !isPasskeyPromptDismissed(username);
+    return supported && (!hasPasskey || passkeyUnlockFailed) && !isPasskeyPromptDismissed(username);
   } catch {
     return false;
   }

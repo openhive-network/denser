@@ -23,10 +23,22 @@ function openStore(): Promise<IDBDatabase> {
   return settled(request);
 }
 
+/** Resolves once `transaction` commits: a request's success does not mean its write is stored */
+function committed(transaction: IDBTransaction): Promise<void> {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error ?? new DOMException('Transaction aborted', 'AbortError'));
+  });
+}
+
 async function withStore<T>(mode: IDBTransactionMode, run: (store: IDBObjectStore) => IDBRequest<T>): Promise<T> {
   const db = await openStore();
   try {
-    return await settled(run(db.transaction(STORE_NAME, mode).objectStore(STORE_NAME)));
+    const transaction = db.transaction(STORE_NAME, mode);
+    const done = committed(transaction);
+    const [result] = await Promise.all([settled(run(transaction.objectStore(STORE_NAME))), done]);
+    return result;
   } finally {
     db.close();
   }
@@ -38,7 +50,12 @@ export async function readPasskeyUnlock(username: string): Promise<PasskeyUnlock
   return record ?? null;
 }
 
-/** Stores `record`, in place of the passkey unlock its user had */
+/** Stores `record`, in place of the passkey unlock its user had; resolves once it is stored */
 export async function storePasskeyUnlock(record: PasskeyUnlockRecord): Promise<void> {
   await withStore('readwrite', (store) => store.put(record));
+}
+
+/** Removes the passkey unlock of `username`, as hb-auth's `removePasskey` does; resolves once removed */
+export async function removePasskeyUnlock(username: string): Promise<void> {
+  await withStore('readwrite', (store) => store.delete(username));
 }

@@ -1,9 +1,10 @@
 /**
  * Why a passkey did not give the safe storage password: the user cancelled or let the browser's
  * prompt time out (WebAuthn's NotAllowedError, AbortError), the authenticator has no PRF, the user
- * has no passkey registered, or the ceremony failed otherwise.
+ * has no passkey registered, the registered one no longer unlocks (its password does not decrypt,
+ * or safe storage refuses it), or the ceremony failed otherwise.
  */
-export type PasskeyUnlockFailure = 'cancelled' | 'unsupported' | 'not-registered' | 'failed';
+export type PasskeyUnlockFailure = 'cancelled' | 'unsupported' | 'not-registered' | 'stale' | 'failed';
 
 export class PasskeyUnlockError extends Error {
   readonly reason: PasskeyUnlockFailure;
