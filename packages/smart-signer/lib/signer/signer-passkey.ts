@@ -4,9 +4,9 @@ import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { Signer, type SignChallenge, type SignTransaction, type SignerOptions } from '@smart-signer/lib/signer/signer';
 import { AuthFailureError } from '@smart-signer/lib/auth-failure';
 import { forgetPasskeyBinding, passkeyBindingOf } from '@smart-signer/lib/passkey/passkey-binding';
-import { openSignerPopup, SignerError, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
+import { openSignerPopup, SignerError, signerErrorKey, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
-/** What a failed signature says in the toast of the operation it was for. */
+/** What a failed signature says in the log; the toast shows its `login_form.passkey.signer_errors.*` text. */
 const FAILURE_MESSAGES: Record<string, string> = {
   popup_blocked: 'The browser blocked the passkey signer window. Allow pop-ups for this site and try again.',
   signer_unavailable: 'The passkey signer did not answer. Check your connection and try again.',
@@ -17,14 +17,16 @@ const FAILURE_MESSAGES: Record<string, string> = {
 };
 
 /**
- * A `SignerError` the operation's error handling can show: a closed popup reads as the user
- * cancelling (no toast), every other code as its message.
+ * What the operation's error handling makes of a signer failure: a closed popup reads as the user
+ * cancelling (no toast), every other code as an AuthFailureError whose toast is the code's
+ * translated text and whose message, for the log, is the English one.
  */
 function failure(error: unknown): unknown {
   if (!(error instanceof SignerError)) return error;
-  if (error.code === 'cancelled') return new SignerError('cancelled', 'user cancelled the passkey signer');
+  const key = signerErrorKey(error);
+  if (key === null) return new SignerError('cancelled', 'user cancelled the passkey signer');
   const message = FAILURE_MESSAGES[error.code] ?? `The passkey signer failed (${error.code}).`;
-  return new SignerError(error.code, message);
+  return new AuthFailureError(message, `login_form.passkey.signer_errors.${key}`, { cause: error });
 }
 
 /**
