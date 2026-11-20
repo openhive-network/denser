@@ -12,7 +12,10 @@ export const WALLET_USER_CONTENT = [
   '[data-testid="proposal-title"]',
   '[data-testid="witness-description"]',
   '[data-testid="witness-id-dialog"]',
-  '[data-testid="proposal-voter-link-dialog"]'
+  '[data-testid="proposal-voter-link-dialog"]',
+  '[data-testid="wallet-delegation-delegatee"]',
+  // A public key
+  '[data-testid="permissions-memo-key"]'
 ];
 
 /** Dates the wallet formats with `Intl`, which shows English for the pseudo-locale. */

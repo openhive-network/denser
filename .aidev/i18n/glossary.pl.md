@@ -27,10 +27,10 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | power down | zmniejszyć moc; button „Zmniejsz moc” | agreed (#1188) | „Anuluj zmniejszanie mocy”, „Następne zmniejszenie mocy nastąpi za”. |
 | HIVE, HBD, HIVE POWER, HP | unchanged | agreed (#1188) | Token symbols. Do not repeat the symbol after an amount that already carries it. |
 | after payout | po wypłacie | unreviewed | „+1 głos po wypłacie (niewliczony)”. |
-| payout | wypłata | unreviewed | Most frequent (14 of 23 strings): „Odrzuć wypłatę”, „Maksymalna akceptowana wypłata”. See drift: „wynagrodzenie”. |
+| payout | wypłata | unreviewed | Most frequent (14 of 23 strings): „Odrzuć wypłatę”, „Maksymalna akceptowana wypłata”. Tabs and titles: „Wypłaty” (#1698). |
 | rewards / claim rewards | nagrody / Odbierz nagrody | agreed (#1609) | Button „Odbierz” (never „Obierz”); toast „Nagrody zostały odebrane.” |
 | curation rewards | nagrody kuratorskie | agreed (#1188) | „Nagroda kuratorska za:”. See drift. |
-| author rewards / benefactor rewards | nagrody autorskie / nagrody beneficjenta | agreed (#1188) | |
+| author rewards / benefactor rewards | nagrody autorskie / nagrody beneficjenta | agreed (#1188) | Wallet tabs and titles too: „Nagrody autorskie”, „Nagrody kuratorskie” (#1698). |
 | beneficiary | beneficjent | unreviewed | See drift: „Odbiorcy”. |
 | posting key | klucz Posting; on the keys page „Klucz publikowania (Posting)” | agreed (#1188, #1603) | Key names stay English in prompts (#1603): „Wprowadź klucz Active”. Mid-sentence use `{{keyType, capitalize}}` (#1609): „klucz Active”. |
 | active key | klucz Active; keys page „Klucz aktywny (Active)” | agreed (#1188, #1603) | As above. |
@@ -46,12 +46,12 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | market | giełda | unreviewed | |
 | interest | odsetki | agreed (#1188) | „Oprocentowanie HBD: … w skali roku”. |
 | price feed | kurs ceny | agreed (#1188) | „Brak opublikowanego kursu” (#1662). |
-| proxy (witness voting) | pełnomocnik | agreed (#1188) | „Ustaw pełnomocnika”. See drift: „z proxy”. |
-| Resource Credits (RC) | Punkty zasobów (RC) | agreed (#1188) | Unit for billions: „mld”. |
+| proxy (witness voting) | pełnomocnik | agreed (#1188) | „Ustaw pełnomocnika”. |
+| Resource Credits (RC) | Punkty zasobów (RC) | agreed (#1188) | Unit for billions: „mld”. „Poziom punktów zasobów (RC): 42%” (#1698). |
 | API node | węzeł API | agreed (#1188) | |
 | upvote / downvote | głos za / głos przeciw | unreviewed | |
 | follow | obserwować; button „Obserwuj” | unreviewed | The delegate dialog's suggestion suffix „obserwujesz” is agreed (#1188). |
-| mute / unmute | wyciszyć / wyłączyć wyciszenie | unreviewed | 30 of 31 strings use „wycisz-”. See drift. |
+| mute / unmute | wyciszyć / wyłączyć wyciszenie | unreviewed | Buttons „Wycisz”, „Wyłącz wyciszenie” (#1698). |
 | reblog | reblog, „Rebloguj” | unreviewed | |
 | community | społeczność | unreviewed | |
 | community subscribers | subskrybenci; „1 subskrybent”, „3 subskrybenci”, „5 subskrybentów” | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
@@ -65,6 +65,11 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | notifications | powiadomienia | unreviewed | „@{{username}} odpowiedział na twój post” (#1609). |
 | this session (key badge) | Ta sesja | unreviewed | |
 | recovery account | konto odzyskiwania | unreviewed | |
+| Power up 100% (payout option) | 100% w HIVE POWER | unreviewed | Blog payout options and settings (#1698). Never „Wzmocnij”, „Zasilanie”. |
+| pending payout | oczekująca wypłata | unreviewed | „Oczekująca wypłata: $1,23”, „Brak oczekujących wypłat.” (#1698). |
+| proxied (vote weight) | od pełnomocnictw | unreviewed | „+5 HP od pełnomocnictw”, „głosuje przez pełnomocnika @gtg” (#1698). |
+| block explorer | eksplorator bloków | unreviewed | „Otwórz w eksploratorach bloków” (#1698). |
+| authority of a key (posting authority) | upoważnienie | unreviewed | „upoważnienie Posting konta”, „nie ma upoważnienia Active” (#1698), as Authorities. Never „uprawnienia Posting”. |
 
 ## Register
 
@@ -124,26 +129,4 @@ HIVE, HBD, HP, HIVE POWER, Hive Power; key names Posting, Active, Owner, Memo
 
 Strings that do not follow the glossary yet:
 
-- payout as „wynagrodzenie”: blog `navigation.profile_posts_tab_navbar.payouts`
-  and `select_sort.posts_sort.payouts` („Wynagrodzenia”),
-  `cards.payout_declined`, `user_profile.no_pending_payouts`,
-  `page_titles.payouts_for`; `amount_hover_card.pending_payout_amount` reads
-  „Wypłacana kwota”.
-- curation rewards as „Wynagrodzenia kuratorskie”: wallet
-  `navigation.profile_navbar.curation_rewards`, `page_titles.curation_rewards`.
-- `post_content.footer.comment.decline_payout` „Odrzuć Wypłatę” (title case).
-- beneficiaries as „Odbiorcy”: blog
-  `submit_page.advanced_settings_dialog.beneficiaries`, `beneficiaries_cannot`.
-- mute as „Blokuj” (blog `user_profile.mute_button`) and unmute as
-  „Odblokuj” (`user_profile.unmute_button`).
-- „Resource Credits (RC) level” left in English: blog
-  `post_content.footer.comment.resource_credits`,
-  `submit_page.resource_credits`; „Delegowanie kredytów zasobów” in the blog's
-  RC delegation text.
-- Power up 100 % as „Wzmocnij” / „Zasilanie” in blog payout options, and
-  „zrób power up HIVE” in an RC error.
-- proxy as „z proxy” in the wallet `voters_dialog` strings.
-- Google Drive as „Dysk Google” in five smart-signer strings (nine use
-  „Google Drive”).
-- Gendered „Zreblogowałeś”; lowercase „twój” in notification texts and
-  `voters_dialog.your_vote`.
+- „Hbauth” in the blog's and the wallet's `login_form.*hbauth*` keys (the smart-signer copies, which the dialogs show, say „bezpieczny magazyn”).

@@ -55,7 +55,7 @@ export class CommunityRolesPage {
     );
   }
 
-  /** Raw role string cell (e.g. "mod") within a given account's row. */
+  /** Role label cell (e.g. "Moderator") within a given account's row. */
   roleNameInRow(account: string): Locator {
     return this.rowByAccount(account).getByTestId('community-role-name');
   }
@@ -66,9 +66,8 @@ export class CommunityRolesPage {
   }
 
   /**
-   * Assert a single role row renders the expected account, raw role string,
-   * and title. The role cell shows the RAW role (`item.role`), not the
-   * translated label — see `table-item.tsx`.
+   * Assert a single role row renders the expected account, role label and
+   * title (`table-item.tsx`).
    */
   async expectRoleRow({
     account,

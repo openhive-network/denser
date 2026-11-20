@@ -115,15 +115,20 @@ export const ROLE_ADMIN = 'admin';
 export const ROLE_GUEST = 'guest';
 export const ROLE_MUTED = 'muted';
 
+/** The English labels the roles table shows for them (`communities.<role>` in common_blog.json). */
+export const ROLE_LABEL_OWNER = 'Owner';
+export const ROLE_LABEL_ADMIN = 'Admin';
+export const ROLE_LABEL_MOD = 'Moderator';
+
 /**
  * Stable leadership rows in `hive-160391`'s role list, asserted by COM-13.
- * The roles table renders the RAW role string (not the translated label) —
- * see `table-item.tsx` (`{item.role}`). `title` is the per-user community
- * title column. Pinned here so a re-record that changes leadership fails in
- * one place instead of inside the spec.
+ * `role` is the label the roles table renders (`communityRoleLabel` in
+ * `table-item.tsx`); `title` is the per-user community title column. Pinned
+ * here so a re-record that changes leadership fails in one place instead of
+ * inside the spec.
  */
-export const ROLE_ROW_ADMIN = { account: 'gandalf', role: ROLE_ADMIN, title: '' };
-export const ROLE_ROW_MOD = { account: 'gtg', role: ROLE_MOD, title: 'Wizard' };
+export const ROLE_ROW_ADMIN = { account: 'gandalf', role: ROLE_LABEL_ADMIN, title: '' };
+export const ROLE_ROW_MOD = { account: 'gtg', role: ROLE_LABEL_MOD, title: 'Wizard' };
 
 /**
  * Success-toast descriptions fired by the community mutation hooks

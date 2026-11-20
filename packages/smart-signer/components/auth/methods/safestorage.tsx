@@ -38,6 +38,7 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { describeRefusedKey, validateSafeStorageKey } from '@smart-signer/lib/validators/validate-key-authority';
 import { findRegistrationKeyRoleHint, type KeyHint } from '@smart-signer/lib/validators/key-role-hint';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
@@ -63,8 +64,8 @@ function getFormSchema() {
       password: passwordSchema,
       wif: z.string(),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: 'Invalid keyType',
-        required_error: 'keyType is required'
+        invalid_type_error: 'login_form.zod_error.invalid_keytype',
+        required_error: 'login_form.zod_error.keytype_required'
       }),
       userFound: z.boolean(),
       strict: z.boolean()
@@ -126,6 +127,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }));
 
     const { t } = useSharedTranslation(i18nNamespace);
+    const translateSignerKey = (key: string) => t(key, { ns: SMART_SIGNER_NAMESPACE });
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
@@ -145,7 +147,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const extensions = useInjectedExtensions();
     const form = useForm<SafeStorageForm>({
       mode: 'onChange',
-      resolver: zodResolver(getFormSchema()),
+      resolver: withTranslatedErrors(zodResolver(getFormSchema()), translateSignerKey),
       defaultValues: {
         username,
         password: '',
@@ -206,7 +208,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         const supersededKeyWrite = findSupersededKeyWrite(error);
         const errorMessage = supersededKeyWrite
           ? t(SUPERSEDED_KEY_WRITE_MESSAGE, { ns: SMART_SIGNER_NAMESPACE, ...supersededKeyWrite })
-          : handleAuthError(error, 'onSave');
+          : handleAuthError(error, 'onSave', translateSignerKey);
         setError(errorMessage);
         setLoading(false);
       }
@@ -247,7 +249,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
           return;
         }
-        const errorMessage = handleAuthError(error, 'onAuthenticate');
+        const errorMessage = handleAuthError(error, 'onAuthenticate', translateSignerKey);
         setError(errorMessage);
         setLoading(false);
       }
@@ -291,7 +293,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await signIn(LoginType.hbauth, username, KeyType[keyType]);
         requestPersistentKeyStorage();
       } catch (error) {
-        const errorMessage = handleAuthError(error, 'finalize');
+        const errorMessage = handleAuthError(error, 'finalize', translateSignerKey);
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -354,7 +356,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
             }
           }
         } catch (error) {
-          const errorMessage = handleAuthError(error, 'SafeStorage.useEffect');
+          const errorMessage = handleAuthError(error, 'SafeStorage.useEffect', translateSignerKey);
           setError(
             error instanceof SafeStorageStartError
               ? t('login_form.signin_safe_storage.start_failed', { ns: SMART_SIGNER_NAMESPACE })

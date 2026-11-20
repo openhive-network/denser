@@ -14,7 +14,7 @@ markup and plural keys, not their wording.
 
 | English | Korean | Status | Notes |
 |---|---|---|---|
-| Safe Storage | 안전 저장소 | unreviewed | See drift: 안전한 저장소. |
+| Safe Storage | 안전 저장소 | unreviewed | Every string since #1698. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | unreviewed | Product name: "Keychain 사용". |
 | witness / witnesses | 증인 | unreviewed | 36 of 37 strings. |
 | voters | 투표자 | unreviewed | |
@@ -51,6 +51,7 @@ markup and plural keys, not their wording.
 | market / interest | 마켓 / 이자 | unreviewed | |
 | this session (key badge) | 이 세션 | unreviewed | |
 | recovery account | 복구 계정 | unreviewed | |
+| witness owner (witness list) | 운영자 | unreviewed | "운영자: @gtg" (#1698); not 작성자 (author). |
 
 ## Register
 
@@ -85,5 +86,4 @@ NSFW, RC, DHF, API; HIVE, HBD, HP, HIVE POWER.
 
 ## Known drift
 
-- Safe Storage: 안전한 저장소 in the lite-account strings against 안전 저장소.
-- Google Drive: two strings say Google 드라이브.
+None known. The #1698 review fixed the drift listed here before.

@@ -7,6 +7,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { getChain } from '@transaction/lib/chain';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { findPasskeyPostingKey, passkeyLoginErrorKey } from '@smart-signer/lib/passkey/find-posting-key';
 import { passkeyBindingOf, rememberPasskeyBinding } from '@smart-signer/lib/passkey/passkey-binding';
 import { openSignerPopup, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
@@ -36,7 +37,7 @@ const Passkey: FC<PasskeyProps> = ({ onSetStep, i18nNamespace, username, onUsern
   const [found, setFound] = useState(() => !!username && !!passkeyBindingOf(username));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const usernameError = username ? validateHiveAccountName(username, (v) => v) : null;
+  const usernameError = username ? validateHiveAccountName(username) : null;
 
   // The sign-in click opens the signer once the chain is loaded: load it now, so the click still counts.
   useEffect(() => {
@@ -101,7 +102,9 @@ const Passkey: FC<PasskeyProps> = ({ onSetStep, i18nNamespace, username, onUsern
             onChange={(event) => changeUsername(event.target.value)}
             data-testid="passkey-signin-username"
           />
-          {usernameError ? <p className="text-xs text-destructive">{usernameError}</p> : null}
+          {usernameError ? (
+            <p className="text-xs text-destructive">{t(usernameError, { ns: SMART_SIGNER_NAMESPACE })}</p>
+          ) : null}
         </div>
         {!found && configuredPasskeySigners.length > 1 ? (
           <RadioGroup value={origin} onValueChange={setOrigin} data-testid="passkey-signin-signers">

@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 export type User = { value: number; role: Roles; name: string; title: string; temprary: boolean };
 
 export type Roles = 'owner' | 'admin' | 'mod' | 'member' | 'guest' | 'muted';
@@ -10,6 +12,10 @@ export const rolesLevels = [
   { name: 'guest', value: 2 },
   { name: 'muted', value: 1 }
 ];
+
+/** A role's name in the UI language; a role the app does not know is shown as the chain names it. */
+export const communityRoleLabel = (role: string, t: TFunction<'common_blog'>): string =>
+  rolesLevels.some((level) => level.name === role) ? t(`communities.${role}`) : role;
 
 export const getRoleValue = (role: Roles): number => {
   switch (role) {

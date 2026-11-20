@@ -119,7 +119,7 @@ const UserMenu = ({
                     data-testid="login-method-indicator"
                   >
                     <LoginMethodIcon loginType={user.loginType} />
-                    <div className="flex flex-col text-sm font-semibold">
+                    <div className="flex flex-col text-sm font-semibold" data-testid="login-method-wordmark">
                       <span>Hive</span>
                       {/* eslint-disable-next-line @hive/i18n/no-untranslated-text -- the "Hive Blog" wordmark */}
                       <span className="text-destructive">Blog</span>

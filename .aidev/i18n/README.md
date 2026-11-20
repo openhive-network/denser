@@ -35,3 +35,9 @@ translation sets that ship the language:
 
 English (`glossary.en.md`) is the source wording the other glossaries
 translate.
+
+## Reviews
+
+`review-<issue>.md` lists, per locale, every string a review pass changed as
+`<set> <key>: "old" → "new"`, for a native speaker to check the batch:
+`review-1698.md` is the first pass over every locale.

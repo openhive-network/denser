@@ -105,7 +105,7 @@
       "replies": "Respuestas",
       "social": "Social",
       "notifications": "Notificaciones",
-      "wallet": "Monedero",
+      "wallet": "Billetera",
       "settings": "Configuración",
       "block_explorer": "Explorador de bloques"
     },
@@ -125,7 +125,7 @@
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "Recompensas no reclamadas: {{rewards}}",
       "no_notifications_yet": "Aún no hay notificaciones",
-      "redeem": "Canjear",
+      "redeem": "Reclamar",
       "claim_success_title": "Canjear recompensas",
       "claim_success_description": "Tus recompensas se han canjeado correctamente.",
       "mark_all": "Marcar todo como leído",
@@ -161,7 +161,7 @@
       "replies": "Respuestas",
       "toggle_theme": "Tema",
       "toggle_lang": "Idioma",
-      "wallet": "Monedero",
+      "wallet": "Billetera",
       "logout": "Cerrar sesión",
       "switch_account": "Cambiar de cuenta",
       "add_account": "Añadir cuenta",
@@ -170,7 +170,7 @@
       "remove_account_failed": "No se pudo quitar {{username}}.",
       "logged_in_with": "Conectado con {{method}}",
       "login_method": {
-        "hbauth": "Almacenamiento Seguro",
+        "hbauth": "Almacenamiento seguro",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",
@@ -371,8 +371,8 @@
   "user_profile": {
     "reputation": "Reputación",
     "follow_button": "Seguir",
-    "mute_button": "Mudo",
-    "unmute_button": "Un mudo",
+    "mute_button": "Silenciar",
+    "unmute_button": "Dejar de silenciar",
     "unfollow_button": "Dejar de seguir",
     "hive_buzz_badge_title": "Esta es la insignia de nivel de {{username}} obtenida en los programas de Hivebuzz",
     "user_level_title": "{{username}} es {{level}} (según los VESTS en stake). Haz clic para ver más estadísticas en HiveBuzz.",
@@ -429,12 +429,12 @@
       "followed_pages": "Página de seguidos {{current}} de {{total}}",
       "list": {
         "unblacklist": "quitar de la lista negra",
-        "unmute": "desmutear",
+        "unmute": "dejar de silenciar",
         "unfollow_blacklist": "dejar de seguir la lista negra",
         "unfollow_muted_list": "dejar de seguir la lista silenciada",
         "what_is_this": "¿Qué es esto?",
         "show_or_hide_descripton_one": "Este es el nuevo sistema descentralizado de listas. Desde aquí puedes gestionar tu propia lista de silenciados o lista negra, así como suscribirte a las listas de silenciados y listas negras de otros usuarios. Hay algunos campos nuevos en la ",
-        "show_or_hide_descripton_two": "page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
+        "show_or_hide_descripton_two": " donde puedes describir cómo eliges a quién añades a tus listas y si esas cuentas pueden hacer algo para salir de ellas. Puedes ver las descripciones de las listas de otras cuentas yendo directamente a su página de lista negra o de silenciados. Estos enlaces están en su página de perfil, debajo de la información de seguidores. Para empezar, te recomendamos seguir las listas negras y de silenciados de estas cuentas: hive.blog",
         "settings": "Configuración",
         "list_description": "Descripción de la lista: {{description}}",
         "add_account_to_list": "Agregar cuenta(s) a la lista",
@@ -542,7 +542,7 @@
     "set_title_for_user": "Establecer título para @{{username}}",
     "mute": "Silenciar",
     "save": "Guardar",
-    "unmute": "Reactivar sonido",
+    "unmute": "Dejar de silenciar",
     "mute_post_comment": "Silenciar publicación/comentario",
     "unmute_post_comment": "Dejar de silenciar publicación/comentario",
     "please_provide_a_note": "Por favor, proporcione una nota sobre su decisión de silenciar este contenido.",
@@ -718,7 +718,7 @@
         "url_to_this_post": "URL de esta publicación:",
         "markdown_code_for_a_link_to_this_post": "Código Markdown para vincular a esta publicación:",
         "open_in_alternative": "Fuentes alternativas",
-        "open_in": "Abierto en Block Explorers"
+        "open_in": "Abrir en exploradores de bloques"
       },
       "comment": {
         "disable_editor": "Cerrar editor",
@@ -989,7 +989,7 @@
     "choose_default_comment_payout": "Recompensas de publicación de comentarios predeterminadas",
     "choose_language": "Elegir idioma",
     "muted_users": "Usuarios silenciados",
-    "unmute": "Desilenciar",
+    "unmute": "dejar de silenciar",
     "decline_payout": "Rechazar pago",
     "power_up": "Aumentar el poder al 100%",
     "update": "Actualizar",

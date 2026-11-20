@@ -27,6 +27,7 @@ import StrictModeCheckbox from './strict-mode-checkbox';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { describeRefusedKey, validateSafeStorageKey } from '@smart-signer/lib/validators/validate-key-authority';
 import { findRegistrationKeyRoleHint, type KeyHint } from '@smart-signer/lib/validators/key-role-hint';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
@@ -70,11 +71,11 @@ function getFormSchema() {
       username,
       password: passwordSchema,
       wif: z.string().min(1, {
-        message: 'Invalid WIF key'
+        message: 'login_form.zod_error.wif_required'
       }),
       keyType: z.nativeEnum(KeyType, {
-        invalid_type_error: 'Invalid keyType',
-        required_error: 'keyType is required'
+        invalid_type_error: 'login_form.zod_error.invalid_keytype',
+        required_error: 'login_form.zod_error.keytype_required'
       }),
       isStrict: z.boolean().default(true)
     })
@@ -108,6 +109,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     }));
 
     const { t } = useSharedTranslation(i18nNamespace);
+    const translateSignerKey = (key: string) => t(key, { ns: SMART_SIGNER_NAMESPACE });
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
@@ -118,7 +120,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const form = useForm<SafeStorageKeyUpdateForm>({
       mode: 'onChange',
-      resolver: zodResolver(getFormSchema()),
+      resolver: withTranslatedErrors(zodResolver(getFormSchema()), translateSignerKey),
       defaultValues: {
         username,
         password: '',
@@ -158,7 +160,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
             }
           }
         } catch (error) {
-          const errorMessage = handleAuthError(error, 'SafeStorageKeyUpdate.useEffect');
+          const errorMessage = handleAuthError(error, 'SafeStorageKeyUpdate.useEffect', translateSignerKey);
           setError(errorMessage);
         } finally {
           setLoading(false);
@@ -202,7 +204,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           );
         }
       } catch (error) {
-        onSignInFailed(handleAuthError(error, 'signInWithAddedKey'));
+        onSignInFailed(handleAuthError(error, 'signInWithAddedKey', translateSignerKey));
       } finally {
         setLoading(false);
       }
@@ -285,7 +287,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         const supersededKeyWrite = findSupersededKeyWrite(error);
         const errorMessage = supersededKeyWrite
           ? t(SUPERSEDED_KEY_WRITE_MESSAGE, { ns: SMART_SIGNER_NAMESPACE, ...supersededKeyWrite })
-          : handleAuthError(error, 'onUpdateKey');
+          : handleAuthError(error, 'onUpdateKey', translateSignerKey);
         setError(errorMessage);
         setLoading(false);
       }

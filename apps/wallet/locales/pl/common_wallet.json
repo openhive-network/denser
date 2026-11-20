@@ -65,8 +65,8 @@
     "profile_navbar": {
       "blog": "Blog",
       "rewards": "Nagrody",
-      "curation_rewards": "Wynagrodzenia kuratorskie",
-      "author_rewards": "Wynagrodzenia autorskie",
+      "curation_rewards": "Nagrody kuratorskie",
+      "author_rewards": "Nagrody autorskie",
       "wallet": "Portfel"
     },
     "wallet_nav": {
@@ -216,7 +216,7 @@
     "hidden_transfers_both_other": "Ukryto {{count}} przelewu ({{badActorCount}} od znanych kont oszustów, {{mutedCount}} od wyciszonych przez Ciebie kont)",
     "scam_transfers_show": "Pokaż",
     "estimated_author_rewards_last_week": "Szacowane nagrody autorskie w zeszłym tygodniu:",
-    "author_rewards_history": "Historia nagród autora",
+    "author_rewards_history": "Historia nagród autorskich",
     "newer": "Nowsze",
     "older": "Starsze",
     "estimated_curation_rewards_last_week": "Szacunkowe nagrody kuratorskie w zeszłym tygodniu:",
@@ -230,8 +230,8 @@
     "previous_transfers_other": "{{count}} poprzedniego przelewu",
     "following": "obserwujesz",
     "potential_author_rewards_info": "Potencjalne nagrody nie zostały jeszcze dodane do salda. Podczas 7-dniowego okresu społeczność decyduje o ostatecznym podziale nagród poprzez głosowanie.",
-    "potential_author_rewards_title": "Potencjalne nagrody dla autora z: ",
-    "author_rewards_title": "Nagrody dla autora z: ",
+    "potential_author_rewards_title": "Potencjalne nagrody autorskie z: ",
+    "author_rewards_title": "Nagrody autorskie z: ",
     "curation_reward_title": "Nagroda kuratorska za: ",
     "potential_curation_reward_title": "Potencjalna nagroda kuratorska za: ",
     "by": " od ",
@@ -352,7 +352,7 @@
       "title": "Potwierdź pełnomocnika",
       "description": "Usuwasz pełnomocnictwo.",
       "set_proxy_to": "Przekaż pełnomocnictwo: {{proxy}}",
-      "cancel_button": "Zamknij",
+      "cancel_button": "Anuluj",
       "ok": "OK"
     },
     "bock_gap": {
@@ -445,9 +445,9 @@
     "others_share_few": "pozostali ({{count}}) · {{share}}",
     "others_share_many": "pozostali ({{count}}) · {{share}}",
     "others_share_other": "pozostali ({{count}}) · {{share}}",
-    "weight_proxy": "+{{proxy}} z proxy",
-    "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP z proxy",
-    "votes_via_proxy": "głosuje przez @{{proxy}}",
+    "weight_proxy": "+{{proxy}} od pełnomocnictw",
+    "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP od pełnomocnictw",
+    "votes_via_proxy": "głosuje przez pełnomocnika @{{proxy}}",
     "breakdown_label": "Udział głosujących w sile głosów",
     "weights_unavailable": "Ten węzeł API nie podaje siły głosów, więc głosujący są wymienieni tylko z nazwy.",
     "search_placeholder": "Szukaj głosujących",
@@ -455,7 +455,7 @@
     "no_voters": "Nikt jeszcze nie głosował.",
     "no_matches": "Żaden głosujący nie pasuje do wyszukiwania.",
     "load_more": "Wczytaj więcej",
-    "your_vote": "twój głos"
+    "your_vote": "Twój głos"
   },
   "login_form": {
     "cancel_button": "Anuluj",
@@ -465,7 +465,7 @@
     "password_hbauth_placeholder": "Hasło Hbauth do odblokowania klucza",
     "password_placeholder": "Hasło lub WIF",
     "reset_button": "Resetuj",
-    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego.",
+    "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga Twojego klucza {{authType}} lub hasła głównego.",
     "title_action_login": "Zaloguj się",
     "title_action_unlock_key": "Odblokuj klucz",
     "title_action_add_key": "Dodaj klucz",
@@ -854,7 +854,7 @@
     "i_have_saved_password": "Nazwa właściciela i hasło są bezpiecznie zapisane.",
     "claim_tokens": "Token tworzenia konta ({{amount}} z Twoich {{owned_tokens}} tokenów)",
     "payment_confirm": "{{amount}} HIVE ({{amount}} z Twoich {{owned_hives}} HIVE)",
-    "manage_confirm": "Rozumiem, że do zarządzania kontem {{communityName}} muszę używać uprawnień {{username}}*",
+    "manage_confirm": "Rozumiem, że do zarządzania kontem {{communityName}} muszę używać upoważnienia {{username}}*",
     "go_to_community": "Przejdź do swojej społeczności ",
     "community_created": "Społeczność utworzona!!!",
     "languages": {
@@ -917,8 +917,8 @@
     "page_not_found": "Nie znaleziono strony",
     "balances": "Salda",
     "delegations": "Delegacje",
-    "curation_rewards": "Wynagrodzenia kuratorskie",
-    "author_rewards": "Wynagrodzenia autorskie",
+    "curation_rewards": "Nagrody kuratorskie",
+    "author_rewards": "Nagrody autorskie",
     "permissions": "Uprawnienia",
     "authorities": "Upoważnienia",
     "change_password": "Zmiana hasła",

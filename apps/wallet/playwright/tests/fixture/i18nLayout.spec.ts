@@ -24,7 +24,7 @@ import {
 
 /**
  * The transfers page and its balance dialogs, the witnesses and the proposals with their voters
- * dialogs, in the pseudo-locale and in Polish, at a desktop and two phone viewports, in a wide font:
+ * dialogs, and the account's other pages and the market, in the pseudo-locale and in Polish, at a desktop and two phone viewports, in a wide font:
  * every text is translated and fits (playwright/support/i18n-layout.ts). The stub nodes are the
  * other specs' (support/walletApiStub.ts, witnessApiStub.ts, proposalsApiStub.ts, votersApiStub.ts).
  */
@@ -182,5 +182,36 @@ test.describe('proposals', () => {
       issues.push(...(await check(page, locale, '[data-testid="vote-proposals-dialog"]')));
       expectNoI18nIssues(issues, locale, WALLET_KNOWN_I18N_ISSUES);
     });
+  }
+});
+
+/** The stub account's other wallet pages and the market, each once its data is in. */
+const ACCOUNT_PAGES = [
+  { id: '05', path: `/@${STUB_ACCOUNT}/delegations`, ready: '[data-testid="wallet-rc-delegations"]' },
+  { id: '06', path: `/@${STUB_ACCOUNT}/permissions`, ready: 'img[src$="permissions.png"]' },
+  { id: '07', path: `/@${STUB_ACCOUNT}/authorities`, ready: '[data-testid="authority-toggle-active"]' },
+  { id: '08', path: `/@${STUB_ACCOUNT}/password`, ready: 'input[type="password"]' },
+  { id: '09', path: `/@${STUB_ACCOUNT}/author-rewards`, ready: 'main' },
+  { id: '10', path: `/@${STUB_ACCOUNT}/curation-rewards`, ready: 'main' },
+  { id: '11', path: `/@${STUB_ACCOUNT}/communities`, ready: 'input[name="title"]' },
+  { id: '12', path: '/market', ready: '[data-testid="buy-form-amount-input"]' },
+  { id: '13', path: '/recovery_step_1', ready: 'input' }
+];
+
+test.describe('account pages', () => {
+  serveStub(() => startWalletApiStub());
+
+  for (const { id, path, ready } of ACCOUNT_PAGES) {
+    for (const locale of I18N_CHECK_LOCALES) {
+      test(`WALLET-I18N-${id} [${locale}]: ${path} is translated and fits`, async ({ page, baseURL }) => {
+        await setUiLocale(page.context(), locale, baseURL);
+        await logInAsStubAccount(page, 'active');
+        await page.goto(`${WALLET_BASE_PATH}${path}`);
+        await expect(page.locator(ready).first()).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+        // Loading's spinner (@ui/components/loading)
+        await expect(page.locator('main .animate-spin')).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
+        expectNoI18nIssues(await check(page, locale), locale, WALLET_KNOWN_I18N_ISSUES);
+      });
+    }
   }
 });

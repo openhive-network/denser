@@ -29,6 +29,8 @@ import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask'
 import { loadGoogleIdentityServices } from '@smart-signer/lib/google-identity-script';
 import { logger } from '@ui/lib/logger';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { useInjectedExtensions } from './use-injected-extensions';
 import { configuredHiveAuth, configuredPasskeySigners } from '@ui/config/public-vars';
 
@@ -67,7 +69,9 @@ const Methods: FC<MethodsProps> = ({
   const { t } = useSharedTranslation(i18nNamespace);
   const [loading, setLoading] = useState(false);
   const form = useForm<MethodsFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: withTranslatedErrors(zodResolver(formSchema), (key) =>
+      t(key, { ns: SMART_SIGNER_NAMESPACE })
+    ),
     defaultValues: {
       username: username,
       keyType: preferredKeyTypes[0],

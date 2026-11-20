@@ -28,7 +28,7 @@ Arabic string yet; add them here when the first one is written.
 | posting / active key | مفتاح النشر / المفتاح النشط | unreviewed | |
 | Resource Credits (RC) | رصيد الموارد (RC) | unreviewed | |
 | upvote / downvote | التصويت الإيجابي / التصويت السلبي | unreviewed | |
-| follow / mute | متابعة / كتم | unreviewed | Muted: مكتوم. See drift. |
+| follow / mute | متابعة / كتم | unreviewed | Muted: مكتوم, المكتومة; unmute إلغاء الكتم (#1698). |
 | reblog | إعادة النشر | unreviewed | |
 | community | المجتمع | unreviewed | 31 of 35 strings. |
 | community subscribers | المشتركون; "{{value}} مشترك" | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
@@ -77,9 +77,4 @@ NSFW, RC, API; HIVE, HBD, HP, HIVE POWER, Hive Power.
 
 ## Known drift
 
-- mute: "الصامت" / "الصمت" (silent, silence) in the muted-users list
-  strings, against كتم / مكتوم; `user_profile.mute_button` "كتم الصوت" (mute
-  the sound).
-- log out: `navigation.user_menu.logout` "خروج" against "تسجيل الخروج".
-- redeem: `navigation.profile_notifications_tab_navbar.redeem` "استرداد"
-  (refund) against "المطالبة بالمكافآت".
+None known. The #1698 review fixed the drift listed here before.
