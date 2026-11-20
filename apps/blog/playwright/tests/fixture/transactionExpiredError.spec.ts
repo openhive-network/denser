@@ -7,7 +7,7 @@ import { rejectBroadcasts } from '../support/rejectBroadcasts';
  * A broadcast the node rejects because the transaction expired before the signer returned it
  * (`transaction_expiration_exception`, e.g. a Peak Vault approval given too late) says nothing was
  * sent and to try again, in the UI language, with none of wax's error text; screen readers hear the
- * toast announced in that language too. Reuses MUTE-01's recording (`socialMute`) and flow, like
+ * toast announced in that language too, and its close button named in it. Reuses MUTE-01's recording (`socialMute`) and flow, like
  * AUTH-ERR-01.
  */
 
@@ -22,12 +22,14 @@ const MESSAGES = [
   {
     locale: 'en',
     announcement: 'Notification',
+    close: 'Close',
     message:
       'Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within 10 minutes.'
   },
   {
     locale: 'pl',
     announcement: 'Powiadomienie',
+    close: 'Zamknij',
     message:
       'Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu 10 minut.'
   }
@@ -38,7 +40,7 @@ test.use({
   authenticatedUser: {}
 });
 
-for (const { locale, announcement, message } of MESSAGES) {
+for (const { locale, announcement, close, message } of MESSAGES) {
   test(`TX-EXPIRED-01-${locale} — a transaction that expired before approval reads as nothing sent`, async ({
     page,
     baseURL
@@ -54,6 +56,9 @@ for (const { locale, announcement, message } of MESSAGES) {
       new RegExp(`^${announcement} `)
     );
     await expect(page.getByTestId('transaction-expired-message')).toHaveText(message);
+    await expect(
+      page.locator('li').filter({ has: page.getByTestId('transaction-expired-message') }).locator('[toast-close]')
+    ).toHaveAccessibleName(close);
     expect(broadcasts.count).toBeGreaterThan(0);
     await expect(page.getByText(/Wax\w*Error|transaction expiration exception/)).toHaveCount(0);
     await expect(page.getByTestId('error-toast-content')).toHaveCount(0);

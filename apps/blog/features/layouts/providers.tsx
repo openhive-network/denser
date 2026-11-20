@@ -57,6 +57,7 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
         <Toaster
           label={t('global.notifications_region')}
           announcementLabel={t('global.toast_announcement')}
+          closeLabel={t('global.close')}
         />
         <BroadcastSettlementToasts />
         <SocialSyncListener />
