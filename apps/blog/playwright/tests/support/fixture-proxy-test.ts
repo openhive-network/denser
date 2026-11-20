@@ -1,4 +1,3 @@
-import path from 'path';
 import { test as base, expect, type BrowserContext } from '@playwright/test';
 import {
   createFixtureProxy,
@@ -153,7 +152,9 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
       // A failed attempt already fails or retries the run; its misses
       // (often from an aborted flow) would only make the baseline flaky.
       if (isRecordMode || testInfo.status !== testInfo.expectedStatus) return;
-      appendMissShard(path.relative(testInfo.project.testDir, testInfo.file), misses);
+      // The spec whose recording served the test (relative to testDir): testInfo.file is where test()
+      // was called, which for testI18nRoutes is a shared helper.
+      appendMissShard(testInfo.titlePath[0], misses);
     },
     { auto: true }
   ],
