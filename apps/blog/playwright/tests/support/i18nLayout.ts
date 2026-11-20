@@ -19,7 +19,9 @@ export const BLOG_USER_CONTENT = [
   ':has(> [data-testid="post-description"])',
   '[data-testid="post-author"]',
   '[data-testid="post-card-community"]',
-  '[data-testid="community-name"]',
+  // A community's title or a tag over its feed; the main feeds' "All posts" and "My friends" are ours
+  '[data-testid="community-feed-title"] [data-testid="community-name"]',
+  '[data-testid="community-feed-title"] [data-testid="communities-select-value"]',
   '[data-testid="post-card-category"]',
   '[data-testid="affiliation-tag-badge"]',
   '[data-testid="card-trending-comunities"] a',
@@ -44,8 +46,6 @@ export const BLOG_USER_CONTENT = [
   '[data-testid="community-list-item-title"]',
   '[data-testid="community-list-item-about"]',
   '[data-testid="user-location"]',
-  // The feed selector shows the community's title, or the feed's translated name
-  '[data-testid="communities-select-value"]',
   '[data-testid="user-name-in-profile-menu"]',
   // The "Hive Blog" wordmark of the user menu, in two lines
   '[data-testid="login-method-wordmark"]',

@@ -10,6 +10,7 @@ import { getLogger } from '@ui/lib/logging';
 import { runMiddleware } from '@smart-signer/lib/run-middleware';
 import Cors, { CorsOptions } from 'cors';
 import { corsOptionsDefault } from '@smart-signer/lib/cors-options';
+import { validationErrorMessage } from '@smart-signer/lib/validation-error-message';
 
 const logger = getLogger('api');
 
@@ -44,9 +45,7 @@ function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
     // with statusCode >= 500 (these should not be exposed).
     return res.status(err.statusCode).json({ error: { message: err.message } });
   } else if (err instanceof ZodError) {
-    // Handle zod validation errors.
-    const message = err.issues.map((issue) => issue.message).join(', ');
-    return res.status(400).json({ error: { message } });
+    return res.status(400).json({ error: { message: validationErrorMessage(err) } });
   } else {
     // Default to 500 server error.
     logger.error(err);

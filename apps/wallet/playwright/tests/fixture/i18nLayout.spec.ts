@@ -24,7 +24,7 @@ import {
 
 /**
  * The transfers page and its balance dialogs, the witnesses and the proposals with their voters
- * dialogs, and the account's other pages and the market, in the pseudo-locale and in Polish, at a desktop and two phone viewports, in a wide font:
+ * dialogs, the account's other pages, the market and the API node health checker, in the pseudo-locale and in Polish, at a desktop and two phone viewports, in a wide font:
  * every text is translated and fits (playwright/support/i18n-layout.ts). The stub nodes are the
  * other specs' (support/walletApiStub.ts, witnessApiStub.ts, proposalsApiStub.ts, votersApiStub.ts).
  */
@@ -213,5 +213,31 @@ test.describe('account pages', () => {
         expectNoI18nIssues(await check(page, locale), locale, WALLET_KNOWN_I18N_ISSUES);
       });
     }
+  }
+});
+
+/** @hiveio/healthchecker-component's ApiSetsComponent: its own text and the API-set titles. */
+const HEALTHCHECKER_THIRD_PARTY = {
+  selector: '[data-testid="api-sets-component"]',
+  issue: '#1725: Healthchecker API-set panel shows English in every locale'
+};
+
+test.describe('health checker', () => {
+  serveStub(() => startWalletApiStub());
+
+  for (const locale of I18N_CHECK_LOCALES) {
+    test(`WALLET-I18N-14 [${locale}]: /healthchecker is translated and fits`, async ({ page, baseURL }) => {
+      await setUiLocale(page.context(), locale, baseURL);
+      await page.goto(`${WALLET_BASE_PATH}/healthchecker`);
+      await expect(page.locator(HEALTHCHECKER_THIRD_PARTY.selector)).toBeVisible({
+        timeout: HYDRATION_TIMEOUT
+      });
+      const issues = await checkI18nLayout(page, {
+        locale,
+        userContent: [...WALLET_USER_CONTENT, HEALTHCHECKER_THIRD_PARTY.selector],
+        intlFormatted: WALLET_INTL_FORMATTED
+      });
+      expectNoI18nIssues(issues, locale, WALLET_KNOWN_I18N_ISSUES);
+    });
   }
 });
