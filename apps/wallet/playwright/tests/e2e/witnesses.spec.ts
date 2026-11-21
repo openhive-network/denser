@@ -6,11 +6,10 @@ import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePa
 import { WitnessPage } from '../../../../blog/playwright/tests/support/pages/witnessesPage';
 import { ConfirmAccountWitnessProxyDialog } from '../support/pages/confirmAccountWitnessProxyDialog';
 import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/math-utils';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import Big from 'big.js';
 
-dayjs.extend(relativeTime);
+// The witness age counts years of 365 days
+const SECONDS_PER_YEAR = 31_536_000;
 
 test.describe('Witnesses page tests', () => {
   let witnessesPage: WitnessesPage;
@@ -147,10 +146,12 @@ test.describe('Witnesses page tests', () => {
       await witnessesPage.witnessHasNotProducedBlocksWarning.count()
     );
 
-    const witnessCreatedAPI = witnesses[0].created;
-    // Validate Witness's age, in the name link's hover text
+    // The chain's `created` is UTC without a zone suffix
+    const witnessCreatedAPI = Date.parse(`${witnesses[0].created}Z`);
+    // Validate Witness's age, in whole 365-day years (truncated, as an age is), in the name link's hover text
+    const witnessAgeYears = Math.floor((Date.now() - witnessCreatedAPI) / SECONDS_PER_YEAR / 1000);
     expect(await witnessesPage.witnessNameLink.first().getAttribute('title')).toContain(
-      dayjs().from(dayjs(witnessCreatedAPI), true)
+      `Witness age: ${witnessAgeYears} years`
     );
 
     // Validate Witness external site
