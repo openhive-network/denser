@@ -44,10 +44,10 @@ catalogs:
     "@hiveio/wax-signers-metamask": "1.28.8-stable.261028191145"
     "@hiveio/wax-signers-peakvault": "1.28.8-stable.261028191145"
     "@hiveio/wax-signers-beekeeper": "1.28.8-stable.261028191145"
-    "@hiveio/beekeeper": "1.28.9-rc0-stable.261028200530"
+    "@hiveio/beekeeper": "1.28.9-rc0-stable.261107004332"
     "@hiveio/workerbee": "1.28.4-rc1-stable.261029021233"
     "@hiveio/hb-auth": "1.28.4-rc0-stable.261028220752"
-    "@hiveio/healthchecker-component": "2.0.2-stable.261101230602"
+    "@hiveio/healthchecker-component": "2.0.3-stable.261120204600"
   "react-toolset":
     "react": "19.3.1"
     "react-dom": "19.3.1"
