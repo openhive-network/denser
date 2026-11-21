@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGoogleDriveOAuth2Client } from '../client';
 import { getLogger } from '@ui/lib/logging';
 import { googleDriveCallbackUri, googleDriveServerOrigin } from '@smart-signer/lib/google-drive-urls';
-import { googleDriveTokenRequestRefusal } from '@smart-signer/lib/google-drive-token-request';
+import { googleDriveCodeExchangeRefusal } from '@smart-signer/lib/google-drive-token-request';
 import { googleDriveTokenRequest } from '../token-request';
 
 const logger = getLogger('google-drive-auth');
@@ -13,7 +13,7 @@ const logger = getLogger('google-drive-auth');
  * Usage: POST /api/google-drive/auth
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const refusal = googleDriveTokenRequestRefusal(await googleDriveTokenRequest(req));
+  const refusal = googleDriveCodeExchangeRefusal(await googleDriveTokenRequest(req));
   if (refusal) {
     logger.info('Refused Google Drive code exchange: %s', refusal);
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
