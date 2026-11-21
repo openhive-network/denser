@@ -1479,6 +1479,16 @@
     "check_nodes": "افحص العقد",
     "stop_checking": "أوقف الفحص",
     "node_unavailable": "{{selected}} غير متاحة لـ {{set}}؛ يتم استخدام {{node}} حتى تتعافى.",
+    "set_titles": {
+      "core": "نواة Hive (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "الحسابات الخفيفة",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "واجهة الأرصدة البرمجية",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "موجز «لك»"
+    },
     "catalog_only": "يمكن اختيار العُقد المدرجة فقط: لا يتصل الموقع بغيرها.",
     "title": "تبديل API وفحص الحالة",
     "checks": {

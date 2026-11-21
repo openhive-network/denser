@@ -38,6 +38,10 @@ Arabic string yet; add them here when the first one is written.
 | password | كلمة المرور | unreviewed | |
 | passkey | مفتاح المرور | unreviewed | |
 | notification / notifications | إشعار / الإشعارات | unreviewed | Toast announcement label "إشعار", region "الإشعارات ({hotkey})" (#1739). |
+| Hive core (API set) | نواة Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | الحسابات الخفيفة | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | واجهة الأرصدة البرمجية | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | موجز «لك» | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

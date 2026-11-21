@@ -1463,6 +1463,16 @@
     "check_nodes": "Sprawdź węzły",
     "stop_checking": "Zatrzymaj sprawdzanie",
     "node_unavailable": "{{selected}} jest niedostępny dla {{set}}; do czasu jego powrotu używany jest {{node}}.",
+    "set_titles": {
+      "core": "Rdzeń Hive (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "Konta lite",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "API sald",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "Kanał Dla Ciebie"
+    },
     "catalog_only": "Można wybrać tylko węzły z listy: strona nie może łączyć się z innymi.",
     "title": "Przełącznik API i kontrola węzłów",
     "checks": {

@@ -33,6 +33,11 @@ const POLICY = {
       'user_profile.social.platforms.nostr',
       'user_profile.social.platforms.x',
       'navigation.sidebar.openhive_chat',
+      // API names (bridge.*, hivemind's REST API, HAfAH, HiveSense), the same in every language
+      'api_sets.set_titles.bridge',
+      'api_sets.set_titles.hivemind_rest',
+      'api_sets.set_titles.hafah',
+      'api_sets.set_titles.hivesense',
       // Abbreviations
       'navigation.sidebar.faq',
       'navigation.main_nav_bar.ai_tag',

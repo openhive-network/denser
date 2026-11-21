@@ -8,15 +8,19 @@ import { browserLanguages, pickSupportedLocale } from '@ui/lib/locale-negotiatio
 import { defaultLocale, languages, resolveLocale } from '@/blog/i18n/settings';
 import { takeLegacyStoredLanguage } from '@/blog/utils/language';
 import { useTranslation } from '@/blog/i18n/client';
-import { useApiSetsEffects, type IApiSetSwitch } from '@ui/hooks/use-api-sets-effects';
+import { useApiSetsEffects } from '@ui/hooks/use-api-sets-effects';
+import type { IApiSetSwitch } from '@ui/lib/api-set-switch-toast';
+import { translateApiSetTitles } from '@ui/lib/api-set-titles';
 
 export default function ClientEffects() {
   const router = useRouter();
   const { locale: renderedLocale } = useLocale();
   const { t } = useTranslation('common_blog');
-  useApiSetsEffects(({ node, selected, setTitle }: IApiSetSwitch) =>
-    t('api_sets.node_unavailable', { selected, set: setTitle, node })
-  );
+  useApiSetsEffects({
+    setTitles: translateApiSetTitles(t),
+    describe: ({ node, selected, setTitle }: IApiSetSwitch) =>
+      t('api_sets.node_unavailable', { selected, set: setTitle, node })
+  });
 
   useEffect(() => {
     // Keeps a language only another app of the origin supports, so that app still shows it. Without

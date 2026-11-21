@@ -53,6 +53,10 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | recovery account | リカバリーアカウント | unreviewed | |
 | witness owner (witness list) | 運営者 | unreviewed | 「運営者: @gtg」(#1698); not 作成者 (author). |
 | notification / notifications | 通知 | unreviewed | Toast announcement label 「通知」 (#1739). |
+| Hive core (API set) | Hive コア | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | ライトアカウント | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | 残高 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | おすすめフィード | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

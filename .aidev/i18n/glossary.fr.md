@@ -56,6 +56,10 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | recovery account | compte de récupération | unreviewed | |
 | unmute | ne plus masquer | unreviewed | Button "Ne plus masquer" (#1698). |
 | notification / notifications | notification / notifications | unreviewed | Same word as English: toast announcement label "Notification" (#1739). |
+| Hive core (API set) | Cœur de Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | comptes lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | API des soldes | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | fil Pour vous | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

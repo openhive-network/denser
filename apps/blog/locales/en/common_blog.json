@@ -1447,6 +1447,16 @@
     "check_nodes": "Check the nodes",
     "stop_checking": "Stop checking",
     "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers.",
+    "set_titles": {
+      "core": "Hive core (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "Lite accounts",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "Balance API",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "For You feed"
+    },
     "catalog_only": "Only the listed nodes can be chosen: the site may call no others.",
     "title": "API switch and HealthChecker",
     "checks": {

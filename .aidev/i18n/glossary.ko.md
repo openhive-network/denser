@@ -55,6 +55,10 @@ markup and plural keys, not their wording.
 | recovery account | 복구 계정 | unreviewed | |
 | witness owner (witness list) | 운영자 | unreviewed | "운영자: @gtg" (#1698); not 작성자 (author). |
 | notification / notifications | 알림 | unreviewed | Toast announcement label "알림" (#1739). |
+| Hive core (API set) | Hive 코어 | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | 라이트 계정 | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | 잔액 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | 추천 피드 | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 
