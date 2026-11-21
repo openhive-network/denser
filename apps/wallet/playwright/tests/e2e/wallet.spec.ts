@@ -385,8 +385,9 @@ test.describe('Wallet page of @gtg tests', () => {
     await expect(hivePowerDescription).toContainText(
       'Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści.'
     );
+    // The APR in Polish number format: two decimals after a decimal comma
     await expect(hivePowerDescription).toContainText(
-      /HIVE POWER rośnie w tempie około \d+(\.\d+)?% w skali roku \(APR\), z zastrzeżeniem zmienności blockchaina\./
+      /HIVE POWER rośnie w tempie około \d+,\d{2}% w skali roku \(APR\), z zastrzeżeniem zmienności blockchaina\./
     );
     await expectDelegatedSentenceToFollowAccount(
       hivePowerDescription,

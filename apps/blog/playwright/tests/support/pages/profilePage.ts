@@ -333,7 +333,7 @@ export class ProfilePage {
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 
     // A direct load can briefly keep React's hidden streamed copy (`<div hidden id="S:n">`) of
-    // the page next to the client-rendered one, so these locators match only the visible copy.
+    // the page next to the client-rendered one, so these locators and the tab panels match only the visible copy.
     this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]').filter({ visible: true });
     this.notificationsMenuAllButton = this.notificationsMenu.getByText('All');
     this.notificationsMenuRepliesButton = this.notificationsMenu.getByText('Replies');
@@ -341,16 +341,16 @@ export class ProfilePage {
     this.notificationsMenuFollowsButton = this.notificationsMenu.getByText('Follows');
     this.notificationsMenuUpvotesButton = this.notificationsMenu.getByText('Upvotes');
     this.notificationsMenuReblogsButton = this.notificationsMenu.getByText('Reblogs');
-    this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]');
-    this.notificationsMenuRepliesContent = page.locator('[data-testid="notifications-content-replies"]');
+    this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]').filter({ visible: true });
+    this.notificationsMenuRepliesContent = page.locator('[data-testid="notifications-content-replies"]').filter({ visible: true });
     this.notificationListItemInReplies = this.notificationsMenuRepliesContent.locator('[data-testid="notification-list-item"]');
-    this.notificationsMenuMentionsContent = page.locator('[data-testid="notifications-content-mentions"]');
+    this.notificationsMenuMentionsContent = page.locator('[data-testid="notifications-content-mentions"]').filter({ visible: true });
     this.notificationListItemInMentions = this.notificationsMenuMentionsContent.locator('[data-testid="notification-list-item"]');
-    this.notificationsMenuFollowsContent = page.locator('[data-testid="notifications-content-follows"]');
+    this.notificationsMenuFollowsContent = page.locator('[data-testid="notifications-content-follows"]').filter({ visible: true });
     this.notificationListItemInFollows = this.notificationsMenuFollowsContent.locator('[data-testid="notification-list-item"]');
-    this.notificationsMenuUpvotesContent = page.locator('[data-testid="notifications-content-upvotes"]');
+    this.notificationsMenuUpvotesContent = page.locator('[data-testid="notifications-content-upvotes"]').filter({ visible: true });
     this.notificationListItemInUpvotes = this.notificationsMenuUpvotesContent.locator('[data-testid="notification-list-item"]');
-    this.notificationsMenuReblogsContent = page.locator('[data-testid="notifications-content-reblogs"]');
+    this.notificationsMenuReblogsContent = page.locator('[data-testid="notifications-content-reblogs"]').filter({ visible: true });
     this.notificationListItemInReblogs = this.notificationsMenuReblogsContent.locator('[data-testid="notification-list-item"]');
 
     this.notificationNickName = page.locator('[data-testid="subscriber-name"]');

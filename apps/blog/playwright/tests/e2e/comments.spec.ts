@@ -369,7 +369,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // Validate the timestamp tooltip
     const atrTitle = await postPage.commentCardsHeadersTimeStampLink.first().getAttribute('title');
-    await expect(atrTitle).toContain('Fri Jun 18 2021');
+    // The comment's UTC date, as the locale's date format writes it with the weekday
+    expect(atrTitle).toBe('Fri, June 18, 2021');
   });
 
   test('Validate the first comment author link styles in the post in the dark mode', async ({ page }) => {
@@ -456,7 +457,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
 
     // Validate the timestamp tooltip
     const atrTitle = await postPage.commentCardsHeadersTimeStampLink.first().getAttribute('title');
-    await expect(atrTitle).toContain('Fri Jun 18 2021');
+    // The comment's UTC date, as the locale's date format writes it with the weekday
+    expect(atrTitle).toBe('Fri, June 18, 2021');
   });
 
   test('Validate the popover card name, nickname and avatar is displayed after click username in the post', async ({

@@ -550,13 +550,13 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateEnterYourWifKeyFormIsLoaded();
     await loginForm.postingPrivateKeyInput.fill(user.keys[0].private + '1'); // wrong wif
     await loginForm.postingPrivateKeySubmitButton.click();
+    // The invalid key is reported in the prompt itself
+    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF key');
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessageEnterYourWifKey, 'color')).toBe("rgb(239, 68, 68)");
     await loginForm.closeDialog.last().click();
-    // Validate other sign in options form is loaded without an error message
+    // Validate other sign in options form is loaded without an error message: closing the prompt is the user's cancel
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.errorToastContent).toBeVisible();
-    await loginForm.errorToastContentTrigger.click();
-    expect(await homePage.getElementCssPropertyValue(await loginForm.errorToastContentMessage, 'color')).toBe("rgb(255, 255, 255)");
+    expect(await loginForm.errorToastContent.count()).toBe(0);
   });
 
   test('Validate styles during Unlock user with password in the Denser App in the light mode', async ({page}) =>{
