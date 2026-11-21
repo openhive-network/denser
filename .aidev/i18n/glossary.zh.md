@@ -59,6 +59,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | lite accounts | 轻量账户 | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | 余额 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | 推荐内容 | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node / API set panel | 节点；API 类别 | unreviewed | /healthchecker (#1725)：“按 API 类别划分的 API 服务器”，node states “可用”“不支持”“宕机”“未知”“性能下降”；“自动选择”“默认”“使用中”。List separator “、”. |
 
 ## Register
 

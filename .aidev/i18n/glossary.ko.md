@@ -59,6 +59,7 @@ markup and plural keys, not their wording.
 | lite accounts | 라이트 계정 | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | 잔액 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | 추천 피드 | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node / API set panel | 노드; API 계열 | unreviewed | /healthchecker (#1725): "API 계열별 API 서버", node states "사용 가능", "지원 안 함", "다운", "알 수 없음", "성능 저하"; "자동 선택", "기본값", "사용 중". |
 
 ## Register
 

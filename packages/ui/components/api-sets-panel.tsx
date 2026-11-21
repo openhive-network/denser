@@ -1,13 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { ApiSetsComponent } from '@hiveio/healthchecker-component';
+import { ApiSetsComponent, type ApiSetsLabels } from '@hiveio/healthchecker-component';
 import type { ApiSetEngine } from '@hiveio/healthchecker-component/engine';
 import { getBrowserApiSetEngine } from '@transaction/lib/api-sets/browser';
 import { getBrowserConnectivity } from '@transaction/lib/connectivity';
 import type { TApiSetChecks } from '@transaction/lib/api-sets/definitions';
 import { getBrowserApiSetsConfig } from '@ui/config/browser-api-sets';
 import { createApiSetsSelectionStorage } from '@ui/lib/api-sets-storage';
+import type { TApiSetTitles } from '@ui/lib/api-set-titles';
 import { Button } from '@ui/components/button';
 
 interface IApiSetsPanelProps {
@@ -19,6 +20,10 @@ interface IApiSetsPanelProps {
   stopLabel: string;
   /** Says that only the listed nodes can be chosen: the panel offers no custom nodes. */
   catalogOnlyNote: string;
+  /** The package component's text in the app's language (`translateApiSetsLabels`). */
+  labels: Partial<ApiSetsLabels>;
+  /** The tab titles in the app's language (`translateApiSetTitles`). */
+  setTitles: TApiSetTitles;
 }
 
 /**
@@ -29,6 +34,12 @@ interface IApiSetsPanelProps {
 const HIDE_CUSTOM_NODE_FORM = '[&_div:has(>div>[data-testid=api-address-input])]:hidden';
 
 /**
+ * The package's buttons (its set tabs among them) keep their text on one line at a fixed height, so a
+ * long translated set title runs off a phone screen: they wrap instead and grow with their text.
+ */
+const WRAP_BUTTON_TEXT = '[&_button]:h-auto [&_button]:min-h-10 [&_button]:whitespace-normal [&_button]:text-center';
+
+/**
  * One tab per API set with its ranked nodes, where the user picks a node per set (or for every set
  * it serves) or keeps the automatic choice. Nodes are probed only while the user has the check on.
  */
@@ -37,7 +48,9 @@ export function ApiSetsPanel({
   createChecks,
   checkLabel,
   stopLabel,
-  catalogOnlyNote
+  catalogOnlyNote,
+  labels,
+  setTitles
 }: IApiSetsPanelProps) {
   const [engine, setEngine] = useState<ApiSetEngine>();
   const [checking, setChecking] = useState(false);
@@ -83,7 +96,12 @@ export function ApiSetsPanel({
         {checking ? stopLabel : checkLabel}
       </Button>
       <div data-testid="api-sets-component">
-        <ApiSetsComponent className={`m-4 ${HIDE_CUSTOM_NODE_FORM}`} engine={engine} />
+        <ApiSetsComponent
+          className={`m-4 ${HIDE_CUSTOM_NODE_FORM} ${WRAP_BUTTON_TEXT}`}
+          engine={engine}
+          labels={labels}
+          setTitles={setTitles}
+        />
       </div>
       <p className="text-muted-foreground m-4 text-sm" data-testid="api-sets-catalog-only">
         {catalogOnlyNote}

@@ -59,6 +59,7 @@ most as of 2026-11-19.
 | lite accounts | cuentas lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | API de saldos | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | feed Para ti | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node / API set panel | nodo (de API); familia de APIs | unreviewed | /healthchecker (#1725): "Servidores de API por familia de APIs", node states "apto", "no compatible", "caído", "desconocido", "degradado"; "Elección automática", "Predeterminado", "En uso". |
 
 ## Register
 

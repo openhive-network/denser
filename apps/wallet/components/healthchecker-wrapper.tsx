@@ -4,7 +4,9 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import type { TApiSetChecks } from '@transaction/lib/api-sets/definitions';
 import { isJsonObject } from '@transaction/lib/json-object';
 import { ApiSetsPanel } from '@ui/components/api-sets-panel';
-import { useCallback } from 'react';
+import { translateApiSetsLabels } from '@ui/lib/api-sets-labels';
+import { translateApiSetTitles } from '@ui/lib/api-set-titles';
+import { useCallback, useMemo } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from '@/wallet/i18n/client';
 
@@ -46,6 +48,8 @@ const createWalletChecks = async (t: TFunction<'common_wallet'>): Promise<TApiSe
 
 const HealthCheckerWrapper = ({ snapshot }: { snapshot: unknown }) => {
   const { t } = useTranslation('common_wallet');
+  const labels = useMemo(() => translateApiSetsLabels(t), [t]);
+  const setTitles = useMemo(() => translateApiSetTitles(t), [t]);
   const createChecks = useCallback(() => createWalletChecks(t), [t]);
   return (
     <div className="p4 lg:px-48">
@@ -59,6 +63,8 @@ const HealthCheckerWrapper = ({ snapshot }: { snapshot: unknown }) => {
         checkLabel={t('api_sets.check_nodes')}
         stopLabel={t('api_sets.stop_checking')}
         catalogOnlyNote={t('api_sets.catalog_only')}
+        labels={labels}
+        setTitles={setTitles}
       />
     </div>
   );

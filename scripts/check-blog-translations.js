@@ -38,6 +38,10 @@ const POLICY = {
       'api_sets.set_titles.hivemind_rest',
       'api_sets.set_titles.hafah',
       'api_sets.set_titles.hivesense',
+      // The API sets panel's list separator (punctuation), the p95 statistic and the ms unit symbol
+      'api_sets.panel.list_separator',
+      'api_sets.panel.p95',
+      'api_sets.panel.milliseconds',
       // Abbreviations
       'navigation.sidebar.faq',
       'navigation.main_nav_bar.ai_tag',

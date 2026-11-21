@@ -57,6 +57,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | lite accounts | ライトアカウント | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | 残高 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | おすすめフィード | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node / API set panel | ノード; API ファミリー | unreviewed | /healthchecker (#1725): 「API ファミリー別の API サーバー」, node states 「利用可能」「非対応」「ダウン」「不明」「性能低下」; 「自動選択」「デフォルト」「使用中」. List separator 「、」. |
 
 ## Register
 

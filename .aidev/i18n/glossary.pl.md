@@ -76,6 +76,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | lite accounts | konta lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | API sald | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | kanał Dla Ciebie | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node states (/healthchecker) | dostępny, nieobsługiwany, niedostępny, nieznany, zdegradowany | unreviewed | #1725: masculine, agreeing with „węzeł”. Heading „Serwery API według rodziny API”; „Wybór automatyczny”, „Domyślny”, „W użyciu”. |
 
 ## Register
 
