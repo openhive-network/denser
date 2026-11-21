@@ -20,22 +20,41 @@ export interface IGoogleDriveTokenAnswer {
   body: { accessToken?: string; error?: string };
 }
 
+/** Why the request did not come from a page of this site, or undefined when it did */
+function crossSiteRefusal(headers: IncomingHttpHeaders): string | undefined {
+  if (!Object.hasOwn(headers, csrfHeaderName)) return `Missing ${csrfHeaderName} header`;
+  if (!isSameOriginRequest(headers)) return 'Cross-origin request';
+  return undefined;
+}
+
 /**
- * Why the request may not exchange tokens with the app's Google OAuth client, or undefined when it
- * may: it must carry the CSRF header, come from a page of this site and have a signed-in server
- * session. A sign-in signs before its session exists, after fetching the login challenge, so
- * the login challenge cookie stands in for the session.
+ * Why the request may not exchange a Google authorization code with the app's Google OAuth client,
+ * or undefined when it may: it must carry the CSRF header, come from a page of this site and have
+ * a signed-in server session. A sign-in exchanges its code before its session exists, after
+ * fetching the login challenge, so the login challenge cookie stands in for the session.
  */
-export function googleDriveTokenRequestRefusal(request: IGoogleDriveTokenRequest): string | undefined {
-  if (!Object.hasOwn(request.headers, csrfHeaderName)) return `Missing ${csrfHeaderName} header`;
-  if (!isSameOriginRequest(request.headers)) return 'Cross-origin request';
+export function googleDriveCodeExchangeRefusal(request: IGoogleDriveTokenRequest): string | undefined {
+  const crossSite = crossSiteRefusal(request.headers);
+  if (crossSite) return crossSite;
   if (request.user?.isLoggedIn || request.cookies[LOGIN_CHALLENGE_COOKIE]) return undefined;
   return 'No signed-in session';
 }
 
 /**
+ * Why the request may not refresh a Google access token with the app's Google OAuth client, or
+ * undefined when it may: as `googleDriveCodeExchangeRefusal`, but only a signed-in server session
+ * will do. The login challenge cookie is anyone's for the asking, so it would let a copied refresh
+ * token be used from anywhere.
+ */
+export function googleDriveRefreshRefusal(request: IGoogleDriveTokenRequest): string | undefined {
+  const crossSite = crossSiteRefusal(request.headers);
+  if (crossSite) return crossSite;
+  return request.user?.isLoggedIn ? undefined : 'No signed-in session';
+}
+
+/**
  * `POST /api/google-drive/refresh` with the JSON body `{ refreshToken }`: `200 { accessToken }`
- * from `refreshAccessToken`; `403` to a request `googleDriveTokenRequestRefusal` refuses, without
+ * from `refreshAccessToken`; `403` to a request `googleDriveRefreshRefusal` refuses, without
  * calling it; `400` without a refresh token; `500` when it fails.
  */
 export async function answerGoogleDriveRefresh(
@@ -43,7 +62,7 @@ export async function answerGoogleDriveRefresh(
   body: unknown,
   refreshAccessToken: (refreshToken: string) => Promise<string | null | undefined>
 ): Promise<IGoogleDriveTokenAnswer> {
-  const refusal = googleDriveTokenRequestRefusal(request);
+  const refusal = googleDriveRefreshRefusal(request);
   if (refusal) {
     logger.info('Refused Google Drive token refresh: %s', refusal);
     return { status: 403, body: { error: 'Forbidden' } };

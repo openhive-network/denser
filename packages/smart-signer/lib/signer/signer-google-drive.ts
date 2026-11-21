@@ -143,10 +143,13 @@ export class SignerGoogleDrive extends Signer {
       throw new Error('Google Drive Signer is not properly configured.');
     }
 
-    // Check for saved refresh token first
-    const savedRefresh = readCredential(localStorage, googleRefreshTokenCredentialKey(this.username), () =>
-      ownsLegacyCredentials(this.username)
-    );
+    // Check for saved refresh token first. The refresh route refuses a request without a signed-in
+    // session, so a sign-in, which has none yet, asks Google for a code within the user's click instead
+    const savedRefresh = userLocalStorage.getUser().isLoggedIn
+      ? readCredential(localStorage, googleRefreshTokenCredentialKey(this.username), () =>
+          ownsLegacyCredentials(this.username)
+        )
+      : null;
     if (savedRefresh) {
       this._accessToken = this.getAccessTokenForRefreshToken(savedRefresh).catch((err) => {
         logger.error('Error refreshing Google Drive access token: %s', err instanceof Error ? err.message : String(err));

@@ -22,7 +22,7 @@ registerHooks({
   }
 });
 
-const { answerGoogleDriveRefresh, googleDriveTokenRequestRefusal } = await import('./google-drive-token-request.ts');
+const { answerGoogleDriveRefresh, googleDriveCodeExchangeRefusal, googleDriveRefreshRefusal } = await import('./google-drive-token-request.ts');
 const { LOGIN_CHALLENGE_COOKIE } = await import('./api-handlers/auth/challenge.ts');
 
 const SAME_ORIGIN: IncomingHttpHeaders = {
@@ -47,38 +47,55 @@ function googleStub(accessToken = 'access') {
   return { calls, refresh };
 }
 
-describe('googleDriveTokenRequestRefusal', () => {
-  it('accepts a same-origin request with the CSRF header and a signed-in session', () => {
-    assert.equal(googleDriveTokenRequestRefusal(request()), undefined);
-    const byOrigin = { host: 'denser.example.org', origin: 'https://denser.example.org', 'x-csrf-token': '1' };
-    assert.equal(googleDriveTokenRequestRefusal(request({ headers: byOrigin })), undefined);
-  });
+const SIGNING_IN_COOKIES = { [LOGIN_CHALLENGE_COOKIE]: crypto.randomUUID() };
 
+for (const [name, refusal] of [
+  ['googleDriveCodeExchangeRefusal', googleDriveCodeExchangeRefusal],
+  ['googleDriveRefreshRefusal', googleDriveRefreshRefusal]
+] as const) {
+  describe(name, () => {
+    it('accepts a same-origin request with the CSRF header and a signed-in session', () => {
+      assert.equal(refusal(request()), undefined);
+      const byOrigin = { host: 'denser.example.org', origin: 'https://denser.example.org', 'x-csrf-token': '1' };
+      assert.equal(refusal(request({ headers: byOrigin })), undefined);
+    });
+
+    it('refuses a request without the CSRF header', () => {
+      const { 'x-csrf-token': _header, ...headers } = SAME_ORIGIN;
+      assert.match(refusal(request({ headers })) ?? '', /x-csrf-token/);
+    });
+
+    it('refuses a cross-origin request, even with a session', () => {
+      const crossSite = { ...SAME_ORIGIN, 'sec-fetch-site': 'cross-site' };
+      assert.equal(refusal(request({ headers: crossSite })), 'Cross-origin request');
+      const { 'sec-fetch-site': _site, ...withoutFetchSite } = SAME_ORIGIN;
+      const foreign = { ...withoutFetchSite, origin: 'https://evil.example' };
+      assert.equal(refusal(request({ headers: foreign })), 'Cross-origin request');
+      assert.equal(refusal(request({ headers: withoutFetchSite })), 'Cross-origin request');
+    });
+
+    it('refuses a request with neither a signed-in session nor a login challenge', () => {
+      assert.equal(refusal(request({ user: undefined })), 'No signed-in session');
+      const signedOut = { ...SIGNED_IN, isLoggedIn: false };
+      assert.equal(refusal(request({ user: signedOut })), 'No signed-in session');
+      const otherCookie = { blog_session: 'sealed' };
+      assert.equal(refusal(request({ user: undefined, cookies: otherCookie })), 'No signed-in session');
+    });
+  });
+}
+
+describe('googleDriveCodeExchangeRefusal', () => {
   it('accepts a sign-in in progress, which has the login challenge cookie but no session yet', () => {
-    const signingIn = request({ user: undefined, cookies: { [LOGIN_CHALLENGE_COOKIE]: crypto.randomUUID() } });
-    assert.equal(googleDriveTokenRequestRefusal(signingIn), undefined);
+    assert.equal(googleDriveCodeExchangeRefusal(request({ user: undefined, cookies: SIGNING_IN_COOKIES })), undefined);
   });
+});
 
-  it('refuses a request without the CSRF header', () => {
-    const { 'x-csrf-token': _header, ...headers } = SAME_ORIGIN;
-    assert.match(googleDriveTokenRequestRefusal(request({ headers })) ?? '', /x-csrf-token/);
-  });
-
-  it('refuses a cross-origin request, even with a session', () => {
-    const crossSite = { ...SAME_ORIGIN, 'sec-fetch-site': 'cross-site' };
-    assert.equal(googleDriveTokenRequestRefusal(request({ headers: crossSite })), 'Cross-origin request');
-    const { 'sec-fetch-site': _site, ...withoutFetchSite } = SAME_ORIGIN;
-    const foreign = { ...withoutFetchSite, origin: 'https://evil.example' };
-    assert.equal(googleDriveTokenRequestRefusal(request({ headers: foreign })), 'Cross-origin request');
-    assert.equal(googleDriveTokenRequestRefusal(request({ headers: withoutFetchSite })), 'Cross-origin request');
-  });
-
-  it('refuses a request with neither a signed-in session nor a login challenge', () => {
-    assert.equal(googleDriveTokenRequestRefusal(request({ user: undefined })), 'No signed-in session');
-    const signedOut = { ...SIGNED_IN, isLoggedIn: false };
-    assert.equal(googleDriveTokenRequestRefusal(request({ user: signedOut })), 'No signed-in session');
-    const otherCookie = { blog_session: 'sealed' };
-    assert.equal(googleDriveTokenRequestRefusal(request({ user: undefined, cookies: otherCookie })), 'No signed-in session');
+describe('googleDriveRefreshRefusal', () => {
+  it('refuses a request with the login challenge cookie but no signed-in session', () => {
+    const signingIn = request({ user: undefined, cookies: SIGNING_IN_COOKIES });
+    assert.equal(googleDriveRefreshRefusal(signingIn), 'No signed-in session');
+    const signedOut = request({ user: { ...SIGNED_IN, isLoggedIn: false }, cookies: SIGNING_IN_COOKIES });
+    assert.equal(googleDriveRefreshRefusal(signedOut), 'No signed-in session');
   });
 });
 
@@ -103,6 +120,14 @@ describe('answerGoogleDriveRefresh', () => {
     const google = googleStub();
     const answer = await answerGoogleDriveRefresh(request({ user: undefined }), { refreshToken: 'refresh' }, google.refresh);
     assert.equal(answer.status, 403);
+    assert.deepEqual(google.calls, []);
+  });
+
+  it('answers 403 without calling Google to a scripted request with the CSRF and same-origin headers and the login challenge', async () => {
+    const google = googleStub();
+    const scripted = request({ user: undefined, cookies: SIGNING_IN_COOKIES });
+    const answer = await answerGoogleDriveRefresh(scripted, { refreshToken: 'copied' }, google.refresh);
+    assert.deepEqual(answer, { status: 403, body: { error: 'Forbidden' } });
     assert.deepEqual(google.calls, []);
   });
 
