@@ -12,13 +12,6 @@ testI18nRoutes([
   {
     id: 'HEALTHCHECKER',
     path: '/healthchecker',
-    ready: '[data-testid="api-sets-component"]',
-    thirdParty: [
-      {
-        // @hiveio/healthchecker-component's ApiSetsComponent: its own text and the API-set titles
-        selector: '[data-testid="api-sets-component"]',
-        issue: '#1725: Healthchecker API-set panel shows English in every locale'
-      }
-    ]
+    ready: '[data-testid="api-sets-component"]'
   }
 ]);

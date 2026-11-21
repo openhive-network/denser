@@ -216,11 +216,7 @@ test.describe('account pages', () => {
   }
 });
 
-/** @hiveio/healthchecker-component's ApiSetsComponent: its own text and the API-set titles. */
-const HEALTHCHECKER_THIRD_PARTY = {
-  selector: '[data-testid="api-sets-component"]',
-  issue: '#1725: Healthchecker API-set panel shows English in every locale'
-};
+const API_SETS_PANEL = '[data-testid="api-sets-component"]';
 
 test.describe('health checker', () => {
   serveStub(() => startWalletApiStub());
@@ -229,12 +225,10 @@ test.describe('health checker', () => {
     test(`WALLET-I18N-14 [${locale}]: /healthchecker is translated and fits`, async ({ page, baseURL }) => {
       await setUiLocale(page.context(), locale, baseURL);
       await page.goto(`${WALLET_BASE_PATH}/healthchecker`);
-      await expect(page.locator(HEALTHCHECKER_THIRD_PARTY.selector)).toBeVisible({
-        timeout: HYDRATION_TIMEOUT
-      });
+      await expect(page.locator(API_SETS_PANEL)).toBeVisible({ timeout: HYDRATION_TIMEOUT });
       const issues = await checkI18nLayout(page, {
         locale,
-        userContent: [...WALLET_USER_CONTENT, HEALTHCHECKER_THIRD_PARTY.selector],
+        userContent: WALLET_USER_CONTENT,
         intlFormatted: WALLET_INTL_FORMATTED
       });
       expectNoI18nIssues(issues, locale, WALLET_KNOWN_I18N_ISSUES);

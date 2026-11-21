@@ -59,6 +59,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | lite accounts | account lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | API dei saldi | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | feed Per te | unreviewed | As in the For You feed strings; API-set title (#1747). |
+| API node / API set panel | nodo (API); famiglia di API | unreviewed | /healthchecker (#1725): "Server API per famiglia di API", node states "idoneo", "non supportato", "non raggiungibile", "sconosciuto", "degradato"; "Scelta automatica", "Predefinito", "In uso". |
 
 ## Register
 
