@@ -55,6 +55,10 @@ most as of 2026-11-19.
 | block explorer | explorador de bloques | unreviewed | "Abrir en exploradores de bloques" (#1698). |
 | unmute | dejar de silenciar | unreviewed | Button "Dejar de silenciar" (#1698). |
 | notification / notifications | notificación / notificaciones | unreviewed | Toast announcement label "Notificación", region "Notificaciones ({hotkey})" (#1739). |
+| Hive core (API set) | Núcleo de Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | cuentas lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | API de saldos | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | feed Para ti | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

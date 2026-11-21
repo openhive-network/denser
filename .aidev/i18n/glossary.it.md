@@ -55,6 +55,10 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | recovery account | account di recupero | unreviewed | |
 | unmute | riattiva | unreviewed | Button "Riattiva", as `communities.unmute_post_comment` (#1698). |
 | notification / notifications | notifica / notifiche | unreviewed | Toast announcement label "Notifica", region "Notifiche ({hotkey})" (#1739). |
+| Hive core (API set) | Nucleo di Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | account lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | API dei saldi | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | feed Per te | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

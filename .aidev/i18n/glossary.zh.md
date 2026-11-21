@@ -55,6 +55,10 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | this session (key badge) | 当前会话 | unreviewed | |
 | recovery account | 恢复账户 | unreviewed | |
 | notification / notifications | 通知 | unreviewed | Toast announcement label "通知" (#1739). |
+| Hive core (API set) | Hive 核心 | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | 轻量账户 | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | 余额 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | 推荐内容 | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

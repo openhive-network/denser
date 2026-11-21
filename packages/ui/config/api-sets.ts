@@ -15,7 +15,10 @@ export {
   type TApiSetId
 } from './api-set-ids.ts';
 
-/** Titles of the sets' tabs on /healthchecker: API names, the same in every language. */
+/**
+ * English titles of the engine's sets (the tabs on /healthchecker). Text for the user names a set
+ * with the app's translated titles instead (`translateApiSetTitles`).
+ */
 export const API_SET_TITLES: Readonly<Record<TApiSetId, string>> = {
   core: 'Hive core (database, condenser, broadcast)',
   bridge: 'Bridge',

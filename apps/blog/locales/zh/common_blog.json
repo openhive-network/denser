@@ -1439,6 +1439,16 @@
     "check_nodes": "检查节点",
     "stop_checking": "停止检查",
     "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。",
+    "set_titles": {
+      "core": "Hive 核心 (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "轻量账户",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "余额 API",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "推荐内容"
+    },
     "catalog_only": "只能选择列出的节点：本站无法连接其他节点。",
     "title": "API 切换与节点健康检查",
     "checks": {

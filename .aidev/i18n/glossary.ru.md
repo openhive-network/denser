@@ -55,6 +55,10 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | recovery account | аккаунт восстановления | unreviewed | |
 | unmute | снять заглушение | unreviewed | Buttons "Заглушить" / "Снять заглушение" (#1698). |
 | notification / notifications | уведомление / уведомления | unreviewed | Toast announcement label "Уведомление", region "Уведомления ({hotkey})" (#1739). |
+| Hive core (API set) | Ядро Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | лайт-аккаунты | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | API балансов | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | лента «Для вас» | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

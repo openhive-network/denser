@@ -7,15 +7,19 @@ import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
 import { browserLanguages, pickSupportedLocale } from '@ui/lib/locale-negotiation';
 import { cookieLanguages, defaultLocale, resolveLocale } from '@/wallet/i18n/settings';
 import { useTranslation } from '@/wallet/i18n/client';
-import { useApiSetsEffects, type IApiSetSwitch } from '@ui/hooks/use-api-sets-effects';
+import { useApiSetsEffects } from '@ui/hooks/use-api-sets-effects';
+import type { IApiSetSwitch } from '@ui/lib/api-set-switch-toast';
+import { translateApiSetTitles } from '@ui/lib/api-set-titles';
 
 export default function ClientEffects() {
   const router = useRouter();
   const { locale: renderedLocale } = useLocale();
   const { t } = useTranslation('common_wallet');
-  useApiSetsEffects(({ node, selected, setTitle }: IApiSetSwitch) =>
-    t('api_sets.node_unavailable', { selected, set: setTitle, node })
-  );
+  useApiSetsEffects({
+    setTitles: translateApiSetTitles(t),
+    describe: ({ node, selected, setTitle }: IApiSetSwitch) =>
+      t('api_sets.node_unavailable', { selected, set: setTitle, node })
+  });
 
   // Set the locale cookie, to the browser's language, if missing or invalid, and the document
   // direction for RTL languages

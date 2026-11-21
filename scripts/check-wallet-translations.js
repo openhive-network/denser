@@ -29,6 +29,11 @@ const POLICY = {
       'navigation.user_menu.login_method.metamask',
       'navigation.user_menu.login_method.google',
       'navigation.user_menu.login_method.hiveauth',
+      // API names (bridge.*, hivemind's REST API, HAfAH, HiveSense), the same in every language
+      'api_sets.set_titles.bridge',
+      'api_sets.set_titles.hivemind_rest',
+      'api_sets.set_titles.hafah',
+      'api_sets.set_titles.hivesense',
       // Abbreviations
       'navigation.sidebar.faq',
       'communities.nsfw',

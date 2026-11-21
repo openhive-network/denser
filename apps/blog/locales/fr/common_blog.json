@@ -1455,6 +1455,16 @@
     "check_nodes": "Vérifier les nœuds",
     "stop_checking": "Arrêter la vérification",
     "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement.",
+    "set_titles": {
+      "core": "Cœur de Hive (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "Comptes lite",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "API des soldes",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "Fil Pour vous"
+    },
     "catalog_only": "Seuls les nœuds listés peuvent être choisis : le site ne peut en appeler aucun autre.",
     "title": "Sélecteur d'API et vérificateur d'état",
     "checks": {

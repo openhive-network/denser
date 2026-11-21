@@ -72,6 +72,10 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | proxied (vote weight) | od pełnomocnictw | unreviewed | „5 HP własne + 3 HP od pełnomocnictw”, „głosuje przez pełnomocnika @gtg” (#1698). The voters dialog's weight column keeps the short „+3 HP z proxy”: the long form does not fit its three columns at 1280 px (WALLET-WITNESS-VOTERS-06); its title gives the full wording. |
 | block explorer | eksplorator bloków | unreviewed | „Otwórz w eksploratorach bloków” (#1698). |
 | authority of a key (posting authority) | upoważnienie | unreviewed | „upoważnienie Posting konta”, „nie ma upoważnienia Active” (#1698), as Authorities. Never „uprawnienia Posting”. |
+| Hive core (API set) | Rdzeń Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
+| lite accounts | konta lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| Balance API | API sald | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
+| For You feed | kanał Dla Ciebie | unreviewed | As in the For You feed strings; API-set title (#1747). |
 
 ## Register
 

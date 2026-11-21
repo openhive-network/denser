@@ -1439,6 +1439,16 @@
     "check_nodes": "ノードを確認",
     "stop_checking": "確認を停止",
     "node_unavailable": "{{selected}} は {{set}} で利用できません。復旧するまで {{node}} を使用します。",
+    "set_titles": {
+      "core": "Hive コア (database, condenser, broadcast)",
+      "bridge": "Bridge",
+      "lite": "ライトアカウント",
+      "hivemind_rest": "Hivemind REST",
+      "balance_api": "残高 API",
+      "hafah": "HAfAH",
+      "hivesense": "HiveSense",
+      "fyp": "おすすめフィード"
+    },
     "catalog_only": "選択できるのは一覧のノードだけです。サイトは他のノードに接続できません。",
     "title": "API 切り替えとヘルスチェッカー",
     "checks": {
