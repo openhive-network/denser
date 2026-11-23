@@ -36,6 +36,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
 import {
   addedKeyStrictMode,
   registerSafeStorageKey,
@@ -193,7 +194,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           username,
           password,
           keyType: keyType as KeyAuthorityType,
-          signIn: () => signIn(LoginType.hbauth, username, keyType),
+          signIn: () => withSignInCheck(username, { password }, () => signIn(LoginType.hbauth, username, keyType)),
           isCancelled: () => cancelled.current
         });
         if (outcome === 'signed-in') requestPersistentKeyStorage();

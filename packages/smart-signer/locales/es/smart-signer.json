@@ -103,6 +103,8 @@
       "strict_mode": "Modo de autoridad restringida",
       "strict_mode_scope": "(solo almacenamiento seguro)",
       "strict_mode_tooltip": "Se aplica solo a las claves guardadas en el almacenamiento seguro. Cuando está habilitado, el almacenamiento seguro solo acepta una clave de la autoridad propia de la cuenta. Para guardar una clave que firma a través de la autoridad de otra cuenta, desactiva este modo. No afecta a Keychain, PeakVault, HiveAuth ni a los demás métodos de inicio de sesión.",
+      "active_check": "Pedir mi contraseña o passkey antes de cada operación que requiera mi clave activa o de propietario",
+      "active_check_hint": "Es más seguro si otras personas pueden usar este dispositivo, pero cada transferencia o voto a un testigo lo pedirá de nuevo. Puedes cambiarlo más tarde en el menú de la cuenta.",
       "strict_mode_status_on": "Modo de autoridad restringida: activado",
       "strict_mode_status_off": "Modo de autoridad restringida: desactivado",
       "key_update": "Agregar nueva clave",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "Otra pestaña modificó el almacenamiento seguro mientras se guardaba una clave de @{{username}}. Introduce la contraseña del almacenamiento seguro de @{{username}} para terminar de guardarla.",
     "remember_key_tab_label": "Recordar en esta pestaña",
     "remember_key_device_label": "Recordar en este dispositivo (almacenamiento seguro)",
-    "remember_key_hint": "Una clave recordada en esta pestaña se olvida al recargar. El almacenamiento seguro la guarda en este dispositivo, cifrada con una contraseña."
+    "remember_key_hint": "Una clave recordada en esta pestaña se olvida al recargar. El almacenamiento seguro la guarda en este dispositivo, cifrada con una contraseña.",
+    "active_check_title": "Confirma con tu contraseña o passkey",
+    "active_check_description": "Tu almacenamiento seguro pregunta antes de cada operación que requiere tu clave activa o de propietario.",
+    "active_check_submit": "Confirmar",
+    "use_passkey": "Usar passkey",
+    "passkey_check_failed": "La passkey no confirmó la operación. Inténtalo de nuevo o introduce tu contraseña."
   },
   "key_protection": {
     "dialog_title": "Tu clave está guardada sin protección",
@@ -296,7 +303,8 @@
     "choose_label": "Bloquear tras inactividad de",
     "locks_after": "Se bloquea tras {{duration}} de inactividad",
     "locks_after_sentence": "Se bloquea tras {{duration}} de inactividad.",
-    "activity": "Cada firma reinicia el temporizador. Las operaciones que requieren tu clave activa o de propietario pueden seguir pidiendo tu contraseña.",
+    "activity_unchecked": "Cada firma reinicia el temporizador. Hasta que tus claves se bloqueen, las operaciones que requieren tu clave activa se firman sin pedirte la contraseña.",
+    "activity_checked": "Cada firma reinicia el temporizador. Las operaciones que requieren tu clave activa o de propietario te piden la contraseña o la passkey cada vez.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
     "seconds": "{{value}} s",
@@ -324,5 +332,14 @@
     "no_key_provided": "No se introdujo ninguna clave.",
     "passkey_signer_unknown": "Este navegador no conoce ningún firmante con passkey para tu cuenta. Vuelve a iniciar sesión.",
     "unknown": "Se produjo un error de autenticación."
+  },
+  "active_check": {
+    "menu_label": "Preguntar antes de cada operación con la clave activa",
+    "turn_on_title": "Preguntar antes de cada operación que requiera tu clave activa o de propietario",
+    "turn_off_title": "Dejar de preguntar antes de las operaciones que requieren tu clave activa",
+    "change_description": "Introduce la contraseña del almacenamiento seguro o usa tu passkey para cambiar este ajuste.",
+    "turned_on": "Las operaciones que requieren tu clave activa o de propietario ahora te piden la contraseña o la passkey cada vez.",
+    "turned_off": "Las operaciones que requieren tu clave activa ahora se firman sin preguntar hasta que tus claves se bloqueen.",
+    "change_failed": "No se pudo cambiar el ajuste. Inténtalo de nuevo."
   }
 }

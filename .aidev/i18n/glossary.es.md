@@ -49,6 +49,7 @@ most as of 2026-11-19.
 | password | contraseña | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | biometric unlock | desbloqueo biométrico | unreviewed | As in `login_form.passkey_prompt.*`. |
+| check before active-key operations | Preguntar antes de cada operación con la clave activa; "Confirma con tu contraseña o passkey" | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | mercado / intereses | unreviewed | |
 | this session (key badge) | Esta sesión | unreviewed | |
 | recovery account | cuenta de recuperación | unreviewed | |

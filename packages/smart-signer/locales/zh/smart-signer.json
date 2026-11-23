@@ -103,6 +103,8 @@
       "strict_mode": "受限授权模式",
       "strict_mode_scope": "（仅限安全存储）",
       "strict_mode_tooltip": "仅适用于保存到安全存储的密钥。启用后，安全存储只接受账户自身授权的密钥。要保存通过其他账户授权签名的密钥，请禁用此模式。Keychain、PeakVault、HiveAuth 及其他登录方式不受影响。",
+      "active_check": "在每次需要我的活动密钥或 Owner 密钥的操作之前，要求输入密码或使用通行密钥",
+      "active_check_hint": "如果其他人也会使用此设备，这样更安全，但每次转账或为见证人投票都会再次确认。你之后可以在账户菜单中更改。",
       "strict_mode_status_on": "受限授权模式：开启",
       "strict_mode_status_off": "受限授权模式：关闭",
       "key_update": "添加新密钥",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。",
     "remember_key_tab_label": "在此标签页中记住",
     "remember_key_device_label": "在此设备上记住（安全存储）",
-    "remember_key_hint": "在此标签页中记住的密钥会在刷新后被遗忘。安全存储会用密码加密后将其保存在此设备上。"
+    "remember_key_hint": "在此标签页中记住的密钥会在刷新后被遗忘。安全存储会用密码加密后将其保存在此设备上。",
+    "active_check_title": "使用密码或通行密钥确认",
+    "active_check_description": "你的安全存储会在每次需要活动密钥或 Owner 密钥的操作之前要求确认。",
+    "active_check_submit": "确认",
+    "use_passkey": "使用通行密钥",
+    "passkey_check_failed": "通行密钥未能确认此操作。请重试，或输入你的密码。"
   },
   "key_protection": {
     "dialog_title": "您的密钥未受保护地保存着",
@@ -296,7 +303,8 @@
     "choose_label": "闲置多久后锁定",
     "locks_after": "闲置 {{duration}} 后锁定",
     "locks_after_sentence": "闲置 {{duration}} 后锁定。",
-    "activity": "每次签名都会重新计时。需要活跃密钥或所有者密钥的操作仍可能要求输入密码。",
+    "activity_unchecked": "每次签名都会重新计时。在密钥锁定之前，需要活动密钥的操作将直接签名，不会要求输入密码。",
+    "activity_checked": "每次签名都会重新计时。需要活动密钥或 Owner 密钥的操作每次都会要求输入密码或使用通行密钥。",
     "minutes": "{{value}} 分钟",
     "hours": "{{value}} 小时",
     "seconds": "{{value}} 秒",
@@ -324,5 +332,14 @@
     "no_key_provided": "未输入密钥。",
     "passkey_signer_unknown": "此浏览器中没有你账户的通行密钥签名服务。请重新登录。",
     "unknown": "发生身份验证错误。"
+  },
+  "active_check": {
+    "menu_label": "每次使用活动密钥的操作前都确认",
+    "turn_on_title": "在每次需要活动密钥或 Owner 密钥的操作之前确认",
+    "turn_off_title": "不再在需要活动密钥的操作之前确认",
+    "change_description": "输入安全存储密码或使用通行密钥来更改此设置。",
+    "turned_on": "需要活动密钥或 Owner 密钥的操作现在每次都会要求输入密码或使用通行密钥。",
+    "turned_off": "需要活动密钥的操作现在将直接签名，直到密钥锁定。",
+    "change_failed": "无法更改设置。请重试。"
   }
 }

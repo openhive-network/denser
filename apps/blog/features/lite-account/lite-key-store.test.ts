@@ -30,6 +30,8 @@ class FakeWalletClient {
   readonly calls: string[] = [];
   readonly wallets = new Map<string, { password: string; keys: Map<string, string>; unlocked: boolean }>();
   readonly passkeys = new Set<string>();
+  /** The usernames whose entry asks for the check before each owner signature */
+  readonly checked = new Set<string>();
 
   async register(username: string, password: string, wif: string, keyType: Role) {
     this.calls.push(`register ${username} ${keyType}`);
@@ -55,7 +57,25 @@ class FakeWalletClient {
     const wallet = this.wallets.get(username);
     const wif = wallet?.keys.get(keyType);
     if (!wallet?.unlocked || !wif) throw new Error('Not authorized');
+    if (keyType === 'owner' && this.checked.has(username)) {
+      throw Object.assign(new Error("Signing with the 'owner' key requires a password or passkey check"), {
+        name: 'CheckRequiredError'
+      });
+    }
     return signDigest(digest, wif);
+  }
+
+  /** Signs whether the wallet is locked or not, as hb-auth's `signWithCheck` with the right password */
+  async signWithCheck(username: string, digest: string, keyType: Role, password: string) {
+    this.calls.push(`signWithCheck ${username} ${keyType}`);
+    const wallet = this.wallets.get(username);
+    const wif = wallet?.keys.get(keyType);
+    if (wallet?.password !== password || !wif) throw new Error('Invalid credentials');
+    return signDigest(digest, wif);
+  }
+
+  async getRequireActiveCheck(username: string) {
+    return this.checked.has(username);
   }
 
   async getRegisteredUserByUsername(username: string) {
@@ -105,7 +125,9 @@ async function inWallet() {
     unlock: async (identity: typeof moved, keyType: Role) => {
       unlocks.push(keyType);
       await client.authenticate(liteWalletUsername(identity), PASSWORD, keyType);
-    }
+    },
+    signWithCheck: (identity: typeof moved, digest: string, keyType: Role) =>
+      client.signWithCheck(liteWalletUsername(identity), digest, keyType, PASSWORD)
   };
   return { client, moved, wallet, unlocks };
 }
@@ -154,12 +176,42 @@ describe('the lite key store', () => {
   });
 
   it('sends nothing to sign when the unlock step fails', async () => {
-    const { client, moved } = await inWallet();
+    const { client, moved, wallet } = await inWallet();
     await client.logout(liteWalletUsername(moved));
     const refused = new Error('Invalid credentials');
-    const keys = liteKeyStore(moved, CHAIN_ID, { client: async () => client, unlock: () => Promise.reject(refused) });
+    const keys = liteKeyStore(moved, CHAIN_ID, { ...wallet, unlock: () => Promise.reject(refused) });
     await assert.rejects(keys.sign('posting', fields), refused);
     assert.equal(client.calls.some((call) => call.startsWith('sign ')), false);
+  });
+
+  it('signs with the owner key of an entry asking for the check through the check, locked or not, and posting without it', async () => {
+    const { client, moved, wallet, unlocks } = await inWallet();
+    const username = liteWalletUsername(moved);
+    client.checked.add(username);
+    await client.logout(username);
+    const keys = liteKeyStore(moved, CHAIN_ID, wallet);
+    assertSignedBy(await keys.sign('owner', fields), created.ownerPublicKey);
+    assertSignedBy(await keys.sign('owner', fields), created.ownerPublicKey);
+    assert.deepEqual(unlocks, []);
+    assertSignedBy(await keys.sign('posting', fields), created.postingPublicKey);
+    assert.deepEqual(client.calls.slice(-4), [
+      `signWithCheck ${username} owner`,
+      `signWithCheck ${username} owner`,
+      `authenticate ${username} posting`,
+      `sign ${username} posting`
+    ]);
+  });
+
+  it('goes through the check when hb-auth refuses an owner signature for it, as after another tab turned it on', async () => {
+    const { client, moved, wallet } = await inWallet();
+    const username = liteWalletUsername(moved);
+    const keys = liteKeyStore(moved, CHAIN_ID, {
+      ...wallet,
+      client: async () => Object.assign(Object.create(client), { getRequireActiveCheck: async () => false })
+    });
+    client.checked.add(username);
+    assertSignedBy(await keys.sign('owner', fields), created.ownerPublicKey);
+    assert.deepEqual(client.calls.slice(-2), [`sign ${username} owner`, `signWithCheck ${username} owner`]);
   });
 
   it('cannot sign for a Safe Storage identity without the wallet', () => {
@@ -195,7 +247,7 @@ describe('the Safe Storage entry of a lite identity', () => {
     const secured = securedIdentity(local, ROOT_KEY, 'https://signer.example', '2027-01-21T12:00:00');
     const moved = await moveKeysToSafeStorage(secured, PASSWORD, client);
     assert.deepEqual(client.calls, [`register ${liteWalletUsername(secured)} posting`]);
-    assert.deepEqual(liteKeyStore(moved, CHAIN_ID, { client: async () => client, unlock: async () => {} }).publicKeys, {
+    assert.deepEqual(liteKeyStore(moved, CHAIN_ID, { client: async () => client, unlock: async () => {}, signWithCheck: async () => '' }).publicKeys, {
       posting: created.postingPublicKey
     });
   });

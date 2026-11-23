@@ -2,11 +2,13 @@
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
+import { AuthUser, OnlineClient, type KeyAuthorityType } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
 import { registerPasskeyUnlock, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
+import { useActiveCheckSetting } from '@smart-signer/lib/auth/use-active-check-setting';
 import { toast } from '@ui/components/hooks/use-toast';
 import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
 import { SafeStorageStartError } from '@hive/common-hiveio-packages';
@@ -48,6 +50,7 @@ import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import StrictModeStatus from './strict-mode-status';
+import ActiveCheckCheckbox from './active-check-checkbox';
 import { useStoredStrictMode } from './use-stored-strict-mode';
 import { useInjectedExtensions } from './use-injected-extensions';
 import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
@@ -62,6 +65,32 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
+/**
+ * Unlocks `username`'s `keyType` key with its passkey, as `unlockWithPasskey` does, and resolves with
+ * the password the passkey gave: the login transaction signs with it, without a prompt of its own
+ */
+async function unlockGivingPassword(
+  client: OnlineClient,
+  username: string,
+  keyType: KeyAuthorityType,
+  userVerification: UserVerificationRequirement
+): Promise<string> {
+  let given = '';
+  await unlockWithPasskey(
+    {
+      authenticate: (name: string, password: string, type: KeyAuthorityType) => {
+        given = password;
+        return client.authenticate(name, password, type);
+      },
+      getRegisteredUserByUsername: (name: string) => client.getRegisteredUserByUsername(name)
+    },
+    username,
+    keyType,
+    userVerification
+  );
+  return given;
+}
+
 function getFormSchema() {
   return z
     .object({
@@ -73,7 +102,8 @@ function getFormSchema() {
         required_error: 'login_form.zod_error.keytype_required'
       }),
       userFound: z.boolean(),
-      strict: z.boolean()
+      strict: z.boolean(),
+      requireActiveCheck: z.boolean()
     })
     .superRefine(async (val, ctx) => {
       if (!val.userFound) {
@@ -161,7 +191,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         wif: '',
         keyType: preferredKeyTypes[0],
         userFound: true,
-        strict: true
+        strict: true,
+        requireActiveCheck: false
       }
     });
 
@@ -189,7 +220,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }
 
     async function onSave(values: SafeStorageForm) {
-      const { username, password, wif, keyType, strict } = values;
+      const { username, password, wif, keyType, strict, requireActiveCheck } = values;
       try {
         setLoading(true);
         setError(null);
@@ -201,7 +232,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         storePickedSessionTime();
         try {
           await hbauthService.withOnlineClient((client) =>
-            registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
+            registerSafeStorageKey(
+              client,
+              { username, password, wif, keyType, strict, requireActiveCheck },
+              SHARED_KEY_LOOKUP
+            )
           );
         } catch (error) {
           const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
@@ -294,10 +329,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     //     setLoading(false);
     // }
 
-    async function finalize({ username, keyType }: SafeStorageForm) {
+    /** Signs in with the key `password` just unlocked: its login transaction asks for no check of its own */
+    async function finalize({ username, keyType, password }: SafeStorageForm) {
       try {
         setLoading(true);
-        await signIn(LoginType.hbauth, username, KeyType[keyType]);
+        await withSignInCheck(username, password ? { password } : undefined, () =>
+          signIn(LoginType.hbauth, username, KeyType[keyType])
+        );
         requestPersistentKeyStorage();
       } catch (error) {
         const errorMessage = handleAuthError(error, 'finalize', translateSignerKey);
@@ -358,8 +396,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   const keyType = form.getValues().keyType;
                   const uv = keyType === 'posting' ? 'discouraged' : 'required';
                   setLoading(true);
-                  await unlockWithPasskey(authClient.current, targetUser.username, keyType, uv);
-                  await finalize(form.getValues());
+                  const password = await unlockGivingPassword(authClient.current, targetUser.username, keyType, uv);
+                  await finalize({ ...form.getValues(), password });
                   return;
                 }
               } catch (error) {
@@ -406,6 +444,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }, [form.watch('username'), authUsers, t]);
 
     const storedStrict = useStoredStrictMode(userFound?.username, form.watch('keyType'));
+    const [storedActiveCheck] = useActiveCheckSetting(userFound?.username);
+    const activeCheck = userFound ? storedActiveCheck === true : form.watch('requireActiveCheck');
 
     if (loading === undefined) return placeholder ?? <Step loading={true}></Step>;
 
@@ -625,10 +665,19 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 )}
               />
             )}
+            {!userFound && (
+              <FormField
+                control={form.control}
+                name="requireActiveCheck"
+                render={({ field }) => (
+                  <ActiveCheckCheckbox checked={field.value} onCheckedChange={field.onChange} />
+                )}
+              />
+            )}
             {userFound && storedStrict !== undefined && (
               <StrictModeStatus strict={storedStrict} i18nNamespace={i18nNamespace} />
             )}
-            <SessionTimeSelect value={sessionTime} onChange={setPickedSessionTime} />
+            <SessionTimeSelect value={sessionTime} onChange={setPickedSessionTime} activeCheck={activeCheck} />
             {userFound && (
               <div className="flex justify-end">
                 <span

@@ -27,6 +27,7 @@ import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
 import { useKeyProtection } from '@smart-signer/lib/auth/use-key-protection';
 import KeyProtectionMenuItem from '@smart-signer/components/key-protection-menu-item';
+import ActiveCheckMenuItem from '@smart-signer/components/active-check-menu-item';
 import AccountSwitcher from '@smart-signer/components/account-switcher';
 import { useRouter } from 'next/navigation';
 
@@ -102,6 +103,7 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
           </DropdownMenuLabel>
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
           <KeyProtectionMenuItem keyProtection={keyProtection} />
+          <ActiveCheckMenuItem user={user} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} onSwitched={showSwitchedWallet} t={t} />
 

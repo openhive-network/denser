@@ -2,6 +2,7 @@ import { parseAuthError } from '@smart-signer/lib/auth-error';
 import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { withPromptedCheck, type CheckPrompt } from '@smart-signer/lib/signer/active-check';
 import { getLogger } from '@ui/lib/logging';
 import type { LiteKeyRole, StoredLiteIdentity } from './lite-identity-record';
 import { liteWalletUsername, type LiteWallet } from './lite-wallet';
@@ -74,4 +75,44 @@ async function unlockLiteWallet(identity: StoredLiteIdentity, keyType: LiteKeyRo
   }
 }
 
-export const browserLiteWallet: LiteWallet = { client: liteWalletClient, unlock: unlockLiteWallet };
+/** The check before an owner signature of `identity`'s entry, in smart-signer's password dialog; rejects when cancelled */
+async function askCheck(identity: StoredLiteIdentity, prompt: CheckPrompt): Promise<void> {
+  const [{ PasswordDialogModalPromise }, { PasswordFormMode }] = await Promise.all([
+    import('@smart-signer/components/password-dialog'),
+    import('@smart-signer/components/password-form')
+  ]);
+  try {
+    await PasswordDialogModalPromise({
+      isOpen: true,
+      passwordFormOptions: {
+        mode: PasswordFormMode.HBAUTH,
+        autoComplete: 'one-time-code',
+        validatePassword: prompt.validatePassword,
+        checkPasskey: prompt.checkPasskey,
+        i18nKeysForCaptions: {
+          title: 'password_form.active_check_title',
+          description: 'password_form.active_check_description',
+          inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+          submitButtonName: 'password_form.active_check_submit'
+        },
+      }
+    });
+  } catch (error) {
+    throw new LiteWalletUnlockError('check cancelled', true, { cause: error });
+  }
+}
+
+/** `digest` signed with `identity`'s `keyType` key through hb-auth's check, given in a prompt */
+async function signLiteWithCheck(identity: StoredLiteIdentity, digest: string, keyType: LiteKeyRole): Promise<string> {
+  const client = await liteWalletClient();
+  const username = liteWalletUsername(identity);
+  return withPromptedCheck({ client, username, ask: (prompt) => askCheck(identity, prompt) }, (credential) =>
+    client.signWithCheck(username, digest, keyType, credential)
+  );
+}
+
+export const browserLiteWallet: LiteWallet = {
+  client: liteWalletClient,
+  unlock: unlockLiteWallet,
+  signWithCheck: signLiteWithCheck
+};

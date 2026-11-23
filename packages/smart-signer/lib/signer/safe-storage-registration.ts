@@ -31,6 +31,11 @@ export interface SafeStorageKey {
   keyType: KeyAuthorityType;
   /** Direct Authority Mode: false accepts a key of an account listed in the user's `account_auths` */
   strict: boolean;
+  /**
+   * Whether the wallet this key creates asks for the password or a passkey before every signature
+   * with its active or owner key. hb-auth keeps the setting of a wallet that exists already.
+   */
+  requireActiveCheck?: boolean;
 }
 
 export interface SharedKeyLookup {
@@ -53,8 +58,8 @@ export async function registerSafeStorageKey(
   key: SafeStorageKey,
   { findSharedKeyTypes, onSharedKeyError }: SharedKeyLookup
 ): Promise<void> {
-  const { username, password, wif, keyType, strict } = key;
-  await client.register(username, password, wif, keyType, strict);
+  const { username, password, wif, keyType, strict, requireActiveCheck = false } = key;
+  await client.register(username, password, wif, keyType, strict, { requireActiveCheck });
 
   const sharedKeyTypes = await findSharedKeyTypes(username, keyType, wif);
   if (!sharedKeyTypes.length) return;

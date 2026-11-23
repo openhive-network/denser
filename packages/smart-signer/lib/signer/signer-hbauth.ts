@@ -22,6 +22,13 @@ import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
 import { SignedOutError } from '@transaction/lib/signed-out';
+import {
+  needsActiveCheck,
+  signOrCheck,
+  signWithActiveCheck,
+  type ActiveCheckSigner,
+  type CheckPrompt
+} from '@smart-signer/lib/signer/active-check';
 
 const logger = getLogger('app');
 
@@ -158,13 +165,20 @@ export class SignerHbauth extends Signer {
     operation?: OperationSummary
   ): Promise<string> {
     const { username, keyType } = this;
+    const signKeyType = requiredKeyType ?? keyType;
+    // The check signs on its own, the session locked or not: one prompt for the operation
+    if (!singleSignKeyType && (await needsActiveCheck(authClient, username, signKeyType))) {
+      await this.useAuthorityOf(authClient, signKeyType);
+      return signWithActiveCheck(this.activeCheckSigner(authClient, operation), digest, signKeyType);
+    }
     const checkAuthResult = await this.checkAuth(authClient, username, keyType, requiredKeyType);
 
     if (!checkAuthResult) {
       let authStatus: AuthStatus = { ok: false };
 
-      // Try biometric unlock first (if passkey registered and no password provided)
-      if (!password) {
+      // Try biometric unlock first (if passkey registered and no password provided). Not when the
+      // key the operation needs is still to be stored: that asks for the password anyway.
+      if (!password && (await this.storesKey(authClient, signKeyType))) {
         try {
           const hasPasskey = await authClient.hasPasskey(username);
           if (hasPasskey) {
@@ -251,10 +265,65 @@ export class SignerHbauth extends Signer {
       const signature = await this.requireOtherKey(authClient, requiredKeyType, username, digest, password, operation);
       return signature;
     } else {
-      const signature = await authClient.sign(username, digest, keyType);
+      const signature = await signOrCheck(this.activeCheckSigner(authClient, operation), digest, keyType, () =>
+        authClient.sign(username, digest, keyType)
+      );
       logger.debug('hbauth: %o', { digest, signature });
       return signature;
     }
+  }
+
+  /** Whether safe storage holds the `keyType` key of the signer's user */
+  private async storesKey(authClient: OnlineClient, keyType: KeyAuthorityType): Promise<boolean> {
+    const auth = await authClient.getRegisteredUserByUsername(this.username);
+    return auth?.registeredKeyTypes.includes(keyType) ?? false;
+  }
+
+  /**
+   * Signs as the account holding authority over the user's `keyType` key, when that key is one of its keys
+   *
+   * @throws {AuthStorageMissingError} when safe storage does not know the account
+   */
+  private async useAuthorityOf(authClient: OnlineClient, keyType: KeyAuthorityType): Promise<void> {
+    if (!(await authClient.getRegisteredUserByUsername(this.username))) {
+      throw new AuthStorageMissingError(this.username, keyType);
+    }
+    const settings = await authClient.getUserSettings(this.username);
+    this.authorityUsername = settings?.authorizedAccounts?.[keyType];
+  }
+
+  /** The signer as the check before active-key operations asks with, stating `operation` in its prompts */
+  private activeCheckSigner(authClient: OnlineClient, operation?: OperationSummary): ActiveCheckSigner {
+    return {
+      client: authClient,
+      username: this.username,
+      ask: (prompt) => askWhileSignedInIfSo(this.username, () => this.getCheckFromUser(prompt, operation)),
+      storeKey: async (keyType, password) => {
+        await this.registerKey(authClient, keyType, password, operation);
+        await this.useAuthorityOf(authClient, keyType);
+      }
+    };
+  }
+
+  /**
+   * Opens the check prompt: a password field the browser does not fill in, and the passkey button
+   * when `prompt` offers it. A dismissed dialog rejects with 'No password from user'.
+   */
+  protected async getCheckFromUser(prompt: CheckPrompt, operation?: OperationSummary): Promise<void> {
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      autoComplete: 'one-time-code',
+      validatePassword: prompt.validatePassword,
+      checkPasskey: prompt.checkPasskey,
+      i18nKeysForCaptions: {
+        title: 'password_form.active_check_title',
+        description: 'password_form.active_check_description',
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+        submitButtonName: 'password_form.active_check_submit'
+      },
+      operation
+    };
+    await this.getKeyFromUser(passwordFormOptions);
   }
 
   /** The error to fail signing with when hb-auth's `authenticate` of the session's key threw `error` */
@@ -342,7 +411,9 @@ export class SignerHbauth extends Signer {
     const settings = await authClient.getUserSettings(username);
     this.authorityUsername = settings?.authorizedAccounts?.[keyType];
     // Sign with the required key
-    return await authClient.sign(username, digest, keyType);
+    return await signOrCheck(this.activeCheckSigner(authClient, operation), digest, keyType, () =>
+      authClient.sign(username, digest, keyType)
+    );
   }
 
   /**

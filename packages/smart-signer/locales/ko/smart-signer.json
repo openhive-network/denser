@@ -111,6 +111,8 @@
       "strict_mode": "제한된 권한 모드",
       "strict_mode_scope": "(안전 저장소 전용)",
       "strict_mode_tooltip": "안전 저장소에 저장하는 키에만 적용됩니다. 활성화하면 안전 저장소는 계정 자체 권한의 키만 허용합니다. 다른 계정의 권한으로 서명하는 키를 저장하려면 이 모드를 비활성화하십시오. Keychain, PeakVault, HiveAuth 및 기타 로그인 방법에는 영향을 주지 않습니다.",
+      "active_check": "액티브 키나 소유자 키가 필요한 모든 작업 전에 비밀번호나 패스키를 요청",
+      "active_check_hint": "다른 사람이 이 기기를 사용할 수 있다면 더 안전하지만, 송금이나 증인 투표 때마다 다시 확인합니다. 나중에 계정 메뉴에서 변경할 수 있습니다.",
       "strict_mode_status_on": "제한된 권한 모드: 켜짐",
       "strict_mode_status_off": "제한된 권한 모드: 꺼짐",
       "key_update": "새 키 추가",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전 저장소 비밀번호를 입력하세요.",
     "remember_key_tab_label": "이 탭에서 기억",
     "remember_key_device_label": "이 기기에서 기억 (안전 저장소)",
-    "remember_key_hint": "이 탭에서 기억한 키는 새로고침하면 지워집니다. 안전 저장소는 비밀번호로 암호화하여 이 기기에 보관합니다."
+    "remember_key_hint": "이 탭에서 기억한 키는 새로고침하면 지워집니다. 안전 저장소는 비밀번호로 암호화하여 이 기기에 보관합니다.",
+    "active_check_title": "비밀번호나 패스키로 확인하세요",
+    "active_check_description": "안전 저장소는 액티브 키나 소유자 키가 필요한 모든 작업 전에 확인을 요청합니다.",
+    "active_check_submit": "확인",
+    "use_passkey": "패스키 사용",
+    "passkey_check_failed": "패스키로 작업을 확인하지 못했습니다. 다시 시도하거나 비밀번호를 입력하세요."
   },
   "key_protection": {
     "dialog_title": "키가 보호 없이 저장되어 있습니다",
@@ -296,7 +303,8 @@
     "choose_label": "다음 시간 동안 활동이 없으면 잠금",
     "locks_after": "{{duration}} 동안 활동이 없으면 잠깁니다",
     "locks_after_sentence": "{{duration}} 동안 활동이 없으면 잠깁니다.",
-    "activity": "서명할 때마다 타이머가 다시 시작됩니다. 액티브 키나 오너 키가 필요한 작업은 여전히 비밀번호를 요청할 수 있습니다.",
+    "activity_unchecked": "서명할 때마다 타이머가 다시 시작됩니다. 키가 잠길 때까지 액티브 키가 필요한 작업은 비밀번호를 묻지 않고 서명됩니다.",
+    "activity_checked": "서명할 때마다 타이머가 다시 시작됩니다. 액티브 키나 소유자 키가 필요한 작업은 매번 비밀번호나 패스키를 요청합니다.",
     "minutes": "{{value}}분",
     "hours": "{{value}}시간",
     "seconds": "{{value}}초",
@@ -324,5 +332,14 @@
     "no_key_provided": "키가 입력되지 않았습니다.",
     "passkey_signer_unknown": "이 브라우저에는 계정의 패스키 서명 서비스가 등록되어 있지 않습니다. 다시 로그인해 주세요.",
     "unknown": "인증 오류가 발생했습니다."
+  },
+  "active_check": {
+    "menu_label": "액티브 키 작업마다 확인",
+    "turn_on_title": "액티브 키나 소유자 키가 필요한 모든 작업 전에 확인",
+    "turn_off_title": "액티브 키가 필요한 작업 전 확인 끄기",
+    "change_description": "이 설정을 변경하려면 안전 저장소 비밀번호를 입력하거나 패스키를 사용하세요.",
+    "turned_on": "이제 액티브 키나 소유자 키가 필요한 작업은 매번 비밀번호나 패스키를 요청합니다.",
+    "turned_off": "이제 액티브 키가 필요한 작업은 키가 잠길 때까지 묻지 않고 서명됩니다.",
+    "change_failed": "설정을 변경하지 못했습니다. 다시 시도하세요."
   }
 }

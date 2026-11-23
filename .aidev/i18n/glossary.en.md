@@ -44,6 +44,7 @@ translate the terms below. Status values and how to use this file:
 | forget a saved key | unreviewed | Removes a key saved in this browser without signing out: "Forget saved key", "Forget it and sign out" (#1703). |
 | passkey | unreviewed | |
 | biometric unlock | unreviewed | Safe storage unlocked with a passkey (`login_form.passkey_prompt.*`). |
+| check before active-key operations | unreviewed | The safe-storage setting asking for the password or passkey before every operation that needs the active or owner key (`active_check.*`, #1513). |
 | This session (key badge) | unreviewed | Marks the keys the signed-in session signs with. |
 | recovery account | unreviewed | |
 
