@@ -447,7 +447,7 @@
     "others_share_many": "pozostali ({{count}}) · {{share}}",
     "others_share_other": "pozostali ({{count}}) · {{share}}",
     "weight_proxy": "+{{proxy}} z proxy",
-    "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP od pełnomocnictw",
+    "weight_exact_with_proxy": "{{own}} HP własne + {{proxy}} HP z pełnomocnictw",
     "votes_via_proxy": "głosuje przez pełnomocnika @{{proxy}}",
     "breakdown_label": "Udział głosujących w sile głosów",
     "weights_unavailable": "Ten węzeł API nie podaje siły głosów, więc głosujący są wymienieni tylko z nazwy.",
@@ -521,7 +521,7 @@
     },
     "confirm": {
       "title": "Zmienić hasło?",
-      "replaces_keys": "Klucze Owner, Active i Posting tego konta zostaną zastąpione kluczami wyprowadzonymi z nowego hasła.",
+      "replaces_keys": "Klucze Owner, Active i Posting tego konta zostaną zastąpione kluczami wygenerowanymi z nowego hasła.",
       "keep_posting_key": "Zachowaj obecny klucz Posting (zmień tylko klucze Owner i Active)",
       "proceed": "Zmień hasło",
       "cancel": "Anuluj"
@@ -588,7 +588,7 @@
     "lockout": {
       "title": "Ta zmiana może odciąć Ci dostęp",
       "session_key": "Usuwa lub zastępuje klucz, którym podpisuje ta sesja: ta sesja zostanie wylogowana.",
-      "passkey_key": "Usuwa lub zastępuje klucz Posting wyprowadzony z klucza dostępu: logowanie kluczem dostępu przestanie działać.",
+      "passkey_key": "Usuwa lub zastępuje klucz Posting wygenerowany z klucza dostępu: logowanie kluczem dostępu przestanie działać.",
       "owner_threshold": "Podnosi próg upoważnienia właściciela (Owner) powyżej 1: żaden pojedynczy klucz ani konto Owner nie będzie mogło samo działać za to konto.",
       "confirm": "Zaktualizuj mimo to"
     }
@@ -827,7 +827,7 @@
       "hiveauth": "Twoje klucze są w aplikacji portfela HiveAuth.",
       "google": "Twoje klucze są w portfelu Google Drive.",
       "manage_in_hive_bridge": "Zarządzaj nimi w Hive Bridge",
-      "passkey": "Twój klucz Posting jest wyprowadzony z klucza dostępu na {{origin}}.",
+      "passkey": "Twój klucz Posting jest wygenerowany z klucza dostępu na {{origin}}.",
       "passkey_signer": "usłudze podpisu kluczem dostępu",
       "session_marked": "Klucze, którymi podpisuje ta sesja, są oznaczone na liście powyżej jako „Ta sesja”."
     },
@@ -852,7 +852,7 @@
     "i_have_saved_password": "Nazwa właściciela i hasło są bezpiecznie zapisane.",
     "claim_tokens": "Token tworzenia konta ({{amount}} z Twoich {{owned_tokens}} tokenów)",
     "payment_confirm": "{{amount}} HIVE ({{amount}} z Twoich {{owned_hives}} HIVE)",
-    "manage_confirm": "Rozumiem, że do zarządzania kontem {{communityName}} muszę używać upoważnienia {{username}}*",
+    "manage_confirm": "Rozumiem, że do zarządzania kontem {{communityName}} muszę korzystać z upoważnienia konta {{username}}*",
     "go_to_community": "Przejdź do swojej społeczności ",
     "community_created": "Społeczność utworzona!!!",
     "languages": {
@@ -980,7 +980,7 @@
     "follow_up": {
       "update_wallet": "Po zmianie zaktualizuj klucze w {{wallet}}, inaczej przestanie podpisywać dla tego konta.",
       "update_google_drive": "Twój portfel Google Drive przechowuje stare klucze. Po zmianie zaktualizuj go w Hive Bridge, inaczej logowanie przez Google przestanie działać.",
-      "passkey_lost": "Twój klucz Posting jest wyprowadzony z klucza dostępu. Zmiana kluczy go zastąpi i logowanie kluczem dostępu przestanie działać.",
+      "passkey_lost": "Twój klucz Posting jest wygenerowany z klucza dostępu. Zmiana kluczy go zastąpi i logowanie kluczem dostępu przestanie działać.",
       "safe_storage_replaced": "Nowe klucze zastąpią te zapisane w bezpiecznym magazynie w tej przeglądarce.",
       "none": "Klucz przechowywany przez tę kartę zostanie zastąpiony nowym; w przeciwnym razie przy następnym podpisie wprowadź nowy klucz."
     }

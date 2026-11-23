@@ -24,7 +24,7 @@ const UNKNOWN_WIF = '5Jg6Um6AvJZ886UWQnNBfqScNo9f8PtGWecXo7gZS29FoVgektM';
 
 const SAFE_STORAGE_PASSWORD = 'fixture-password';
 const ACTIVE_KEY_ERROR =
-  "This key doesn't have active authority. The wallet needs your active key to sign this";
+  "This key doesn't have active authority. The wallet needs your active key to sign this.";
 const INVALID_CREDENTIALS = 'Invalid credentials';
 
 let stub: Server;

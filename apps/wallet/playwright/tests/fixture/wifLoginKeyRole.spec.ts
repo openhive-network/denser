@@ -18,7 +18,7 @@ const HYDRATION_TIMEOUT = 30_000;
 const POSTING_WIF = '5KQ8zgZx9Q4YuU8eUVcXfbVGQxe96eCXynREFJxdJvar8FQJvhk';
 const POSTING_PUBLIC_KEY = 'STM5J5fKpBEfiFEANpk321mLT3oNTZ4xTW4Vq8E33eA3zBSWRbViL';
 
-const ACTIVE_KEY_ERROR = "This key doesn't have active authority. The wallet needs your active key to sign this";
+const ACTIVE_KEY_ERROR = "This key doesn't have active authority. The wallet needs your active key to sign this.";
 
 let stub: Server;
 

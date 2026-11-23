@@ -6,13 +6,13 @@ Applies to `apps/blog/locales/pl/common_blog.json`,
 use this file: `.aidev/i18n/README.md`.
 
 Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
-#1662, #1663, #1673, #1684) and the strings pl already uses consistently.
+#1662, #1663, #1673, #1684, #1762) and the strings pl already uses consistently.
 
 ## Terms
 
 | English | Polish | Status | Notes |
 |---|---|---|---|
-| Safe Storage | bezpieczny magazyn | agreed (#1286) | Declines: „w bezpiecznym magazynie”, „do bezpiecznego magazynu”, „Użyj bezpiecznego magazynu”. Never „bezpieczne przechowywanie”. Label form: „Bezpieczny magazyn”. |
+| Safe Storage | bezpieczny magazyn | agreed (#1286) | Declines: „w bezpiecznym magazynie”, „do bezpiecznego magazynu”, „Użyj bezpiecznego magazynu”. Keep a key there: „zapisz go w bezpiecznym magazynie”, never „zachowaj” (Adam, #1762). Never „bezpieczne przechowywanie”. Label form: „Bezpieczny magazyn”. |
 | Hive Keychain / Keychain | Hive Keychain / Keychain | agreed (#1286) | Product name, not translated: „Użyj Keychain”. |
 | witness / witnesses | świadek / świadkowie | agreed (#1188) | Everywhere, wallet and blog: „Głosuj na świadków”, „Głosowanie na świadków”, „stronie świadków”. Never „delegat”, which collides with delegation. |
 | voters | głosujący | agreed (#1663, #1673) | „Głosujący”, „Szukaj głosujących”. A counted voter list counts votes: „1 głos”, „3 głosy”, „5 głosów”. |
@@ -23,7 +23,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | Up to … left | Jeszcze maks. … | agreed (#1663) | „Jeszcze maks. <amount/>”. Never „Pozostało do”. |
 | refund (proposal) | zwrot | agreed (#1663) | Never „zrefundowane”. |
 | delegation / delegate | delegacja / delegować | agreed (#1188) | „Delegacje”, „Deleguj”, „Deleguj RC”, „Przychodzące delegacje”, „Potwierdź wycofanie delegacji HIVE POWER”. Revoke a delegation: „Wycofaj”. |
-| power up | zwiększyć moc; button „Zwiększ moc” | agreed (#1188) | Running text may add the English term once: „zwiększania mocy (Power up)”. |
+| power up | zwiększyć moc; button „Zwiększ moc” | agreed (#1188) | Running text may add the English term once: „zwiększania mocy (Power up)”. Say what it does where it advises it: „zwiększ moc (Power up), zamieniając HIVE na HP” (Adam, #1762). |
 | power down | zmniejszyć moc; button „Zmniejsz moc” | agreed (#1188) | „Anuluj zmniejszanie mocy”, „Następne zmniejszenie mocy nastąpi za”. |
 | HIVE, HBD, HIVE POWER, HP | unchanged | agreed (#1188) | Token symbols. Do not repeat the symbol after an amount that already carries it. |
 | after payout | po wypłacie | unreviewed | „+1 głos po wypłacie (niewliczony)”. |
@@ -51,9 +51,9 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | API node | węzeł API | agreed (#1188) | |
 | upvote / downvote | głos za / głos przeciw | unreviewed | |
 | vote weight / downvote power | waga głosu / siła głosu przeciw | unreviewed | |
-| follow | obserwować; button „Obserwuj” | unreviewed | The delegate dialog's suggestion suffix „obserwujesz” is agreed (#1188). |
+| follow | obserwować; button „Obserwuj” | unreviewed | The delegate dialog's suggestion suffix „obserwujesz” is agreed (#1188). Follow notification „@{{username}} obserwuje Cię”, gender-neutral; never „zaobserwował Twój profil” (agreed, Adam, #1762). |
 | mute / unmute | wyciszyć / wyłączyć wyciszenie | unreviewed | Buttons „Wycisz”, „Wyłącz wyciszenie” (#1698). |
-| reblog | reblog, „Rebloguj” | unreviewed | |
+| reblog | reblog, „Rebloguj” | unreviewed | The user's own reblog (post card and footer label): „Twój reblog”, never „Zreblogowano” (agreed, Adam, #1762). The reblog success toast's title „Dodano reblog” (unreviewed). |
 | community | społeczność | unreviewed | |
 | community subscribers | subskrybenci; „1 subskrybent”, „3 subskrybenci”, „5 subskrybentów” | unreviewed | Plural keys `communities.subscribers_count_*` (#1717). |
 | post / comment / reply | post / komentarz / odpowiedź | unreviewed | „post” in 85 of 114 strings. |
@@ -67,11 +67,12 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | notification / notifications | powiadomienie / powiadomienia | unreviewed | „@{{username}} odpowiedział na Twój post” (#1609); toast announcement label „Powiadomienie” (#1739). |
 | this session (key badge) | Ta sesja | unreviewed | |
 | recovery account | konto odzyskiwania | unreviewed | |
-| Power up 100% (payout option) | Zwiększ moc 100% | unreviewed | Blog payout options and settings, with the agreed power-up term (#1698). Never „Wzmocnij”, „Zasilanie”. |
+| Power up 100% (payout option) | 100% w Hive Power | agreed (Adam, #1762) | Blog payout options and settings. A payout option, not a command: never „Zwiększ moc 100%” (#1698), „Wzmocnij”, „Zasilanie”. |
 | pending payout | oczekująca wypłata | unreviewed | „Oczekująca wypłata: $1,23”, „Brak oczekujących wypłat.” (#1698). |
-| proxied (vote weight) | od pełnomocnictw | unreviewed | „5 HP własne + 3 HP od pełnomocnictw”, „głosuje przez pełnomocnika @gtg” (#1698). The voters dialog's weight column keeps the short „+3 HP z proxy”: the long form does not fit its three columns at 1280 px (WALLET-WITNESS-VOTERS-06); its title gives the full wording. |
-| block explorer | eksplorator bloków | unreviewed | „Otwórz w eksploratorach bloków” (#1698). |
-| authority of a key (posting authority) | upoważnienie | unreviewed | „upoważnienie Posting konta”, „nie ma upoważnienia Active” (#1698), as Authorities. Never „uprawnienia Posting”. |
+| proxied (vote weight) | z pełnomocnictw | agreed (Adam, #1762) | „5 HP własne + 3 HP z pełnomocnictw”, never „od pełnomocnictw”; „głosuje przez pełnomocnika @gtg” (#1698). The voters dialog's weight column keeps the short „+3 HP z proxy”: the long form does not fit its three columns at 1280 px (WALLET-WITNESS-VOTERS-06); its title gives the full wording. |
+| block explorer | eksplorator bloków | agreed (Adam, #1762) | Singular: „Otwórz w eksploratorze bloków”, never „w eksploratorach bloków”. |
+| authority of a key (posting authority) | upoważnienie | unreviewed | „nie ma upoważnienia Active” (#1698), as Authorities. Never „uprawnienia Posting”. A key in an authority: „musi już być częścią upoważnienia Posting tego konta” (Adam, #1762); the account's authority to manage another: „korzystać z upoważnienia konta {{username}}” (Adam, #1762). |
+| derived key (from a password or passkey) | wygenerowany | agreed (Adam, #1762) | „Klucz wygenerowany przez serwis podpisujący”. Never „wyprowadzony”, a calque. |
 | Hive core (API set) | Rdzeń Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
 | lite accounts | konta lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | API sald | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
@@ -134,4 +135,10 @@ HIVE, HBD, HP, HIVE POWER, Hive Power; key names Posting, Active, Owner, Memo
 
 ## Known drift
 
-None known. #1727 removed the unused `login_form.*hbauth*` keys listed here before.
+- The verb „wyprowadza” / „wyprowadzać” for deriving keys (wallet
+  `current_credential_help`, `wrong_password`, `reveal_intro`, `reveal_dialog`,
+  `not_all_keys`; smart-signer `passkey`, `prf_unsupported`; blog
+  `prf_unsupported`) is the same calque as „wyprowadzony” (#1762). Not yet
+  rewritten: do not copy it; new strings use „generuje” / „generować”.
+
+#1727 removed the unused `login_form.*hbauth*` keys listed here before.
