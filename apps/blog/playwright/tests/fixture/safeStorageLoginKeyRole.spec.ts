@@ -43,7 +43,7 @@ import {
 test.skip(isRecordMode, 'replay-only: shares the accountSwitchLogout recording');
 test.use({ fixtureTestName: 'accountSwitchLogout', authenticatedUser: { authenticateOnBackend: true } });
 
-const ACTIVE_KEY_ERROR = "This key doesn't have posting authority. Blog sign-in requires the posting key";
+const ACTIVE_KEY_ERROR = "This key doesn't have posting authority. Blog sign-in requires the posting key.";
 const INVALID_CREDENTIALS = 'Invalid credentials';
 const UNRELATED_ACCOUNT_KEY_ERROR = `This key belongs to @${OTHER_ACCOUNT}, not @${ACCOUNT}. Enter the posting key of @${ACCOUNT}`;
 const AUTHORISED_ACCOUNT_KEY_ERROR =
