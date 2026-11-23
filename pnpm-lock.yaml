@@ -7,8 +7,8 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 1.28.4-rc0-stable.261028220752
-      version: 1.28.4-rc0-stable.261028220752
+      specifier: 1.28.4-rc0-stable.261123185133
+      version: 1.28.4-rc0-stable.261123185133
     '@hiveio/healthchecker-component':
       specifier: 2.0.3-stable.261120204600
       version: 2.0.3-stable.261120204600
@@ -80,7 +80,7 @@ catalogs:
       version: 6.0.3
 
 overrides:
-  '@hiveio/beekeeper': 1.28.9-rc0-stable.261028200530
+  '@hiveio/beekeeper': 1.28.9-rc0-stable.261107004332
 
 patchedDependencies:
   '@hiveio/workerbee':
@@ -477,7 +477,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.261028220752(@hiveio/wax@1.28.8-stable.261028191145)
+        version: 1.28.4-rc0-stable.261123185133(@hiveio/wax@1.28.8-stable.261028191145)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -704,11 +704,11 @@ importers:
         specifier: workspace:*
         version: link:../ui
       '@hiveio/beekeeper':
-        specifier: 1.28.9-rc0-stable.261028200530
-        version: 1.28.9-rc0-stable.261028200530
+        specifier: 1.28.9-rc0-stable.261107004332
+        version: 1.28.9-rc0-stable.261107004332
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.261028220752(@hiveio/wax@1.28.8-stable.261028191145)
+        version: 1.28.4-rc0-stable.261123185133(@hiveio/wax@1.28.8-stable.261028191145)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -1991,12 +1991,12 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@hiveio/beekeeper@1.28.9-rc0-stable.261028200530':
-    resolution: {integrity: sha1-nzTNga2OqN6212HzkKyHGZoMuAk=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.9-rc0-stable.261028200530.tgz}
+  '@hiveio/beekeeper@1.28.9-rc0-stable.261107004332':
+    resolution: {integrity: sha1-ifkOP0eWUWOz3pf8Th5gGA4Ux+Q=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.9-rc0-stable.261107004332.tgz}
     engines: {node: '>=24'}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.261028220752':
-    resolution: {integrity: sha1-AwucDnzbBjxSjci/iVYabY/kYN4=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.261028220752.tgz}
+  '@hiveio/hb-auth@1.28.4-rc0-stable.261123185133':
+    resolution: {integrity: sha1-4U1Ei+o1/5P9xDXYbdixieJDX3o=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.261123185133.tgz}
     engines: {node: '>=24'}
     peerDependencies:
       '@hiveio/wax': '>= 1.28.8-0 < 1.29.0'
@@ -11879,9 +11879,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@hiveio/beekeeper@1.28.9-rc0-stable.261028200530': {}
+  '@hiveio/beekeeper@1.28.9-rc0-stable.261107004332': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.261028220752(@hiveio/wax@1.28.8-stable.261028191145)':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.261123185133(@hiveio/wax@1.28.8-stable.261028191145)':
     dependencies:
       '@hiveio/wax': 1.28.8-stable.261028191145
       comlink: 4.4.2
@@ -11903,12 +11903,12 @@ snapshots:
 
   '@hiveio/wax-signers-beekeeper@1.28.8-stable.261028191145':
     dependencies:
-      '@hiveio/beekeeper': 1.28.9-rc0-stable.261028200530
+      '@hiveio/beekeeper': 1.28.9-rc0-stable.261107004332
       '@hiveio/wax': 1.28.8-stable.261028191145
 
   '@hiveio/wax-signers-external@1.28.8-stable.261028191145':
     dependencies:
-      '@hiveio/beekeeper': 1.28.9-rc0-stable.261028200530
+      '@hiveio/beekeeper': 1.28.9-rc0-stable.261107004332
       '@hiveio/wax': 1.28.8-stable.261028191145
       '@hiveio/wax-signers-beekeeper': 1.28.8-stable.261028191145
       zod: 4.1.13
