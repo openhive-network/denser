@@ -16,7 +16,7 @@ registerHooks({
   }
 });
 
-const { needsActiveCheck, signOrCheck, signWithActiveCheck } = await import('./active-check.ts');
+const { needsActiveCheck, signAsSettingAsks, signOrCheck, signWithActiveCheck } = await import('./active-check.ts');
 const { withSignInCheck } = await import('./sign-in-check.ts');
 type CheckPrompt = import('./active-check.ts').CheckPrompt;
 type ActiveCheckSigner = import('./active-check.ts').ActiveCheckSigner;
@@ -32,11 +32,13 @@ const workerError = (name: string, message: string) => Object.assign(new Error(m
 /**
  * hb-auth's client as far as the check goes: a wallet holding `stored` keys, asking for the check
  * when `requireActiveCheck`, whose `sign` refuses active and owner keys then, as hb-auth's does.
+ * A wallet from before the setting has none: it reads as on until `unlock` adopts it as off.
  * `calls` lists the signing calls.
  */
 class FakeCheckClient {
   readonly calls: string[] = [];
-  requireActiveCheck = true;
+  requireActiveCheck: boolean | undefined = true;
+  unlocked = true;
   passkey = false;
   stored: KeyAuthorityType[] = ['posting', 'active'];
 
@@ -63,13 +65,20 @@ class FakeCheckClient {
   }
 
   async getRequireActiveCheck() {
-    return this.requireActiveCheck;
+    return this.requireActiveCheck ?? true;
+  }
+
+  /** A normal unlock, as hb-auth's `authenticate` is: adopts a missing setting as off */
+  async unlock(password: string) {
+    if (password !== PASSWORD) throw workerError('AuthorizationError', 'Invalid credentials');
+    this.unlocked = true;
+    this.requireActiveCheck ??= false;
   }
 
   async getRegisteredUserByUsername(username: string) {
     return {
       username,
-      unlocked: true,
+      unlocked: this.unlocked,
       authorized: true,
       loggedInKeyType: 'posting' as const,
       registeredKeyTypes: this.stored
@@ -189,7 +198,7 @@ describe('the check before active-key operations', () => {
     const client = new FakeCheckClient();
     const { signer, prompts } = signerOf(client, [typing([PASSWORD])]);
 
-    await withSignInCheck(USERNAME, { password: PASSWORD }, async () => {
+    await withSignInCheck(USERNAME, 'active', { password: PASSWORD }, async () => {
       assert.equal(await signWithActiveCheck(signer, DIGEST, 'active'), 'checked signature active');
       assert.equal(prompts.length, 0);
       await signWithActiveCheck(signer, DIGEST, 'active');
@@ -197,6 +206,17 @@ describe('the check before active-key operations', () => {
 
     assert.equal(prompts.length, 1);
     assert.deepEqual(client.calls, ['signWithCheck active password', 'signWithCheck active password']);
+  });
+
+  it('gives a posting sign-in\'s password to no active signature', async () => {
+    const client = new FakeCheckClient();
+    const { signer, prompts } = signerOf(client, [typing([PASSWORD])]);
+
+    await withSignInCheck(USERNAME, 'posting', { password: PASSWORD }, () =>
+      signWithActiveCheck(signer, DIGEST, 'active')
+    );
+
+    assert.equal(prompts.length, 1);
   });
 
   it('stores a key safe storage lacks with the password of one prompt, without a passkey, then signs with it', async () => {
@@ -245,5 +265,79 @@ describe('signOrCheck', () => {
     assert.equal(await signOrCheck(signer, DIGEST, 'posting', () => client.sign(USERNAME, DIGEST, 'posting')), 'signature posting');
     await assert.rejects(signOrCheck(signer, DIGEST, 'active', () => Promise.reject(refused)), refused);
     assert.equal(prompts.length, 0);
+  });
+});
+
+describe('signAsSettingAsks', () => {
+  /** Signs `count` active operations as the signer does, counting the unlock prompts */
+  async function signActive(client: FakeCheckClient, signer: ActiveCheckSigner, count: number) {
+    let unlockPrompts = 0;
+    const unlock = async () => {
+      if (client.unlocked) return undefined;
+      unlockPrompts++;
+      await client.unlock(PASSWORD);
+      return PASSWORD;
+    };
+    const signatures: string[] = [];
+    for (let operation = 0; operation < count; operation++) {
+      signatures.push(
+        await signAsSettingAsks(signer, DIGEST, 'active', unlock, () =>
+          signOrCheck(signer, DIGEST, 'active', () => client.sign(USERNAME, DIGEST, 'active'))
+        )
+      );
+    }
+    return { signatures, unlockPrompts };
+  }
+
+  it('signs with sign after one unlock for a locked wallet from before the setting, which reads on until unlocked', async () => {
+    const client = new FakeCheckClient();
+    client.requireActiveCheck = undefined;
+    client.unlocked = false;
+    const { signer, prompts } = signerOf(client);
+
+    const { signatures, unlockPrompts } = await signActive(client, signer, 2);
+
+    assert.deepEqual(signatures, ['signature active', 'signature active']);
+    assert.equal(unlockPrompts, 1);
+    assert.equal(prompts.length, 0);
+    assert.deepEqual(client.calls, ['sign active', 'sign active']);
+  });
+
+  it('signs through the check with the unlock password for a locked wallet with the setting on, one prompt', async () => {
+    const client = new FakeCheckClient();
+    client.unlocked = false;
+    const { signer, prompts } = signerOf(client);
+
+    const { signatures, unlockPrompts } = await signActive(client, signer, 1);
+
+    assert.deepEqual(signatures, ['checked signature active']);
+    assert.equal(unlockPrompts, 1);
+    assert.equal(prompts.length, 0);
+    assert.deepEqual(client.calls, ['signWithCheck active password']);
+  });
+
+  it('asks for the check once per operation in an unlocked wallet with the setting on', async () => {
+    const client = new FakeCheckClient();
+    const { signer, prompts } = signerOf(client, [typing([PASSWORD]), typing([PASSWORD])]);
+
+    const { unlockPrompts } = await signActive(client, signer, 2);
+
+    assert.equal(unlockPrompts, 0);
+    assert.equal(prompts.length, 2);
+    assert.deepEqual(client.calls, ['signWithCheck active password', 'signWithCheck active password']);
+  });
+
+  it('stores an active key safe storage lacks with the unlock password, asking for no check', async () => {
+    const client = new FakeCheckClient();
+    client.unlocked = false;
+    client.stored = ['posting'];
+    const { signer, prompts, stored } = signerOf(client);
+
+    const { unlockPrompts } = await signActive(client, signer, 1);
+
+    assert.equal(unlockPrompts, 1);
+    assert.equal(prompts.length, 0);
+    assert.deepEqual(stored, [['active', PASSWORD]]);
+    assert.deepEqual(client.calls, ['signWithCheck active password']);
   });
 });

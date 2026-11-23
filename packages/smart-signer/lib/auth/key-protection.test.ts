@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
-import type { AuthStatus, AuthUser, KeyAuthorityType } from '@hiveio/hb-auth';
+import type { AuthStatus, AuthUser, CheckCredential, KeyAuthorityType } from '@hiveio/hb-auth';
 
 // Under node's type stripping the `@smart-signer/` alias does not resolve
 const MODULES: Record<string, string> = {
@@ -9,7 +9,9 @@ const MODULES: Record<string, string> = {
   '@smart-signer/lib/signer/safe-storage-registration': new URL('../signer/safe-storage-registration.ts', import.meta.url)
     .href,
   '@smart-signer/lib/auth/safe-storage-unlock': new URL('./safe-storage-unlock.ts', import.meta.url).href,
-  '@smart-signer/lib/wrong-safe-storage-password': new URL('../wrong-safe-storage-password.ts', import.meta.url).href
+  '@smart-signer/lib/wrong-safe-storage-password': new URL('../wrong-safe-storage-password.ts', import.meta.url).href,
+  '@smart-signer/lib/signer/active-check': new URL('../signer/active-check.ts', import.meta.url).href,
+  '@smart-signer/lib/signer/sign-in-check': new URL('../signer/sign-in-check.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -70,12 +72,14 @@ const KEY_CHECK = {
 
 /**
  * hb-auth's online client as far as importing goes: holds USERNAME's keys behind one password,
- * unlocked once authenticated or registered, and refuses a wrong password as its worker does.
+ * unlocked once authenticated or registered, and refuses a wrong password as its worker does. With
+ * `requireActiveCheck`, its `sign` refuses active and owner keys, which sign only with the password.
  */
 class FakeSafeStorage {
   keys = new Map<KeyAuthorityType, string>();
   password: string | null = null;
   unlocked = false;
+  requireActiveCheck = false;
 
   async getRegisteredUserByUsername(username: string): Promise<AuthUser | null> {
     if (username !== USERNAME || this.password === null) return null;
@@ -104,6 +108,15 @@ class FakeSafeStorage {
   }
   async sign(_username: string, digest: string, keyType: KeyAuthorityType): Promise<string> {
     if (!this.unlocked) throw new Error('locked');
+    if (this.requireActiveCheck && keyType !== 'posting') {
+      throw Object.assign(new Error(`Signing with the '${keyType}' key requires a check`), { name: 'CheckRequiredError' });
+    }
+    return `${digest}|${this.keys.get(keyType)}`;
+  }
+  async signWithCheck(_username: string, digest: string, keyType: KeyAuthorityType, credential: CheckCredential) {
+    if (!('password' in credential) || credential.password !== this.password) {
+      throw Object.assign(new Error('Invalid credentials'), { name: 'AuthorizationError' });
+    }
     return `${digest}|${this.keys.get(keyType)}`;
   }
 }
@@ -191,6 +204,20 @@ describe('protectStoredKeys', () => {
     const storage = storageWith({ active: 'active-wif' });
     const safeStorage = new FakeSafeStorage();
     safeStorage.password = PASSWORD;
+    safeStorage.keys.set('posting', 'posting-wif');
+    const { steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: PASSWORD });
+
+    assert.equal(await protectStoredKeys(USERNAME, steps), 'moved');
+
+    assert.equal(safeStorage.keys.get('active'), 'active-wif');
+    assert.equal(storage.getItem(wifCredentialKey(USERNAME, 'active')), null);
+  });
+
+  it('imports an active key into a wallet asking for the check, verifying it with the password', async () => {
+    const storage = storageWith({ active: 'active-wif' });
+    const safeStorage = new FakeSafeStorage();
+    safeStorage.password = PASSWORD;
+    safeStorage.requireActiveCheck = true;
     safeStorage.keys.set('posting', 'posting-wif');
     const { steps } = stepsFor(storage, safeStorage, { choice: 'protect', password: PASSWORD });
 
@@ -362,5 +389,17 @@ describe('keysHeldInSafeStorage', () => {
     safeStorage.keys.set('posting', 'posting-wif');
 
     assert.deepEqual(await keysHeldInSafeStorage(safeStorage, USERNAME, [{ keyType: 'posting', wif: 'posting-wif' }], KEY_CHECK), []);
+  });
+
+  it('tells an active key of an unlocked wallet asking for the check held', async () => {
+    const safeStorage = new FakeSafeStorage();
+    safeStorage.password = PASSWORD;
+    safeStorage.unlocked = true;
+    safeStorage.requireActiveCheck = true;
+    safeStorage.keys.set('posting', 'posting-wif');
+    safeStorage.keys.set('active', 'active-wif');
+    const keys = [{ keyType: 'active' as const, wif: 'active-wif' }];
+
+    assert.deepEqual(await keysHeldInSafeStorage(safeStorage, USERNAME, keys, KEY_CHECK), keys);
   });
 });

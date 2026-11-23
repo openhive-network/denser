@@ -194,7 +194,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           username,
           password,
           keyType: keyType as KeyAuthorityType,
-          signIn: () => withSignInCheck(username, { password }, () => signIn(LoginType.hbauth, username, keyType)),
+          signIn: () =>
+            withSignInCheck(username, keyType as KeyAuthorityType, { password }, () =>
+              signIn(LoginType.hbauth, username, keyType)
+            ),
           isCancelled: () => cancelled.current
         });
         if (outcome === 'signed-in') requestPersistentKeyStorage();

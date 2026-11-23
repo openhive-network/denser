@@ -121,33 +121,64 @@ export async function withPromptedCheck<T>(
 
 /**
  * Signs `digest` with the `keyType` key of `signer`'s user through hb-auth's check-and-sign call:
- * with the credential the sign-in just gave, else with one the user gives in a prompt. A key safe
- * storage does not hold yet is asked for and stored with the password the prompt gave, which also
- * signs: one prompt for the password, then one for the key, and no passkey.
+ * with `credential`, or else the one the sign-in just gave for that key, or else one the user gives
+ * in a prompt. A key safe storage does not hold yet is asked for and stored with the password the
+ * credential or the prompt gave, which also signs: one prompt for the password, then one for the
+ * key, and no passkey.
  */
 export async function signWithActiveCheck(
   signer: ActiveCheckSigner,
   digest: string,
-  keyType: KeyAuthorityType
+  keyType: KeyAuthorityType,
+  credential?: CheckCredential
 ): Promise<string> {
   const { client, username } = signer;
-  const signInCheck = takeSignInCheck(username);
-  if (signInCheck) return client.signWithCheck(username, digest, keyType, signInCheck);
-
+  const given = credential ?? takeSignInCheck(username, keyType);
   const stored = (await client.getRegisteredUserByUsername(username))?.registeredKeyTypes ?? [];
   if (stored.includes(keyType)) {
-    return withPromptedCheck(signer, (credential) => client.signWithCheck(username, digest, keyType, credential));
+    if (given) return client.signWithCheck(username, digest, keyType, given);
+    return withPromptedCheck(signer, (prompted) => client.signWithCheck(username, digest, keyType, prompted));
   }
-  const password = await withPromptedCheck(
-    signer,
-    async (credential) => {
-      await client.checkCredential(username, credential);
-      return 'password' in credential ? credential.password : '';
-    },
-    false
-  );
+  const password =
+    given && 'password' in given
+      ? given.password
+      : await withPromptedCheck(
+          signer,
+          async (prompted) => {
+            await client.checkCredential(username, prompted);
+            return 'password' in prompted ? prompted.password : '';
+          },
+          false
+        );
   await signer.storeKey(keyType, password);
   return client.signWithCheck(username, digest, keyType, { password });
+}
+
+/**
+ * Signs `digest` with the `keyType` key of `signer`'s user as the wallet's setting of the check asks.
+ * `unlock` unlocks a locked wallet, with one prompt, and resolves with the password it took; with
+ * undefined when the wallet was unlocked already. hb-auth verifies the setting only in an unlocked
+ * wallet: a locked one reads unverified, and as on for a wallet from before the setting until an
+ * unlock adopts it as off. So a locked wallet reading on is unlocked first and the setting read
+ * again: on, the check signs with the password the unlock took, off, the signature is what
+ * `signUnlocked` resolves with, given that password. One prompt either way.
+ */
+export async function signAsSettingAsks(
+  signer: ActiveCheckSigner,
+  digest: string,
+  keyType: KeyAuthorityType,
+  unlock: () => Promise<string | undefined>,
+  signUnlocked: (password: string | undefined) => Promise<string>
+): Promise<string> {
+  const { client, username } = signer;
+  const readOn = await needsActiveCheck(client, username, keyType);
+  const password = await unlock();
+  if (!readOn) return signUnlocked(password);
+  if (password === undefined) return signWithActiveCheck(signer, digest, keyType);
+  if (await needsActiveCheck(client, username, keyType)) {
+    return signWithActiveCheck(signer, digest, keyType, { password });
+  }
+  return signUnlocked(password);
 }
 
 /**

@@ -2,11 +2,11 @@
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { AuthUser, OnlineClient, type KeyAuthorityType } from '@hiveio/hb-auth';
+import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
-import { registerPasskeyUnlock, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { registerPasskeyUnlock, unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
 import { useActiveCheckSetting } from '@smart-signer/lib/auth/use-active-check-setting';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -64,32 +64,6 @@ import SessionTimeSelect from './session-time-select';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
-
-/**
- * Unlocks `username`'s `keyType` key with its passkey, as `unlockWithPasskey` does, and resolves with
- * the password the passkey gave: the login transaction signs with it, without a prompt of its own
- */
-async function unlockGivingPassword(
-  client: OnlineClient,
-  username: string,
-  keyType: KeyAuthorityType,
-  userVerification: UserVerificationRequirement
-): Promise<string> {
-  let given = '';
-  await unlockWithPasskey(
-    {
-      authenticate: (name: string, password: string, type: KeyAuthorityType) => {
-        given = password;
-        return client.authenticate(name, password, type);
-      },
-      getRegisteredUserByUsername: (name: string) => client.getRegisteredUserByUsername(name)
-    },
-    username,
-    keyType,
-    userVerification
-  );
-  return given;
-}
 
 function getFormSchema() {
   return z
@@ -333,7 +307,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     async function finalize({ username, keyType, password }: SafeStorageForm) {
       try {
         setLoading(true);
-        await withSignInCheck(username, password ? { password } : undefined, () =>
+        await withSignInCheck(username, KeyType[keyType], password ? { password } : undefined, () =>
           signIn(LoginType.hbauth, username, KeyType[keyType])
         );
         requestPersistentKeyStorage();
@@ -396,7 +370,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   const keyType = form.getValues().keyType;
                   const uv = keyType === 'posting' ? 'discouraged' : 'required';
                   setLoading(true);
-                  const password = await unlockGivingPassword(authClient.current, targetUser.username, keyType, uv);
+                  const { password } = await unlockWithPasskeyGivingPassword(authClient.current, targetUser.username, keyType, uv);
                   await finalize({ ...form.getValues(), password });
                   return;
                 }
