@@ -1,4 +1,4 @@
-import { OnlineClient, type AuthStatus, type AuthUser, type KeyAuthorityType } from '@hiveio/hb-auth';
+import { OnlineClient, type AuthStatus, type AuthUser, type KeyAuthorityType, type RegisterOptions } from '@hiveio/hb-auth';
 
 import { getChain } from '../wax';
 import { endSafeStorageWriting, markSafeStorageWriting } from './safe-storage-generation';
@@ -37,6 +37,9 @@ export class SupersededKeyWriteError extends Error {
     this.keyType = keyType;
   }
 }
+
+/** What a register gave a write it repeats: the password, Direct Authority Mode and hb-auth's options */
+type RegisterGiven = { password?: string; strict?: boolean; options?: RegisterOptions };
 
 /** Options of an operation run with the online client */
 export interface OnlineClientOperationOptions {
@@ -77,8 +80,8 @@ class OnlineClientOperation {
     this.#currentClient = currentClient;
     this.#requestPassword = requestPassword;
     const writes: Partial<OnlineClient> = {
-      register: (username, password, wifKey, keyType, strict) =>
-        this.register(username, password, wifKey, keyType, strict),
+      register: (username, password, wifKey, keyType, strict, options) =>
+        this.register(username, password, wifKey, keyType, strict, options),
       importKey: (username, wifKey, keyType) =>
         this.write(username, keyType, (writer, recovering) =>
           recovering
@@ -117,13 +120,14 @@ class OnlineClientOperation {
     password: string,
     wifKey: string,
     keyType: KeyAuthorityType,
-    strict?: boolean
+    strict?: boolean,
+    options?: RegisterOptions
   ): Promise<AuthStatus> {
     const status = await this.write(username, keyType, async (writer, recovering): Promise<AuthStatus> => {
       if (recovering !== 'repeat')
-        return OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict);
+        return OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict, options);
       // The superseded write passed hb-auth's check of the key on chain already
-      await this.recoverWrite(writer, recovering, username, wifKey, keyType, { password, strict: strict ?? true });
+      await this.recoverWrite(writer, recovering, username, wifKey, keyType, { password, strict: strict ?? true, options });
       return { ok: true };
     });
     this.#passwords.set(username, password);
@@ -177,7 +181,7 @@ class OnlineClientOperation {
     username: string,
     wifKey: string,
     keyType: KeyAuthorityType,
-    given: { password?: string; strict?: boolean }
+    given: RegisterGiven
   ): Promise<string> {
     const user = await writer.getRegisteredUserByUsername(username);
     if (!user) return this.registerFirstKey(writer, recovering, username, wifKey, keyType, given);
@@ -198,11 +202,11 @@ class OnlineClientOperation {
     username: string,
     wifKey: string,
     keyType: KeyAuthorityType,
-    { password, strict }: { password?: string; strict?: boolean }
+    { password, strict, options }: RegisterGiven
   ): Promise<string> {
     if (password === undefined || strict === undefined) throw new SupersededKeyWriteError(username, keyType);
     if (recovering === 'repeat') await this.removeStaleAlias(writer, username, keyType);
-    await OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict);
+    await OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict, options);
     this.#passwords.set(username, password);
     return (await getChain()).calculatePublicKey(wifKey);
   }

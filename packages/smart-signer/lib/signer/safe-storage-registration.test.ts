@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import type { AuthUser, KeyAuthorityType } from '@hiveio/hb-auth';
+import type { AuthUser, KeyAuthorityType, RegisterOptions } from '@hiveio/hb-auth';
 import {
   addedKeyStrictMode,
   registerAddedSafeStorageKey,
@@ -23,13 +23,23 @@ const AUTHORITY_ACCOUNT = 'bob';
  */
 class FakeSafeStorage implements RevocableSafeStorageClient {
   registered: { keyType: KeyAuthorityType; wif: string; password: string; strict: boolean }[] = [];
+  /** The options of each register, by key type */
+  registerOptions: [KeyAuthorityType, RegisterOptions | undefined][] = [];
   settings: UserSettings | null = null;
   failingKeyTypes: KeyAuthorityType[] = [];
   unremovableKeyTypes: KeyAuthorityType[] = [];
 
-  async register(_username: string, password: string, wif: string, keyType: KeyAuthorityType, strict = true) {
+  async register(
+    _username: string,
+    password: string,
+    wif: string,
+    keyType: KeyAuthorityType,
+    strict = true,
+    options?: RegisterOptions
+  ) {
     if (this.failingKeyTypes.includes(keyType)) throw new Error(`refused ${keyType}`);
     this.registered.push({ keyType, wif, password, strict });
+    this.registerOptions.push([keyType, options]);
     const settings = this.settings ?? { strict: {}, alias: '' };
     this.settings = {
       ...settings,
@@ -194,6 +204,21 @@ describe('registerSafeStorageKey', () => {
       { keyType: 'posting', wif: 'shared-wif', password: 'password', strict: false },
       { keyType: 'active', wif: 'shared-wif', password: 'password', strict: false }
     ]);
+  });
+
+  it('creates the wallet with the check before active-key operations the user chose, off unless chosen', async () => {
+    const checked = new FakeSafeStorage();
+    const unchecked = new FakeSafeStorage();
+
+    await registerSafeStorageKey(
+      checked,
+      { ...key, keyType: 'posting', requireActiveCheck: true },
+      lookup(['active']).sharedKeyLookup
+    );
+    await registerSafeStorageKey(unchecked, { ...key, keyType: 'posting' }, lookup().sharedKeyLookup);
+
+    assert.deepEqual(checked.registerOptions[0], ['posting', { requireActiveCheck: true }]);
+    assert.deepEqual(unchecked.registerOptions, [['posting', { requireActiveCheck: false }]]);
   });
 
   it('registers a key of one type for that type only', async () => {

@@ -13,10 +13,16 @@ export function formatSessionTime(t: Translate, seconds: number): string {
   return t('session_time.seconds', { value: seconds });
 }
 
-/** The caption of an idle time choice: when the session locks, then what restarts the timer, in `lang` */
-export function sessionTimeCaption(t: CaptionTranslate, seconds: number, lang: string): string {
+/**
+ * The caption of an idle time choice: when the session locks, then what restarts the timer and
+ * whether operations needing the active or owner key ask every time (`activeCheck`), in `lang`
+ */
+export function sessionTimeCaption(t: CaptionTranslate, seconds: number, lang: string, activeCheck: boolean): string {
   return joinSentences(
-    [t('session_time.locks_after_sentence', { duration: formatSessionTime(t, seconds) }), t('session_time.activity')],
+    [
+      t('session_time.locks_after_sentence', { duration: formatSessionTime(t, seconds) }),
+      t(activeCheck ? 'session_time.activity_checked' : 'session_time.activity_unchecked')
+    ],
     lang
   );
 }

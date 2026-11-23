@@ -50,6 +50,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | password | пароль | unreviewed | |
 | passkey | ключ доступа | unreviewed | |
 | biometric unlock | биометрическая разблокировка | unreviewed | As in `login_form.passkey_prompt.*`. |
+| check before active-key operations | Спрашивать перед каждой операцией с активным ключом; «Подтвердите паролем или ключом доступа» | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | биржа / проценты | unreviewed | |
 | this session (key badge) | Эта сессия | unreviewed | |
 | recovery account | аккаунт восстановления | unreviewed | |

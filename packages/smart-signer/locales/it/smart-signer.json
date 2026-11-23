@@ -103,6 +103,8 @@
       "strict_mode": "Modo di autorità ristretta",
       "strict_mode_scope": "(solo archivio sicuro)",
       "strict_mode_tooltip": "Si applica solo alle chiavi salvate nell'archivio sicuro. Quando è abilitato, l'archivio sicuro accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati.",
+      "active_check": "Chiedi la mia password o passkey prima di ogni operazione che richiede la mia chiave attiva o la chiave Owner",
+      "active_check_hint": "Più sicuro se altre persone usano questo dispositivo, ma ogni trasferimento o voto a un witness la chiederà di nuovo. Puoi cambiarlo in seguito dal menu dell'account.",
       "strict_mode_status_on": "Modo di autorità ristretta: attivo",
       "strict_mode_status_off": "Modo di autorità ristretta: disattivo",
       "key_update": "Aggiungi nuova chiave",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio.",
     "remember_key_tab_label": "Ricorda per questa scheda",
     "remember_key_device_label": "Ricorda su questo dispositivo (archivio sicuro)",
-    "remember_key_hint": "Una chiave ricordata per questa scheda viene dimenticata al ricaricamento. L'archivio sicuro la conserva su questo dispositivo, cifrata con una password."
+    "remember_key_hint": "Una chiave ricordata per questa scheda viene dimenticata al ricaricamento. L'archivio sicuro la conserva su questo dispositivo, cifrata con una password.",
+    "active_check_title": "Conferma con la password o la passkey",
+    "active_check_description": "Il tuo archivio sicuro chiede conferma prima di ogni operazione che richiede la chiave attiva o la chiave Owner.",
+    "active_check_submit": "Conferma",
+    "use_passkey": "Usa la passkey",
+    "passkey_check_failed": "La passkey non ha confermato l'operazione. Riprova o inserisci la password."
   },
   "key_protection": {
     "dialog_title": "La tua chiave è salvata senza protezione",
@@ -296,7 +303,8 @@
     "choose_label": "Blocca dopo un'inattività di",
     "locks_after": "Si blocca dopo {{duration}} di inattività",
     "locks_after_sentence": "Si blocca dopo {{duration}} di inattività.",
-    "activity": "Ogni firma riavvia il timer. Le operazioni che richiedono la tua chiave attiva o proprietaria possono comunque chiedere la password.",
+    "activity_unchecked": "Ogni firma riavvia il timer. Finché le chiavi non si bloccano, le operazioni che richiedono la tua chiave attiva vengono firmate senza chiedere la password.",
+    "activity_checked": "Ogni firma riavvia il timer. Le operazioni che richiedono la tua chiave attiva o la chiave Owner chiedono ogni volta la password o la passkey.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
     "seconds": "{{value}} s",
@@ -324,5 +332,14 @@
     "no_key_provided": "Non è stata inserita alcuna chiave.",
     "passkey_signer_unknown": "In questo browser non è noto alcun firmatario con passkey per il tuo account. Accedi di nuovo.",
     "unknown": "Si è verificato un errore di autenticazione."
+  },
+  "active_check": {
+    "menu_label": "Chiedi prima di ogni operazione con la chiave attiva",
+    "turn_on_title": "Chiedi prima di ogni operazione che richiede la chiave attiva o la chiave Owner",
+    "turn_off_title": "Non chiedere più prima delle operazioni che richiedono la chiave attiva",
+    "change_description": "Inserisci la password dell'archivio sicuro o usa la passkey per cambiare questa impostazione.",
+    "turned_on": "Le operazioni che richiedono la chiave attiva o la chiave Owner ora chiedono ogni volta la password o la passkey.",
+    "turned_off": "Le operazioni che richiedono la chiave attiva ora vengono firmate senza chiedere finché le chiavi non si bloccano.",
+    "change_failed": "Impossibile cambiare l'impostazione. Riprova."
   }
 }

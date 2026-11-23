@@ -18,6 +18,8 @@ export type LiteSafeStorageClient = {
   register(username: string, password: string, wifKey: string, keyType: LiteKeyRole): Promise<WalletStatus>;
   authenticate(username: string, password: string, keyType: LiteKeyRole): Promise<WalletStatus>;
   sign(username: string, digest: string, keyType: LiteKeyRole): Promise<string>;
+  /** Whether the entry asks for the password or a passkey before every signature with its owner key */
+  getRequireActiveCheck(username: string): Promise<boolean>;
   getRegisteredUserByUsername(username: string): Promise<WalletEntry | null>;
   invalidateExistingKey(username: string, keyType: LiteKeyRole): Promise<void>;
   hasPasskey(username: string): Promise<boolean>;
@@ -30,6 +32,11 @@ export type LiteWallet = {
   client: () => Promise<LiteSafeStorageClient>;
   /** Unlocks `identity`'s entry for its `keyType` key; rejects when the guest cancels or it fails. */
   unlock: (identity: StoredLiteIdentity, keyType: LiteKeyRole) => Promise<void>;
+  /**
+   * `digest` signed with `identity`'s `keyType` key once the guest gave the password or a passkey,
+   * the check an entry can ask for before each owner signature; rejects when the guest cancels.
+   */
+  signWithCheck: (identity: StoredLiteIdentity, digest: string, keyType: LiteKeyRole) => Promise<string>;
 };
 
 /**

@@ -50,6 +50,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | password | password | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | biometric unlock | sblocco biometrico | unreviewed | As in `login_form.passkey_prompt.*`. |
+| check before active-key operations | Chiedi prima di ogni operazione con la chiave attiva; "Conferma con la password o la passkey" | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | mercato / interessi | unreviewed | |
 | this session (key badge) | Questa sessione | unreviewed | |
 | recovery account | account di recupero | unreviewed | |

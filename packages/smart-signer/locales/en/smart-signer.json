@@ -111,6 +111,8 @@
       "strict_mode": "Direct Authority Mode",
       "strict_mode_scope": "(safe storage only)",
       "strict_mode_tooltip": "Applies only to keys saved in Safe Storage. When enabled, Safe Storage accepts only a key of the account's own authority. To save a key that signs through another account's authority, disable this mode. Keychain, PeakVault, HiveAuth and the other sign-in methods are not affected.",
+      "active_check": "Ask for my password or passkey before every operation that needs my active or owner key",
+      "active_check_hint": "Safer if others can use this device, but every transfer or witness vote asks again. You can change it later in the account menu.",
       "strict_mode_status_on": "Direct Authority Mode: on",
       "strict_mode_status_off": "Direct Authority Mode: off",
       "key_update": "Add new key",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "Another tab changed safe storage while a key of @{{username}} was being saved. Enter the safe storage password of @{{username}} to finish saving it.",
     "remember_key_tab_label": "Remember for this tab",
     "remember_key_device_label": "Remember on this device (Safe Storage)",
-    "remember_key_hint": "A key remembered for this tab is forgotten on reload. Safe Storage keeps it on this device, encrypted with a password."
+    "remember_key_hint": "A key remembered for this tab is forgotten on reload. Safe Storage keeps it on this device, encrypted with a password.",
+    "active_check_title": "Confirm with your password or passkey",
+    "active_check_description": "Your safe storage asks before every operation that needs your active or owner key.",
+    "active_check_submit": "Confirm",
+    "use_passkey": "Use passkey",
+    "passkey_check_failed": "The passkey did not confirm the operation. Try again, or enter your password."
   },
   "key_protection": {
     "dialog_title": "Your key is saved unprotected",
@@ -296,7 +303,8 @@
     "choose_label": "Lock when idle for",
     "locks_after": "Locks after {{duration}} idle",
     "locks_after_sentence": "Locks after {{duration}} idle.",
-    "activity": "Each signature restarts the timer. Operations that need your active or owner key may still ask for your password.",
+    "activity_unchecked": "Each signature restarts the timer. Until your keys lock, operations that need your active key sign without asking for your password.",
+    "activity_checked": "Each signature restarts the timer. Operations that need your active or owner key ask for your password or passkey every time.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
     "seconds": "{{value}} s",
@@ -324,5 +332,14 @@
     "no_key_provided": "No key was entered.",
     "passkey_signer_unknown": "No passkey signer is known for your account in this browser. Sign in again.",
     "unknown": "An authentication error occurred."
+  },
+  "active_check": {
+    "menu_label": "Ask before every active-key operation",
+    "turn_on_title": "Ask before every operation that needs your active or owner key",
+    "turn_off_title": "Stop asking before operations that need your active key",
+    "change_description": "Enter your safe storage password or use your passkey to change this setting.",
+    "turned_on": "Operations that need your active or owner key now ask for your password or passkey every time.",
+    "turned_off": "Operations that need your active key now sign without asking until your keys lock.",
+    "change_failed": "The setting could not be changed. Try again."
   }
 }

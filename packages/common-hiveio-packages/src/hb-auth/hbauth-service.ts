@@ -4,7 +4,8 @@ import {
   OfflineClient,
   DEFAULT_INIT_TIMEOUT,
   type AuthStatus,
-  type KeyAuthorityType
+  type KeyAuthorityType,
+  type RegisterOptions
 } from '@hiveio/hb-auth';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -165,10 +166,13 @@ class GenerationRenewingOnlineClient extends OnlineClient implements OperationCl
     password: string,
     wifKey: string,
     keyType: KeyAuthorityType,
-    strict?: boolean
+    strict?: boolean,
+    options?: RegisterOptions
   ): Promise<AuthStatus> {
     this.beginOperation();
-    return runOperation(this, getClientForOperation, (client) => client.register(username, password, wifKey, keyType, strict));
+    return runOperation(this, getClientForOperation, (client) =>
+      client.register(username, password, wifKey, keyType, strict, options)
+    );
   }
 
   override importKey(username: string, wifKey: string, keyType: KeyAuthorityType): Promise<string> {

@@ -95,6 +95,13 @@ const SignInFormShell: FC<SignInFormShellProps> = ({ t, locale }) => {
             </span>
             <InfoIcon />
           </div>
+          <div className="flex items-start space-x-2">
+            <span className="border-primary peer h-4 w-4 shrink-0 rounded-sm border" />
+            <div className="space-y-1">
+              <span className="text-sm leading-none">{t('login_form.signin_safe_storage.active_check')}</span>
+              <p className="text-muted-foreground text-xs">{t('login_form.signin_safe_storage.active_check_hint')}</p>
+            </div>
+          </div>
           <div className="space-y-1">
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-normal leading-none">{t('session_time.choose_label')}</span>
@@ -104,7 +111,7 @@ const SignInFormShell: FC<SignInFormShellProps> = ({ t, locale }) => {
               </span>
             </div>
             <p className="text-muted-foreground text-xs">
-              {sessionTimeCaption(t, configuredSessionTime.deployment, locale)}
+              {sessionTimeCaption(t, configuredSessionTime.deployment, locale, false)}
             </p>
           </div>
           <div className="flex select-none">

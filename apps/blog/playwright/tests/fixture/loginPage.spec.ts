@@ -103,6 +103,6 @@ test.describe('Login page', () => {
     const html = await response.text();
     expect(html).toContain(FORM_SHELL_MARKER);
     expect(html).toContain(enSmartSigner.login_form.signin_safe_storage.title);
-    expect(html).toContain(enSmartSigner.session_time.activity);
+    expect(html).toContain(enSmartSigner.session_time.activity_unchecked);
   });
 });

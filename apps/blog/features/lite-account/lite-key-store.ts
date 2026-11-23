@@ -53,10 +53,14 @@ function localKeyStore(identity: StoredLiteIdentity, chainId: string): LiteKeySt
   };
 }
 
+/** Whether `error` is hb-auth's refusal to sign with an owner key without the check, which Comlink rebuilds as a plain Error carrying the name */
+const isCheckRequired = (error: unknown): boolean => error instanceof Error && error.name === 'CheckRequiredError';
+
 /**
  * hb-auth's wallet: the entry `liteWalletUsername(identity)` signs with its `owner` or `posting`
  * key (the hb-auth key types of the same names). A locked entry is unlocked first (the wallet's
- * unlock step); the signature is asked only once it is unlocked.
+ * unlock step); the signature is asked only once it is unlocked. An owner signature of an entry
+ * that asks for the check before each one goes through the wallet's check instead, locked or not.
  */
 function safeStorageKeyStore(identity: StoredLiteIdentity, chainId: string, wallet: LiteWallet): LiteKeyStore {
   const publicKeys = heldPublicKeys(identity);
@@ -68,9 +72,16 @@ function safeStorageKeyStore(identity: StoredLiteIdentity, chainId: string, wall
       if (!publicKeys[role]) throw keyNotHeld(identity, role);
       const digest = l2Digest(fields, chainId);
       const client = await wallet.client();
+      const signWithCheck = async () => ({ ...fields, signatures: [await wallet.signWithCheck(identity, digest, role)] });
+      if (role === 'owner' && (await client.getRequireActiveCheck(username))) return signWithCheck();
       const entry = await client.getRegisteredUserByUsername(username);
       if (!entry?.unlocked) await wallet.unlock(identity, role);
-      return { ...fields, signatures: [await client.sign(username, digest, role)] };
+      try {
+        return { ...fields, signatures: [await client.sign(username, digest, role)] };
+      } catch (error) {
+        if (role !== 'owner' || !isCheckRequired(error)) throw error;
+        return signWithCheck();
+      }
     }
   };
 }

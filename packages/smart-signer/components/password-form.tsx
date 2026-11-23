@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -7,6 +8,7 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import SessionTimeNote from '@smart-signer/components/session-time-note';
+import { Icons } from '@ui/components/icons';
 import type { OperationSummary } from '@smart-signer/lib/signer/operation-summary';
 
 const logger = getLogger('app');
@@ -106,6 +108,12 @@ export interface PasswordFormOptions {
    * password, for a check that the user types in every time.
    */
   autoComplete?: 'current-password' | 'one-time-code';
+  /**
+   * Offers a passkey button in place of the password. Called first thing in the button's click, as
+   * Face ID and Touch ID start only from a user's gesture; resolves as `validatePassword` does, and
+   * submits the form, without a password, on null.
+   */
+  checkPasskey?: () => Promise<string | null>;
 }
 
 export function PasswordForm({
@@ -120,7 +128,8 @@ export function PasswordForm({
   operation,
   titleId,
   showSessionTime = false,
-  autoComplete = 'current-password'
+  autoComplete = 'current-password',
+  checkPasskey
 }: PasswordFormOptions) {
   // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
@@ -164,6 +173,24 @@ export function PasswordForm({
     resolver: withTranslatedErrors(zodResolver(resolver), (key) => t(key)),
     defaultValues: passwordFormDefaultValues
   });
+
+  const [isCheckingPasskey, setIsCheckingPasskey] = useState(false);
+
+  const submitWithPasskey = async () => {
+    if (!checkPasskey) return;
+    const checking = checkPasskey();
+    setIsCheckingPasskey(true);
+    try {
+      const errorKey = await checking;
+      if (errorKey) {
+        setError('password', { message: t(errorKey) });
+        return;
+      }
+      await onSubmit({ password: '' });
+    } finally {
+      setIsCheckingPasskey(false);
+    }
+  };
 
   // Two boxes for one choice: ticking one unticks the other
   const rememberKey = watch('rememberKey');
@@ -232,6 +259,19 @@ export function PasswordForm({
               ))}
               <p className="text-xs text-muted-foreground">{t('password_form.remember_key_hint')}</p>
             </fieldset>
+          )}
+
+          {checkPasskey && (
+            <button
+              type="button"
+              onClick={submitWithPasskey}
+              disabled={isSubmitting || isCheckingPasskey}
+              className="mb-5 flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold hover:cursor-pointer hover:border-red-500 focus:outline-hidden disabled:hover:cursor-not-allowed disabled:opacity-60 dark:text-slate-300"
+              data-testid="password-form-passkey-button"
+            >
+              <Icons.keyRound className="h-4 w-4" aria-hidden />
+              {t('password_form.use_passkey')}
+            </button>
           )}
 
           <div className="mt-10 flex items-center justify-between">

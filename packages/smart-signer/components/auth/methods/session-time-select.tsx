@@ -11,9 +11,11 @@ export interface SessionTimeSelectProps {
   /** The idle time, in seconds, shown as chosen */
   value: number;
   onChange: (seconds: number) => void;
+  /** Whether operations needing the active or owner key ask for the password or a passkey every time */
+  activeCheck: boolean;
 }
 
-const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
+const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange, activeCheck }) => {
   const { t, i18n } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
   const id = useId();
   const handleValueChange = (selected: string) => onChange(Number(selected));
@@ -38,7 +40,7 @@ const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
         </Select>
       </div>
       <p className="text-xs text-muted-foreground" data-testid="session-time-caption" data-seconds={value}>
-        {sessionTimeCaption(t, value, i18n.language)}
+        {sessionTimeCaption(t, value, i18n.language, activeCheck)}
       </p>
     </div>
   );

@@ -103,6 +103,8 @@
       "strict_mode": "Mode d'autorité restreinte",
       "strict_mode_scope": "(stockage sécurisé uniquement)",
       "strict_mode_tooltip": "S'applique uniquement aux clés enregistrées dans le stockage sécurisé. Lorsque ce mode est activé, le stockage sécurisé n'accepte qu'une clé de l'autorité propre du compte. Pour enregistrer une clé qui signe via l'autorité d'un autre compte, désactivez ce mode. Keychain, PeakVault, HiveAuth et les autres méthodes de connexion ne sont pas concernés.",
+      "active_check": "Demander mon mot de passe ou ma passkey avant chaque opération qui nécessite ma clé active ou propriétaire",
+      "active_check_hint": "Plus sûr si d’autres personnes utilisent cet appareil, mais chaque transfert ou vote pour un témoin le redemandera. Vous pourrez le modifier plus tard dans le menu du compte.",
       "strict_mode_status_on": "Mode d'autorité restreinte : activé",
       "strict_mode_status_off": "Mode d'autorité restreinte : désactivé",
       "key_update": "Ajouter une nouvelle clé",
@@ -210,7 +212,12 @@
     "safe_storage_recovery_description": "Un autre onglet a modifié le stockage sécurisé pendant l'enregistrement d'une clé de @{{username}}. Saisissez le mot de passe du stockage sécurisé de @{{username}} pour terminer l'enregistrement.",
     "remember_key_tab_label": "Mémoriser pour cet onglet",
     "remember_key_device_label": "Mémoriser sur cet appareil (stockage sécurisé)",
-    "remember_key_hint": "Une clé mémorisée pour cet onglet est oubliée au rechargement. Le stockage sécurisé la conserve sur cet appareil, chiffrée par un mot de passe."
+    "remember_key_hint": "Une clé mémorisée pour cet onglet est oubliée au rechargement. Le stockage sécurisé la conserve sur cet appareil, chiffrée par un mot de passe.",
+    "active_check_title": "Confirmez avec votre mot de passe ou votre passkey",
+    "active_check_description": "Votre stockage sécurisé demande une confirmation avant chaque opération qui nécessite votre clé active ou propriétaire.",
+    "active_check_submit": "Confirmer",
+    "use_passkey": "Utiliser la passkey",
+    "passkey_check_failed": "La passkey n’a pas confirmé l’opération. Réessayez ou saisissez votre mot de passe."
   },
   "key_protection": {
     "dialog_title": "Votre clé est enregistrée sans protection",
@@ -296,7 +303,8 @@
     "choose_label": "Verrouiller après une inactivité de",
     "locks_after": "Se verrouille après {{duration}} d'inactivité",
     "locks_after_sentence": "Se verrouille après {{duration}} d'inactivité.",
-    "activity": "Chaque signature relance le minuteur. Les opérations qui nécessitent votre clé active ou propriétaire peuvent toujours demander votre mot de passe.",
+    "activity_unchecked": "Chaque signature relance le minuteur. Tant que vos clés ne sont pas verrouillées, les opérations qui nécessitent votre clé active sont signées sans demander votre mot de passe.",
+    "activity_checked": "Chaque signature relance le minuteur. Les opérations qui nécessitent votre clé active ou propriétaire demandent votre mot de passe ou votre passkey à chaque fois.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
     "seconds": "{{value}} s",
@@ -324,5 +332,14 @@
     "no_key_provided": "Aucune clé n'a été saisie.",
     "passkey_signer_unknown": "Aucun signataire à passkey n'est connu pour votre compte dans ce navigateur. Reconnectez-vous.",
     "unknown": "Une erreur d'authentification s'est produite."
+  },
+  "active_check": {
+    "menu_label": "Demander avant chaque opération avec la clé active",
+    "turn_on_title": "Demander avant chaque opération qui nécessite votre clé active ou propriétaire",
+    "turn_off_title": "Ne plus demander avant les opérations qui nécessitent votre clé active",
+    "change_description": "Saisissez le mot de passe du stockage sécurisé ou utilisez votre passkey pour modifier ce réglage.",
+    "turned_on": "Les opérations qui nécessitent votre clé active ou propriétaire demandent désormais votre mot de passe ou votre passkey à chaque fois.",
+    "turned_off": "Les opérations qui nécessitent votre clé active sont désormais signées sans demande jusqu’au verrouillage de vos clés.",
+    "change_failed": "Impossible de modifier le réglage. Réessayez."
   }
 }

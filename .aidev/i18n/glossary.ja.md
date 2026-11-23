@@ -48,6 +48,7 @@ No native speaker has reviewed the Japanese strings yet, so every term is
 | password | パスワード | unreviewed | |
 | passkey | パスキー | unreviewed | |
 | biometric unlock | 生体認証によるロック解除 | unreviewed | As in `login_form.passkey_prompt.*`. |
+| check before active-key operations | アクティブキーの操作ごとに確認する; 「パスワードまたはパスキーで確認」 | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | マーケット / 利息 | unreviewed | |
 | this session (key badge) | このセッション | unreviewed | |
 | recovery account | リカバリーアカウント | unreviewed | |
