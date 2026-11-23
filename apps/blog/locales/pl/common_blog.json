@@ -1360,7 +1360,7 @@
       "signer_unavailable": "Serwis podpisujący nie odpowiedział. Sprawdź połączenie i spróbuj ponownie.",
       "key_not_found": "Ten klucz dostępu nie zawiera klucza konta. Użyj klucza dostępu, którym zabezpieczono to konto.",
       "owner_blind_signing": "Serwis podpisujący odmówił podpisania w ciemno kluczem właściciela.",
-      "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi wyprowadzać kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
+      "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi generować kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
       "webauthn_unavailable": "Klucze dostępu nie są dostępne w tej przeglądarce.",
       "busy": "Okno serwisu podpisującego obsługuje inne żądanie. Zamknij je i spróbuj ponownie.",
       "invalid_request": "Serwis podpisujący odrzucił żądanie jako nieprawidłowe.",

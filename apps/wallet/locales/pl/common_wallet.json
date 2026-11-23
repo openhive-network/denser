@@ -510,12 +510,12 @@
     },
     "save_all": "Zapisz wszystkie",
     "current_credential": "Obecne hasło główne lub klucz Owner",
-    "current_credential_help": "Zmiana hasła zastępuje Twoje klucze, do czego potrzebny jest klucz Owner: wprowadź hasło główne, które go wyprowadza, albo sam prywatny klucz Owner.",
+    "current_credential_help": "Zmiana hasła zastępuje Twoje klucze, do czego potrzebny jest klucz Owner: wprowadź hasło główne, które go generuje, albo sam prywatny klucz Owner.",
     "sign_in_notice": "Zaloguj się jako @{{username}}, aby zmienić klucze tego konta.",
     "errors": {
       "required_credential": "Wprowadź obecne hasło główne lub klucz Owner",
       "generate_first": "Najpierw wygeneruj nowe hasło",
-      "wrong_password": "To hasło główne nie wyprowadza klucza konta: {{role}}.",
+      "wrong_password": "To hasło główne nie generuje klucza konta: {{role}}.",
       "not_owner_key": "Ten klucz prywatny nie jest kluczem Owner konta.",
       "role_not_single_key": "Konto ma kilka kluczy tego rodzaju: {{role}}. Po kluczu Owner nie da się ustalić, który zastąpić: wprowadź hasło główne albo zmień klucze na stronie Upoważnienia."
     },
@@ -798,14 +798,14 @@
     "public_info": "Każdy klucz Hive składa się z klucza publicznego i prywatnego, które służą do szyfrowania i odszyfrowywania danych. Klucze publiczne są powiązane z nazwami użytkowników i pozwalają wyszukiwać powiązane transakcje w blockchainie. Klucze publiczne nie są potrzebne do logowania w Hive.blog i nie trzeba ich bezpiecznie przechowywać.",
     "view_public": "Zobacz informacje o kluczach publicznych tego konta (w zakładce 'Upoważnienia'):",
     "about_this_account": "Każde konto Hive ma cztery klucze o różnych uprawnieniach: klucz Posting do działań społecznościowych, klucz Active do operacji w portfelu, klucz Owner do zmiany pozostałych kluczy i odzyskania konta oraz klucz Memo do prywatnych wiadomości. Poniżej są klucze publiczne i konta, które kontrolują @{{username}}. Podpisywać za to konto mogą tylko klucze prywatne, które przechowuje jego właściciel.",
-    "reveal_intro": "Wprowadź hasło główne, aby odsłonić klucze prywatne: hasło główne wyprowadza je wszystkie. Po zalogowaniu się pojedynczym kluczem prywatnym nie ma hasła głównego do wprowadzenia, a ten klucz nie odsłoni pozostałych.",
-    "reveal_dialog": "Wprowadź hasło główne, aby odsłonić klucz prywatny. Hasło główne wyprowadza wszystkie Twoje klucze.",
+    "reveal_intro": "Wprowadź hasło główne, aby odsłonić klucze prywatne: hasło główne generuje je wszystkie. Po zalogowaniu się pojedynczym kluczem prywatnym nie ma hasła głównego do wprowadzenia, a ten klucz nie odsłoni pozostałych.",
+    "reveal_dialog": "Wprowadź hasło główne, aby odsłonić klucz prywatny. Hasło główne generuje wszystkie Twoje klucze.",
     "master_password": "Hasło główne",
     "block_explorer": "Eksplorator bloków - {{username}}",
     "public_info_this_account": "Każdy klucz Hive ma klucz publiczny i prywatny. Klucze publiczne są powiązane z nazwami użytkowników i pozwalają wyszukać transakcje konta w blockchainie. Można je bezpiecznie udostępniać.",
     "errors": {
       "title": "Błąd",
-      "not_all_keys": "To hasło główne nie wyprowadza wszystkich kluczy konta.",
+      "not_all_keys": "To hasło główne nie generuje wszystkich kluczy konta.",
       "reveal_failed": "Nie udało się odsłonić klucza prywatnego."
     },
     "summary": {
