@@ -17,15 +17,14 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
-import { unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
 import { SignedOutError } from '@transaction/lib/signed-out';
 import {
-  needsActiveCheck,
+  signAsSettingAsks,
   signOrCheck,
-  signWithActiveCheck,
   type ActiveCheckSigner,
   type CheckPrompt
 } from '@smart-signer/lib/signer/active-check';
@@ -166,101 +165,136 @@ export class SignerHbauth extends Signer {
   ): Promise<string> {
     const { username, keyType } = this;
     const signKeyType = requiredKeyType ?? keyType;
-    // The check signs on its own, the session locked or not: one prompt for the operation
-    if (!singleSignKeyType && (await needsActiveCheck(authClient, username, signKeyType))) {
-      await this.useAuthorityOf(authClient, signKeyType);
-      return signWithActiveCheck(this.activeCheckSigner(authClient, operation), digest, signKeyType);
-    }
-    const checkAuthResult = await this.checkAuth(authClient, username, keyType, requiredKeyType);
-
-    if (!checkAuthResult) {
-      let authStatus: AuthStatus = { ok: false };
-
-      // Try biometric unlock first (if passkey registered and no password provided). Not when the
-      // key the operation needs is still to be stored: that asks for the password anyway.
-      if (!password && (await this.storesKey(authClient, signKeyType))) {
-        try {
-          const hasPasskey = await authClient.hasPasskey(username);
-          if (hasPasskey) {
-            // Use minimal verification for posting (blog), full verification for active/owner (wallet)
-            const uv = keyType === 'posting' ? 'discouraged' : 'required';
-            logger.info('Attempting biometric unlock for %s (uv=%s)', username, uv);
-            authStatus = await unlockWithPasskey(
-              authClient, username, keyType, uv as UserVerificationRequirement
-            );
-          }
-        } catch (error) {
-          // Biometric failed (cancelled, passkey deleted, unsupported) — fall through to password
-          logger.info('Biometric unlock failed, falling back to password: %s',
-            error instanceof Error ? error.message : String(error));
-        }
-      }
-
-      // Fall back to password if biometric didn't succeed
-      if (!authStatus.ok) {
-        if (!password) {
-          password = await this.getPasswordFromUser(operation);
-        }
-        if (!password) throw new Error('No password to unlock key');
-
-        try {
-          authStatus = await authClient.authenticate(username, password, keyType);
-        } catch (error) {
-          logger.error('Error in signDigest, when trying to authenticate user: %s', error instanceof Error ? error.message : String(error));
-
-          // Check if this is an ignorable error (e.g., "User is already logged in")
-          if (isIgnorableError(error)) {
-            logger.info('Ignoring expected error during authentication');
-            authStatus.ok = true;
-          } else {
-            throw await this.unlockFailure(authClient, error);
-          }
-        }
-      }
-
-      logger.debug('authStatus: %o', authStatus);
-      if (!authStatus.ok) {
-        throw new AuthFailureError('Unlocking key failed', 'auth_error.unlock_failed');
-      }
-    }
+    const unlock = async (): Promise<string | undefined> => {
+      if (await this.checkAuth(authClient, username, keyType, requiredKeyType)) return undefined;
+      return this.unlock(authClient, password, signKeyType, operation);
+    };
 
     if (singleSignKeyType) {
-      if (!VALID_KEY_TYPES.includes(singleSignKeyType)) {
-        throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
-      }
+      await unlock();
+      return this.signSingle(authClient, digest, singleSignKeyType, operation);
+    }
+    return signAsSettingAsks(
+      this.activeCheckSigner(authClient, operation),
+      digest,
+      signKeyType,
+      async () => {
+        const unlockedWith = await unlock();
+        await this.useAuthorityOf(authClient, signKeyType);
+        return unlockedWith;
+      },
+      (unlockedWith) => this.signUnlocked(authClient, digest, unlockedWith ?? password, requiredKeyType, operation)
+    );
+  }
 
-      // Get password for single sign
-      const passwordFormOptions: PasswordFormOptions = {
-        mode: PasswordFormMode.HBAUTH,
-        i18nKeysForCaptions: {
-          title: `login_form.enter_key_title_${singleSignKeyType}`,
-          description: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
-          inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
-        },
-        operation
-      };
-
+  /**
+   * Unlocks the signer's locked wallet: with its passkey first, unless the `signKeyType` key the
+   * operation needs is still to be stored, which asks for the password anyway; else with `password`,
+   * or the one the user enters for `operation`. Resolves with the password it unlocked with.
+   */
+  private async unlock(
+    authClient: OnlineClient,
+    password: string,
+    signKeyType: KeyAuthorityType,
+    operation?: OperationSummary
+  ): Promise<string> {
+    const { username, keyType } = this;
+    if (!password && (await this.storesKey(authClient, signKeyType))) {
       try {
-        const { password: singleSignPassword } = await askWhileSignedIn(username, () =>
-          this.getKeyFromUser(passwordFormOptions)
-        );
-
-        if (!singleSignPassword) {
-          throw new Error('No key provided for single sign');
+        if (await authClient.hasPasskey(username)) {
+          // Use minimal verification for posting (blog), full verification for active/owner (wallet)
+          const uv: UserVerificationRequirement = keyType === 'posting' ? 'discouraged' : 'required';
+          logger.info('Attempting biometric unlock for %s (uv=%s)', username, uv);
+          const unlocked = await unlockWithPasskeyGivingPassword(authClient, username, keyType, uv);
+          if (unlocked.status.ok) return unlocked.password;
         }
-        const signature = await authClient.singleSign(
-          username,
-          digest,
-          singleSignPassword,
-          singleSignKeyType
-        );
-        return signature;
       } catch (error) {
-        logger.error('Error in single sign: %s', error instanceof Error ? error.message : String(error));
-        throw error;
+        // Biometric failed (cancelled, passkey deleted, unsupported) — fall through to password
+        logger.info('Biometric unlock failed, falling back to password: %s',
+          error instanceof Error ? error.message : String(error));
       }
     }
 
+    if (!password) {
+      password = await this.getPasswordFromUser(operation);
+    }
+    if (!password) throw new Error('No password to unlock key');
+
+    let authStatus: AuthStatus = { ok: false };
+    try {
+      authStatus = await authClient.authenticate(username, password, keyType);
+    } catch (error) {
+      logger.error('Error in signDigest, when trying to authenticate user: %s', error instanceof Error ? error.message : String(error));
+
+      // Check if this is an ignorable error (e.g., "User is already logged in")
+      if (isIgnorableError(error)) {
+        logger.info('Ignoring expected error during authentication');
+        authStatus.ok = true;
+      } else {
+        throw await this.unlockFailure(authClient, error);
+      }
+    }
+
+    logger.debug('authStatus: %o', authStatus);
+    if (!authStatus.ok) {
+      throw new AuthFailureError('Unlocking key failed', 'auth_error.unlock_failed');
+    }
+    return password;
+  }
+
+  /** Signs `digest` with the `singleSignKeyType` key the user enters for `operation`, keeping it nowhere */
+  private async signSingle(
+    authClient: OnlineClient,
+    digest: THexString,
+    singleSignKeyType: KeyAuthorityType,
+    operation?: OperationSummary
+  ): Promise<string> {
+    const { username } = this;
+    if (!VALID_KEY_TYPES.includes(singleSignKeyType)) {
+      throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
+    }
+
+    // Get password for single sign
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.HBAUTH,
+      i18nKeysForCaptions: {
+        title: `login_form.enter_key_title_${singleSignKeyType}`,
+        description: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
+        inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
+      },
+      operation
+    };
+
+    try {
+      const { password: singleSignPassword } = await askWhileSignedIn(username, () =>
+        this.getKeyFromUser(passwordFormOptions)
+      );
+
+      if (!singleSignPassword) {
+        throw new Error('No key provided for single sign');
+      }
+      const signature = await authClient.singleSign(
+        username,
+        digest,
+        singleSignPassword,
+        singleSignKeyType
+      );
+      return signature;
+    } catch (error) {
+      logger.error('Error in single sign: %s', error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  }
+
+  /** Signs `digest` in the unlocked wallet without asking for the check, unless hb-auth asks for it */
+  private async signUnlocked(
+    authClient: OnlineClient,
+    digest: THexString,
+    password: string,
+    requiredKeyType?: KeyAuthorityType,
+    operation?: OperationSummary
+  ): Promise<string> {
+    const { username, keyType } = this;
     if (requiredKeyType && requiredKeyType !== keyType) {
       const signature = await this.requireOtherKey(authClient, requiredKeyType, username, digest, password, operation);
       return signature;

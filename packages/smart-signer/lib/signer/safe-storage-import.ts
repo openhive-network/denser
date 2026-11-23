@@ -1,5 +1,6 @@
 import type { KeyAuthorityType, OnlineClient } from '@hiveio/hb-auth';
 import { addedKeyStrictMode } from '@smart-signer/lib/signer/safe-storage-registration';
+import { isCheckRequired } from '@smart-signer/lib/signer/active-check';
 import {
   authenticateStoredKey,
   unlockBeforeKeyWrite,
@@ -7,7 +8,8 @@ import {
 } from '@smart-signer/lib/auth/safe-storage-unlock';
 
 /** What importing keys into safe storage, and checking it signs with them, needs of hb-auth's client */
-export type SafeStorageImportClient = SafeStorageUnlockClient & Pick<OnlineClient, 'register' | 'sign' | 'getUserSettings'>;
+export type SafeStorageImportClient = SafeStorageUnlockClient &
+  Pick<OnlineClient, 'register' | 'sign' | 'signWithCheck' | 'getUserSettings'>;
 
 export interface WifKey {
   keyType: KeyAuthorityType;
@@ -39,16 +41,35 @@ function randomDigest(): string {
   ).join('');
 }
 
-/** Whether the unlocked safe storage of `username` signs `key`'s type with `key` */
-async function signsWith(client: SafeStorageImportClient, username: string, key: WifKey, check: KeyCheck) {
+/**
+ * Whether the unlocked safe storage of `username` signs `key`'s type with `key`: through the check
+ * with `password` where the wallet asks for it before active-key operations; undefined when it asks
+ * and there is no `password`, as hb-auth tells no public key of a stored key without a signature
+ */
+async function signsWith(
+  client: SafeStorageImportClient,
+  username: string,
+  key: WifKey,
+  check: KeyCheck,
+  password?: string
+): Promise<boolean | undefined> {
   const digest = randomDigest();
-  const signature = await client.sign(username, digest, key.keyType);
+  let signature: string;
+  try {
+    signature = await client.sign(username, digest, key.keyType);
+  } catch (error) {
+    if (!isCheckRequired(error)) throw error;
+    if (password === undefined) return undefined;
+    signature = await client.signWithCheck(username, digest, key.keyType, { password });
+  }
   return check.signingKeyOf(digest, signature) === check.publicKeyOf(key.wif);
 }
 
 /**
  * The keys of `keys` the safe storage of `username` already holds: those its unlocked wallet signs
- * with for their key type. None while the wallet is locked, as it cannot sign then.
+ * with for their key type. None while the wallet is locked, as it cannot sign then. A key type the
+ * wallet signs only through the check before active-key operations counts as held: without the
+ * password nothing tells which key it holds, and importing would not write over it.
  */
 export async function keysHeldInSafeStorage(
   client: SafeStorageImportClient,
@@ -60,7 +81,9 @@ export async function keysHeldInSafeStorage(
   if (!user?.unlocked) return [];
   const held: WifKey[] = [];
   for (const key of keys) {
-    if (user.registeredKeyTypes.includes(key.keyType) && (await signsWith(client, username, key, check))) held.push(key);
+    if (user.registeredKeyTypes.includes(key.keyType) && (await signsWith(client, username, key, check)) !== false) {
+      held.push(key);
+    }
   }
   return held;
 }
@@ -70,7 +93,8 @@ export async function keysHeldInSafeStorage(
  * each of them. A wallet safe storage does not hold yet is created with `password`; an existing one
  * is unlocked with it before anything is written, so a wrong password writes nothing. A key type the
  * wallet already holds is not written over: the check then tells whether it holds the same key.
- * Keys get the Direct Authority Mode the wallet's other keys have, strict for a new wallet.
+ * Keys get the Direct Authority Mode the wallet's other keys have, strict for a new wallet. Where
+ * the wallet asks for the check before active-key operations, `password` checks those signatures.
  *
  * @throws {WrongSafeStoragePasswordError} when the existing wallet refused `password`
  * @throws {SafeStorageKeyMismatchError} when the wallet signs a key type with another key than given
@@ -97,6 +121,6 @@ export async function importKeysIntoSafeStorage(
     await authenticateStoredKey(client, username, password, keys[0].keyType);
   }
   for (const key of keys) {
-    if (!(await signsWith(client, username, key, check))) throw new SafeStorageKeyMismatchError(key.keyType);
+    if (!(await signsWith(client, username, key, check, password))) throw new SafeStorageKeyMismatchError(key.keyType);
   }
 }

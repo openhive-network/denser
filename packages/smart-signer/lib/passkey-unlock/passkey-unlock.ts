@@ -81,3 +81,30 @@ export async function unlockWithPasskey<KeyType extends string, Status>(
     throw error;
   }
 }
+
+/**
+ * Unlocks `username`'s `keyType` key on `client` with its passkey, as `unlockWithPasskey` does, and
+ * resolves with what `client.authenticate` did and with the password the passkey gave, for what signs
+ * next without a prompt of its own
+ */
+export async function unlockWithPasskeyGivingPassword<KeyType extends string, Status>(
+  client: PasskeyUnlockClient<KeyType, Status>,
+  username: string,
+  keyType: KeyType,
+  userVerification: UserVerificationRequirement
+): Promise<{ status: Status; password: string }> {
+  let password = '';
+  const status = await unlockWithPasskey(
+    {
+      authenticate: (name: string, given: string, type: KeyType) => {
+        password = given;
+        return client.authenticate(name, given, type);
+      },
+      getRegisteredUserByUsername: (name: string) => client.getRegisteredUserByUsername(name)
+    },
+    username,
+    keyType,
+    userVerification
+  );
+  return { status, password };
+}
