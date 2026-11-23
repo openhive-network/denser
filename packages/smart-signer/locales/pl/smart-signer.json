@@ -83,7 +83,7 @@
       "wif": "Wpisz bezpośrednio swój klucz prywatny (WIF). Służy tylko do podpisywania i nie jest zachowywany, chyba że zdecydujesz się go zapisać.",
       "metamask": "Podpisuj kluczami Hive zarządzanymi przez Hive Snap w rozszerzeniu MetaMask.",
       "google": "Przechowuj zaszyfrowane klucze na swoim Dysku Google i podpisuj nimi z dowolnego urządzenia.",
-      "passkey": "Serwis podpisujący wyprowadza Twoje klucze Hive z klucza dostępu (passkey) i podpisuje za Ciebie we własnym oknie. Klucze nigdy nie trafiają do tej strony."
+      "passkey": "Serwis podpisujący generuje Twoje klucze Hive z klucza dostępu (passkey) i podpisuje za Ciebie we własnym oknie. Klucze nigdy nie trafiają do tej strony."
     },
     "signin_safe_storage": {
       "title": "Zaloguj się za pomocą bezpiecznego magazynu",
@@ -191,7 +191,7 @@
         "signer_unavailable": "Serwis podpisujący nie odpowiedział. Sprawdź połączenie i spróbuj ponownie.",
         "key_not_found": "Ten klucz dostępu nie ma klucza Posting tego konta.",
         "owner_blind_signing": "Serwis podpisujący odmówił podpisania w ciemno kluczem właściciela.",
-        "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi wyprowadzać kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
+        "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi generować kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
         "webauthn_unavailable": "Klucze dostępu nie są dostępne w tej przeglądarce.",
         "busy": "Okno serwisu podpisującego obsługuje inne żądanie. Zamknij je i spróbuj ponownie.",
         "invalid_request": "Serwis podpisujący odrzucił żądanie jako nieprawidłowe.",

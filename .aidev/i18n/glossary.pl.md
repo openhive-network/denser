@@ -73,6 +73,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | block explorer | eksplorator bloków | agreed (Adam, #1762) | Singular: „Otwórz w eksploratorze bloków”, never „w eksploratorach bloków”. |
 | authority of a key (posting authority) | upoważnienie | unreviewed | „nie ma upoważnienia Active” (#1698), as Authorities. Never „uprawnienia Posting”. A key in an authority: „musi już być częścią upoważnienia Posting tego konta” (Adam, #1762); the account's authority to manage another: „korzystać z upoważnienia konta {{username}}” (Adam, #1762). |
 | derived key (from a password or passkey) | wygenerowany | agreed (Adam, #1762) | „Klucz wygenerowany przez serwis podpisujący”. Never „wyprowadzony”, a calque. |
+| derive keys (verb) | generować / generuje | agreed (Adam, #1762; extended in #1763) | „Hasło główne generuje wszystkie Twoje klucze”, „nie potrafi generować kluczy”. The verb of the #1762 ruling on „wygenerowany”: never „wyprowadza” / „wyprowadzać”, the same calque. |
 | Hive core (API set) | Rdzeń Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
 | lite accounts | konta lite | unreviewed | As in the lite-account strings; API-set title (#1747). |
 | Balance API | API sald | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
@@ -134,11 +135,5 @@ HIVE, HBD, HP, HIVE POWER, Hive Power; key names Posting, Active, Owner, Memo
 (#1603).
 
 ## Known drift
-
-- The verb „wyprowadza” / „wyprowadzać” for deriving keys (wallet
-  `current_credential_help`, `wrong_password`, `reveal_intro`, `reveal_dialog`,
-  `not_all_keys`; smart-signer `passkey`, `prf_unsupported`; blog
-  `prf_unsupported`) is the same calque as „wyprowadzony” (#1762). Not yet
-  rewritten: do not copy it; new strings use „generuje” / „generować”.
 
 #1727 removed the unused `login_form.*hbauth*` keys listed here before.
