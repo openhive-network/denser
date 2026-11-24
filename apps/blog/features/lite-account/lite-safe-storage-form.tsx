@@ -8,7 +8,7 @@ import PasskeyPrompt from '@smart-signer/components/auth/passkey-prompt';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
 import { registerPasskeyUnlock, reusePasskeyUnlockOf } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
-import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import { newPasswordSchema } from '@smart-signer/lib/validators/validate-password';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { Button } from '@ui/components/button';
@@ -26,7 +26,7 @@ type Fields = { password: string; repeat: string };
 type PasskeyOffer = { username: string };
 
 const fieldsSchema = (mismatch: string) =>
-  z.object({ password: passwordSchema, repeat: z.string() }).refine((fields) => fields.password === fields.repeat, {
+  z.object({ password: newPasswordSchema, repeat: z.string() }).refine((fields) => fields.password === fields.repeat, {
     message: mismatch,
     path: ['repeat']
   });

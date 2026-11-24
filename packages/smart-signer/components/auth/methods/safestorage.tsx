@@ -48,10 +48,11 @@ import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
-import { describeRefusedKey, validateSafeStorageKey } from '@smart-signer/lib/validators/validate-key-authority';
-import { findRegistrationKeyRoleHint, type KeyHint } from '@smart-signer/lib/validators/key-role-hint';
+import { describeRefusedKey } from '@smart-signer/lib/validators/validate-key-authority';
+import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-role-hint';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import { newPasswordSchema, passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import StrictModeStatus from './strict-mode-status';
@@ -86,6 +87,10 @@ function getFormSchema() {
     })
     .superRefine(async (val, ctx) => {
       if (!val.userFound) {
+        // A new wallet's password; an existing one is checked against no maximum
+        for (const { message } of newPasswordSchema.safeParse(val.password).error?.issues ?? []) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message, path: ['password'] });
+        }
         const result = await validateWifKey(val.wif);
         if (result) {
           ctx.addIssue({
@@ -188,24 +193,36 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       if (isSessionTimePicked) chooseSessionTime(pickedSessionTime);
     }
 
-    /**
-     * Names the key the sign-in needs under the key field, which keeps the key: an authorised account's
-     * key is taken once Direct Authority Mode is unticked
-     */
-    function rejectKey({ key, values }: KeyHint) {
-      const mode = t('login_form.signin_safe_storage.strict_mode', { ns: SMART_SIGNER_NAMESPACE });
-      form.setError('wif', { message: t(key, { ns: SMART_SIGNER_NAMESPACE, mode, ...values }) });
-      setLoading(false);
-    }
+    const watchedUsername = form.watch('username');
+    const keyCheck = useSafeStorageKeyCheck({
+      i18nNamespace,
+      fields: {
+        username: watchedUsername,
+        keyType: form.watch('keyType'),
+        wif: form.watch('wif'),
+        strict: form.watch('strict')
+      },
+      showKeyError: (message) => form.setError('wif', { message }),
+      revalidateKey: () => form.trigger('wif')
+    });
+
+    // A password error is about the account it was entered for
+    const errorUsername = useRef(watchedUsername);
+    useEffect(() => {
+      if (errorUsername.current === watchedUsername) return;
+      errorUsername.current = watchedUsername;
+      setError(null);
+      // Checked again for this account: only a new wallet's password has a maximum
+      form.trigger('password');
+    }, [watchedUsername]);
 
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict, requireActiveCheck } = values;
       try {
         setLoading(true);
         setError(null);
-        const keyAuthorityError = await validateSafeStorageKey(username, keyType, wif, strict);
-        if (keyAuthorityError) {
-          rejectKey(keyAuthorityError);
+        if (!(await keyCheck.checkKey({ username, keyType, wif, strict }))) {
+          setLoading(false);
           return;
         }
         storePickedSessionTime();
@@ -220,7 +237,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         } catch (error) {
           const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
           if (!keyRoleHint) throw error;
-          rejectKey(await describeRefusedKey(username, keyType, wif, strict, keyRoleHint));
+          keyCheck.showKeyHint(await describeRefusedKey(username, keyType, wif, strict, keyRoleHint));
+          setLoading(false);
           return;
         }
         await finalize(values);
@@ -438,7 +456,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const stepDescription = (
       <div>
         <div data-testid="login-form-description">{description}</div>
-        {error && <div className="text-sm text-destructive">{error}</div>}
+        {error && (
+          <div className="text-sm text-destructive" data-testid="safe-storage-error">
+            {error}
+          </div>
+        )}
       </div>
     );
 
@@ -554,7 +576,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       </Button>
                     </div>
                   </FormControl>
-                  <FormMessage className="font-normal" data-testid="password-error-message"></FormMessage>
+                  {/* An emptied field is not wrong yet; the disabled button tells it is needed */}
+                  {field.value ? (
+                    <FormMessage className="font-normal" data-testid="password-error-message"></FormMessage>
+                  ) : null}
                   {/* {errors.password && <FormMessage className="font-normal">{t(errors.password?.message!)}</FormMessage>} */}
                 </FormItem>
               )}
@@ -574,6 +599,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                           type={show.wif ? 'text' : 'password'}
                           data-testid="wif-input"
                           {...field}
+                          onBlur={() => {
+                            field.onBlur();
+                            keyCheck.checkEnteredKey();
+                          }}
                         />
                         <Button
                           variant="ghost"

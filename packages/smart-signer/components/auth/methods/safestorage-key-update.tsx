@@ -24,12 +24,13 @@ import Step from '../step';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import StrictModeCheckbox from './strict-mode-checkbox';
+import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
-import { describeRefusedKey, validateSafeStorageKey } from '@smart-signer/lib/validators/validate-key-authority';
-import { findRegistrationKeyRoleHint, type KeyHint } from '@smart-signer/lib/validators/key-role-hint';
+import { describeRefusedKey } from '@smart-signer/lib/validators/validate-key-authority';
+import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-role-hint';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -178,15 +179,17 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       form.setValue('isStrict', addedKeyStrictMode(strictSettings, selectedKeyType));
     }, [strictSettings, selectedKeyType, form]);
 
-    /**
-     * Names the key the sign-in needs under the key field, which keeps the key: an authorised account's
-     * key is taken once Direct Authority Mode is unticked
-     */
-    function rejectKey({ key, values }: KeyHint) {
-      const mode = t('login_form.signin_safe_storage.strict_mode', { ns: SMART_SIGNER_NAMESPACE });
-      form.setError('wif', { message: t(key, { ns: SMART_SIGNER_NAMESPACE, mode, ...values }) });
-      setLoading(false);
-    }
+    const keyCheck = useSafeStorageKeyCheck({
+      i18nNamespace,
+      fields: {
+        username: form.watch('username'),
+        keyType: selectedKeyType,
+        wif: form.watch('wif'),
+        strict: form.watch('isStrict')
+      },
+      showKeyError: (message) => form.setError('wif', { message }),
+      revalidateKey: () => form.trigger('wif')
+    });
 
     async function signInWithKey(client: OnlineClient, username: string, password: string, keyType: KeyType) {
       try {
@@ -228,9 +231,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           return;
         }
 
-        const keyAuthorityError = await validateSafeStorageKey(username, keyType, wif, isStrict);
-        if (keyAuthorityError) {
-          rejectKey(keyAuthorityError);
+        if (!(await keyCheck.checkKey({ username, keyType, wif, strict: isStrict }))) {
+          setLoading(false);
           return;
         }
 
@@ -265,7 +267,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         } catch (error) {
           const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
           if (!keyRoleHint) throw error;
-          rejectKey(await describeRefusedKey(username, keyType, wif, isStrict, keyRoleHint));
+          keyCheck.showKeyHint(await describeRefusedKey(username, keyType, wif, isStrict, keyRoleHint));
+          setLoading(false);
           return;
         }
 
@@ -405,7 +408,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                       </Button>
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  {/* An emptied field is not wrong until the form is submitted */}
+                  {field.value || form.formState.isSubmitted ? <FormMessage /> : null}
                 </FormItem>
               )}
             />
@@ -418,6 +422,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                   <FormControl>
                     <Input
                       {...field}
+                      onBlur={() => {
+                        field.onBlur();
+                        keyCheck.checkEnteredKey();
+                      }}
                       type="password"
                       placeholder={t('login_form.signin_safe_storage.placeholder_wif', { keyType: form.getValues().keyType })}
                       disabled={!registeredUser}
