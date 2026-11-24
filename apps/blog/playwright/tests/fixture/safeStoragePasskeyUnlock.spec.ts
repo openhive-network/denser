@@ -166,6 +166,40 @@ async function signInWithPasskeyAlone(page: Page, loginForm: LoginForm): Promise
   await expect(new HomePage(page).profileAvatarButton).toBeVisible();
 }
 
+type PasskeySignal = { name: 'unknown' | 'all-accepted'; options: { credentialId?: string; allAcceptedCredentialIds?: string[] } };
+
+/**
+ * Replaces WebAuthn's signal methods, which Google Password Manager acts on by hiding or removing a
+ * synced passkey, with spies recording what the app sends
+ */
+async function spyOnPasskeySignals(page: Page): Promise<() => Promise<PasskeySignal[]>> {
+  await page.evaluate(() => {
+    const sent: unknown[] = [];
+    Object.assign(window, { passkeySignals: sent });
+    const record = (name: string) => async (options: unknown) => {
+      sent.push({ name, options });
+    };
+    Object.defineProperty(PublicKeyCredential, 'signalUnknownCredential', { value: record('unknown'), configurable: true });
+    Object.defineProperty(PublicKeyCredential, 'signalAllAcceptedCredentials', {
+      value: record('all-accepted'),
+      configurable: true
+    });
+  });
+  return () => page.evaluate(() => Reflect.get(window, 'passkeySignals'));
+}
+
+/** Answers every passkey prompt as the browser does the user's cancel: NotAllowedError */
+async function cancelPasskeyPrompts(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    navigator.credentials.get = async () => {
+      throw new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
+    };
+  });
+}
+
+/** CDP's credential ID (base64) as the app's signals name it (base64url) */
+const asBase64url = (credentialId: string) => credentialId.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
 const dismissalOf = (page: Page, username: string) =>
   page.evaluate((key) => window.localStorage.getItem(key), `passkey-dismissed-${username}`);
 
@@ -184,10 +218,15 @@ test.describe('Safe-storage passkey unlock', () => {
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const signals = await spyOnPasskeySignals(page);
 
     const { loginForm, prompt } = await signInWithPassword(page);
     await enableByCreating(loginForm, prompt);
-    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+    const { credentials } = await cdp.send('WebAuthn.getCredentials', { authenticatorId });
+    expect(credentials).toHaveLength(1);
+    const sent = await signals();
+    expect(sent.map(({ name }) => name)).toEqual(['all-accepted']);
+    expect(sent[0].options.allAcceptedCredentialIds).toEqual([asBase64url(credentials[0].credentialId)]);
 
     await signInWithPasskeyAlone(page, loginForm);
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
@@ -294,9 +333,11 @@ test.describe('Safe-storage passkey unlock', () => {
     await changePasskeyRecord(page, 'delete', ACCOUNT);
 
     await signOut(page);
+    const signals = await spyOnPasskeySignals(page);
     const { loginForm: next, prompt: offer } = await signInWithPassword(page);
     await offer.getByTestId('passkey-prompt-enable').click();
     await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await signals()).toEqual([]);
     const { credentials } = await cdp.send('WebAuthn.getCredentials', { authenticatorId });
     expect(credentials.map(({ credentialId }) => credentialId)).toEqual([created.credentialId]);
 
@@ -313,13 +354,36 @@ test.describe('Safe-storage passkey unlock', () => {
     await changePasskeyRecord(page, 'repoint', ACCOUNT);
 
     await signOut(page);
+    const signals = await spyOnPasskeySignals(page);
     const next = await openSignIn(page);
     await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
     await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
     await next.signInButton.click();
     await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await signals()).toEqual([]);
 
     await signInWithPasskeyAlone(page, next);
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-08 — cancelling both passkey prompts drops only the record: no signal, the passkey stays', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    const [created] = (await cdp.send('WebAuthn.getCredentials', { authenticatorId })).credentials;
+
+    await signOut(page);
+    const signals = await spyOnPasskeySignals(page);
+    await cancelPasskeyPrompts(page);
+    const next = await openSignIn(page);
+    await expect(next.loginDialog.getByText('The saved passkey is no longer available on this device; sign in with your password.')).toBeVisible({
+      timeout: SIGN_IN_TIMEOUT_MS
+    });
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+    expect(await signals()).toEqual([]);
+    const { credentials } = await cdp.send('WebAuthn.getCredentials', { authenticatorId });
+    expect(credentials.map(({ credentialId }) => credentialId)).toEqual([created.credentialId]);
   });
 });

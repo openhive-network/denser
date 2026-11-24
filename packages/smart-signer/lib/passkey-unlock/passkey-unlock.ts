@@ -10,7 +10,7 @@ import {
   type PasskeyUnlockRecord
 } from '@smart-signer/lib/passkey-unlock/passkey-unlock-ceremony';
 import { PasskeyUnlockError } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
-import { signalAcceptedPasskey, signalUnknownPasskey } from '@smart-signer/lib/passkey-unlock/passkey-signals';
+import { signalAcceptedPasskey } from '@smart-signer/lib/passkey-unlock/passkey-signals';
 import {
   readPasskeyUnlock,
   removePasskeyUnlock,
@@ -39,11 +39,6 @@ export type PasskeyUnlockStore = {
 
 const BROWSER_STORE: PasskeyUnlockStore = { read: readPasskeyUnlock, remove: removePasskeyUnlock, write: storePasskeyUnlock };
 
-async function storeAccepted(store: PasskeyUnlockStore, record: PasskeyUnlockRecord): Promise<void> {
-  await store.write(record);
-  await signalAcceptedPasskey(record.rpId, await passkeyUserId(record.username), record.credentialId);
-}
-
 /**
  * Lets a passkey `username` already has, synced from another device, unlock `username`'s safe
  * storage on this device in place of `password`, which must be the one just accepted, creating no
@@ -56,7 +51,7 @@ export async function reusePasskeyUnlockOf(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<void> {
-  await storeAccepted(store, await reusePasskeyUnlock(credentials, username, password, location.hostname));
+  await store.write(await reusePasskeyUnlock(credentials, username, password, location.hostname));
 }
 
 /**
@@ -71,7 +66,10 @@ export async function registerPasskeyUnlock(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<void> {
-  await storeAccepted(store, await createPasskeyUnlock(credentials, username, password, location.hostname));
+  const record = await createPasskeyUnlock(credentials, username, password, location.hostname);
+  await store.write(record);
+  // Only here does the app know the account's passkeys: the provider has just replaced its own of the handle with this one
+  await signalAcceptedPasskey(record.rpId, await passkeyUserId(username), record.credentialId);
 }
 
 /**
@@ -131,8 +129,8 @@ async function recoverOrRediscover(
     found = await rediscoverPasskey(credentials, record, userVerification);
   } catch (error) {
     if (!isCancelled(error)) throw error;
+    // Only the record goes: a cancel looks the same, so its passkey may well be live and synced
     await store.remove(record.username);
-    await signalUnknownPasskey(record.rpId, record.credentialId);
     throw new PasskeyUnlockError(`Passkey unlock: no passkey of ${record.username} answers`, 'gone', { cause: error });
   }
   if ('password' in found) return found.password;
@@ -142,8 +140,7 @@ async function recoverOrRediscover(
 function replaced(store: PasskeyUnlockStore, record: PasskeyUnlockRecord, passkey: FoundPasskey): PasskeyReplacedError {
   const { username, rpId } = record;
   return new PasskeyReplacedError(username, async (password) => {
-    await storeAccepted(store, await wrapPassword(username, password, rpId, passkey));
-    await signalUnknownPasskey(rpId, record.credentialId);
+    await store.write(await wrapPassword(username, password, rpId, passkey));
   });
 }
 

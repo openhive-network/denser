@@ -4,7 +4,6 @@ const logger = getLogger('app');
 
 /** WebAuthn's signal methods, which tell the passkey providers what the relying party knows */
 type PasskeySignals = {
-  signalUnknownCredential?: (options: { rpId: string; credentialId: string }) => Promise<void>;
   signalAllAcceptedCredentials?: (options: { rpId: string; userId: string; allAcceptedCredentialIds: string[] }) => Promise<void>;
 };
 
@@ -26,18 +25,11 @@ async function send(name: string, signal: () => Promise<void>): Promise<void> {
   }
 }
 
-/** Tells the providers that `credentialId` no longer unlocks anything, so they can hide it */
-export async function signalUnknownPasskey(rpId: string, credentialId: Uint8Array): Promise<void> {
-  const { signalUnknownCredential } = signals();
-  if (typeof signalUnknownCredential !== 'function') return;
-  await send('unknown-credential', () =>
-    signalUnknownCredential.call(PublicKeyCredential, { rpId, credentialId: base64url(credentialId) })
-  );
-}
-
 /**
  * Tells the providers that `credentialId` is the one passkey of the user handle `userId`, so they
- * can hide the others of that handle
+ * can hide the others of that handle: only for a credential this device's provider just created,
+ * which replaced its own of the handle anyway. Another provider (a phone, iCloud next to Google
+ * Password Manager) can hold a live passkey of the same handle the signal would hide.
  */
 export async function signalAcceptedPasskey(rpId: string, userId: Uint8Array, credentialId: Uint8Array): Promise<void> {
   const { signalAllAcceptedCredentials } = signals();
