@@ -80,11 +80,17 @@ type Assertion = {
 };
 
 /** The PRF output of the passkey `credentialId` for `prfSalt`, from an assertion the user approves */
-async function evaluatePrf(credentials: PasskeyCredentials, assertion: Assertion, step: string): Promise<BufferSource> {
+async function evaluatePrf(
+  credentials: PasskeyCredentials,
+  assertion: Assertion,
+  step: string,
+  signal?: AbortSignal
+): Promise<BufferSource> {
   const { credentialId, transports, prfSalt, rpId, userVerification } = assertion;
   let credential: Credential | null;
   try {
     credential = await credentials.get({
+      signal,
       publicKey: {
         challenge: randomBytes(32),
         rpId,
@@ -177,27 +183,41 @@ export async function wrapPassword(
   return record;
 }
 
-type Discovery = { username: string; rpId: string; userVerification: UserVerificationRequirement; knownSalt?: BufferSource };
+type Discovery = {
+  rpId: string;
+  userVerification: UserVerificationRequirement;
+  knownSalt?: BufferSource;
+  signal?: AbortSignal;
+};
 
 /**
- * The account's passkey, wherever its provider keeps it, from an assertion naming no credential:
- * the user picks a passkey of the relying party, and one whose user handle is not `username`'s is
- * refused. Resolves with its key for a fresh salt, and with the PRF output for `knownSalt` where
- * given. Rejects with PasskeyUnlockError: cancelled where no passkey was picked (the browser answers
- * a relying party without passkeys as it does a cancel), wrong-account, unsupported without PRF.
+ * A passkey of the relying party the user picked from a request naming no credential: the user
+ * handle it carries (null where it carries none), its key for a fresh salt, and its PRF output
+ * for the request's `knownSalt`, where given
  */
-async function discoverPasskey(
+export type PickedPasskey = { userHandle: Uint8Array | null; passkey: FoundPasskey; knownOutput?: BufferSource };
+
+/**
+ * The passkey the user picks of any account, wherever its provider keeps it, from an assertion
+ * naming no credential: a credential the provider replaced is never named, so the browser has no
+ * "no passkeys" dialog to show for it. Rejects with PasskeyUnlockError: cancelled where no passkey
+ * was picked (the browser answers a relying party without passkeys as it does a cancel, and an
+ * aborted request so too), unsupported without PRF.
+ */
+export async function discoverPasskey(
   credentials: PasskeyCredentials,
-  { username, rpId, userVerification, knownSalt }: Discovery
-): Promise<{ passkey: FoundPasskey; knownOutput?: BufferSource }> {
+  { rpId, userVerification, knownSalt, signal }: Discovery
+): Promise<PickedPasskey> {
   const step = 'Passkey discovery';
   const prfSalt = randomBytes(32);
   let credential: Credential | null;
   try {
     credential = await credentials.get({
+      signal,
       publicKey: {
         challenge: randomBytes(32),
         rpId,
+        allowCredentials: [],
         userVerification,
         timeout: CEREMONY_TIMEOUT_MS,
         extensions: { prf: { eval: { first: prfSalt, ...(knownSalt ? { second: knownSalt } : {}) } } }
@@ -209,19 +229,29 @@ async function discoverPasskey(
   if (!isPublicKeyCredential(credential)) throw new PasskeyUnlockError(`${step}: no credential`, 'failed');
   const { response } = credential;
   const userHandle = 'userHandle' in response && response.userHandle instanceof ArrayBuffer ? response.userHandle : null;
-  if (!userHandle || !sameBytes(new Uint8Array(userHandle), await passkeyUserId(username))) {
-    throw new PasskeyUnlockError(`${step}: the passkey picked is not ${username}'s`, 'wrong-account');
-  }
   const results = credential.getClientExtensionResults().prf?.results;
   if (!results?.first) throw new PasskeyUnlockError(`${step}: the passkey gave no PRF output`, 'unsupported');
   const key = await prfKey(results.first, ['encrypt', 'decrypt']);
-  return { passkey: { credentialId: new Uint8Array(credential.rawId), prfSalt, key }, knownOutput: results.second };
+  return {
+    userHandle: userHandle && new Uint8Array(userHandle),
+    passkey: { credentialId: new Uint8Array(credential.rawId), prfSalt, key },
+    knownOutput: results.second
+  };
 }
+
+/** Whether `picked` is a passkey of `username`, by the user handle every passkey of the account is created with */
+export async function isPasskeyOf(picked: PickedPasskey, username: string): Promise<boolean> {
+  return picked.userHandle !== null && sameBytes(picked.userHandle, await passkeyUserId(username));
+}
+
+/** Whether `picked` is the very credential `record` was made with, not another passkey of its account */
+export const isRecordPasskey = (record: PasskeyUnlockRecord, picked: PickedPasskey) =>
+  sameBytes(picked.passkey.credentialId, record.credentialId);
 
 /**
  * Encrypts `password` under a passkey the account already has, synced from another device or
  * left by an earlier record, in a record of this device, creating none. Rejects with
- * PasskeyUnlockError as `discoverPasskey` does.
+ * PasskeyUnlockError as `discoverPasskey` does, and as wrong-account for another account's passkey.
  */
 export async function reusePasskeyUnlock(
   credentials: PasskeyCredentials,
@@ -229,26 +259,21 @@ export async function reusePasskeyUnlock(
   password: string,
   rpId: string
 ): Promise<PasskeyUnlockRecord> {
-  const { passkey } = await discoverPasskey(credentials, { username, rpId, userVerification: 'required' });
-  return wrapPassword(username, password, rpId, passkey);
+  const picked = await discoverPasskey(credentials, { rpId, userVerification: 'required' });
+  if (!(await isPasskeyOf(picked, username))) {
+    throw new PasskeyUnlockError(`Passkey discovery: the passkey picked is not ${username}'s`, 'wrong-account');
+  }
+  return wrapPassword(username, password, rpId, picked.passkey);
 }
 
 /**
- * What the account's passkey, looked for without naming `record`'s credential, gives: the
- * password, where it is `record`'s own; else the other passkey (one that replaced it, or synced),
- * to encrypt the password under once the user enters it. Rejects as `discoverPasskey` does, and
- * as `recoverPasskeyPassword` does for `record`'s own passkey.
+ * The password `record` holds, decrypted with the PRF output `picked`, its own passkey, gave for
+ * the record's salt. Rejects with PasskeyUnlockError: stale where it does not decrypt, unsupported
+ * where the request asked for no output of the record's salt.
  */
-export async function rediscoverPasskey(
-  credentials: PasskeyCredentials,
-  record: PasskeyUnlockRecord,
-  userVerification: UserVerificationRequirement
-): Promise<{ password: string } | { replacement: FoundPasskey }> {
-  const { username, rpId, prfSalt } = record;
-  const { passkey, knownOutput } = await discoverPasskey(credentials, { username, rpId, userVerification, knownSalt: prfSalt });
-  if (!sameBytes(passkey.credentialId, record.credentialId)) return { replacement: passkey };
-  if (!knownOutput) throw new PasskeyUnlockError('Passkey unlock: the passkey gave no PRF output', 'unsupported');
-  return { password: await decryptPassword(record, knownOutput) };
+export async function pickedPasskeyPassword(record: PasskeyUnlockRecord, picked: PickedPasskey): Promise<string> {
+  if (!picked.knownOutput) throw new PasskeyUnlockError('Passkey unlock: the passkey gave no PRF output', 'unsupported');
+  return decryptPassword(record, picked.knownOutput);
 }
 
 /** The password of `record` decrypted with `prfOutput`. Rejects with PasskeyUnlockError, as stale. */
@@ -266,14 +291,16 @@ async function decryptWith(record: PasskeyUnlockRecord, key: CryptoKey): Promise
 }
 
 /**
- * The password `record` holds, decrypted with its passkey's PRF output. Rejects with
+ * The password `record` holds, decrypted with its passkey's PRF output, from a request naming its
+ * credential: for a passkey that has just answered, whose provider holds it. Rejects with
  * PasskeyUnlockError, as stale when the output does not decrypt it.
  */
 export async function recoverPasskeyPassword(
   credentials: PasskeyCredentials,
   record: PasskeyUnlockRecord,
-  userVerification: UserVerificationRequirement
+  userVerification: UserVerificationRequirement,
+  signal?: AbortSignal
 ): Promise<string> {
-  const prfOutput = await evaluatePrf(credentials, { ...record, userVerification }, 'Passkey unlock');
+  const prfOutput = await evaluatePrf(credentials, { ...record, userVerification }, 'Passkey unlock', signal);
   return decryptPassword(record, prfOutput);
 }

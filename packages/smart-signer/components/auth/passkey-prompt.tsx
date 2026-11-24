@@ -20,8 +20,23 @@ type Props = {
   onDone: () => void | Promise<void>;
 };
 
-/** `offer`: enable at all; `create`: no passkey of the account was picked, so create one */
-type Step = 'offer' | 'create';
+/**
+ * `offer`: enable at all; `create`: no passkey of the account was picked, so create one;
+ * `wrong-account`: the passkey picked is another account's, so pick this one's again or create one
+ */
+type Step = 'offer' | 'create' | 'wrong-account';
+
+const TITLE_KEYS: Record<Step, string> = {
+  offer: 'login_form.passkey_prompt.title',
+  create: 'login_form.passkey_prompt.create_title',
+  'wrong-account': 'login_form.passkey_prompt.wrong_account_title'
+};
+
+const DESCRIPTION_KEYS: Record<Step, string> = {
+  offer: 'login_form.passkey_prompt.description',
+  create: 'login_form.passkey_prompt.create_description',
+  'wrong-account': 'login_form.passkey_prompt.wrong_account_description'
+};
 
 const failedWith = (error: unknown, reason: PasskeyUnlockError['reason']) =>
   error instanceof PasskeyUnlockError && error.reason === reason;
@@ -30,12 +45,13 @@ const describe = (error: unknown) => (error instanceof Error ? error.message : S
 
 // One per row on a phone, full width, so that each label fits on one line
 const BUTTON_LAYOUT = 'h-auto min-h-9 w-full sm:w-auto';
+const PRIMARY_BUTTON = 'bg-blue-600 text-white hover:bg-blue-500';
 
 /**
  * The offer, after a password sign-in to safe storage, to unlock with a passkey instead of the
  * password. Enable looks for the account's passkey first, synced from another device, and keeps
  * it: creating one would replace it there. Only where none is picked does the next step offer to
- * create one. "Not now" brings the offer back after a few hours, "Never ask again" keeps it away
+ * create one; where another account's passkey is picked, it offers this account's first. "Not now" brings the offer back after a few hours, "Never ask again" keeps it away
  * for `username`; a failed or cancelled browser prompt shows the reason and keeps the offer open,
  * dismissing nothing.
  */
@@ -73,9 +89,9 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
   const reuse = () =>
     run(onReuse, (error) => {
       // The browser answers a relying party without passkeys as it does a cancel: offer to create one
-      const cancelled = failedWith(error, 'cancelled');
-      if (cancelled || failedWith(error, 'wrong-account')) setStep('create');
-      if (!cancelled) setMessage(t(passkeyEnableFailureKey(error)));
+      if (failedWith(error, 'cancelled')) setStep('create');
+      else if (failedWith(error, 'wrong-account')) setStep('wrong-account');
+      else setMessage(t(passkeyEnableFailureKey(error)));
     });
 
   const create = () => run(onCreate, (error) => setMessage(t(passkeyEnableFailureKey(error))));
@@ -87,7 +103,31 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
   const notNow = () => dismiss(snoozePasskeyPrompt);
   const never = () => dismiss(declinePasskeyPrompt);
 
-  const creating = step === 'create';
+  const createButton = (primary: boolean) => (
+    <Button
+      size="sm"
+      variant={primary ? 'default' : 'outline'}
+      className={cn(BUTTON_LAYOUT, primary && PRIMARY_BUTTON)}
+      disabled={busy}
+      onClick={create}
+      data-testid="passkey-prompt-create"
+    >
+      {t('login_form.passkey_prompt.create')}
+    </Button>
+  );
+  const reuseButton = (primary: boolean) => (
+    <Button
+      size="sm"
+      variant={primary ? 'default' : 'outline'}
+      className={cn(BUTTON_LAYOUT, primary && PRIMARY_BUTTON)}
+      disabled={busy}
+      onClick={reuse}
+      data-testid="passkey-prompt-reuse"
+    >
+      {t('login_form.passkey_prompt.use_existing')}
+    </Button>
+  );
+
   return (
     <div
       className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950"
@@ -95,43 +135,32 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
       data-step={step}
     >
       <p ref={headingRef} className="mb-2 scroll-mt-4 text-sm font-medium" data-testid="passkey-prompt-title">
-        {t(creating ? 'login_form.passkey_prompt.create_title' : 'login_form.passkey_prompt.title')}
+        {t(TITLE_KEYS[step])}
       </p>
-      <p className="mb-3 text-xs text-muted-foreground">
-        {t(creating ? 'login_form.passkey_prompt.create_description' : 'login_form.passkey_prompt.description')}
-      </p>
+      <p className="mb-3 text-xs text-muted-foreground">{t(DESCRIPTION_KEYS[step])}</p>
       {message && (
         <p className="mb-3 text-xs text-destructive" role="alert" data-testid="passkey-prompt-error">
           {message}
         </p>
       )}
       <div className="flex select-none flex-col gap-2 sm:flex-row sm:flex-wrap">
-        {creating ? (
+        {step === 'create' && (
           <>
-            <Button
-              size="sm"
-              className={cn(BUTTON_LAYOUT, 'bg-blue-600 text-white hover:bg-blue-500')}
-              disabled={busy}
-              onClick={create}
-              data-testid="passkey-prompt-create"
-            >
-              {t('login_form.passkey_prompt.create')}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className={BUTTON_LAYOUT}
-              disabled={busy}
-              onClick={reuse}
-              data-testid="passkey-prompt-reuse"
-            >
-              {t('login_form.passkey_prompt.use_existing')}
-            </Button>
+            {createButton(true)}
+            {reuseButton(false)}
           </>
-        ) : (
+        )}
+        {/* Another account's passkey was picked: this one's, on another device, comes first */}
+        {step === 'wrong-account' && (
+          <>
+            {reuseButton(true)}
+            {createButton(false)}
+          </>
+        )}
+        {step === 'offer' && (
           <Button
             size="sm"
-            className={cn(BUTTON_LAYOUT, 'bg-blue-600 text-white hover:bg-blue-500')}
+            className={cn(BUTTON_LAYOUT, PRIMARY_BUTTON)}
             disabled={busy}
             onClick={reuse}
             data-testid="passkey-prompt-enable"

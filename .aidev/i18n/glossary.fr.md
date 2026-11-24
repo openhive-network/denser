@@ -51,6 +51,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | password | mot de passe | unreviewed | |
 | passkey | passkey | unreviewed | Kept as the product term. |
 | biometric unlock | déverrouillage biométrique | unreviewed | As in `login_form.passkey_prompt.*`. |
+| password manager | gestionnaire de mots de passe | unreviewed | `passkey_unlock.turn_off_description` (#1774). Turning biometric unlock off: « Désactiver le déverrouillage biométrique ». |
 | check before active-key operations | Demander avant chaque opération avec la clé active ; « Confirmez avec votre mot de passe ou votre passkey » | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | marché / intérêts | unreviewed | |
 | this session (key badge) | Cette session | unreviewed | |

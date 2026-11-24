@@ -173,12 +173,14 @@
       "never_ask_again": "Ne plus demander",
       "failed": "Impossible d’activer le déverrouillage biométrique. Réessayez.",
       "unsupported": "Cet appareil ne prend pas en charge le déverrouillage biométrique. Vous pouvez continuer à vous connecter avec votre mot de passe.",
-      "wrong_account": "Cette passkey appartient à un autre compte. Choisissez la passkey de ce compte ou créez-en une nouvelle.",
       "create_title": "Créer une passkey sur cet appareil ?",
       "create_description": "Aucune passkey n’a été choisie. Si le déverrouillage biométrique de ce compte est déjà activé sur un autre appareil, utilisez cette passkey : une nouvelle la remplacerait aussi là-bas.",
       "create": "Créer une passkey",
       "use_existing": "Utiliser une passkey d’un autre appareil",
-      "unlock_gone": "La passkey enregistrée n’est plus disponible sur cet appareil ; connectez-vous avec votre mot de passe."
+      "relink_hint": "Saisissez votre mot de passe une seule fois pour associer cet appareil à votre passkey existante.",
+      "unlock_wrong_account": "La passkey choisie appartient à un autre compte ; connectez-vous avec le mot de passe de ce compte.",
+      "wrong_account_title": "Cette passkey appartient à un autre compte",
+      "wrong_account_description": "La passkey choisie n’est pas celle de ce compte. Utilisez la passkey de ce compte depuis un autre appareil, ou créez-en une ici : si le déverrouillage biométrique de ce compte est activé sur un autre appareil, une nouvelle la remplacerait aussi là-bas."
     },
     "passkey": {
       "method": "Signataire à passkey",
@@ -347,5 +349,14 @@
     "turned_on": "Les opérations qui nécessitent votre clé active ou propriétaire demandent désormais votre mot de passe ou votre passkey à chaque fois.",
     "turned_off": "Les opérations qui nécessitent votre clé active sont désormais signées sans demande jusqu’au verrouillage de vos clés.",
     "change_failed": "Impossible de modifier le réglage. Réessayez."
+  },
+  "passkey_unlock": {
+    "menu_label": "Désactiver le déverrouillage biométrique",
+    "turn_off_title": "Désactiver le déverrouillage biométrique sur cet appareil ?",
+    "turn_off_description": "La connexion sur cet appareil demandera de nouveau votre mot de passe. La passkey reste dans votre gestionnaire de mots de passe : l’application ne peut pas l’y supprimer, supprimez-la vous-même si vous n’en avez plus besoin.",
+    "cancel_button": "Annuler",
+    "turn_off_confirm_button": "Désactiver",
+    "turned_off": "Le déverrouillage biométrique est désactivé sur cet appareil.",
+    "turn_off_failed": "Impossible de désactiver le déverrouillage biométrique. Réessayez."
   }
 }

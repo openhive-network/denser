@@ -173,12 +173,14 @@
       "never_ask_again": "Never ask again",
       "failed": "Couldn't enable biometric unlock. Try again.",
       "unsupported": "This device cannot use biometric unlock. You can keep signing in with your password.",
-      "wrong_account": "That passkey belongs to another account. Pick this account's passkey, or create a new one.",
       "create_title": "Create a passkey on this device?",
       "create_description": "No passkey was picked. If biometric unlock is on for this account on another device, use that passkey: a new one would replace it there too.",
       "create": "Create passkey",
       "use_existing": "Use a passkey from another device",
-      "unlock_gone": "The saved passkey is no longer available on this device; sign in with your password."
+      "relink_hint": "Enter your password once to link this device to your existing passkey.",
+      "unlock_wrong_account": "The passkey you picked belongs to another account; sign in with this account's password.",
+      "wrong_account_title": "That passkey belongs to another account",
+      "wrong_account_description": "The passkey you picked is not this account's. Use this account's passkey from another device, or create one here: if biometric unlock is on for this account on another device, a new passkey would replace it there too."
     },
     "passkey": {
       "method": "Passkey signer",
@@ -347,5 +349,14 @@
     "turned_on": "Operations that need your active or owner key now ask for your password or passkey every time.",
     "turned_off": "Operations that need your active key now sign without asking until your keys lock.",
     "change_failed": "The setting could not be changed. Try again."
+  },
+  "passkey_unlock": {
+    "menu_label": "Turn off biometric unlock",
+    "turn_off_title": "Turn off biometric unlock on this device?",
+    "turn_off_description": "Signing in on this device will ask for your password again. The passkey itself stays in your password manager: the app can't delete it there, so remove it yourself if you no longer need it.",
+    "cancel_button": "Cancel",
+    "turn_off_confirm_button": "Turn off",
+    "turned_off": "Biometric unlock is off on this device.",
+    "turn_off_failed": "Couldn't turn off biometric unlock. Try again."
   }
 }

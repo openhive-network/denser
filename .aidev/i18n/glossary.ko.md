@@ -50,6 +50,7 @@ markup and plural keys, not their wording.
 | password | 비밀번호 | unreviewed | |
 | passkey | 패스키 | unreviewed | |
 | biometric unlock | 생체 인식 잠금 해제 | unreviewed | As in `login_form.passkey_prompt.*`. |
+| password manager | 비밀번호 관리자 | unreviewed | `passkey_unlock.turn_off_description` (#1774). Turning biometric unlock off: "생체 인식 잠금 해제 끄기". |
 | check before active-key operations | 액티브 키 작업마다 확인; "비밀번호나 패스키로 확인하세요" | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | 마켓 / 이자 | unreviewed | |
 | this session (key badge) | 이 세션 | unreviewed | |

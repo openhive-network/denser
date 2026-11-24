@@ -627,6 +627,10 @@ passkey deleted from the password manager. The passkey records themselves are in
 `/passkeys_v3` IndexedDB (store `credentials`, keyed by username): the spec edits one in
 `page.evaluate` to play a record that no longer decrypts or one hb-auth wrote (no `transports`).
 Add the authenticator before the ceremony; it lives as long as the page's CDP session.
+`spyOnPasskeyRequests` wraps `navigator.credentials.get` to record how many credentials each request
+names and to answer NotAllowedError on demand (a user's Cancel, which the virtual authenticator cannot
+play); `pickAnotherAccountsPasskey` answers with a credential of another user handle. Neither survives
+a navigation, so set them after the last `goto`.
 
 ---
 

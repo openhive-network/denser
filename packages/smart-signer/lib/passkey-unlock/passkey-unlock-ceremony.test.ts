@@ -14,9 +14,16 @@ registerHooks({
   }
 });
 
-const { createPasskeyUnlock, passkeyUserId, recoverPasskeyPassword, rediscoverPasskey, reusePasskeyUnlock } = await import(
-  './passkey-unlock-ceremony.ts'
-);
+const {
+  createPasskeyUnlock,
+  discoverPasskey,
+  isPasskeyOf,
+  isRecordPasskey,
+  passkeyUserId,
+  pickedPasskeyPassword,
+  recoverPasskeyPassword,
+  reusePasskeyUnlock
+} = await import('./passkey-unlock-ceremony.ts');
 type PasskeyCredentials = Parameters<typeof createPasskeyUnlock>[0];
 const { PasskeyUnlockError, passkeyEnableFailureKey } = await import('./passkey-unlock-error.ts');
 
@@ -262,7 +269,7 @@ describe('reusePasskeyUnlock', () => {
     assert.equal(provider.requests.created.length, 1);
     assert.equal(provider.passkeys.length, 1);
     const discovery = provider.requests.got[0].publicKey;
-    assert.equal(discovery?.allowCredentials, undefined);
+    assert.deepEqual(discovery?.allowCredentials, []);
     assert.equal(discovery?.rpId, RP_ID);
     assert.equal(discovery?.userVerification, 'required');
     assert.deepEqual(secondDevice.credentialId, firstDevice.credentialId);
@@ -271,7 +278,7 @@ describe('reusePasskeyUnlock', () => {
     assert.equal(await recoverPasskeyPassword(provider.credentials, secondDevice, 'required'), PASSWORD);
   });
 
-  it("refuses another account's passkey, with its message, and keeps nothing", async () => {
+  it("refuses another account's passkey and keeps nothing", async () => {
     const provider = fakeAuthenticator();
     await createPasskeyUnlock(provider.credentials, 'another.user', 'another password', RP_ID);
 
@@ -279,7 +286,6 @@ describe('reusePasskeyUnlock', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'wrong-account');
-    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.wrong_account');
     assert.equal(provider.requests.created.length, 1);
   });
 
@@ -294,26 +300,47 @@ describe('reusePasskeyUnlock', () => {
   });
 });
 
-describe('rediscoverPasskey', () => {
-  it("gives the record's password where the account's passkey is the record's own", async () => {
+describe('discoverPasskey', () => {
+  it("names no credential and gives the record's password where the passkey picked is the record's own", async () => {
     const provider = fakeAuthenticator();
     const record = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
 
-    assert.deepEqual(await rediscoverPasskey(provider.credentials, record, 'discouraged'), { password: PASSWORD });
+    const picked = await discoverPasskey(provider.credentials, {
+      rpId: RP_ID,
+      userVerification: 'discouraged',
+      knownSalt: record.prfSalt
+    });
+
+    assert.deepEqual(provider.requests.got[0].publicKey?.allowCredentials, []);
     assert.equal(provider.requests.got[0].publicKey?.userVerification, 'discouraged');
+    assert.ok(await isPasskeyOf(picked, USERNAME));
+    assert.ok(!(await isPasskeyOf(picked, 'another.user')));
+    assert.ok(isRecordPasskey(record, picked));
+    assert.equal(await pickedPasskeyPassword(record, picked), PASSWORD);
   });
 
-  it('gives the passkey that replaced the record\'s, to encrypt the password under, creating none', async () => {
+  it('finds the passkey that replaced the record\'s, of the same account, creating none', async () => {
     const provider = fakeAuthenticator();
     const record = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
     // Another device enabled the unlock with a creation, which replaced the synced passkey
     await createPasskeyUnlock(fakeAuthenticatorSharing(provider, 'replacing passkey'), USERNAME, PASSWORD, RP_ID);
 
-    const found = await rediscoverPasskey(provider.credentials, record, 'required');
+    const picked = await discoverPasskey(provider.credentials, { rpId: RP_ID, userVerification: 'required', knownSalt: record.prfSalt });
 
-    assert.ok('replacement' in found);
-    assert.notDeepEqual(found.replacement.credentialId, record.credentialId);
-    assert.deepEqual(found.replacement.credentialId, provider.passkeys[0].id);
+    assert.ok(await isPasskeyOf(picked, USERNAME));
+    assert.ok(!isRecordPasskey(record, picked));
+    assert.deepEqual(picked.passkey.credentialId, provider.passkeys[0].id);
     assert.equal(provider.requests.created.length, 2);
+  });
+
+  it('rejects as cancelled where no passkey is picked', async () => {
+    const provider = fakeAuthenticator({ getError: notAllowed() });
+
+    const error = await discoverPasskey(provider.credentials, { rpId: RP_ID, userVerification: 'required' }).catch(
+      (e: unknown) => e
+    );
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
   });
 });

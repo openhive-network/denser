@@ -173,12 +173,14 @@
       "never_ask_again": "Non chiedere più",
       "failed": "Non è stato possibile attivare lo sblocco biometrico. Riprova.",
       "unsupported": "Questo dispositivo non supporta lo sblocco biometrico. Puoi continuare ad accedere con la password.",
-      "wrong_account": "Questa passkey appartiene a un altro account. Scegli la passkey di questo account o creane una nuova.",
       "create_title": "Creare una passkey su questo dispositivo?",
       "create_description": "Non è stata scelta nessuna passkey. Se lo sblocco biometrico di questo account è già attivo su un altro dispositivo, usa quella passkey: una nuova la sostituirebbe anche lì.",
       "create": "Crea passkey",
       "use_existing": "Usa una passkey di un altro dispositivo",
-      "unlock_gone": "La passkey salvata non è più disponibile su questo dispositivo; accedi con la password."
+      "relink_hint": "Inserisci la password una sola volta per collegare questo dispositivo alla tua passkey esistente.",
+      "unlock_wrong_account": "La passkey scelta appartiene a un altro account; accedi con la password di questo account.",
+      "wrong_account_title": "Questa passkey appartiene a un altro account",
+      "wrong_account_description": "La passkey scelta non è di questo account. Usa la passkey di questo account da un altro dispositivo oppure creane una qui: se lo sblocco biometrico di questo account è attivo su un altro dispositivo, una nuova la sostituirebbe anche lì."
     },
     "passkey": {
       "method": "Firmatario con passkey",
@@ -347,5 +349,14 @@
     "turned_on": "Le operazioni che richiedono la chiave attiva o la chiave Owner ora chiedono ogni volta la password o la passkey.",
     "turned_off": "Le operazioni che richiedono la chiave attiva ora vengono firmate senza chiedere finché le chiavi non si bloccano.",
     "change_failed": "Impossibile cambiare l'impostazione. Riprova."
+  },
+  "passkey_unlock": {
+    "menu_label": "Disattiva lo sblocco biometrico",
+    "turn_off_title": "Disattivare lo sblocco biometrico su questo dispositivo?",
+    "turn_off_description": "L'accesso su questo dispositivo chiederà di nuovo la password. La passkey resta nel tuo gestore di password: l'app non può eliminarla da lì, quindi eliminala tu se non ti serve più.",
+    "cancel_button": "Annulla",
+    "turn_off_confirm_button": "Disattiva",
+    "turned_off": "Lo sblocco biometrico è disattivato su questo dispositivo.",
+    "turn_off_failed": "Non è stato possibile disattivare lo sblocco biometrico. Riprova."
   }
 }

@@ -1,12 +1,16 @@
 import {
   createPasskeyUnlock,
+  discoverPasskey,
+  isPasskeyOf,
+  isRecordPasskey,
   passkeyUserId,
+  pickedPasskeyPassword,
   recoverPasskeyPassword,
-  rediscoverPasskey,
   reusePasskeyUnlock,
   wrapPassword,
   type FoundPasskey,
   type PasskeyCredentials,
+  type PickedPasskey,
   type PasskeyUnlockRecord
 } from '@smart-signer/lib/passkey-unlock/passkey-unlock-ceremony';
 import { PasskeyUnlockError } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
@@ -88,13 +92,17 @@ export class PasskeyReplacedError extends PasskeyUnlockError {
   }
 }
 
+/** Whether `failure`, a passkey unlock that failed, found another passkey of `username` the password it asks for next moves the record to */
+export const isPasskeyRelink = (failure: unknown, username: string): failure is PasskeyReplacedError =>
+  failure instanceof PasskeyReplacedError && failure.username === username;
+
 /**
  * Where `failure`, a passkey unlock of `username` that failed, found another passkey of the
  * account, keeps `password`, just accepted, under it. Never rejects: without it the next sign-in
  * asks for the password, and enabling the unlock finds the passkey again.
  */
 export async function adoptReplacedPasskey(failure: unknown, username: string, password: string): Promise<void> {
-  if (!(failure instanceof PasskeyReplacedError) || failure.username !== username) return;
+  if (!isPasskeyRelink(failure, username)) return;
   try {
     await failure.adopt(password);
   } catch (error) {
@@ -102,39 +110,52 @@ export async function adoptReplacedPasskey(failure: unknown, username: string, p
   }
 }
 
-/** Whether `error` says `username`'s record was dropped, the account having no passkey the browser reaches */
-export const isPasskeyGone = (error: unknown) => error instanceof PasskeyUnlockError && error.reason === 'gone';
-
-const isCancelled = (error: unknown) => error instanceof PasskeyUnlockError && error.reason === 'cancelled';
-
 /**
- * The password of `record`, asked of its passkey; where the browser answers as for a cancel (as it
- * does a credential it no longer has), asked once more of whichever passkey of the account the user
- * picks. Rejects with PasskeyReplacedError for a passkey other than the record's; as gone, having
- * removed the record, where none answers either time.
+ * The record of the account `picked` is a passkey of: `record`'s own, else the record on this
+ * device of one of `accounts`; undefined for an account without one here
  */
-async function recoverOrRediscover(
-  credentials: PasskeyCredentials,
+async function ownerRecord(
   store: PasskeyUnlockStore,
   record: PasskeyUnlockRecord,
-  userVerification: UserVerificationRequirement
-): Promise<string> {
-  try {
-    return await recoverPasskeyPassword(credentials, record, userVerification);
-  } catch (error) {
-    if (!isCancelled(error)) throw error;
+  accounts: readonly string[],
+  picked: PickedPasskey
+): Promise<PasskeyUnlockRecord | undefined> {
+  if (await isPasskeyOf(picked, record.username)) return record;
+  for (const username of accounts) {
+    if (username === record.username || !(await isPasskeyOf(picked, username))) continue;
+    return (await store.read(username)) ?? undefined;
   }
-  let found: Awaited<ReturnType<typeof rediscoverPasskey>>;
-  try {
-    found = await rediscoverPasskey(credentials, record, userVerification);
-  } catch (error) {
-    if (!isCancelled(error)) throw error;
-    // Only the record goes: a cancel looks the same, so its passkey may well be live and synced
-    await store.remove(record.username);
-    throw new PasskeyUnlockError(`Passkey unlock: no passkey of ${record.username} answers`, 'gone', { cause: error });
-  }
-  if ('password' in found) return found.password;
-  throw replaced(store, record, found.replacement);
+  return undefined;
+}
+
+type Unlocking = {
+  credentials: PasskeyCredentials;
+  store: PasskeyUnlockStore;
+  accounts: readonly string[];
+  userVerification: UserVerificationRequirement;
+  signal?: AbortSignal;
+};
+
+/**
+ * The password a passkey the user picks gives, asked of the account's passkeys without naming
+ * `record`'s credential, and the record it is the password of: `record`'s, or that of one of
+ * `accounts` linked on this device whose passkey the user picked instead. Rejects with
+ * PasskeyUnlockError: cancelled, keeping every record (a cancel says nothing of whether the passkey
+ * is still there); wrong-account for a passkey of an account not linked here; PasskeyReplacedError
+ * where the account's passkey is not its record's.
+ */
+async function passwordOfPickedPasskey(
+  record: PasskeyUnlockRecord,
+  { credentials, store, accounts, userVerification, signal }: Unlocking
+): Promise<{ record: PasskeyUnlockRecord; password: string }> {
+  const { username, rpId, prfSalt } = record;
+  const picked = await discoverPasskey(credentials, { rpId, userVerification, knownSalt: prfSalt, signal });
+  const owner = await ownerRecord(store, record, accounts, picked);
+  if (!owner) throw new PasskeyUnlockError(`Passkey unlock: the passkey picked is not ${username}'s`, 'wrong-account');
+  if (!isRecordPasskey(owner, picked)) throw replaced(store, owner, picked.passkey);
+  if (owner === record) return { record, password: await pickedPasskeyPassword(record, picked) };
+  // The request asked for the PRF output of `record`'s salt: ask the passkey that answered for its own
+  return { record: owner, password: await recoverPasskeyPassword(credentials, owner, userVerification, signal) };
 }
 
 function replaced(store: PasskeyUnlockStore, record: PasskeyUnlockRecord, passkey: FoundPasskey): PasskeyReplacedError {
@@ -161,14 +182,55 @@ async function asStalePassword(
   return new PasskeyUnlockError('Passkey unlock: safe storage refuses the stored password', 'stale', { cause: error });
 }
 
+export type PasskeyUnlockOptions = {
+  /**
+   * Accounts the user may pick the passkey of instead, at a sign-in that could be any of them:
+   * where the passkey picked is one of theirs linked on this device, that account is unlocked
+   */
+  accounts?: readonly string[];
+  /** Aborts the browser's prompt, which then rejects as cancelled */
+  signal?: AbortSignal;
+  credentials?: PasskeyCredentials;
+  store?: PasskeyUnlockStore;
+};
+
 /**
- * Authenticates `username`'s `keyType` key on `client` with the password its passkey gives: the
- * passkey registered on this device, asked with `userVerification`, else once any passkey of the
- * account (`recoverOrRediscover`). A record that no longer unlocks is removed, so the unlock can be
- * enabled again: its password does not decrypt, `client` refuses it, or no passkey answers either
- * prompt. Rejects with PasskeyUnlockError when the passkey gives no password or a refused one
- * (PasskeyReplacedError where another passkey of the account answered), else as
- * `client.authenticate` does.
+ * Authenticates `username`'s `keyType` key on `client` with the password a passkey the user picks
+ * gives, asked with `userVerification` in one request naming no credential, and resolves with the
+ * account unlocked (`username`, or one of `options.accounts` whose passkey the user picked), what
+ * `client.authenticate` did and the password. A record is removed only where it no longer unlocks:
+ * its password does not decrypt or `client` refuses it. Rejects with PasskeyUnlockError: cancelled
+ * where no passkey was picked, keeping the record; wrong-account; PasskeyReplacedError where another
+ * passkey of the account answered; otherwise as `client.authenticate` does.
+ */
+export async function unlockWithPasskeyGivingPassword<KeyType extends string, Status>(
+  client: PasskeyUnlockClient<KeyType, Status>,
+  username: string,
+  keyType: KeyType,
+  userVerification: UserVerificationRequirement,
+  { accounts = [], signal, credentials = navigator.credentials, store = BROWSER_STORE }: PasskeyUnlockOptions = {}
+): Promise<{ username: string; status: Status; password: string }> {
+  const record = await store.read(username);
+  if (!record) throw new PasskeyUnlockError(`No passkey unlock registered for ${username}`, 'not-registered');
+  let unlocked = username;
+  try {
+    const found = await passwordOfPickedPasskey(record, { credentials, store, accounts, userVerification, signal });
+    unlocked = found.record.username;
+    try {
+      const status = await client.authenticate(unlocked, found.password, keyType);
+      return { username: unlocked, status, password: found.password };
+    } catch (error) {
+      throw (await asStalePassword(client, unlocked, error)) ?? error;
+    }
+  } catch (error) {
+    if (error instanceof PasskeyUnlockError && error.reason === 'stale') await store.remove(unlocked);
+    throw error;
+  }
+}
+
+/**
+ * Authenticates `username`'s `keyType` key on `client` with the password its passkey gives, as
+ * `unlockWithPasskeyGivingPassword` does for `username` alone
  */
 export async function unlockWithPasskey<KeyType extends string, Status>(
   client: PasskeyUnlockClient<KeyType, Status>,
@@ -178,44 +240,5 @@ export async function unlockWithPasskey<KeyType extends string, Status>(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<Status> {
-  const record = await store.read(username);
-  if (!record) throw new PasskeyUnlockError(`No passkey unlock registered for ${username}`, 'not-registered');
-  try {
-    const password = await recoverOrRediscover(credentials, store, record, userVerification);
-    try {
-      return await client.authenticate(username, password, keyType);
-    } catch (error) {
-      throw (await asStalePassword(client, username, error)) ?? error;
-    }
-  } catch (error) {
-    if (error instanceof PasskeyUnlockError && error.reason === 'stale') await store.remove(username);
-    throw error;
-  }
-}
-
-/**
- * Unlocks `username`'s `keyType` key on `client` with its passkey, as `unlockWithPasskey` does, and
- * resolves with what `client.authenticate` did and with the password the passkey gave, for what signs
- * next without a prompt of its own
- */
-export async function unlockWithPasskeyGivingPassword<KeyType extends string, Status>(
-  client: PasskeyUnlockClient<KeyType, Status>,
-  username: string,
-  keyType: KeyType,
-  userVerification: UserVerificationRequirement
-): Promise<{ status: Status; password: string }> {
-  let password = '';
-  const status = await unlockWithPasskey(
-    {
-      authenticate: (name: string, given: string, type: KeyType) => {
-        password = given;
-        return client.authenticate(name, given, type);
-      },
-      getRegisteredUserByUsername: (name: string) => client.getRegisteredUserByUsername(name)
-    },
-    username,
-    keyType,
-    userVerification
-  );
-  return { status, password };
+  return (await unlockWithPasskeyGivingPassword(client, username, keyType, userVerification, { credentials, store })).status;
 }

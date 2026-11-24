@@ -8,10 +8,8 @@ import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-sig
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
 import {
   adoptReplacedPasskey,
-  isPasskeyGone,
   registerPasskeyUnlock,
-  reusePasskeyUnlockOf,
-  unlockWithPasskeyGivingPassword
+  reusePasskeyUnlockOf
 } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
 import { useActiveCheckSetting } from '@smart-signer/lib/auth/use-active-check-setting';
@@ -53,6 +51,7 @@ import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-ro
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { newPasswordSchema, passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
+import { useLinkedPasskeyUnlock } from './use-linked-passkey-unlock';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import StrictModeStatus from './strict-mode-status';
@@ -154,8 +153,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
-    /** Why the passkey unlock on mount failed: one that found another passkey keeps the password under it */
-    const passkeyUnlockFailureRef = useRef<unknown>(null);
+    const passkeyUnlock = useLinkedPasskeyUnlock();
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -214,7 +212,56 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       setError(null);
       // Checked again for this account: only a new wallet's password has a maximum
       form.trigger('password');
+      // The prompt open is for the account the user left: ask the passkey of this one instead
+      if (passkeyUnlock.abortOtherThan(watchedUsername)) switchPasskeyUnlock(watchedUsername);
     }, [watchedUsername]);
+
+    /** Whether `username`'s safe storage is locked and has a passkey unlock on this device */
+    async function hasLinkedPasskey(client: OnlineClient, username: string, users: AuthUser[]): Promise<boolean> {
+      const user = users.find((auth) => auth.username === username);
+      if (!user || user.unlocked) return false;
+      try {
+        return await client.hasPasskey(username);
+      } catch (error) {
+        logger.info('Passkey unlock of %s not read: %s', username, error instanceof Error ? error.message : String(error));
+        return false;
+      }
+    }
+
+    /**
+     * Signs in with the passkey the user picks: `username`'s, or that of another account linked on
+     * this device, which the form then switches to. Resolves false, the password form to fill, where
+     * it does not sign in, and null where the prompt was aborted for another account.
+     */
+    async function signInWithLinkedPasskey(client: OnlineClient, username: string, users: AuthUser[]): Promise<boolean | null> {
+      setLoading(true);
+      const accounts = users.map((user) => user.username);
+      const outcome = await passkeyUnlock.unlock(client, username, form.getValues().keyType, accounts);
+      if (!outcome) return null;
+      form.setValue('username', outcome.username);
+      if (outcome.unlocked) {
+        await finalize({ ...form.getValues(), username: outcome.username, password: outcome.password });
+        return true;
+      }
+      if (outcome.wrongAccount) setError(t('login_form.passkey_prompt.unlock_wrong_account', { ns: SMART_SIGNER_NAMESPACE }));
+      setLoading(false);
+      return false;
+    }
+
+    /** Asks the passkey of `username`, which the user changed to while another account's was asked */
+    async function switchPasskeyUnlock(username: string) {
+      try {
+        const client = await getAuthClient();
+        if (await hasLinkedPasskey(client, username, authUsers)) {
+          await signInWithLinkedPasskey(client, username, authUsers);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        setError(handleAuthError(error, 'switchPasskeyUnlock', translateSignerKey));
+        setLoading(false);
+      }
+    }
 
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict, requireActiveCheck } = values;
@@ -267,7 +314,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
           await authenticateStoredKey(client, username, password, keyType);
-          await adoptReplacedPasskey(passkeyUnlockFailureRef.current, username, password);
+          await adoptReplacedPasskey(passkeyUnlock.failure(), username, password);
           return shouldOfferPasskey(client, username);
         });
 
@@ -376,31 +423,16 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           const auths = hiveSafeStorageUsers(await authClient.current.getRegisteredUsers());
           setAuthUsers(auths);
 
-          // Auto-trigger biometric unlock if a passkey is registered.
-          // Uses "discouraged" verification for posting key — minimal friction,
-          // like the old WIF-in-session experience.
+          // Auto-trigger biometric unlock if a passkey is registered
           if (auths.length > 0 && username) {
             const targetUser = auths.find((a) => a.username === username) ?? auths[0];
-            if (targetUser && !targetUser.unlocked) {
-              try {
-                const hasPasskey = await authClient.current.hasPasskey(targetUser.username);
-                if (hasPasskey) {
-                  form.setValue('username', targetUser.username);
-                  const keyType = form.getValues().keyType;
-                  const uv = keyType === 'posting' ? 'discouraged' : 'required';
-                  setLoading(true);
-                  const { password } = await unlockWithPasskeyGivingPassword(authClient.current, targetUser.username, keyType, uv);
-                  await finalize({ ...form.getValues(), password });
-                  return;
-                }
-              } catch (error) {
-                // The password form; with a message only where the passkey is gone, its record dropped
-                passkeyUnlockFailureRef.current = error;
-                if (isPasskeyGone(error)) setError(t('login_form.passkey_prompt.unlock_gone', { ns: SMART_SIGNER_NAMESPACE }));
-                logger.info('Passkey unlock of %s failed, asking for the password: %s', targetUser.username, error instanceof Error ? error.message : String(error));
-              }
+            if (await hasLinkedPasskey(authClient.current, targetUser.username, auths)) {
+              form.setValue('username', targetUser.username);
+              // Aborted for another account: the unlock that account started holds the form
+              if ((await signInWithLinkedPasskey(authClient.current, targetUser.username, auths)) !== false) return;
             }
           }
+          setLoading(false);
         } catch (error) {
           const errorMessage = handleAuthError(error, 'SafeStorage.useEffect', translateSignerKey);
           setError(
@@ -408,7 +440,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               ? t('login_form.signin_safe_storage.start_failed', { ns: SMART_SIGNER_NAMESPACE })
               : errorMessage
           );
-        } finally {
           setLoading(false);
         }
       })();
@@ -456,6 +487,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const stepDescription = (
       <div>
         <div data-testid="login-form-description">{description}</div>
+        {passkeyUnlock.relinkUsername === watchedUsername && (
+          <div className="text-sm" data-testid="passkey-relink-hint">
+            {t('login_form.passkey_prompt.relink_hint', { ns: SMART_SIGNER_NAMESPACE })}
+          </div>
+        )}
         {error && (
           <div className="text-sm text-destructive" data-testid="safe-storage-error">
             {error}

@@ -30,6 +30,7 @@ import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storag
 import { useKeyProtection } from '@smart-signer/lib/auth/use-key-protection';
 import KeyProtectionMenuItem from '@smart-signer/components/key-protection-menu-item';
 import ActiveCheckMenuItem from '@smart-signer/components/active-check-menu-item';
+import PasskeyUnlockMenuItem from '@smart-signer/components/passkey-unlock-menu-item';
 import { usePathname } from 'next/navigation';
 import { startSignOutLeave } from '@/blog/features/tags-pages/sign-out-leave';
 import { useLocale } from '@ui/components/locale-context';
@@ -140,6 +141,7 @@ const UserMenu = ({
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
           <KeyProtectionMenuItem keyProtection={keyProtection} />
           <ActiveCheckMenuItem user={user} />
+          <PasskeyUnlockMenuItem user={user} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} t={t} />
 
