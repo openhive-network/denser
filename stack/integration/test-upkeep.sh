@@ -14,7 +14,11 @@
 #   - a sync that brings in a changed upgrade.sh execs it once, the lock still held,
 #     before anything is composed or applied; an unchanged one is not re-executed;
 #   - follow/serve.sh keeps its server running when serving.json can't be written,
-#     and writes it again on the next release once it can.
+#     and writes it again on the next release once it can;
+#   - a failed `pnpm install` in follow/follow.sh is recorded in releases/install.json
+#     and status/deployed.json says ROLLED-BACK with its log while the apps serve an
+#     earlier commit; an install that succeeds clears it, and so do apps that serve
+#     the checkout.
 #
 #   ./test-upkeep.sh
 #
@@ -294,5 +298,42 @@ holds "serve: serving.json written once it can be" test "$(json "$releases/blog/
 kill "$serve_pid"
 wait "$serve_pid" 2>/dev/null || true
 serve_pid=""
+
+# --- follow.sh with a pnpm install that fails, then one that succeeds ---
+install_src=$t/install-src
+install_releases=$t/install-releases
+mkdir -p "$install_src/.aidev" "$install_releases/blog/r1"
+echo "{\"revision\":\"$previous_rev\"}" > "$install_releases/blog/r1/release.json"
+ln -s r1 "$install_releases/blog/current"
+echo '{"release":"r1"}' > "$install_releases/blog/serving.json"
+follow_once() { # follow_once INSTALL_EXIT: sets rc; both streams in $t/follow.log
+    printf 'echo "ERR_PNPM_NO_OFFLINE_TARBALL stand-in"\nruntime_id=stand-in\nreturn %s\n' "$1" \
+        > "$install_src/.aidev/pnpm-deps.sh"
+    rc=0
+    FOLLOW_APPS=blog:/blog FOLLOW_RELEASES=$install_releases FOLLOW_SOURCE_DIR=$install_src \
+        bash follow/follow.sh once > "$t/follow.log" 2>&1 < /dev/null || rc=$?
+}
+install_status() { # install_status [CHECKOUT]: deployed.json for the stand-in releases
+    python3 follow/deployed.py --releases "$install_releases" --apps blog:/blog \
+        --source follow:aidev/integration --checkout "${1:-$head_rev}" > "$t/install-deployed.json"
+}
+follow_once 1
+install_status
+holds "install failed: exit 1" test "$rc" = 1
+holds "install failed: says so with the log" grep -q "pnpm install failed; every app keeps its release; log install.log" "$t/follow.log"
+holds "install failed: log kept" grep -q ERR_PNPM_NO_OFFLINE_TARBALL "$install_releases/install.log"
+holds "install failed: recorded at the commit" test "$(json "$install_releases/install.json" 'd["revision"]')" = "$head_rev"
+holds "install failed: status ROLLED-BACK" test "$(json "$t/install-deployed.json" 'd["upgrade"]["status"]')" = ROLLED-BACK
+holds "install failed: detail names the install and its log" \
+    test "$(json "$t/install-deployed.json" 'd["upgrade"]["detail"]')" = "pnpm install failed at $head_rev (install.log); every app keeps its release"
+holds "install failed: the app at its earlier commit" test "$(json "$t/install-deployed.json" 'd["services"]["blog"]["revision"]')" = "$previous_rev"
+install_status "$previous_rev"
+holds "install failed, apps serve the checkout: status OK" test "$(json "$t/install-deployed.json" 'd["upgrade"]["status"]')" = OK
+# The stand-in tree has no turbo, so the app's build fails after the install.
+follow_once 0
+install_status
+holds "install succeeded: the failure cleared" test ! -e "$install_releases/install.json"
+holds "install succeeded: past the install to the app" grep -q "follow: blog: turbo could not hash the build task" "$t/follow.log"
+holds "install succeeded: status OK" test "$(json "$t/install-deployed.json" 'd["upgrade"]["status"]')" = OK
 
 exit $failed

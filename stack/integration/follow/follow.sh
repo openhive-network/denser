@@ -16,8 +16,10 @@
 #     builds), the standalone output copied into /releases/<app>/<release>, started
 #     once on a scratch port, and only then `current` repointed at it. serve.sh, which
 #     serves `current`, restarts onto it; the old release serves until then.
-#   - A failed install, build or start leaves `current` where it was and records
+#   - A failed build or start leaves `current` where it was and records
 #     ROLLED-BACK (FAILED when there is no earlier release) with the log in state.json.
+#     A failed `pnpm install` stops the pass before any app: every app keeps its
+#     release, and releases/install.json names the failure and its log (install.log).
 #     `once` builds that key again on its next run; `watch` waits for the tree to move.
 #
 # Exit (once): 0 every app serves the tree's key; 1 an app could not be brought to it.
@@ -231,15 +233,28 @@ _follow_app() {
     echo "follow: $app: serving $id"
 }
 
+# releases/install.json: the install that failed, which deployed.py reports while the
+# apps do not serve the checkout; removed by the next install that succeeds.
+_record_install_failure() {
+    local commit
+    commit=$(_commit)
+    printf '{"status":"FAILED","revision":%s,"stage":"install","log":"%s","at":"%s"}\n' \
+        "$(_json_str "$commit")" "${install_log#"$releases"/}" "$(_now)" > "$releases/install.json.tmp"
+    mv -f "$releases/install.json.tmp" "$releases/install.json"
+}
+
 _pass() {
-    local retry_failed=$1 rc=0 entry
+    local retry_failed=$1 rc=0 entry install_log=$releases/install.log
+    mkdir -p "$releases"
     # Installs node_modules when pnpm-lock.yaml or the image moved; sets runtime_id.
     # shellcheck source=../../../.aidev/pnpm-deps.sh
-    if ! source .aidev/pnpm-deps.sh > /tmp/follow-install.log 2>&1; then
-        echo "follow: pnpm install failed; every app keeps its release" >&2
-        tail -n 20 /tmp/follow-install.log >&2
+    if ! source .aidev/pnpm-deps.sh > "$install_log" 2>&1; then
+        echo "follow: pnpm install failed; every app keeps its release; log ${install_log#"$releases"/}" >&2
+        tail -n 20 "$install_log" >&2
+        _record_install_failure
         return 1
     fi
+    rm -f "$releases/install.json"
     for entry in $apps; do
         _follow_app "${entry%%:*}" "${entry#*:}" "$retry_failed" || rc=1
     done

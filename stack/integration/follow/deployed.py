@@ -3,7 +3,8 @@
 
 Reads what follow.sh and serve.sh record under the releases directory:
 <app>/state.json (the decision for the checkout's tree), <app>/serving.json (the
-release the server runs) and <release>/release.json (what a release was built from).
+release the server runs), <release>/release.json (what a release was built from) and
+install.json (a `pnpm install` that failed, which stopped every app's build).
 Each app's `revision` is the commit its *served* release stands for: the checkout's
 commit when the served release is the current one and the commit changed nothing
 that app's build reads, otherwise the commit that release was built from.
@@ -79,12 +80,23 @@ def main() -> None:
         for app, s in services.items()
         if s["status"] in ("ROLLED-BACK", "FAILED")
     }
-    if upgrade_status == "OK" and failed:
-        upgrade_status = "ROLLED-BACK"
-        upgrade_detail = "; ".join(
-            f"{app}: {f.get('stage')} failed at {f.get('revision') or 'the tree'} ({f.get('log')})"
-            for app, f in failed.items()
+    reasons = []
+    install = _read(os.path.join(args.releases, "install.json"))
+    serving_checkout = bool(args.checkout) and all(
+        s["revision"] == args.checkout for s in services.values()
+    )
+    if install and not serving_checkout:
+        reasons.append(
+            f"pnpm install failed at {install.get('revision') or 'the tree'} ({install.get('log')}); "
+            "every app keeps its release"
         )
+    reasons += [
+        f"{app}: {f.get('stage')} failed at {f.get('revision') or 'the tree'} ({f.get('log')})"
+        for app, f in failed.items()
+    ]
+    if upgrade_status == "OK" and reasons:
+        upgrade_status = "ROLLED-BACK"
+        upgrade_detail = "; ".join(reasons)
     disk = {}
     if args.disk_free_bytes is not None:
         disk = {

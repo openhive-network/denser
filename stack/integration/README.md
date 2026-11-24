@@ -88,7 +88,11 @@ The site runs from this checkout; no image is built or pulled for the apps.
    previous commit's build, `status/deployed.json` says `ROLLED-BACK` with the
    failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
    run tries again. A checkout with local changes, on another branch, or behind a
-   rewritten branch is `REFUSED` (exit 3) and nothing changes. Too little free disk
+   rewritten branch is `REFUSED` (exit 3) and nothing changes. A `pnpm install`
+   that fails (a lockfile the follow image's store lacks a package of) builds no
+   app: `status/deployed.json` says `ROLLED-BACK` with the failed commit and
+   `install.log` (`releases/install.log`, recorded in `releases/install.json`)
+   until the apps serve the checkout, and the unit exits 1. Too little free disk
    is `DISK-LOW` (exit 6) and builds nothing; see "Disk space" below.
 6. Caddy config: caddy mounts `caddy/` as a directory (a single-file mount keeps
    showing the file git replaced), so the container sees a changed `Caddyfile*` at
