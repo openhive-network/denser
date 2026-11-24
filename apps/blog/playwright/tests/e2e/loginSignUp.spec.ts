@@ -460,10 +460,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(218, 43, 43)");
-    // Type empty string into the safe storage password in the login form
+    // An emptied field hides the password error message
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
-    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(218, 43, 43)");
+    await expect(loginForm.passwordErrorMessage).toBeHidden();
   });
 
   test('Validate styles in the error message for wrong WIF format in the light mode', async ({page}) =>{
@@ -509,10 +508,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
-    // Type empty string into the safe storage password in the login form
+    // An emptied field hides the password error message
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
-    expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
+    await expect(loginForm.passwordErrorMessage).toBeHidden();
   });
 
   test('Validate styles in the error message for wrong WIF format in the dark mode', async ({page}) =>{
