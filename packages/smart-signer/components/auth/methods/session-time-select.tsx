@@ -11,8 +11,8 @@ export interface SessionTimeSelectProps {
   /** The idle time, in seconds, shown as chosen */
   value: number;
   onChange: (seconds: number) => void;
-  /** Whether operations needing the active or owner key ask for the password or a passkey every time */
-  activeCheck: boolean;
+  /** Whether operations needing the active or owner key ask for the password or a passkey every time; undefined while not known */
+  activeCheck: boolean | undefined;
 }
 
 const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange, activeCheck }) => {

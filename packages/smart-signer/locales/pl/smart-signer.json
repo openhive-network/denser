@@ -342,7 +342,7 @@
     "unknown": "Wystąpił błąd uwierzytelniania."
   },
   "active_check": {
-    "menu_label": "Pytaj przed każdą operacją z kluczem Active",
+    "menu_label": "Pytaj przed każdą operacją z kluczem Active lub Owner",
     "turn_on_title": "Pytaj przed każdą operacją wymagającą klucza Active lub Owner",
     "turn_off_title": "Nie pytaj przed operacjami wymagającymi klucza Active",
     "change_description": "Wpisz hasło do bezpiecznego magazynu lub użyj klucza dostępu, aby zmienić to ustawienie.",

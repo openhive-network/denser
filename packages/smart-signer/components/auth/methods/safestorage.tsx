@@ -12,7 +12,7 @@ import {
   reusePasskeyUnlockOf
 } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
-import { useActiveCheckSetting } from '@smart-signer/lib/auth/use-active-check-setting';
+import { useShownActiveCheck } from '@smart-signer/lib/auth/use-active-check-setting';
 import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
 import { SafeStorageStartError } from '@hive/common-hiveio-packages';
 import PasskeyPrompt from '../passkey-prompt';
@@ -469,8 +469,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }, [form.watch('username'), authUsers, t]);
 
     const storedStrict = useStoredStrictMode(userFound?.username, form.watch('keyType'));
-    const [storedActiveCheck] = useActiveCheckSetting(userFound?.username);
-    const activeCheck = userFound ? storedActiveCheck === true : form.watch('requireActiveCheck');
+    const storedActiveCheck = useShownActiveCheck(userFound?.username);
+    const activeCheck = userFound ? storedActiveCheck : form.watch('requireActiveCheck');
 
     if (loading === undefined) return placeholder ?? <Step loading={true}></Step>;
 

@@ -342,7 +342,7 @@
     "unknown": "Si è verificato un errore di autenticazione."
   },
   "active_check": {
-    "menu_label": "Chiedi prima di ogni operazione con la chiave attiva",
+    "menu_label": "Chiedi prima di ogni operazione con la chiave attiva o la chiave Owner",
     "turn_on_title": "Chiedi prima di ogni operazione che richiede la chiave attiva o la chiave Owner",
     "turn_off_title": "Non chiedere più prima delle operazioni che richiedono la chiave attiva",
     "change_description": "Inserisci la password dell'archivio sicuro o usa la passkey per cambiare questa impostazione.",

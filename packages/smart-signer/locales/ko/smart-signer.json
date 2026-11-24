@@ -342,7 +342,7 @@
     "unknown": "인증 오류가 발생했습니다."
   },
   "active_check": {
-    "menu_label": "액티브 키 작업마다 확인",
+    "menu_label": "액티브 키나 소유자 키 작업마다 확인",
     "turn_on_title": "액티브 키나 소유자 키가 필요한 모든 작업 전에 확인",
     "turn_off_title": "액티브 키가 필요한 작업 전 확인 끄기",
     "change_description": "이 설정을 변경하려면 안전 저장소 비밀번호를 입력하거나 패스키를 사용하세요.",

@@ -342,7 +342,7 @@
     "unknown": "Une erreur d'authentification s'est produite."
   },
   "active_check": {
-    "menu_label": "Demander avant chaque opération avec la clé active",
+    "menu_label": "Demander avant chaque opération avec la clé active ou propriétaire",
     "turn_on_title": "Demander avant chaque opération qui nécessite votre clé active ou propriétaire",
     "turn_off_title": "Ne plus demander avant les opérations qui nécessitent votre clé active",
     "change_description": "Saisissez le mot de passe du stockage sécurisé ou utilisez votre passkey pour modifier ce réglage.",

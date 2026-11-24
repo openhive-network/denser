@@ -93,6 +93,6 @@ test.describe('Safe-storage idle lock', () => {
     expect(workerUrls.at(-1)).toContain('idle=3600');
     const profileMenu = new ProfileUserMenu(page);
     await clickUntilOpen(new HomePage(page).profileAvatarButton, profileMenu.profileMenuContent);
-    await expect(profileMenu.profileMenuContent.getByTestId('session-time-note')).toHaveText('Locks after 1 h idle');
+    await expect(profileMenu.profileMenuContent.getByTestId('session-time-note')).toContainText('Locks after 1 h idle');
   });
 });

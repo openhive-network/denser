@@ -342,7 +342,7 @@
     "unknown": "An authentication error occurred."
   },
   "active_check": {
-    "menu_label": "Ask before every active-key operation",
+    "menu_label": "Ask before every active- or owner-key operation",
     "turn_on_title": "Ask before every operation that needs your active or owner key",
     "turn_off_title": "Stop asking before operations that need your active key",
     "change_description": "Enter your safe storage password or use your passkey to change this setting.",
