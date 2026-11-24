@@ -10,3 +10,14 @@ account) as posting and active key, under the password `fixture-password`.
 Re-record it, with network access to gitlab.syncad.com and the workspace installed, from the
 repository root: `node apps/wallet/playwright/record-pre-setting-wallet.ts`. The script fetches that
 hb-auth build from the registry into a temporary directory, outside the catalog and lockfile.
+
+`long-password-wallet.json` holds the same key under a password of 1140 characters, over the 512 a
+new wallet's password may have now, as testers set before that maximum applied; the recording holds
+the password in its `password` field. The maximum is the sign-in form's, not hb-auth's, so the
+workspace's own `@hiveio/hb-auth` (named in `recordedWith`) makes it.
+`../../fixture/safeStorageLongPassword.spec.ts` restores it into a fresh browser context.
+
+Re-record it, with the workspace installed and no network, from the repository root:
+`node apps/wallet/playwright/record-long-password-wallet.ts`.
+
+Both scripts make the wallet the same way, in `../../../safe-storage-recorder.ts`.
