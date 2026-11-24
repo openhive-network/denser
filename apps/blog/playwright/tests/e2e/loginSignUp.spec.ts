@@ -248,10 +248,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.passwordInput.fill('ako');
     await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     await expect(loginForm.passwordErrorMessage).toHaveText('Password must be at least 6 characters long.');
-    // Type empty string into the safe storage password in the login form
+    // An emptied field drops the length error
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
-    await expect(loginForm.passwordErrorMessage).toHaveText('Password must be at least 6 characters long.');
+    await expect(loginForm.passwordErrorMessage).toHaveCount(0);
   });
 
   // WIF should not be empty. - Wrong WIF (needs username)

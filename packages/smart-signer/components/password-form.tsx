@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
+import { newPasswordSchema } from '@smart-signer/lib/validators/validate-password';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
@@ -18,14 +19,15 @@ export enum PasswordFormMode {
   WIF = 'wif'
 }
 
-// Hbauth password (de facto regular password)
-const passwordHbauth = z
-  .string()
-  .min(1, 'login_form.zod_error.password_required')
-  .max(512, 'login_form.zod_error.password_too_long');
+// Hbauth password (de facto regular password): no maximum, a wallet set with a longer one still unlocks
+const passwordHbauth = z.string().min(1, 'login_form.zod_error.password_required');
 
 const passwordFormSchemaHbauth = z.object({
   password: passwordHbauth
+});
+
+const passwordFormSchemaNewHbauth = z.object({
+  password: newPasswordSchema
 });
 export type PasswordFormSchemaHbauth = z.infer<typeof passwordFormSchemaHbauth>;
 
@@ -82,6 +84,8 @@ export interface PasswordFormI18nKeysForCaptions {
 
 export interface PasswordFormOptions {
   mode?: PasswordFormMode;
+  /** The password entered is chosen for a new safe storage wallet, held to its rules; HBAUTH mode only */
+  isNewPassword?: boolean;
   /** Offers to remember the entered WIF key for this tab or on this device (`rememberKey`); WIF mode only */
   showRememberKey?: boolean;
   errorMessage?: string;
@@ -118,6 +122,7 @@ export interface PasswordFormOptions {
 
 export function PasswordForm({
   mode = PasswordFormMode.HBAUTH,
+  isNewPassword = false,
   showRememberKey = false,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
@@ -152,7 +157,7 @@ export function PasswordForm({
   let resolver;
   let passwordFormDefaultValues;
   if (mode === PasswordFormMode.HBAUTH) {
-    resolver = passwordFormSchemaHbauth;
+    resolver = isNewPassword ? passwordFormSchemaNewHbauth : passwordFormSchemaHbauth;
     passwordFormDefaultValues = passwordFormDefaultValuesHbauth;
   } else if (mode === PasswordFormMode.WIF) {
     resolver = passwordFormSchemaWif;

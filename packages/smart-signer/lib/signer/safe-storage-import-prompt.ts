@@ -64,6 +64,7 @@ export async function importWithSafeStoragePassword(
   };
   const passwordFormOptions: PasswordFormOptions = {
     mode: PasswordFormMode.HBAUTH,
+    isNewPassword: isNewWallet,
     showRememberKey: false,
     validatePassword,
     i18nKeysForCaptions: {

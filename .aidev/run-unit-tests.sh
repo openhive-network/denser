@@ -126,6 +126,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/validators/key-role.test.ts \
     packages/smart-signer/lib/validators/key-role-hint.test.ts \
     packages/smart-signer/lib/validators/translated-errors.test.ts \
+    packages/smart-signer/lib/validators/validate-password.test.ts \
     packages/smart-signer/lib/validation-error-message.test.ts \
     packages/smart-signer/lib/validators/validate-key-authority.test.ts \
     packages/smart-signer/lib/memo-crypto.test.ts \
