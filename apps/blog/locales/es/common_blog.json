@@ -1440,7 +1440,6 @@
       "working": "Guardando las claves…",
       "secured_title": "Claves en el almacenamiento seguro",
       "secured_description": "Este navegador guarda ahora las claves de esta cuenta lite en el almacenamiento seguro, protegidas con tu contraseña.",
-      "passkey_failed_title": "No se activó el desbloqueo biométrico",
       "warning_unsecured": "Esta cuenta solo existe en este navegador y sus claves no están protegidas. Protégelas en el almacenamiento seguro.",
       "unlock_failed_title": "El almacenamiento seguro no se desbloqueó",
       "unlock_failed": "El almacenamiento seguro no se desbloqueó, así que no se envió nada. Inténtalo de nuevo.",

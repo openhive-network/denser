@@ -171,8 +171,14 @@
       "enable": "Attiva",
       "not_now": "Non ora",
       "never_ask_again": "Non chiedere più",
-      "failed": "Non è stato possibile attivare lo sblocco biometrico. Puoi continuare ad accedere con la password.",
-      "unsupported": "Questo dispositivo non supporta lo sblocco biometrico. Puoi continuare ad accedere con la password."
+      "failed": "Non è stato possibile attivare lo sblocco biometrico. Riprova.",
+      "unsupported": "Questo dispositivo non supporta lo sblocco biometrico. Puoi continuare ad accedere con la password.",
+      "wrong_account": "Questa passkey appartiene a un altro account. Scegli la passkey di questo account o creane una nuova.",
+      "create_title": "Creare una passkey su questo dispositivo?",
+      "create_description": "Non è stata scelta nessuna passkey. Se lo sblocco biometrico di questo account è già attivo su un altro dispositivo, usa quella passkey: una nuova la sostituirebbe anche lì.",
+      "create": "Crea passkey",
+      "use_existing": "Usa una passkey di un altro dispositivo",
+      "unlock_gone": "La passkey salvata non è più disponibile su questo dispositivo; accedi con la password."
     },
     "passkey": {
       "method": "Firmatario con passkey",

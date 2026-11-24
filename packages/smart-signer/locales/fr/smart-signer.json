@@ -171,8 +171,14 @@
       "enable": "Activer",
       "not_now": "Pas maintenant",
       "never_ask_again": "Ne plus demander",
-      "failed": "Le déverrouillage biométrique n’a pas pu être activé. Vous pouvez continuer à vous connecter avec votre mot de passe.",
-      "unsupported": "Cet appareil ne prend pas en charge le déverrouillage biométrique. Vous pouvez continuer à vous connecter avec votre mot de passe."
+      "failed": "Impossible d’activer le déverrouillage biométrique. Réessayez.",
+      "unsupported": "Cet appareil ne prend pas en charge le déverrouillage biométrique. Vous pouvez continuer à vous connecter avec votre mot de passe.",
+      "wrong_account": "Cette passkey appartient à un autre compte. Choisissez la passkey de ce compte ou créez-en une nouvelle.",
+      "create_title": "Créer une passkey sur cet appareil ?",
+      "create_description": "Aucune passkey n’a été choisie. Si le déverrouillage biométrique de ce compte est déjà activé sur un autre appareil, utilisez cette passkey : une nouvelle la remplacerait aussi là-bas.",
+      "create": "Créer une passkey",
+      "use_existing": "Utiliser une passkey d’un autre appareil",
+      "unlock_gone": "La passkey enregistrée n’est plus disponible sur cet appareil ; connectez-vous avec votre mot de passe."
     },
     "passkey": {
       "method": "Signataire à passkey",

@@ -1,7 +1,7 @@
 import { parseAuthError } from '@smart-signer/lib/auth-error';
 import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { adoptReplacedPasskey, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withPromptedCheck, type CheckPrompt } from '@smart-signer/lib/signer/active-check';
 import { getLogger } from '@ui/lib/logging';
 import type { LiteKeyRole, StoredLiteIdentity } from './lite-identity-record';
@@ -20,16 +20,18 @@ export const liteWalletClient = () => hbauthService.getLiteWalletClient();
 const userVerification = (keyType: LiteKeyRole): UserVerificationRequirement =>
   keyType === 'posting' ? 'discouraged' : 'required';
 
-/** Unlocks `username` with its passkey where it has one; false when it has none or the ceremony failed. */
-async function biometricUnlock(username: string, keyType: LiteKeyRole): Promise<boolean> {
+type BiometricUnlock = { unlocked: true } | { unlocked: false; failure?: unknown };
+
+/** Unlocks `username` with its passkey where it has one; not unlocked, with why, when it has none or the ceremony failed. */
+async function biometricUnlock(username: string, keyType: LiteKeyRole): Promise<BiometricUnlock> {
   const client = await liteWalletClient();
-  if (!(await client.hasPasskey(username))) return false;
+  if (!(await client.hasPasskey(username))) return { unlocked: false };
   try {
     await unlockWithPasskey(client, username, keyType, userVerification(keyType));
-    return true;
-  } catch (error) {
-    logger.info('Lite wallet passkey unlock failed, asking for the password: %s', error instanceof Error ? error.message : String(error));
-    return false;
+    return { unlocked: true };
+  } catch (failure) {
+    logger.info('Lite wallet passkey unlock failed, asking for the password: %s', failure instanceof Error ? failure.message : String(failure));
+    return { unlocked: false, failure };
   }
 }
 
@@ -65,7 +67,8 @@ async function askPassword(identity: StoredLiteIdentity, keyType: LiteKeyRole): 
  */
 async function unlockLiteWallet(identity: StoredLiteIdentity, keyType: LiteKeyRole): Promise<void> {
   const username = liteWalletUsername(identity);
-  if (await biometricUnlock(username, keyType)) return;
+  const biometric = await biometricUnlock(username, keyType);
+  if (biometric.unlocked) return;
   const password = await askPassword(identity, keyType);
   try {
     await authenticateStoredKey(await liteWalletClient(), username, password, keyType);
@@ -73,6 +76,7 @@ async function unlockLiteWallet(identity: StoredLiteIdentity, keyType: LiteKeyRo
     const { message, messageKey } = parseAuthError(error);
     throw new LiteWalletUnlockError(message, false, { cause: error, messageKey });
   }
+  await adoptReplacedPasskey(biometric.failure, username, password);
 }
 
 /** The check before an owner signature of `identity`'s entry, in smart-signer's password dialog; rejects when cancelled */

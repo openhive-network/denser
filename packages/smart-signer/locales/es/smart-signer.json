@@ -171,8 +171,14 @@
       "enable": "Activar",
       "not_now": "Ahora no",
       "never_ask_again": "No volver a preguntar",
-      "failed": "No se pudo activar el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña.",
-      "unsupported": "Este dispositivo no admite el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña."
+      "failed": "No se pudo activar el desbloqueo biométrico. Inténtalo de nuevo.",
+      "unsupported": "Este dispositivo no admite el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña.",
+      "wrong_account": "Esa passkey pertenece a otra cuenta. Elige la passkey de esta cuenta o crea una nueva.",
+      "create_title": "¿Crear una passkey en este dispositivo?",
+      "create_description": "No se eligió ninguna passkey. Si el desbloqueo biométrico de esta cuenta ya está activado en otro dispositivo, usa esa passkey: una nueva la reemplazaría también allí.",
+      "create": "Crear passkey",
+      "use_existing": "Usar una passkey de otro dispositivo",
+      "unlock_gone": "La passkey guardada ya no está disponible en este dispositivo; inicia sesión con tu contraseña."
     },
     "passkey": {
       "method": "Firmante con passkey",

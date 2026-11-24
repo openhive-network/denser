@@ -1432,7 +1432,6 @@
       "working": "Saving the keys…",
       "secured_title": "Keys in Safe Storage",
       "secured_description": "This browser now keeps the keys of this lite account in Safe Storage, behind your password.",
-      "passkey_failed_title": "Biometric unlock was not enabled",
       "warning_unsecured": "This account lives only in this browser, its keys unprotected. Secure them in Safe Storage.",
       "unlock_failed_title": "Safe Storage did not unlock",
       "unlock_failed": "Safe Storage did not unlock, so nothing was sent. Try again.",

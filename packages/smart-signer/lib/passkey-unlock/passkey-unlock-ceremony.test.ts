@@ -14,7 +14,10 @@ registerHooks({
   }
 });
 
-const { createPasskeyUnlock, recoverPasskeyPassword } = await import('./passkey-unlock-ceremony.ts');
+const { createPasskeyUnlock, passkeyUserId, recoverPasskeyPassword, rediscoverPasskey, reusePasskeyUnlock } = await import(
+  './passkey-unlock-ceremony.ts'
+);
+type PasskeyCredentials = Parameters<typeof createPasskeyUnlock>[0];
 const { PasskeyUnlockError, passkeyEnableFailureKey } = await import('./passkey-unlock-error.ts');
 
 const USERNAME = 'guest4test2';
@@ -31,28 +34,44 @@ type AuthenticatorOptions = {
   getError?: Error;
 };
 
-/** A platform authenticator answering navigator.credentials as WebAuthn does, recording each request */
+type Passkey = { id: Uint8Array<ArrayBuffer>; userHandle: Uint8Array<ArrayBuffer>; secret: string };
+
+const notAllowed = () => new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
+const sameBytes = (a: BufferSource | undefined, b: Uint8Array) =>
+  a instanceof Uint8Array && a.length === b.length && a.every((byte, i) => byte === b[i]);
+
+/**
+ * A passkey provider answering navigator.credentials as WebAuthn does, recording each request: it
+ * keeps one passkey per user handle (a creation replaces it), and the user picks the first passkey
+ * of `passkeys` where the request names no credential. The same provider on two devices stands for
+ * one that syncs.
+ */
 function fakeAuthenticator({ secret = 'secret', prfAtCreation = 'evaluated', createError, getError }: AuthenticatorOptions = {}) {
   const requests: { created: CredentialCreationOptions[]; got: CredentialRequestOptions[] } = { created: [], got: [] };
-  const prf = async (salt: BufferSource | undefined) => {
+  const passkeys: Passkey[] = [];
+  const prf = async (passkey: Passkey, salt: BufferSource | undefined) => {
     assert.ok(salt instanceof Uint8Array);
-    return crypto.subtle.digest('SHA-256', new Uint8Array([...new TextEncoder().encode(secret), ...salt]));
+    return crypto.subtle.digest('SHA-256', new Uint8Array([...new TextEncoder().encode(passkey.secret), ...salt]));
   };
   const credentials = {
     async create(options?: CredentialCreationOptions) {
       if (options) requests.created.push(options);
       if (createError) throw createError;
+      const userHandle = options?.publicKey?.user.id;
+      assert.ok(userHandle instanceof Uint8Array);
+      const passkey = { id: passkeys.length === 0 ? CREDENTIAL_ID : new Uint8Array([passkeys.length + 1]), userHandle, secret };
+      passkeys.splice(0, passkeys.length, ...passkeys.filter((other) => !sameBytes(other.userHandle, userHandle)), passkey);
       const salt = options?.publicKey?.extensions?.prf?.eval?.first;
       const extensions =
         prfAtCreation === 'absent'
           ? {}
           : prfAtCreation === 'evaluated'
-            ? { prf: { enabled: true, results: { first: await prf(salt) } } }
+            ? { prf: { enabled: true, results: { first: await prf(passkey, salt) } } }
             : { prf: { enabled: prfAtCreation === 'enabled' } };
       return {
         id: 'credential',
         type: 'public-key',
-        rawId: CREDENTIAL_ID.buffer,
+        rawId: passkey.id.buffer,
         response: { getTransports: () => ['internal', 'hybrid', 'quantum'] },
         getClientExtensionResults: () => extensions
       } as unknown as Credential;
@@ -60,11 +79,46 @@ function fakeAuthenticator({ secret = 'secret', prfAtCreation = 'evaluated', cre
     async get(options?: CredentialRequestOptions) {
       if (options) requests.got.push(options);
       if (getError) throw getError;
-      const results = { first: await prf(options?.publicKey?.extensions?.prf?.eval?.first) };
-      return { id: 'credential', type: 'public-key', getClientExtensionResults: () => ({ prf: { results } }) } as unknown as Credential;
+      const allowed = options?.publicKey?.allowCredentials;
+      const passkey = allowed?.length ? passkeys.find(({ id }) => allowed.some((a) => sameBytes(a.id, id))) : passkeys[0];
+      if (!passkey) throw notAllowed();
+      const { first, second } = options?.publicKey?.extensions?.prf?.eval ?? {};
+      const results = { first: await prf(passkey, first), ...(second ? { second: await prf(passkey, second) } : {}) };
+      return {
+        id: 'credential',
+        type: 'public-key',
+        rawId: passkey.id.buffer,
+        response: { userHandle: passkey.userHandle.buffer },
+        getClientExtensionResults: () => ({ prf: { results } })
+      } as unknown as Credential;
     }
   };
-  return { credentials, requests };
+  return { credentials, requests, passkeys };
+}
+
+/** The creation options a passkey of `username` comes from, for a provider set up by hand */
+async function creation(username: string): Promise<CredentialCreationOptions> {
+  return {
+    publicKey: {
+      rp: { id: RP_ID, name: 'test' },
+      user: { id: await passkeyUserId(username), name: username, displayName: username },
+      challenge: new Uint8Array(32),
+      pubKeyCredParams: [],
+      extensions: { prf: { eval: { first: new Uint8Array(32) } } }
+    }
+  };
+}
+
+/** `provider` seen from another device whose authenticator creates passkeys of `secret` */
+function fakeAuthenticatorSharing(provider: ReturnType<typeof fakeAuthenticator>, secret: string): PasskeyCredentials {
+  return {
+    create: async (options?: CredentialCreationOptions) => {
+      const created = await provider.credentials.create(options);
+      provider.passkeys[provider.passkeys.length - 1].secret = secret;
+      return created;
+    },
+    get: provider.credentials.get
+  };
 }
 
 describe('createPasskeyUnlock', () => {
@@ -132,7 +186,7 @@ describe('createPasskeyUnlock', () => {
     assert.notDeepEqual(other, first);
   });
 
-  it('rejects as cancelled a browser prompt the user cancelled, which needs no message', async () => {
+  it('rejects as cancelled a browser prompt the user cancelled, or a provider setup that did not finish, with the retry message', async () => {
     const createError = new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
     const { credentials } = fakeAuthenticator({ createError });
 
@@ -141,7 +195,7 @@ describe('createPasskeyUnlock', () => {
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'cancelled');
     assert.equal(error.cause, createError);
-    assert.equal(passkeyEnableFailureKey(error), null);
+    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.failed');
   });
 
   it('names any other failure with the translated failure message', async () => {
@@ -168,6 +222,7 @@ describe('recoverPasskeyPassword', () => {
   it('rejects as stale when another passkey answers, whose PRF does not decrypt the password', async () => {
     const record = await createPasskeyUnlock(fakeAuthenticator().credentials, USERNAME, PASSWORD, RP_ID);
     const { credentials } = fakeAuthenticator({ secret: 'another passkey' });
+    await credentials.create(await creation(record.username));
 
     const error = await recoverPasskeyPassword(credentials, record, 'required').catch((e: unknown) => e);
 
@@ -183,5 +238,82 @@ describe('recoverPasskeyPassword', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'cancelled');
+  });
+
+  it('rejects as cancelled, as the browser does, a credential the provider no longer holds', async () => {
+    const provider = fakeAuthenticator();
+    const record = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
+    provider.passkeys.length = 0;
+
+    const error = await recoverPasskeyPassword(provider.credentials, record, 'required').catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+  });
+});
+
+describe('reusePasskeyUnlock', () => {
+  it('keeps the passkey a syncing provider holds for the account, creating none, under a salt of its own', async () => {
+    const provider = fakeAuthenticator();
+    const firstDevice = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
+
+    const secondDevice = await reusePasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
+
+    assert.equal(provider.requests.created.length, 1);
+    assert.equal(provider.passkeys.length, 1);
+    const discovery = provider.requests.got[0].publicKey;
+    assert.equal(discovery?.allowCredentials, undefined);
+    assert.equal(discovery?.rpId, RP_ID);
+    assert.equal(discovery?.userVerification, 'required');
+    assert.deepEqual(secondDevice.credentialId, firstDevice.credentialId);
+    assert.notDeepEqual(secondDevice.prfSalt, firstDevice.prfSalt);
+    assert.equal(await recoverPasskeyPassword(provider.credentials, firstDevice, 'required'), PASSWORD);
+    assert.equal(await recoverPasskeyPassword(provider.credentials, secondDevice, 'required'), PASSWORD);
+  });
+
+  it("refuses another account's passkey, with its message, and keeps nothing", async () => {
+    const provider = fakeAuthenticator();
+    await createPasskeyUnlock(provider.credentials, 'another.user', 'another password', RP_ID);
+
+    const error = await reusePasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'wrong-account');
+    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.wrong_account');
+    assert.equal(provider.requests.created.length, 1);
+  });
+
+  it('rejects as cancelled where the account has no passkey, so creating one is offered next', async () => {
+    const provider = fakeAuthenticator();
+
+    const error = await reusePasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+    assert.equal(provider.requests.created.length, 0);
+  });
+});
+
+describe('rediscoverPasskey', () => {
+  it("gives the record's password where the account's passkey is the record's own", async () => {
+    const provider = fakeAuthenticator();
+    const record = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
+
+    assert.deepEqual(await rediscoverPasskey(provider.credentials, record, 'discouraged'), { password: PASSWORD });
+    assert.equal(provider.requests.got[0].publicKey?.userVerification, 'discouraged');
+  });
+
+  it('gives the passkey that replaced the record\'s, to encrypt the password under, creating none', async () => {
+    const provider = fakeAuthenticator();
+    const record = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID);
+    // Another device enabled the unlock with a creation, which replaced the synced passkey
+    await createPasskeyUnlock(fakeAuthenticatorSharing(provider, 'replacing passkey'), USERNAME, PASSWORD, RP_ID);
+
+    const found = await rediscoverPasskey(provider.credentials, record, 'required');
+
+    assert.ok('replacement' in found);
+    assert.notDeepEqual(found.replacement.credentialId, record.credentialId);
+    assert.deepEqual(found.replacement.credentialId, provider.passkeys[0].id);
+    assert.equal(provider.requests.created.length, 2);
   });
 });

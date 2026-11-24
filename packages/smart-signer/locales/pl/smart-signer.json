@@ -171,8 +171,14 @@
       "enable": "Włącz",
       "not_now": "Nie teraz",
       "never_ask_again": "Nie pytaj więcej",
-      "failed": "Nie udało się włączyć odblokowywania biometrycznego. Możesz dalej logować się hasłem.",
-      "unsupported": "To urządzenie nie obsługuje odblokowywania biometrycznego. Możesz dalej logować się hasłem."
+      "failed": "Nie udało się włączyć odblokowywania biometrycznego. Spróbuj ponownie.",
+      "unsupported": "To urządzenie nie obsługuje odblokowywania biometrycznego. Możesz dalej logować się hasłem.",
+      "wrong_account": "Ten klucz dostępu należy do innego konta. Wybierz klucz dostępu tego konta albo utwórz nowy.",
+      "create_title": "Utworzyć klucz dostępu na tym urządzeniu?",
+      "create_description": "Nie wybrano klucza dostępu. Jeśli odblokowywanie biometryczne tego konta jest już włączone na innym urządzeniu, użyj tamtego klucza dostępu: nowy zastąpiłby go także tam.",
+      "create": "Utwórz klucz dostępu",
+      "use_existing": "Użyj klucza dostępu z innego urządzenia",
+      "unlock_gone": "Zapisany klucz dostępu nie jest już dostępny na tym urządzeniu; zaloguj się hasłem."
     },
     "passkey": {
       "method": "Podpisywanie kluczem dostępu",

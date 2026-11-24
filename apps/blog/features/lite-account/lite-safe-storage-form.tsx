@@ -7,7 +7,7 @@ import { z } from 'zod';
 import PasskeyPrompt from '@smart-signer/components/auth/passkey-prompt';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
-import { registerPasskeyUnlock } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { registerPasskeyUnlock, reusePasskeyUnlockOf } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { withTranslatedErrors } from '@smart-signer/lib/validators/translated-errors';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
@@ -72,6 +72,11 @@ export default function LiteSafeStorageForm({ onDone }: { onDone: () => void }) 
     }
   };
 
+  const reusePasskey = async () => {
+    if (!offer) return;
+    await reusePasskeyUnlockOf(offer.username, offerPassword.current);
+  };
+
   const registerPasskey = async () => {
     if (!offer) return;
     await registerPasskeyUnlock(offer.username, offerPassword.current);
@@ -81,8 +86,8 @@ export default function LiteSafeStorageForm({ onDone }: { onDone: () => void }) 
     return (
       <PasskeyPrompt
         username={offer.username}
-        onEnable={registerPasskey}
-        onError={(message) => toast({ title: t('lite_account.safe_storage.passkey_failed_title'), description: message, variant: 'destructive' })}
+        onReuse={reusePasskey}
+        onCreate={registerPasskey}
         onDone={() => {
           offerPassword.current = '';
           onDone();

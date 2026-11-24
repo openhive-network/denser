@@ -1440,7 +1440,6 @@
       "working": "Salvataggio delle chiavi…",
       "secured_title": "Chiavi nell'archivio sicuro",
       "secured_description": "Questo browser conserva ora le chiavi di questo account lite nell'archivio sicuro, protette dalla tua password.",
-      "passkey_failed_title": "Lo sblocco biometrico non è stato attivato",
       "warning_unsecured": "Questo account esiste solo in questo browser e le sue chiavi non sono protette. Proteggile nell'archivio sicuro.",
       "unlock_failed_title": "L'archivio sicuro non si è sbloccato",
       "unlock_failed": "L'archivio sicuro non si è sbloccato, quindi non è stato inviato nulla. Riprova.",
