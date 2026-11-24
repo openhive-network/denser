@@ -37,6 +37,7 @@ export function findKeyRefusalHint(
 ): KeyHint | null {
   switch (refusal.kind) {
     case 'own-other-role':
+    case 'unheld':
       return { key: KEY_ROLE_HINTS[keyType] };
     case 'authorised-account':
       return strict

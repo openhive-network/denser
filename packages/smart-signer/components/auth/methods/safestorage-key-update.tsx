@@ -25,6 +25,7 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
+import { useWrongPasswordError } from './use-wrong-password-error';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
@@ -190,6 +191,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       showKeyError: (message) => form.setError('wif', { message }),
       revalidateKey: () => form.trigger('wif')
     });
+    const wrongPassword = useWrongPasswordError(i18nNamespace, form.watch('password'));
+    const shownError = error ?? wrongPassword.message;
 
     async function signInWithKey(client: OnlineClient, username: string, password: string, keyType: KeyType) {
       try {
@@ -224,6 +227,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       try {
         setLoading(true);
         setError(null);
+        wrongPassword.clear();
 
         if (!registeredUser) {
           setError(t('login_form.signin_safe_storage.user_not_found'));
@@ -249,7 +253,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           }
         } catch (error) {
           if (!findWrongSafeStoragePassword(error)) throw error;
-          setError(t('broadcast_error.wrong_safe_storage_password', { ns: SMART_SIGNER_NAMESPACE }));
+          wrongPassword.refuse(password);
           setLoading(false);
           return;
         }
@@ -321,7 +325,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                 {t(`login_form.signin_safe_storage.add_key_info_${selectedKeyType}`)}
               </div>
             )}
-            {error && <div className="text-sm text-destructive">{error}</div>}
+            {shownError && <div className="text-sm text-destructive">{shownError}</div>}
             {updateSuccess && (
               <div className="text-sm text-green-500">
                 {t('login_form.signin_safe_storage.key_updated_success')}
@@ -408,8 +412,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                       </Button>
                     </div>
                   </FormControl>
-                  {/* An emptied field is not wrong until the form is submitted */}
-                  {field.value || form.formState.isSubmitted ? <FormMessage /> : null}
+                  {/* An emptied field is not wrong unless a submit was refused for it */}
+                  {field.value || (form.formState.isSubmitted && !form.formState.isSubmitSuccessful) ? (
+                    <FormMessage />
+                  ) : null}
                 </FormItem>
               )}
             />

@@ -10,8 +10,10 @@ import { STUB_ACCOUNT, fullAccount, startWalletApiStub } from '../support/wallet
  * the same error as the WIF sign-in (wifLoginKeyRole.spec.ts), the key kept in its field, before
  * anything is stored. So is a key of none of the account's authorities, which the chain's
  * `verify_authority` refuses: it names the active key too, not hb-auth's "Invalid credentials".
+ * Typed at the keyboard and left with Tab, such a key, which nobody holds, is refused before any
+ * submit, and changing the account drops the refusal.
  * The API answers come from the stub node (support/walletApiStub.ts), whose account holds the
- * generated key below as its only posting key.
+ * generated key below as its only posting key, and which knows no account holding any key.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -38,7 +40,8 @@ test.beforeAll(async () => {
           posting: { weight_threshold: 1, account_auths: [], key_auths: [[POSTING_PUBLIC_KEY, 1]] }
         })
       )
-    })
+    }),
+    'account_by_key_api.get_key_references': () => ({ accounts: [[]] })
   });
 });
 
@@ -56,7 +59,7 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
-async function submitSafeStorageForm(loginForm: LoginForm, wif: string) {
+async function openSafeStorageForm(loginForm: LoginForm) {
   await loginForm.page.goto(`${WALLET_BASE_PATH}/market`);
   await expect(async () => {
     await loginForm.page.getByRole('button', { name: 'Login', exact: true }).click();
@@ -64,6 +67,10 @@ async function submitSafeStorageForm(loginForm: LoginForm, wif: string) {
   }).toPass({ timeout: HYDRATION_TIMEOUT });
 
   await expect(loginForm.wifInput).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+}
+
+async function submitSafeStorageForm(loginForm: LoginForm, wif: string) {
+  await openSafeStorageForm(loginForm);
   await loginForm.usernameInput.fill(STUB_ACCOUNT);
   await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
   await loginForm.wifInput.fill(wif);
@@ -94,5 +101,28 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
     await expect(loginForm.loginFormHeader).toBeVisible();
     await expect(loginForm.wifInput).toHaveValue(UNKNOWN_WIF);
     await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);
+  });
+
+  test('WALLET-SAFE-STORAGE-LOGIN-03 — a typed key nobody holds is refused on Tab; changing the account drops it', async ({
+    page
+  }) => {
+    const loginForm = new LoginForm(page);
+    await openSafeStorageForm(loginForm);
+    await loginForm.usernameInput.click();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.type(STUB_ACCOUNT, { delay: 20 });
+    await page.keyboard.press('Tab');
+    await page.keyboard.type(SAFE_STORAGE_PASSWORD, { delay: 20 });
+    await loginForm.wifInput.click();
+    await page.keyboard.type(UNKNOWN_WIF, { delay: 20 });
+    await page.keyboard.press('Tab');
+
+    await expect(loginForm.wifInputErrorMessage).toHaveText(ACTIVE_KEY_ERROR, { timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.wifInput).toHaveValue(UNKNOWN_WIF);
+
+    await loginForm.usernameInput.click();
+    await page.keyboard.press('End');
+    await page.keyboard.type('x', { delay: 20 });
+    await expect(loginForm.wifInputErrorMessage).toHaveCount(0);
   });
 });

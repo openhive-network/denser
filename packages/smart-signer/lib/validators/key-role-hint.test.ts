@@ -59,6 +59,11 @@ describe('findKeyRefusalHint', () => {
     });
   });
 
+  it('gives the role hint for a key nobody holds, whatever the mode', () => {
+    assert.deepEqual(findKeyRefusalHint({ kind: 'unheld' }, 'guest4test2', 'active', true), { key: ACTIVE_HINT });
+    assert.deepEqual(findKeyRefusalHint({ kind: 'unheld' }, 'guest4test2', 'active', false), { key: ACTIVE_HINT });
+  });
+
   it("names an authorised account's key, and its account, in Direct Authority Mode", () => {
     assert.deepEqual(findKeyRefusalHint(authorised, 'guest4test2', 'active', true), {
       key: 'login_form.zod_error.authorised_account_active_key',
