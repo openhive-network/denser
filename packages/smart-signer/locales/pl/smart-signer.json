@@ -173,12 +173,14 @@
       "never_ask_again": "Nie pytaj więcej",
       "failed": "Nie udało się włączyć odblokowywania biometrycznego. Spróbuj ponownie.",
       "unsupported": "To urządzenie nie obsługuje odblokowywania biometrycznego. Możesz dalej logować się hasłem.",
-      "wrong_account": "Ten klucz dostępu należy do innego konta. Wybierz klucz dostępu tego konta albo utwórz nowy.",
       "create_title": "Utworzyć klucz dostępu na tym urządzeniu?",
       "create_description": "Nie wybrano klucza dostępu. Jeśli odblokowywanie biometryczne tego konta jest już włączone na innym urządzeniu, użyj tamtego klucza dostępu: nowy zastąpiłby go także tam.",
       "create": "Utwórz klucz dostępu",
       "use_existing": "Użyj klucza dostępu z innego urządzenia",
-      "unlock_gone": "Zapisany klucz dostępu nie jest już dostępny na tym urządzeniu; zaloguj się hasłem."
+      "relink_hint": "Wpisz hasło jeden raz, aby połączyć to urządzenie z istniejącym kluczem dostępu.",
+      "unlock_wrong_account": "Wybrany klucz dostępu należy do innego konta; zaloguj się hasłem tego konta.",
+      "wrong_account_title": "Ten klucz dostępu należy do innego konta",
+      "wrong_account_description": "Wybrany klucz dostępu nie należy do tego konta. Użyj klucza dostępu tego konta z innego urządzenia albo utwórz nowy tutaj: jeśli odblokowywanie biometryczne tego konta jest włączone na innym urządzeniu, nowy klucz dostępu zastąpiłby go także tam."
     },
     "passkey": {
       "method": "Podpisywanie kluczem dostępu",
@@ -347,5 +349,14 @@
     "turned_on": "Operacje wymagające klucza Active lub Owner będą teraz za każdym razem prosić o hasło lub klucz dostępu.",
     "turned_off": "Operacje wymagające klucza Active będą teraz podpisywane bez pytania, dopóki klucze nie zostaną zablokowane.",
     "change_failed": "Nie udało się zmienić ustawienia. Spróbuj ponownie."
+  },
+  "passkey_unlock": {
+    "menu_label": "Wyłącz odblokowywanie biometryczne",
+    "turn_off_title": "Wyłączyć odblokowywanie biometryczne na tym urządzeniu?",
+    "turn_off_description": "Logowanie na tym urządzeniu znów będzie wymagało hasła. Sam klucz dostępu pozostanie w menedżerze haseł: aplikacja nie może go tam usunąć, więc usuń go samodzielnie, jeśli nie jest już potrzebny.",
+    "cancel_button": "Anuluj",
+    "turn_off_confirm_button": "Wyłącz",
+    "turned_off": "Odblokowywanie biometryczne na tym urządzeniu jest wyłączone.",
+    "turn_off_failed": "Nie udało się wyłączyć odblokowywania biometrycznego. Spróbuj ponownie."
   }
 }

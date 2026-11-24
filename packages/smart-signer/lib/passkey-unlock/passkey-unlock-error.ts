@@ -1,10 +1,11 @@
 /**
  * Why a passkey did not give the safe storage password: the user cancelled or let the browser's
- * prompt time out (WebAuthn's NotAllowedError, AbortError), the authenticator has no PRF, the user
- * has no passkey registered, the registered one no longer unlocks (its password does not decrypt,
- * or safe storage refuses it), the user picked another account's passkey, the account has no
- * passkey the browser can reach any more (`gone`), another passkey of the account took the
- * registered one's place and needs the password once (`replaced`), or the ceremony failed otherwise.
+ * prompt time out, or the app aborted it (WebAuthn's NotAllowedError, AbortError; the browser
+ * answers so too where the account has no passkey it reaches, so this never says the passkey is
+ * gone), the authenticator has no PRF, the user has no passkey registered, the registered one no
+ * longer unlocks (its password does not decrypt, or safe storage refuses it), the user picked
+ * another account's passkey, another passkey of the account took the registered one's place and
+ * needs the password once (`replaced`), or the ceremony failed otherwise.
  */
 export type PasskeyUnlockFailure =
   | 'cancelled'
@@ -12,7 +13,6 @@ export type PasskeyUnlockFailure =
   | 'not-registered'
   | 'stale'
   | 'wrong-account'
-  | 'gone'
   | 'replaced'
   | 'failed';
 
@@ -44,6 +44,5 @@ export function ceremonyError(step: string, error: unknown): PasskeyUnlockError 
 export function passkeyEnableFailureKey(error: unknown): string {
   if (!(error instanceof PasskeyUnlockError)) return 'login_form.passkey_prompt.failed';
   if (error.reason === 'unsupported') return 'login_form.passkey_prompt.unsupported';
-  if (error.reason === 'wrong-account') return 'login_form.passkey_prompt.wrong_account';
   return 'login_form.passkey_prompt.failed';
 }

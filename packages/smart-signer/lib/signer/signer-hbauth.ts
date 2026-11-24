@@ -17,7 +17,11 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
-import { adoptReplacedPasskey, unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import {
+  adoptReplacedPasskey,
+  isPasskeyRelink,
+  unlockWithPasskeyGivingPassword
+} from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
@@ -80,12 +84,14 @@ export class SignerHbauth extends Signer {
    * @returns {Promise<string>}
    * @memberof SignerHbauth
    */
-  async getPasswordFromUser(operation?: OperationSummary): Promise<string> {
+  /** The password the user enters for `operation`; `relink` says it also links this device to the account's passkey */
+  async getPasswordFromUser(operation?: OperationSummary, relink = false): Promise<string> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showSessionTime: true,
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
+        ...(relink ? { description: 'login_form.passkey_prompt.relink_hint' } : {})
       },
       operation
     };
@@ -218,7 +224,7 @@ export class SignerHbauth extends Signer {
     }
 
     if (!password) {
-      password = await this.getPasswordFromUser(operation);
+      password = await this.getPasswordFromUser(operation, isPasskeyRelink(passkeyFailure, username));
     }
     if (!password) throw new Error('No password to unlock key');
 

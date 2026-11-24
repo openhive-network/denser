@@ -1,7 +1,7 @@
 import { parseAuthError } from '@smart-signer/lib/auth-error';
 import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
-import { adoptReplacedPasskey, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { adoptReplacedPasskey, isPasskeyRelink, unlockWithPasskey } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withPromptedCheck, type CheckPrompt } from '@smart-signer/lib/signer/active-check';
 import { getLogger } from '@ui/lib/logging';
 import type { LiteKeyRole, StoredLiteIdentity } from './lite-identity-record';
@@ -35,8 +35,11 @@ async function biometricUnlock(username: string, keyType: LiteKeyRole): Promise<
   }
 }
 
-/** The password of `identity`'s entry, asked in smart-signer's password dialog; rejects when cancelled. */
-async function askPassword(identity: StoredLiteIdentity, keyType: LiteKeyRole): Promise<string> {
+/**
+ * The password of `identity`'s entry, asked in smart-signer's password dialog, which says where it
+ * also links this device to the entry's passkey (`relink`); rejects when cancelled.
+ */
+async function askPassword(identity: StoredLiteIdentity, keyType: LiteKeyRole, relink: boolean): Promise<string> {
   const [{ PasswordDialogModalPromise }, { PasswordFormMode }] = await Promise.all([
     import('@smart-signer/components/password-dialog'),
     import('@smart-signer/components/password-form')
@@ -50,7 +53,8 @@ async function askPassword(identity: StoredLiteIdentity, keyType: LiteKeyRole): 
         i18nKeysForCaptions: {
           title: 'login_form.title_hbauth_dialog_password',
           inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder',
-          submitButtonName: 'login_form.title_action_unlock_key'
+          submitButtonName: 'login_form.title_action_unlock_key',
+          ...(relink ? { description: 'login_form.passkey_prompt.relink_hint' } : {})
         },
         i18nValues: { username: identity.name, keyType }
       }
@@ -69,7 +73,7 @@ async function unlockLiteWallet(identity: StoredLiteIdentity, keyType: LiteKeyRo
   const username = liteWalletUsername(identity);
   const biometric = await biometricUnlock(username, keyType);
   if (biometric.unlocked) return;
-  const password = await askPassword(identity, keyType);
+  const password = await askPassword(identity, keyType, isPasskeyRelink(biometric.failure, username));
   try {
     await authenticateStoredKey(await liteWalletClient(), username, password, keyType);
   } catch (error) {

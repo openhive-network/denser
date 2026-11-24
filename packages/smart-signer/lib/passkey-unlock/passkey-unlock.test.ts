@@ -23,11 +23,11 @@ const { createPasskeyUnlock } = await import('./passkey-unlock-ceremony.ts');
 const { PasskeyUnlockError } = await import('./passkey-unlock-error.ts');
 const {
   adoptReplacedPasskey,
-  isPasskeyGone,
   PasskeyReplacedError,
   registerPasskeyUnlock,
   reusePasskeyUnlockOf,
-  unlockWithPasskey
+  unlockWithPasskey,
+  unlockWithPasskeyGivingPassword
 } = await import('./passkey-unlock.ts');
 type PasskeyUnlockRecord = Awaited<ReturnType<typeof createPasskeyUnlock>>;
 
@@ -92,8 +92,8 @@ function authenticator(secret: string, getError?: Error) {
 }
 
 /** The passkey record store, in memory */
-function memoryStore(record: PasskeyUnlockRecord) {
-  const records = new Map([[record.username, record]]);
+function memoryStore(...stored: PasskeyUnlockRecord[]) {
+  const records = new Map(stored.map((record) => [record.username, record]));
   return {
     records,
     read: async (username: string) => records.get(username) ?? null,
@@ -176,44 +176,128 @@ describe('unlockWithPasskey', () => {
     assert.equal(store.records.size, 0);
   });
 
-  it('keeps the record when the user cancels the prompt, then picks another account\'s passkey', async () => {
+  it('asks once, naming no credential, so a replaced one never shows the browser\'s "no passkeys" dialog', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+
+    await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'discouraged', provider, store);
+
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(provider.got[0].publicKey?.allowCredentials, []);
+    assert.equal(provider.got[0].publicKey?.userVerification, 'discouraged');
+  });
+
+  it('keeps the record, asking nothing more, when the user cancels the prompt', async () => {
+    const provider = authenticator('passkey', cancel());
+    const store = await registered(authenticator('passkey'));
+    const client = hbAuthClient(PASSWORD);
+
+    const error = await unlockWithPasskey(client, USERNAME, 'posting', 'required', provider, store).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(client.passwords, []);
+    assert.equal(store.records.size, 1);
+  });
+
+  it('keeps the record where the account has no passkey the browser reaches: that answers as a cancel does', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    provider.passkeys.length = 0;
+
+    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store).catch(
+      (e: unknown) => e
+    );
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+    assert.equal(provider.got.length, 1);
+    assert.equal(store.records.size, 1);
+  });
+
+  it('hands the browser the abort signal, and keeps the record of a prompt it aborted', async () => {
+    const store = await registered();
+    const controller = new AbortController();
+    const requests: CredentialRequestOptions[] = [];
+    const aborting = {
+      create: authenticator('passkey').create,
+      get: async (options?: CredentialRequestOptions) => {
+        if (options) requests.push(options);
+        controller.abort();
+        throw new DOMException('The request was aborted', 'AbortError');
+      }
+    };
+
+    const error = await unlockWithPasskeyGivingPassword(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', {
+      credentials: aborting,
+      store,
+      signal: controller.signal
+    }).catch((e: unknown) => e);
+
+    assert.equal(requests[0].signal, controller.signal);
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+    assert.equal(store.records.size, 1);
+  });
+
+  it("rejects as wrong-account, keeping the record, a passkey of an account not linked on this device", async () => {
     const provider = authenticator('passkey');
     const store = await registered(provider);
     const otherAccount = authenticator('other');
     await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID);
     provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: new Uint8Array([5]) });
-    const cancelFirst = {
-      create: provider.create,
-      get: async (options?: CredentialRequestOptions) => {
-        if (options?.publicKey?.allowCredentials?.length) throw cancel();
-        return provider.get(options);
-      }
-    };
 
-    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', cancelFirst, store).catch(
-      (e: unknown) => e
-    );
+    const error = await unlockWithPasskeyGivingPassword(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', {
+      credentials: provider,
+      store,
+      accounts: [USERNAME, 'another.user']
+    }).catch((e: unknown) => e);
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'wrong-account');
     assert.equal(store.records.size, 1);
   });
 
-  it('unlocks where the user cancels the prompt and then picks the record\'s own passkey', async () => {
+  it("unlocks the account whose linked passkey the user picked in place of the one asked for", async () => {
     const provider = authenticator('passkey');
-    const store = await registered(provider);
-    const client = hbAuthClient(PASSWORD);
-    const cancelFirst = {
-      create: provider.create,
-      get: async (options?: CredentialRequestOptions) => {
-        if (options?.publicKey?.allowCredentials?.length) throw cancel();
-        return provider.get(options);
-      }
-    };
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID);
+    const otherId = new Uint8Array([5]);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
+    const client = hbAuthClient('other password');
 
-    assert.deepEqual(await unlockWithPasskey(client, USERNAME, 'posting', 'required', cancelFirst, store), { ok: true });
-    assert.deepEqual(client.passwords, [PASSWORD]);
-    assert.equal(store.records.size, 1);
+    const unlocked = await unlockWithPasskeyGivingPassword(client, USERNAME, 'posting', 'required', {
+      credentials: provider,
+      store,
+      accounts: [USERNAME, 'another.user']
+    });
+
+    assert.equal(unlocked.username, 'another.user');
+    assert.equal(unlocked.password, 'other password');
+    assert.deepEqual(unlocked.status, { ok: true });
+    assert.equal(provider.got.length, 2);
+    assert.ok(sameId(provider.got[1].publicKey?.allowCredentials?.[0].id ?? new Uint8Array(), otherId));
+    assert.equal(store.records.size, 2);
+  });
+
+  it("rejects as wrong-account another account's passkey where the unlock is for one account only", async () => {
+    const provider = authenticator('passkey');
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: new Uint8Array([5]) });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: new Uint8Array([5]) });
+
+    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store).catch(
+      (e: unknown) => e
+    );
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'wrong-account');
+    assert.equal(store.records.size, 2);
   });
 
   it('keeps the record where the prompt fails otherwise, without looking for another passkey', async () => {
@@ -232,21 +316,6 @@ describe('unlockWithPasskey', () => {
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'failed');
     assert.equal(store.records.size, 1);
-  });
-
-  it('drops the record, as gone, where the account has no passkey left, so no later sign-in asks for it', async () => {
-    const provider = authenticator('passkey');
-    const store = await registered(provider);
-    provider.passkeys.length = 0;
-
-    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store).catch(
-      (e: unknown) => e
-    );
-
-    assert.ok(isPasskeyGone(error));
-    assert.equal(store.records.size, 0);
-    assert.equal(provider.got.length, 2);
-    assert.equal(provider.got[1].publicKey?.allowCredentials, undefined);
   });
 
   it('moves the record, after one password, to the passkey that replaced its own, creating none', async () => {
@@ -368,7 +437,7 @@ describe('passkey signals', () => {
     assert.deepEqual(sent, []);
   });
 
-  it('cancelling both prompts drops the record but signals nothing, the passkey staying', async () => {
+  it('cancelling the prompt keeps the record and signals nothing, the passkey staying', async () => {
     const provider = authenticator('passkey');
     const store = await registered(provider);
     const cancelling = { create: provider.create, get: async () => Promise.reject(cancel()) };
@@ -377,8 +446,9 @@ describe('passkey signals', () => {
       (e: unknown) => e
     );
 
-    assert.ok(isPasskeyGone(error));
-    assert.equal(store.records.size, 0);
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'cancelled');
+    assert.equal(store.records.size, 1);
     assert.equal(provider.passkeys.length, 1);
     assert.deepEqual(sent, []);
   });

@@ -51,6 +51,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | password | 密码 | unreviewed | |
 | passkey | 通行密钥 | unreviewed | |
 | biometric unlock | 生物识别解锁 | unreviewed | As in `login_form.passkey_prompt.*`. |
+| password manager | 密码管理器 | unreviewed | `passkey_unlock.turn_off_description` (#1774). Turning biometric unlock off: “关闭生物识别解锁”. |
 | check before active-key operations | 每次使用活动密钥的操作前都确认；“使用密码或通行密钥确认” | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | market / interest | 市场 / 利息 | unreviewed | |
 | this session (key badge) | 当前会话 | unreviewed | |

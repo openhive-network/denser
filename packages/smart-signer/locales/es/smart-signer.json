@@ -173,12 +173,14 @@
       "never_ask_again": "No volver a preguntar",
       "failed": "No se pudo activar el desbloqueo biométrico. Inténtalo de nuevo.",
       "unsupported": "Este dispositivo no admite el desbloqueo biométrico. Puedes seguir iniciando sesión con tu contraseña.",
-      "wrong_account": "Esa passkey pertenece a otra cuenta. Elige la passkey de esta cuenta o crea una nueva.",
       "create_title": "¿Crear una passkey en este dispositivo?",
       "create_description": "No se eligió ninguna passkey. Si el desbloqueo biométrico de esta cuenta ya está activado en otro dispositivo, usa esa passkey: una nueva la reemplazaría también allí.",
       "create": "Crear passkey",
       "use_existing": "Usar una passkey de otro dispositivo",
-      "unlock_gone": "La passkey guardada ya no está disponible en este dispositivo; inicia sesión con tu contraseña."
+      "relink_hint": "Introduce tu contraseña una vez para vincular este dispositivo con tu passkey existente.",
+      "unlock_wrong_account": "La passkey elegida pertenece a otra cuenta; inicia sesión con la contraseña de esta cuenta.",
+      "wrong_account_title": "Esa passkey pertenece a otra cuenta",
+      "wrong_account_description": "La passkey elegida no es de esta cuenta. Usa la passkey de esta cuenta desde otro dispositivo o crea una aquí: si el desbloqueo biométrico de esta cuenta está activado en otro dispositivo, una nueva la reemplazaría también allí."
     },
     "passkey": {
       "method": "Firmante con passkey",
@@ -347,5 +349,14 @@
     "turned_on": "Las operaciones que requieren tu clave activa o de propietario ahora te piden la contraseña o la passkey cada vez.",
     "turned_off": "Las operaciones que requieren tu clave activa ahora se firman sin preguntar hasta que tus claves se bloqueen.",
     "change_failed": "No se pudo cambiar el ajuste. Inténtalo de nuevo."
+  },
+  "passkey_unlock": {
+    "menu_label": "Desactivar el desbloqueo biométrico",
+    "turn_off_title": "¿Desactivar el desbloqueo biométrico en este dispositivo?",
+    "turn_off_description": "Al iniciar sesión en este dispositivo se volverá a pedir tu contraseña. La passkey seguirá en tu gestor de contraseñas: la aplicación no puede eliminarla allí, así que elimínala tú si ya no la necesitas.",
+    "cancel_button": "Cancelar",
+    "turn_off_confirm_button": "Desactivar",
+    "turned_off": "El desbloqueo biométrico está desactivado en este dispositivo.",
+    "turn_off_failed": "No se pudo desactivar el desbloqueo biométrico. Inténtalo de nuevo."
   }
 }

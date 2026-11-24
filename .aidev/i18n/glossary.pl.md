@@ -64,6 +64,7 @@ Seeded from the tester's corrections (#1188, #1286, #1463, #1540, #1603, #1609,
 | password / master password | hasło / hasło główne | agreed (#1188) | |
 | passkey | klucz dostępu | unreviewed | |
 | biometric unlock | odblokowywanie biometryczne | unreviewed | As in `login_form.passkey_prompt.*`. |
+| password manager | menedżer haseł | unreviewed | „w menedżerze haseł” (`passkey_unlock.turn_off_description`, #1774), as the wallet's key notes. Turning biometric unlock off: „Wyłącz odblokowywanie biometryczne”. |
 | check before active-key operations | Pytaj przed każdą operacją z kluczem Active; „Potwierdź hasłem lub kluczem dostępu” | unreviewed | `active_check.*`, `password_form.active_check_*` (#1513). |
 | notification / notifications | powiadomienie / powiadomienia | unreviewed | „@{{username}} odpowiedział na Twój post” (#1609); toast announcement label „Powiadomienie” (#1739). |
 | this session (key badge) | Ta sesja | unreviewed | |
