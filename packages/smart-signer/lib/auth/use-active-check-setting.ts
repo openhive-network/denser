@@ -1,8 +1,44 @@
 import { useEffect, useState } from 'react';
+import type { OnlineClient } from '@hiveio/hb-auth';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { readShownActiveCheck } from '@smart-signer/lib/auth/shown-active-check';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
+
+type ReadSetting = (client: OnlineClient, username: string) => Promise<boolean | undefined>;
+
+async function readVerifiedSetting(client: OnlineClient, username: string): Promise<boolean | undefined> {
+  if (!(await client.getRegisteredUserByUsername(username))?.unlocked) return undefined;
+  return client.getRequireActiveCheck(username);
+}
+
+/** The setting `read` gives for `username`, a setter for a value a change made known; undefined while read, without `username` or when the read fails */
+function useSetting(
+  username: string | undefined,
+  read: ReadSetting
+): [boolean | undefined, (requireActiveCheck: boolean) => void] {
+  const [requireActiveCheck, setRequireActiveCheck] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    setRequireActiveCheck(undefined);
+    if (!username) return;
+    let current = true;
+    (async () => {
+      try {
+        const setting = await read(await hbauthService.getOnlineClient(), username);
+        if (current) setRequireActiveCheck(setting);
+      } catch (error) {
+        logger.error(error, 'Failed to read whether safe storage of %s asks before active-key operations', username);
+      }
+    })();
+    return () => {
+      current = false;
+    };
+  }, [username, read]);
+
+  return [requireActiveCheck, setRequireActiveCheck];
+}
 
 /**
  * Whether the safe-storage wallet of `username` asks for the password or a passkey before every
@@ -14,26 +50,13 @@ const logger = getLogger('app');
 export function useActiveCheckSetting(
   username: string | undefined
 ): [boolean | undefined, (requireActiveCheck: boolean) => void] {
-  const [requireActiveCheck, setRequireActiveCheck] = useState<boolean | undefined>(undefined);
+  return useSetting(username, readVerifiedSetting);
+}
 
-  useEffect(() => {
-    setRequireActiveCheck(undefined);
-    if (!username) return;
-    let current = true;
-    (async () => {
-      try {
-        const client = await hbauthService.getOnlineClient();
-        if (!(await client.getRegisteredUserByUsername(username))?.unlocked) return;
-        const setting = await client.getRequireActiveCheck(username);
-        if (current) setRequireActiveCheck(setting);
-      } catch (error) {
-        logger.error(error, 'Failed to read whether safe storage of %s asks before active-key operations', username);
-      }
-    })();
-    return () => {
-      current = false;
-    };
-  }, [username]);
-
-  return [requireActiveCheck, setRequireActiveCheck];
+/**
+ * The same setting for text describing it, read also from a locked wallet (`readShownActiveCheck`);
+ * undefined while it is read, without `username` or when the read fails
+ */
+export function useShownActiveCheck(username: string | undefined): boolean | undefined {
+  return useSetting(username, readShownActiveCheck)[0];
 }

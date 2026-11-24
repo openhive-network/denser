@@ -342,7 +342,7 @@
     "unknown": "Se produjo un error de autenticación."
   },
   "active_check": {
-    "menu_label": "Preguntar antes de cada operación con la clave activa",
+    "menu_label": "Preguntar antes de cada operación con la clave activa o de propietario",
     "turn_on_title": "Preguntar antes de cada operación que requiera tu clave activa o de propietario",
     "turn_off_title": "Dejar de preguntar antes de las operaciones que requieren tu clave activa",
     "change_description": "Introduce la contraseña del almacenamiento seguro o usa tu passkey para cambiar este ajuste.",

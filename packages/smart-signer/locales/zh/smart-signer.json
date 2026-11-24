@@ -342,7 +342,7 @@
     "unknown": "发生身份验证错误。"
   },
   "active_check": {
-    "menu_label": "每次使用活动密钥的操作前都确认",
+    "menu_label": "每次使用活动密钥或 Owner 密钥的操作前都确认",
     "turn_on_title": "在每次需要活动密钥或 Owner 密钥的操作之前确认",
     "turn_off_title": "不再在需要活动密钥的操作之前确认",
     "change_description": "输入安全存储密码或使用通行密钥来更改此设置。",

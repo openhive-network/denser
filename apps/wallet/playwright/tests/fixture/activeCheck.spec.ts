@@ -91,17 +91,35 @@ async function createWalletAndSignIn(page: Page, checked: boolean) {
   await expect(page.getByText(CHECK_TITLE)).toHaveCount(0);
 }
 
-/**
- * Restores the recorded pre-setting wallet into IndexedDB and has the next page load find the
- * stub account signed in through safe storage, its wallet locked: no hb-auth worker has unlocked it
- */
-async function restorePreSettingWalletSignedIn(page: Page) {
+/** Restores the recorded pre-setting wallet into IndexedDB, locked: no hb-auth worker has unlocked it */
+async function restorePreSettingWallet(page: Page) {
   expect(preSettingWallet.username, "the recorded wallet is the stub account's").toBe(STUB_ACCOUNT);
   await page.route(`**${SEED_PAGE}`, (route) => route.fulfill({ contentType: 'text/html', body: '<!doctype html>' }));
   await page.goto(SEED_PAGE);
   await restoreIndexedDb(page, preSettingWallet);
   await page.unroute(`**${SEED_PAGE}`);
+}
+
+/** Restores the recorded pre-setting wallet and has the next page load find the stub account signed in through it */
+async function restorePreSettingWalletSignedIn(page: Page) {
+  await restorePreSettingWallet(page);
   await logInAsStubAccount(page, { loginType: 'hbauth', keyType: 'active' });
+}
+
+/** Opens the sign-in dialog of a signed-out page and picks the stub account's safe-storage wallet */
+async function openSignInOfWallet(page: Page): Promise<LoginForm> {
+  const loginForm = new LoginForm(page);
+  await page.goto(ownTransfersPage);
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Login', exact: true }).click();
+    await expect(loginForm.loginDialog).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: HYDRATION_TIMEOUT });
+  await loginForm.usernameInput.fill(STUB_ACCOUNT);
+  await expect(loginForm.loginFormDescription, 'the sign-in found the locked wallet').toHaveText(
+    enSmartSigner.login_form.signin_safe_storage.description_unlock,
+    { timeout: HYDRATION_TIMEOUT }
+  );
+  return loginForm;
 }
 
 /** Fills in a transfer of 1 HIVE to STUB_FOLLOWED and confirms it */
@@ -210,5 +228,37 @@ test.describe('The check before active-key operations of a safe-storage wallet',
       page.getByRole('menu').getByTestId('active-check-menu-item'),
       'the account menu shows the setting of the unlocked pre-setting wallet as off'
     ).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('WALLET-ACTIVE-CHECK-04 — a wallet created with the box checked is told as asking in the account menu and, locked, in the sign-in', async ({
+    page
+  }) => {
+    await createWalletAndSignIn(page, true);
+    await page.getByTestId('profile-avatar-button').click();
+    await expect(page.getByRole('menu').getByTestId('session-time-note')).toContainText(
+      enSmartSigner.session_time.activity_checked,
+      { timeout: HYDRATION_TIMEOUT }
+    );
+    await expect(page.getByRole('menu').getByTestId('active-check-menu-item')).toHaveText(
+      enSmartSigner.active_check.menu_label
+    );
+    // Signing out locks the wallet
+    await page.getByRole('menu').getByText('Logout', { exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Login', exact: true })).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    const loginForm = await openSignInOfWallet(page);
+    await expect(loginForm.loginDialog.getByTestId('session-time-caption')).toContainText(
+      enSmartSigner.session_time.activity_checked
+    );
+  });
+
+  test('WALLET-ACTIVE-CHECK-05 — a locked wallet from before the setting is told as signing without asking in the sign-in', async ({
+    page
+  }) => {
+    await restorePreSettingWallet(page);
+    const loginForm = await openSignInOfWallet(page);
+    await expect(loginForm.loginDialog.getByTestId('session-time-caption')).toContainText(
+      enSmartSigner.session_time.activity_unchecked,
+      { timeout: HYDRATION_TIMEOUT }
+    );
   });
 });

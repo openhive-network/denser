@@ -15,14 +15,19 @@ export function formatSessionTime(t: Translate, seconds: number): string {
 
 /**
  * The caption of an idle time choice: when the session locks, then what restarts the timer and
- * whether operations needing the active or owner key ask every time (`activeCheck`), in `lang`
+ * whether operations needing the active or owner key ask every time (`activeCheck`), in `lang`;
+ * only when it locks while `activeCheck` is not known
  */
-export function sessionTimeCaption(t: CaptionTranslate, seconds: number, lang: string, activeCheck: boolean): string {
+export function sessionTimeCaption(
+  t: CaptionTranslate,
+  seconds: number,
+  lang: string,
+  activeCheck: boolean | undefined
+): string {
+  const locksAfter = t('session_time.locks_after_sentence', { duration: formatSessionTime(t, seconds) });
+  if (activeCheck === undefined) return locksAfter;
   return joinSentences(
-    [
-      t('session_time.locks_after_sentence', { duration: formatSessionTime(t, seconds) }),
-      t(activeCheck ? 'session_time.activity_checked' : 'session_time.activity_unchecked')
-    ],
+    [locksAfter, t(activeCheck ? 'session_time.activity_checked' : 'session_time.activity_unchecked')],
     lang
   );
 }
