@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { afterEach, beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 
@@ -21,7 +21,14 @@ registerHooks({
 
 const { createPasskeyUnlock } = await import('./passkey-unlock-ceremony.ts');
 const { PasskeyUnlockError } = await import('./passkey-unlock-error.ts');
-const { adoptReplacedPasskey, isPasskeyGone, PasskeyReplacedError, unlockWithPasskey } = await import('./passkey-unlock.ts');
+const {
+  adoptReplacedPasskey,
+  isPasskeyGone,
+  PasskeyReplacedError,
+  registerPasskeyUnlock,
+  reusePasskeyUnlockOf,
+  unlockWithPasskey
+} = await import('./passkey-unlock.ts');
 type PasskeyUnlockRecord = Awaited<ReturnType<typeof createPasskeyUnlock>>;
 
 const USERNAME = 'guest4test2';
@@ -303,5 +310,91 @@ describe('unlockWithPasskey', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'not-registered');
+  });
+});
+
+type Signal = { name: string; options: Record<string, unknown> };
+
+const base64url = (bytes: Uint8Array) =>
+  btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+/** A browser with WebAuthn's signal methods, recording each signal the app sends */
+function signalingBrowser() {
+  const sent: Signal[] = [];
+  const record = (name: string) => async (options: Record<string, unknown>) => {
+    sent.push({ name, options });
+  };
+  Object.assign(globalThis, {
+    PublicKeyCredential: {
+      signalUnknownCredential: record('unknown'),
+      signalAllAcceptedCredentials: record('all-accepted')
+    },
+    location: { hostname: RP_ID }
+  });
+  return sent;
+}
+
+describe('passkey signals', () => {
+  let sent: Signal[];
+  beforeEach(() => {
+    sent = signalingBrowser();
+  });
+  afterEach(() => {
+    Reflect.deleteProperty(globalThis, 'PublicKeyCredential');
+    Reflect.deleteProperty(globalThis, 'location');
+  });
+
+  it('a creation tells the providers its credential is the account\'s one passkey, once', async () => {
+    const provider = authenticator('passkey');
+    const store = memoryStore(await createPasskeyUnlock(provider, 'nobody', PASSWORD, RP_ID));
+
+    await registerPasskeyUnlock(USERNAME, PASSWORD, provider, store);
+
+    assert.equal(sent.length, 1);
+    assert.equal(sent[0].name, 'all-accepted');
+    assert.equal(sent[0].options.rpId, RP_ID);
+    assert.equal(sent[0].options.userId, base64url(new Uint8Array(provider.passkeys[0].userHandle)));
+    assert.deepEqual(sent[0].options.allAcceptedCredentialIds, [base64url(provider.passkeys[0].id)]);
+  });
+
+  it('a reuse of the account\'s passkey sends no signal, which could hide another provider\'s', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    store.records.clear();
+
+    await reusePasskeyUnlockOf(USERNAME, PASSWORD, provider, store);
+
+    assert.ok(store.records.has(USERNAME));
+    assert.deepEqual(sent, []);
+  });
+
+  it('cancelling both prompts drops the record but signals nothing, the passkey staying', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    const cancelling = { create: provider.create, get: async () => Promise.reject(cancel()) };
+
+    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', cancelling, store).catch(
+      (e: unknown) => e
+    );
+
+    assert.ok(isPasskeyGone(error));
+    assert.equal(store.records.size, 0);
+    assert.equal(provider.passkeys.length, 1);
+    assert.deepEqual(sent, []);
+  });
+
+  it('moving a record to the passkey the user picked signals nothing of the record\'s own', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    provider.replace('replacing passkey');
+
+    const error = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store).catch(
+      (e: unknown) => e
+    );
+    assert.ok(error instanceof PasskeyReplacedError);
+    await adoptReplacedPasskey(error, USERNAME, PASSWORD);
+
+    assert.deepEqual(store.records.get(USERNAME)?.credentialId, provider.passkeys[0].id);
+    assert.deepEqual(sent, []);
   });
 });
