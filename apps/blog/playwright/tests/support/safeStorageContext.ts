@@ -133,6 +133,19 @@ export async function answerKeyReferences(
   );
 }
 
+/** Answers every lookup of a key's accounts (`get_key_references`) with none: nobody holds the key */
+export async function answerNoKeyHolders(page: Page): Promise<void> {
+  await page.route(
+    (url) => url.hostname === 'localhost' && url.port === String(FIXTURE_PROXY_PORT),
+    async (route: Route) => {
+      const body: { id?: unknown; method?: string } | null =
+        route.request().method() === 'POST' ? route.request().postDataJSON() : null;
+      if (body?.method !== 'account_by_key_api.get_key_references') return route.fallback();
+      return route.fulfill({ json: { jsonrpc: '2.0', id: body.id, result: { accounts: [[]] } } });
+    }
+  );
+}
+
 /** While `refused()`, answers `verify_authority` as hived does a signature without ACCOUNT's posting authority */
 export async function refusePostingAuthority(page: Page, refused: () => boolean = () => true): Promise<void> {
   await page.route(

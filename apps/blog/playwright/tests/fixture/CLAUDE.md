@@ -589,6 +589,11 @@ A safe-storage sign-in registers the key through hb-auth, which also asks
 `delayed_votes_active`. `safeStorageLoginKeyRole.spec.ts` (BLOG-SAFE-STORAGE-LOGIN-02)
 answers the first with the account and sends the second as the recorded read, then
 reopens the dialog on the stored account to reach its "Add new key" form.
+The forms check a key as its field (or the account field) loses focus, and look its holders up
+whenever it is none of the account's own: `answerNoKeyHolders` (`support/safeStorageContext.ts`)
+answers that nobody holds it, which the check refuses as safe storage would.
+`safeStorageKeyboardChecks.spec.ts` types into the fields key by key and leaves them with Tab, as
+testers do, rather than `fill()` + `blur()`.
 
 ---
 

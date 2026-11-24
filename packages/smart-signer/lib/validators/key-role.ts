@@ -58,7 +58,9 @@ export type KeyRefusal =
    */
   | { kind: 'authorised-account'; owner: string }
   /** Another account's key that the account's `keyType` authority does not take through `account_auths` */
-  | { kind: 'unrelated-account'; owner: string };
+  | { kind: 'unrelated-account'; owner: string }
+  /** A key of none of the account's authorities that no other account's authority lists either */
+  | { kind: 'unheld' };
 
 /** An account holding a key, with its authorities */
 export type KeyHolder = AccountAuthorities & { name: string };

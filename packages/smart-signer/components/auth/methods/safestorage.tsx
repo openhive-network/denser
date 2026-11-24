@@ -51,6 +51,7 @@ import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-ro
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { newPasswordSchema, passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
+import { useWrongPasswordError } from './use-wrong-password-error';
 import { useLinkedPasskeyUnlock } from './use-linked-passkey-unlock';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
@@ -203,6 +204,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       showKeyError: (message) => form.setError('wif', { message }),
       revalidateKey: () => form.trigger('wif')
     });
+    const wrongPassword = useWrongPasswordError(i18nNamespace, form.watch('password'));
+    const shownError = error ?? wrongPassword.message;
 
     // A password error is about the account it was entered for
     const errorUsername = useRef(watchedUsername);
@@ -210,6 +213,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       if (errorUsername.current === watchedUsername) return;
       errorUsername.current = watchedUsername;
       setError(null);
+      wrongPassword.clear();
       // Checked again for this account: only a new wallet's password has a maximum
       form.trigger('password');
       // The prompt open is for the account the user left: ask the passkey of this one instead
@@ -305,6 +309,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
+        wrongPassword.clear();
         if (isSessionTimePicked) {
           // The stored pick replaces the worker on the next client asked for: check the password first
           await hbauthService.withOnlineClient((client) => authenticateStoredKey(client, username, password, keyType));
@@ -328,7 +333,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         }
       } catch (error) {
         if (findWrongSafeStoragePassword(error)) {
-          setError(t('broadcast_error.wrong_safe_storage_password', { ns: SMART_SIGNER_NAMESPACE }));
+          wrongPassword.refuse(password);
           setLoading(false);
           return;
         }
@@ -492,9 +497,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
             {t('login_form.passkey_prompt.relink_hint', { ns: SMART_SIGNER_NAMESPACE })}
           </div>
         )}
-        {error && (
+        {shownError && (
           <div className="text-sm text-destructive" data-testid="safe-storage-error">
-            {error}
+            {shownError}
           </div>
         )}
       </div>
@@ -540,6 +545,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                         autoComplete="username"
                         data-testid="username-input"
                         {...field}
+                        onBlur={() => {
+                          field.onBlur();
+                          // A stored account signs in with the key safe storage holds: the key field is hidden
+                          if (!form.getValues().userFound) keyCheck.checkEnteredKey();
+                        }}
                       />
                       {authUsers.length ? (
                         <DropdownMenu>

@@ -30,9 +30,9 @@ function isSameCheck(a: KeyCheckFields, b: KeyCheckFields): boolean {
 
 /**
  * The key-authority check of the safe-storage forms that store a key (`validateSafeStorageKey`): run
- * when the key field loses focus, again when the key type or Direct Authority Mode changes, and on
- * submit. A refusal is shown under the key field, which keeps the key, only while the form still
- * holds what was checked.
+ * when the key or account field loses focus (`checkEnteredKey`), again when the key type or Direct
+ * Authority Mode changes, and on submit. A refusal is shown under the key field, which keeps the key,
+ * only while the form still holds what was checked; changing the account drops it.
  */
 export function useSafeStorageKeyCheck({ i18nNamespace, fields, showKeyError, revalidateKey }: SafeStorageKeyCheckOptions) {
   const { t } = useSharedTranslation(i18nNamespace);
@@ -68,6 +68,13 @@ export function useSafeStorageKeyCheck({ i18nNamespace, fields, showKeyError, re
     });
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [fields.keyType, fields.strict]);
+
+  // A refusal is about the account it was given for: the form's validation replaces it, and the
+  // account field's blur checks the key for the new account, not each letter typed
+  useEffect(() => {
+    if (current.current.wif) revalidateKey();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [fields.username]);
 
   return { checkKey, checkEnteredKey, showKeyHint };
 }

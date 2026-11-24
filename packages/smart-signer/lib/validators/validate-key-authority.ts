@@ -9,7 +9,8 @@ const logger = getLogger('app');
 /**
  * Reads what the chain tells about `wif` offered as `username`'s `keyType` key. The accounts holding
  * the key (`account_by_key_api.get_key_references`), and their authorities, are looked up only for a
- * key that is none of the account's own, and only when `lookUpHolders`.
+ * key that is none of the account's own, and only when `lookUpHolders`; a key they tell nobody else
+ * holds is `unheld`, which no authority of the account takes.
  */
 async function findKeyRefusal(
   username: string,
@@ -30,7 +31,7 @@ async function findKeyRefusal(
     accounts: [holderNames = []]
   } = await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey] });
   const otherHolderNames = holderNames.filter((name) => name !== username);
-  if (otherHolderNames.length === 0) return classifyKeyRefusal(account, publicKey, keyType, []);
+  if (otherHolderNames.length === 0) return { kind: 'unheld' };
   const { accounts: keyHolders } = await hiveChain.api.database_api.find_accounts({
     accounts: otherHolderNames,
     delayed_votes_active: false
@@ -61,13 +62,14 @@ export async function validateKeyAuthority(
 }
 
 /**
- * `validateKeyAuthority` for a key to store in safe storage, which in Direct Authority Mode
- * (`strict`) takes only the account's own keys: there, a key another account holds is refused too,
- * with a hint naming that account and, when the account's `keyType` authority lists it in
- * `account_auths` and the key is of that account's own `keyType` authority, saying the key is taken
- * with the mode off. Resolves with null when the key may be
- * right, also when the chain cannot be read or nobody is known to hold the key; safe storage's own
- * verification, whose refusal `describeRefusedKey` explains, decides then.
+ * `validateKeyAuthority` for a key to store in safe storage, refusing what safe storage's own
+ * verification would. A key of none of the account's authorities is refused with the role hint when
+ * no account holds it, and with a hint naming the account that holds it otherwise, unless the
+ * account's `keyType` authority lists that account in `account_auths` and the key is of that
+ * account's own `keyType` authority: such a key is taken with Direct Authority Mode (`strict`) off,
+ * and refused in it with a hint saying so. Resolves with null when the key may be right, also when
+ * the chain cannot be read; safe storage's own verification, whose refusal `describeRefusedKey`
+ * explains, decides then.
  */
 export async function validateSafeStorageKey(
   username: string,
@@ -76,7 +78,7 @@ export async function validateSafeStorageKey(
   strict: boolean
 ): Promise<KeyHint | null> {
   try {
-    const refusal = await findKeyRefusal(username, keyType, wif, strict);
+    const refusal = await findKeyRefusal(username, keyType, wif, true);
     return refusal && findKeyRefusalHint(refusal, username, keyType, strict);
   } catch (error) {
     logger.error(error, 'Cannot read the key authorities; leaving the key to safe storage verification');
@@ -99,7 +101,7 @@ export async function describeRefusedKey(
   const fallback = { key: fallbackHint };
   try {
     const refusal = await findKeyRefusal(username, keyType, wif, true);
-    if (!refusal || refusal.kind === 'own-other-role') return fallback;
+    if (!refusal || refusal.kind === 'own-other-role' || refusal.kind === 'unheld') return fallback;
     return findKeyRefusalHint(refusal, username, keyType, strict) ?? fallback;
   } catch (error) {
     logger.error(error, 'Cannot read who holds the refused key; showing the role hint');

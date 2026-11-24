@@ -131,9 +131,15 @@ describe('validateSafeStorageKey', () => {
     });
   });
 
-  it('leaves a key nobody is known to hold to safe storage', async () => {
+  it('refuses a key nobody holds with the role hint, in Direct Authority Mode or not', async () => {
     useChain(OTHER_KEY, []);
-    assert.equal(await validateSafeStorageKey(ACCOUNT, 'active', WIF, true), null);
+    assert.deepEqual(await validateSafeStorageKey(ACCOUNT, 'active', WIF, true), { key: ACTIVE_HINT });
+    assert.deepEqual(await validateSafeStorageKey(ACCOUNT, 'active', WIF, false), { key: ACTIVE_HINT });
+  });
+
+  it("refuses the account's memo key, which only the account holds, with the role hint", async () => {
+    useChain(OTHER_KEY, [ACCOUNT]);
+    assert.deepEqual(await validateSafeStorageKey(ACCOUNT, 'active', WIF, false), { key: ACTIVE_HINT });
   });
 
   it('leaves the key to safe storage when its holders cannot be read', async () => {
@@ -142,10 +148,17 @@ describe('validateSafeStorageKey', () => {
     assert.equal(holderLookups, 1);
   });
 
-  it("leaves another account's key to safe storage with Direct Authority Mode off", async () => {
+  it("names an unrelated account's key with Direct Authority Mode off", async () => {
     useChain(OTHER_KEY, [UNRELATED]);
+    assert.deepEqual(await validateSafeStorageKey(ACCOUNT, 'active', WIF, false), {
+      key: 'login_form.zod_error.other_account_active_key',
+      values: { owner: UNRELATED, account: ACCOUNT }
+    });
+  });
+
+  it("accepts an authorised account's key with Direct Authority Mode off", async () => {
+    useChain(OTHER_KEY, [AUTHORISED]);
     assert.equal(await validateSafeStorageKey(ACCOUNT, 'active', WIF, false), null);
-    assert.equal(holderLookups, 0);
   });
 });
 
