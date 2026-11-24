@@ -46,16 +46,30 @@ function credentialTransports({ response }: PublicKeyCredential): AuthenticatorT
 /**
  * The WebAuthn user handle of `username`'s passkey, the same at every creation: an authenticator
  * replaces the passkey it holds for the relying party and handle, so enabling the unlock again
- * leaves no orphan passkey behind
+ * leaves no orphan passkey behind, and a passkey found without naming its credential is known by it
  */
-async function passkeyUserId(username: string): Promise<Uint8Array<ArrayBuffer>> {
+export async function passkeyUserId(username: string): Promise<Uint8Array<ArrayBuffer>> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(USER_ID_CONTEXT + username));
   return new Uint8Array(digest.slice(0, USER_ID_LENGTH));
 }
 
-async function prfKey(prfOutput: BufferSource, usage: KeyUsage): Promise<CryptoKey> {
-  return crypto.subtle.importKey('raw', prfOutput, ENCRYPTION, false, [usage]);
+async function prfKey(prfOutput: BufferSource, usages: KeyUsage[]): Promise<CryptoKey> {
+  return crypto.subtle.importKey('raw', prfOutput, ENCRYPTION, false, usages);
 }
+
+const sameBytes = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((byte, i) => byte === b[i]);
+
+/**
+ * A passkey of the account, and the key its PRF output for `prfSalt` gives, which encrypts the
+ * password of a record of this device: one passkey a provider syncs serves every device, each
+ * with its own salt
+ */
+export type FoundPasskey = {
+  credentialId: Uint8Array<ArrayBuffer>;
+  transports?: AuthenticatorTransport[];
+  prfSalt: Uint8Array<ArrayBuffer>;
+  key: CryptoKey;
+};
 
 type Assertion = {
   credentialId: Uint8Array<ArrayBuffer>;
@@ -135,26 +149,120 @@ export async function createPasskeyUnlock(
       { credentialId, transports, prfSalt, rpId, userVerification: 'required' },
       'PRF evaluation'
     ));
+  return wrapPassword(username, password, rpId, {
+    credentialId,
+    transports,
+    prfSalt,
+    key: await prfKey(prfOutput, ['encrypt', 'decrypt'])
+  });
+}
+
+/**
+ * The record of this device holding `password` encrypted under `passkey`'s key. Rejects with
+ * PasskeyUnlockError, as failed, when the encrypted password does not decrypt.
+ */
+export async function wrapPassword(
+  username: string,
+  password: string,
+  rpId: string,
+  { credentialId, transports, prfSalt, key }: FoundPasskey
+): Promise<PasskeyUnlockRecord> {
   const iv = randomBytes(12);
-  const key = await prfKey(prfOutput, 'encrypt');
   const encoded = new TextEncoder().encode(password);
   const encryptedPassword = new Uint8Array(await crypto.subtle.encrypt({ name: ENCRYPTION, iv }, key, encoded));
   const record = { username, credentialId, prfSalt, encryptedPassword, iv, rpId, createdAt: Date.now(), transports };
-  if ((await decryptPassword(record, prfOutput).catch(() => null)) !== password) {
-    throw new PasskeyUnlockError('Passkey creation: the encrypted password does not decrypt', 'failed');
+  if ((await decryptWith(record, key).catch(() => null)) !== password) {
+    throw new PasskeyUnlockError('Passkey unlock: the encrypted password does not decrypt', 'failed');
   }
   return record;
+}
+
+type Discovery = { username: string; rpId: string; userVerification: UserVerificationRequirement; knownSalt?: BufferSource };
+
+/**
+ * The account's passkey, wherever its provider keeps it, from an assertion naming no credential:
+ * the user picks a passkey of the relying party, and one whose user handle is not `username`'s is
+ * refused. Resolves with its key for a fresh salt, and with the PRF output for `knownSalt` where
+ * given. Rejects with PasskeyUnlockError: cancelled where no passkey was picked (the browser answers
+ * a relying party without passkeys as it does a cancel), wrong-account, unsupported without PRF.
+ */
+async function discoverPasskey(
+  credentials: PasskeyCredentials,
+  { username, rpId, userVerification, knownSalt }: Discovery
+): Promise<{ passkey: FoundPasskey; knownOutput?: BufferSource }> {
+  const step = 'Passkey discovery';
+  const prfSalt = randomBytes(32);
+  let credential: Credential | null;
+  try {
+    credential = await credentials.get({
+      publicKey: {
+        challenge: randomBytes(32),
+        rpId,
+        userVerification,
+        timeout: CEREMONY_TIMEOUT_MS,
+        extensions: { prf: { eval: { first: prfSalt, ...(knownSalt ? { second: knownSalt } : {}) } } }
+      }
+    });
+  } catch (error) {
+    throw ceremonyError(step, error);
+  }
+  if (!isPublicKeyCredential(credential)) throw new PasskeyUnlockError(`${step}: no credential`, 'failed');
+  const { response } = credential;
+  const userHandle = 'userHandle' in response && response.userHandle instanceof ArrayBuffer ? response.userHandle : null;
+  if (!userHandle || !sameBytes(new Uint8Array(userHandle), await passkeyUserId(username))) {
+    throw new PasskeyUnlockError(`${step}: the passkey picked is not ${username}'s`, 'wrong-account');
+  }
+  const results = credential.getClientExtensionResults().prf?.results;
+  if (!results?.first) throw new PasskeyUnlockError(`${step}: the passkey gave no PRF output`, 'unsupported');
+  const key = await prfKey(results.first, ['encrypt', 'decrypt']);
+  return { passkey: { credentialId: new Uint8Array(credential.rawId), prfSalt, key }, knownOutput: results.second };
+}
+
+/**
+ * Encrypts `password` under a passkey the account already has, synced from another device or
+ * left by an earlier record, in a record of this device, creating none. Rejects with
+ * PasskeyUnlockError as `discoverPasskey` does.
+ */
+export async function reusePasskeyUnlock(
+  credentials: PasskeyCredentials,
+  username: string,
+  password: string,
+  rpId: string
+): Promise<PasskeyUnlockRecord> {
+  const { passkey } = await discoverPasskey(credentials, { username, rpId, userVerification: 'required' });
+  return wrapPassword(username, password, rpId, passkey);
+}
+
+/**
+ * What the account's passkey, looked for without naming `record`'s credential, gives: the
+ * password, where it is `record`'s own; else the other passkey (one that replaced it, or synced),
+ * to encrypt the password under once the user enters it. Rejects as `discoverPasskey` does, and
+ * as `recoverPasskeyPassword` does for `record`'s own passkey.
+ */
+export async function rediscoverPasskey(
+  credentials: PasskeyCredentials,
+  record: PasskeyUnlockRecord,
+  userVerification: UserVerificationRequirement
+): Promise<{ password: string } | { replacement: FoundPasskey }> {
+  const { username, rpId, prfSalt } = record;
+  const { passkey, knownOutput } = await discoverPasskey(credentials, { username, rpId, userVerification, knownSalt: prfSalt });
+  if (!sameBytes(passkey.credentialId, record.credentialId)) return { replacement: passkey };
+  if (!knownOutput) throw new PasskeyUnlockError('Passkey unlock: the passkey gave no PRF output', 'unsupported');
+  return { password: await decryptPassword(record, knownOutput) };
 }
 
 /** The password of `record` decrypted with `prfOutput`. Rejects with PasskeyUnlockError, as stale. */
 async function decryptPassword(record: PasskeyUnlockRecord, prfOutput: BufferSource): Promise<string> {
   try {
-    const key = await prfKey(prfOutput, 'decrypt');
-    const decrypted = await crypto.subtle.decrypt({ name: ENCRYPTION, iv: record.iv }, key, record.encryptedPassword);
-    return new TextDecoder().decode(decrypted);
+    return await decryptWith(record, await prfKey(prfOutput, ['decrypt']));
   } catch (error) {
     throw new PasskeyUnlockError('Passkey unlock: the stored password does not decrypt', 'stale', { cause: error });
   }
+}
+
+async function decryptWith(record: PasskeyUnlockRecord, key: CryptoKey): Promise<string> {
+  const decrypted = await crypto.subtle.decrypt({ name: ENCRYPTION, iv: record.iv }, key, record.encryptedPassword);
+  return new TextDecoder().decode(decrypted);
 }
 
 /**

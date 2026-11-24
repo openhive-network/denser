@@ -17,7 +17,7 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
-import { unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import { adoptReplacedPasskey, unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { OperationSummary, summarizeOperations } from '@smart-signer/lib/signer/operation-summary';
@@ -199,6 +199,7 @@ export class SignerHbauth extends Signer {
     operation?: OperationSummary
   ): Promise<string> {
     const { username, keyType } = this;
+    let passkeyFailure: unknown;
     if (!password && (await this.storesKey(authClient, signKeyType))) {
       try {
         if (await authClient.hasPasskey(username)) {
@@ -210,6 +211,7 @@ export class SignerHbauth extends Signer {
         }
       } catch (error) {
         // Biometric failed (cancelled, passkey deleted, unsupported) — fall through to password
+        passkeyFailure = error;
         logger.info('Biometric unlock failed, falling back to password: %s',
           error instanceof Error ? error.message : String(error));
       }
@@ -239,6 +241,7 @@ export class SignerHbauth extends Signer {
     if (!authStatus.ok) {
       throw new AuthFailureError('Unlocking key failed', 'auth_error.unlock_failed');
     }
+    await adoptReplacedPasskey(passkeyFailure, username, password);
     return password;
   }
 

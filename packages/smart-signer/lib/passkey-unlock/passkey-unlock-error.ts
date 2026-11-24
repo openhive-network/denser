@@ -2,9 +2,19 @@
  * Why a passkey did not give the safe storage password: the user cancelled or let the browser's
  * prompt time out (WebAuthn's NotAllowedError, AbortError), the authenticator has no PRF, the user
  * has no passkey registered, the registered one no longer unlocks (its password does not decrypt,
- * or safe storage refuses it), or the ceremony failed otherwise.
+ * or safe storage refuses it), the user picked another account's passkey, the account has no
+ * passkey the browser can reach any more (`gone`), another passkey of the account took the
+ * registered one's place and needs the password once (`replaced`), or the ceremony failed otherwise.
  */
-export type PasskeyUnlockFailure = 'cancelled' | 'unsupported' | 'not-registered' | 'stale' | 'failed';
+export type PasskeyUnlockFailure =
+  | 'cancelled'
+  | 'unsupported'
+  | 'not-registered'
+  | 'stale'
+  | 'wrong-account'
+  | 'gone'
+  | 'replaced'
+  | 'failed';
 
 export class PasskeyUnlockError extends Error {
   readonly reason: PasskeyUnlockFailure;
@@ -28,11 +38,12 @@ export function ceremonyError(step: string, error: unknown): PasskeyUnlockError 
 
 /**
  * The smart-signer translation key telling the user that enabling the passkey unlock failed with
- * `error`; null for a prompt the user cancelled, which needs no message
+ * `error`. A cancelled prompt gets the retry message too: the browser rejects a provider's own
+ * setup that did not finish (a screen lock or recovery PIN to set first) as it does a cancel.
  */
-export function passkeyEnableFailureKey(error: unknown): string | null {
+export function passkeyEnableFailureKey(error: unknown): string {
   if (!(error instanceof PasskeyUnlockError)) return 'login_form.passkey_prompt.failed';
-  if (error.reason === 'cancelled') return null;
   if (error.reason === 'unsupported') return 'login_form.passkey_prompt.unsupported';
+  if (error.reason === 'wrong-account') return 'login_form.passkey_prompt.wrong_account';
   return 'login_form.passkey_prompt.failed';
 }

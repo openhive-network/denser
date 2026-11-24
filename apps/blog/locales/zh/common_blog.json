@@ -1424,7 +1424,6 @@
       "working": "正在保存密钥…",
       "secured_title": "密钥已在安全存储中",
       "secured_description": "此浏览器现在将此轻量账户的密钥保存在安全存储中，由您的密码保护。",
-      "passkey_failed_title": "未启用生物识别解锁",
       "warning_unsecured": "此账户只存在于此浏览器中，其密钥未受保护。请用安全存储保护它们。",
       "unlock_failed_title": "安全存储未解锁",
       "unlock_failed": "安全存储未解锁，因此没有发送任何内容。请重试。",

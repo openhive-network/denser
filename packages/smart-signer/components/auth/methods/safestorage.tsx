@@ -6,10 +6,15 @@ import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { shouldOfferPasskey } from '@smart-signer/lib/auth/passkey-prompt-offer';
-import { registerPasskeyUnlock, unlockWithPasskeyGivingPassword } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
+import {
+  adoptReplacedPasskey,
+  isPasskeyGone,
+  registerPasskeyUnlock,
+  reusePasskeyUnlockOf,
+  unlockWithPasskeyGivingPassword
+} from '@smart-signer/lib/passkey-unlock/passkey-unlock';
 import { withSignInCheck } from '@smart-signer/lib/signer/sign-in-check';
 import { useActiveCheckSetting } from '@smart-signer/lib/auth/use-active-check-setting';
-import { toast } from '@ui/components/hooks/use-toast';
 import { hiveSafeStorageUsers } from '@hive/common-hiveio-packages/lite-wallet-users';
 import { SafeStorageStartError } from '@hive/common-hiveio-packages';
 import PasskeyPrompt from '../passkey-prompt';
@@ -144,8 +149,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
-    /** The user whose passkey unlock failed on mount: the offer replaces the passkey */
-    const passkeyUnlockFailedRef = useRef<string | null>(null);
+    /** Why the passkey unlock on mount failed: one that found another passkey keeps the password under it */
+    const passkeyUnlockFailureRef = useRef<unknown>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -244,7 +249,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
           await authenticateStoredKey(client, username, password, keyType);
-          return shouldOfferPasskey(client, username, passkeyUnlockFailedRef.current === username);
+          await adoptReplacedPasskey(passkeyUnlockFailureRef.current, username, password);
+          return shouldOfferPasskey(client, username);
         });
 
         if (shouldPromptPasskey) {
@@ -319,11 +325,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
-    /** In a toast: the sign-in goes on with the password and closes the dialog */
-    function reportPasskeyFailure(message: string) {
-      toast({ description: message, variant: 'destructive' });
-    }
-
     async function signInWithExtension(loginType: LoginType.keychain | LoginType.peakvault) {
       // Cover the form before validating, or a second click lands while validation is pending
       setLoading(true);
@@ -375,8 +376,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   return;
                 }
               } catch (error) {
-                // Cancelled, or the passkey is gone: the password form, without a message
-                passkeyUnlockFailedRef.current = targetUser.username;
+                // The password form; with a message only where the passkey is gone, its record dropped
+                passkeyUnlockFailureRef.current = error;
+                if (isPasskeyGone(error)) setError(t('login_form.passkey_prompt.unlock_gone', { ns: SMART_SIGNER_NAMESPACE }));
                 logger.info('Passkey unlock of %s failed, asking for the password: %s', targetUser.username, error instanceof Error ? error.message : String(error));
               }
             }
@@ -446,8 +448,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         <Step title={stepTitle} description={stepDescription} loading={loading}>
           <PasskeyPrompt
             username={form.getValues().username}
-            onEnable={() => registerPasskeyUnlock(form.getValues().username, lastAuthPassword)}
-            onError={reportPasskeyFailure}
+            onReuse={() => reusePasskeyUnlockOf(form.getValues().username, lastAuthPassword)}
+            onCreate={() => registerPasskeyUnlock(form.getValues().username, lastAuthPassword)}
             onDone={async () => {
               setShowPasskeyPrompt(false);
               setLastAuthPassword('');

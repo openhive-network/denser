@@ -1440,7 +1440,6 @@
       "working": "Enregistrement des clés…",
       "secured_title": "Clés dans le stockage sécurisé",
       "secured_description": "Ce navigateur conserve désormais les clés de ce compte lite dans le stockage sécurisé, protégées par votre mot de passe.",
-      "passkey_failed_title": "Le déverrouillage biométrique n'a pas été activé",
       "warning_unsecured": "Ce compte n'existe que dans ce navigateur et ses clés ne sont pas protégées. Protégez-les dans le stockage sécurisé.",
       "unlock_failed_title": "Le stockage sécurisé ne s'est pas déverrouillé",
       "unlock_failed": "Le stockage sécurisé ne s'est pas déverrouillé, rien n'a donc été envoyé. Réessayez.",

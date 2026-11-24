@@ -171,8 +171,14 @@
       "enable": "Enable",
       "not_now": "Not now",
       "never_ask_again": "Never ask again",
-      "failed": "Biometric unlock was not enabled. You can keep signing in with your password.",
-      "unsupported": "This device cannot use biometric unlock. You can keep signing in with your password."
+      "failed": "Couldn't enable biometric unlock. Try again.",
+      "unsupported": "This device cannot use biometric unlock. You can keep signing in with your password.",
+      "wrong_account": "That passkey belongs to another account. Pick this account's passkey, or create a new one.",
+      "create_title": "Create a passkey on this device?",
+      "create_description": "No passkey was picked. If biometric unlock is on for this account on another device, use that passkey: a new one would replace it there too.",
+      "create": "Create passkey",
+      "use_existing": "Use a passkey from another device",
+      "unlock_gone": "The saved passkey is no longer available on this device; sign in with your password."
     },
     "passkey": {
       "method": "Passkey signer",

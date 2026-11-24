@@ -1448,7 +1448,6 @@
       "working": "Zapisywanie kluczy…",
       "secured_title": "Klucze w bezpiecznym magazynie",
       "secured_description": "Ta przeglądarka przechowuje teraz klucze tego konta lite w bezpiecznym magazynie, chronione Twoim hasłem.",
-      "passkey_failed_title": "Nie włączono odblokowania biometrycznego",
       "warning_unsecured": "To konto istnieje tylko w tej przeglądarce, a jego klucze nie są chronione. Zabezpiecz je w bezpiecznym magazynie.",
       "unlock_failed_title": "Bezpieczny magazyn nie został odblokowany",
       "unlock_failed": "Bezpieczny magazyn nie został odblokowany, więc nic nie wysłano. Spróbuj ponownie.",
