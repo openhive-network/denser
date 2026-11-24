@@ -1,0 +1,89 @@
+{
+  "recordedWith": "@hiveio/hb-auth@1.28.4-rc0-stable.261028220752",
+  "username": "gtg",
+  "databases": [
+    {
+      "name": "/aliases_v3",
+      "version": 1,
+      "stores": [
+        {
+          "name": "aliases",
+          "keyPath": "alias",
+          "autoIncrement": false,
+          "indexes": [
+            {
+              "name": "alias",
+              "keyPath": "alias",
+              "unique": true,
+              "multiEntry": false
+            }
+          ],
+          "records": [
+            {
+              "key": "gtg@active",
+              "value": {
+                "pubKey": "STM5dRfo5EMpM51eN3pS8Gn1CDGVZXjRanwfJP8oEXQ8KS36HhB2W",
+                "alias": "gtg@active"
+              }
+            },
+            {
+              "key": "gtg@posting",
+              "value": {
+                "pubKey": "STM5dRfo5EMpM51eN3pS8Gn1CDGVZXjRanwfJP8oEXQ8KS36HhB2W",
+                "alias": "gtg@posting"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "/settings_v3",
+      "version": 1,
+      "stores": [
+        {
+          "name": "settings",
+          "keyPath": null,
+          "autoIncrement": false,
+          "indexes": [],
+          "records": [
+            {
+              "key": "gtg",
+              "value": {
+                "strict": {
+                  "posting": true,
+                  "active": true
+                },
+                "alias": "gtg",
+                "authorizedAccounts": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "/storage_root_v3",
+      "version": 1,
+      "stores": [
+        {
+          "name": "FILE_DATA",
+          "keyPath": null,
+          "autoIncrement": false,
+          "indexes": [],
+          "records": [
+            {
+              "key": "/storage_root_v3/.beekeeper/gtg.wallet",
+              "value": {
+                "contents": {
+                  "$idb": "Uint8Array",
+                  "base64": "IjkwODk2NGRmMmUxYjFhNmMwMDNkMTBlMzEyYjEyOTZhMmEzY2Q2YjU5ZDZiYmM1OGE1NzU1OWUzZjBiM2QyZjllMzNhZjFlZjExZTQ0NTQ5MjZmZmUzNmM2ODRhNmJiNmJlMzNhMTNiNTE1Y2ExMGViN2U1NjgxMjBjYzMwNzQ5ODY0OGFhOTk1YjBkOTgyNDMzZjgyM2IyN2FkNTk3N2UyMjRiNDgzNGFiN2RiOGEzMmZjMDI1Mjc3MTU4YjgxMDE2YjEzNDk3ZDdjMzZiZTQ3OWI3YmUyYTYzNDdkNjM2ZTQ1YzMwZjdkOWE4YjYwYzUxNTFmMjIwNjViNmJjMzExNzY4MDQ4MGM2NGMzMjUwMmU2MDgzYmVmM2Y4YmU2OCI="
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,9 +3,17 @@ import { test, expect, type Page } from '@playwright/test';
 import { openBalanceMenuDialog } from '../support/balanceMenu';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor, type BroadcastInterceptor } from '../support/broadcastInterceptor';
+import { restoreIndexedDb } from '../support/indexedDbDump';
 import { LoginForm } from '../support/pages/loginForm';
 import { expectTransferOperation, naiAsset } from '../support/walletOperations';
-import { STUB_ACCOUNT, STUB_FOLLOWED, startWalletApiStub, stubAccountWith } from '../support/walletApiStub';
+import {
+  STUB_ACCOUNT,
+  STUB_FOLLOWED,
+  logInAsStubAccount,
+  startWalletApiStub,
+  stubAccountWith
+} from '../support/walletApiStub';
+import preSettingWallet from '../mock/safe-storage/pre-setting-wallet.json';
 import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart-signer.json';
 
 /**
@@ -15,6 +23,10 @@ import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart
  * browser does not fill in, and the sign-in itself asks only once. The stub node
  * (support/walletApiStub.ts) lists one key as the account's posting and active key, and vouches for
  * it as safe storage's sign-in checks; the broadcast is intercepted.
+ *
+ * A wallet made before the setting existed (mock/safe-storage/README.md) is not asked about it:
+ * locked, its first transfer asks only for the password unlocking it, which adopts the setting as
+ * off, and the next transfer signs without a prompt.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -26,6 +38,10 @@ const SHARED_PUBLIC_KEY = 'STM5dRfo5EMpM51eN3pS8Gn1CDGVZXjRanwfJP8oEXQ8KS36HhB2W
 const SAFE_STORAGE_PASSWORD = 'fixture-password';
 
 const sharedAuthority = { weight_threshold: 1, account_auths: [], key_auths: [[SHARED_PUBLIC_KEY, 1]] };
+
+const ownTransfersPage = `${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`;
+/** A page of the wallet's origin that loads nothing, to write IndexedDB before the wallet opens it */
+const SEED_PAGE = `${WALLET_BASE_PATH}/__indexeddb-seed`;
 
 let stub: Server;
 
@@ -54,7 +70,7 @@ test.beforeEach(async ({ context }) => {
 /** Creates the safe-storage wallet with the shared key, the check box as `checked`, and signs in */
 async function createWalletAndSignIn(page: Page, checked: boolean) {
   const loginForm = new LoginForm(page);
-  await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+  await page.goto(ownTransfersPage);
   await expect(async () => {
     await page.getByRole('button', { name: 'Login', exact: true }).click();
     await expect(loginForm.loginDialog).toBeVisible({ timeout: 1000 });
@@ -73,6 +89,19 @@ async function createWalletAndSignIn(page: Page, checked: boolean) {
   await expect(loginForm.loginDialog).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
   // One prompt for signing in: the login transaction asked for no check of its own
   await expect(page.getByText(CHECK_TITLE)).toHaveCount(0);
+}
+
+/**
+ * Restores the recorded pre-setting wallet into IndexedDB and has the next page load find the
+ * stub account signed in through safe storage, its wallet locked: no hb-auth worker has unlocked it
+ */
+async function restorePreSettingWalletSignedIn(page: Page) {
+  expect(preSettingWallet.username, "the recorded wallet is the stub account's").toBe(STUB_ACCOUNT);
+  await page.route(`**${SEED_PAGE}`, (route) => route.fulfill({ contentType: 'text/html', body: '<!doctype html>' }));
+  await page.goto(SEED_PAGE);
+  await restoreIndexedDb(page, preSettingWallet);
+  await page.unroute(`**${SEED_PAGE}`);
+  await logInAsStubAccount(page, { loginType: 'hbauth', keyType: 'active' });
 }
 
 /** Fills in a transfer of 1 HIVE to STUB_FOLLOWED and confirms it */
@@ -140,5 +169,46 @@ test.describe('The check before active-key operations of a safe-storage wallet',
     await confirmCheck(page);
     await broadcasts.waitForCount(2);
     expectTransferBroadcast(broadcasts, 1);
+  });
+
+  test('WALLET-ACTIVE-CHECK-03 — a locked wallet from before the setting signs two transfers after one password prompt', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await restorePreSettingWalletSignedIn(page);
+    await page.goto(ownTransfersPage);
+    const loginForm = new LoginForm(page);
+
+    await startTransfer(page);
+    await expect(loginForm.enterYourPasswordForm, 'the transfer asks for the password unlocking the locked wallet').toBeVisible({
+      timeout: HYDRATION_TIMEOUT
+    });
+    await expect(page.getByText(CHECK_TITLE), 'the locked wallet asks to unlock, not for the check').toHaveCount(0);
+    await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.passwordToUnlockKeySubmitButton.click();
+    await expect(
+      loginForm.enterYourPasswordForm,
+      'the current hb-auth unlocks the recorded wallet with the fixture password'
+    ).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
+    await broadcasts.waitForCount(1);
+    expectTransferBroadcast(broadcasts, 0);
+    await page.getByRole('dialog', { name: 'Transfer To Account', exact: true }).getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    await startTransfer(page);
+    await expect(async () => {
+      expect(
+        await loginForm.enterYourPasswordForm.count(),
+        'the unlock adopted the setting as off; a check prompt here means hb-auth read the recorded wallet as tampered'
+      ).toBe(0);
+      expect(broadcasts.calls).toHaveLength(2);
+    }).toPass({ timeout: HYDRATION_TIMEOUT });
+    expectTransferBroadcast(broadcasts, 1);
+
+    await page.getByTestId('profile-avatar-button').click();
+    await expect(
+      page.getByRole('menu').getByTestId('active-check-menu-item'),
+      'the account menu shows the setting of the unlocked pre-setting wallet as off'
+    ).toHaveAttribute('aria-checked', 'false');
   });
 });
