@@ -12,14 +12,16 @@ export const NO_STORE_CACHE_CONTROL = 'private, no-cache, no-store, max-age=0, m
  * Cookies a page render never reads, so a request carrying only these stays public: the login
  * challenge (`<app>_login_challenge_server`, and the legacy readable `<app>_login_challenge` that
  * `/api/auth/challenge` clears), the log-correlation `session_uid`, Condenser's
- * `user_preferred_api_endpoint`, Google Analytics' and Cloudflare's. Any other cookie, the session,
- * observer, `account_info` and `api-sets` among them, counts as personalizing, and so does a
+ * `user_preferred_api_endpoint`, the retired `api-sets` (the server routes by the operator's nodes
+ * alone; the browser expires it), Google Analytics' and Cloudflare's. Any other cookie, the session,
+ * observer and `account_info` among them, counts as personalizing, and so does a
  * `NEXT_LOCALE` with any value but `DEFAULT_LOCALE`: the page cached for a URL is rendered in the
  * default language, so only a visitor on it may be served that copy.
  */
 const NON_PERSONALIZING_COOKIES = new Set([
   'session_uid',
   'user_preferred_api_endpoint',
+  'api-sets',
   '_gid',
   '__cf_bm',
   '_cfuvid',

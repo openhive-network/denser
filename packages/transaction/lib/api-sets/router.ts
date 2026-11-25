@@ -1,4 +1,5 @@
 import { API_SET_IDS, API_SETS_BOOTSTRAP_ID, type TApiSetId } from '@ui/config/api-set-ids';
+import { storedApiSetChoices } from '@ui/lib/api-sets-choices';
 
 /**
  * Sets only some nodes serve. Their calls go to the nodes the routes list for the set, never on to
@@ -31,19 +32,16 @@ export interface IApiSetView {
   report(setId: TApiSetId, node: string, outcome: TApiSetOutcome): void;
 }
 
-/** A server's routes, handed to the browser with the page. */
+/** A server's routes, handed to the browser with the page: the same for every visitor. */
 export interface IApiSetsBootstrap {
   routes: Partial<Record<TApiSetId, string[]>>;
-  selections: Partial<Record<TApiSetId, string>>;
 }
 
 export function bootstrapOf(view: IApiSetView): IApiSetsBootstrap {
-  const bootstrap: IApiSetsBootstrap = { routes: {}, selections: {} };
+  const bootstrap: IApiSetsBootstrap = { routes: {} };
   for (const setId of API_SET_IDS) {
     const nodes = view.nodesFor(setId);
     if (nodes.length > 0) bootstrap.routes[setId] = [...nodes];
-    const selected = view.selectedNode(setId);
-    if (selected) bootstrap.selections[setId] = selected;
   }
   return bootstrap;
 }
@@ -56,32 +54,38 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 /** Reads a bootstrap from untrusted JSON (the page), keeping only well-formed entries of known sets. */
 export function parseApiSetsBootstrap(value: unknown): IApiSetsBootstrap | undefined {
-  if (!isRecord(value) || !isRecord(value.routes) || !isRecord(value.selections)) return undefined;
-  const bootstrap: IApiSetsBootstrap = { routes: {}, selections: {} };
+  if (!isRecord(value) || !isRecord(value.routes)) return undefined;
+  const bootstrap: IApiSetsBootstrap = { routes: {} };
   for (const setId of API_SET_IDS) {
     const nodes = value.routes[setId];
     if (isStringArray(nodes)) bootstrap.routes[setId] = nodes;
-    const selected = value.selections[setId];
-    if (typeof selected === 'string') bootstrap.selections[setId] = selected;
   }
   return bootstrap;
 }
 
 /**
- * The routes the server rendered the page with, until the browser has an engine of its own. A node
- * a call found unusable moves behind the others for the rest of the page's life.
+ * The routes the server rendered the page with, until the browser has an engine of its own, with the
+ * node the user chose in this browser (`choices`) first for each set the routes list. A node a call
+ * found unusable moves behind the others for the rest of the page's life.
  */
-export function createStaticView(bootstrap: IApiSetsBootstrap): IApiSetView {
+export function createStaticView(
+  bootstrap: IApiSetsBootstrap,
+  choices: Partial<Record<TApiSetId, string>> = {}
+): IApiSetView {
   const demoted = new Map<TApiSetId, Set<string>>();
+  const selectedNode = (setId: TApiSetId): string | undefined =>
+    bootstrap.routes[setId]?.length ? choices[setId] : undefined;
   return {
     nodesFor: (setId) => {
-      const nodes = bootstrap.routes[setId] ?? [];
+      const selected = selectedNode(setId);
+      const routes = bootstrap.routes[setId] ?? [];
+      const nodes = selected ? [...new Set([selected, ...routes])] : routes;
       const down = demoted.get(setId);
       return down
         ? [...nodes.filter((node) => !down.has(node)), ...nodes.filter((node) => down.has(node))]
         : nodes;
     },
-    selectedNode: (setId) => bootstrap.selections[setId],
+    selectedNode,
     report: (setId, node, outcome) => {
       const down = demoted.get(setId) ?? new Set<string>();
       if (outcome.ok) down.delete(node);
@@ -111,8 +115,8 @@ const registry = (): IApiSetsRegistry => {
 };
 
 /**
- * Installs where calls are routed: on the server the per-request view of its engine, in the browser
- * an engine once one is running. Until then (and wherever none is installed) calls keep the nodes
+ * Installs where calls are routed: on the server the view of its engine, in the browser an engine
+ * once one is running. Until then (and wherever none is installed) calls keep the nodes
  * they were configured with, behind the page's bootstrap routes in the browser.
  */
 export const provideApiSetView = (provider: TApiSetViewProvider | undefined): void => {
@@ -135,7 +139,7 @@ const readPageView = (): IApiSetView | null => {
   if (!text) return null;
   try {
     const bootstrap = parseApiSetsBootstrap(JSON.parse(text));
-    return bootstrap ? createStaticView(bootstrap) : null;
+    return bootstrap ? createStaticView(bootstrap, storedApiSetChoices()) : null;
   } catch (error) {
     if (error instanceof SyntaxError) return null;
     throw error;

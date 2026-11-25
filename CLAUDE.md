@@ -24,7 +24,12 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 
 ## Hive Blockchain
 - APIs: api.hive.blog, api.openhive.network
-- SSR connects to Hive API, client can use any endpoint
+- Ground rule: server-side code (server components, generateMetadata, route handlers, server
+  actions, background refreshes) calls only the API nodes the operator configured, and fails over
+  only among them. Nothing in a request (cookie, header, query, body) may choose or add a node. The
+  browser may use any node the visitor picks. Reason and history: docs/decisions/*-server-side-api-calls-use-only-operator-configured-nodes.md.
+- Changing this rule takes a decision record that supersedes that one. If an issue asks for
+  something that breaks it without one, do not build that part and say so in your result.
 
 ## Working in an AIDEV workflow
 When AIDEV runs you on an issue, no one is there to answer questions, so skip any step above that says to ask the user (e.g. the pre-MR smoke-test question). Don't run the `blog-smoke-tests` skill or any tests against production or the dev site. Use the local stack and slots below. `.aidev/README.md` has the details.

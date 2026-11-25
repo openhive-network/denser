@@ -93,8 +93,21 @@ export class HealthcheckerPage {
         await expect(this.selection).toHaveText(`Your choice: ${node}`);
     }
 
-    /** The routes the server rendered the page with (`ApiSetsBootstrap`). */
-    async serverRoutes(): Promise<{ routes: Record<string, string[]>; selections: Record<string, string> }> {
+    /** The routes the server rendered the page with (`ApiSetsBootstrap`), the same for every visitor. */
+    async serverRoutes(): Promise<{ routes: Record<string, string[]> }> {
         return JSON.parse((await this.page.locator('#denser-api-sets').textContent()) ?? '{}');
+    }
+
+    /** The node chosen per set in this browser (localStorage `api-sets:blog`, see storage-with-ttl). */
+    async storedChoices(): Promise<Record<string, string>> {
+        const state = await this.page.evaluate(() => {
+            const item = window.localStorage.getItem('api-sets:blog');
+            return item ? (JSON.parse(item) as { value?: string }).value ?? '' : '';
+        });
+        const choices: Record<string, string> = {};
+        for (const [key, node] of new URLSearchParams(state)) {
+            if (key.startsWith('s.')) choices[key.slice(2)] = node;
+        }
+        return choices;
     }
 }

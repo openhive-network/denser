@@ -1,3 +1,4 @@
+import { existsSync, readFileSync, rmSync } from 'fs';
 import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { PostPage } from '../support/pages/postPage';
@@ -22,12 +23,17 @@ import {
  *                 switches its node
  *   API-SETS-01 – a lite post renders under its lite author, read from B; core and bridge stay on A
  *   API-SETS-02 – on /healthchecker, A is not offered for lite; B picked for lite persists across a
- *                 reload, in the server's render too
+ *                 reload, kept in the browser's localStorage, with no cookie for the server
  *   API-SETS-04 – the browser's own lite read starts at A (the page's routes list A first for lite, as
  *                 a server that has not yet learned A lacks it renders them): A refuses it, B serves
  *                 it, and the browser still sends core and bridge to A and never switches its node
  *   API-SETS-05 – (probing only) the server probed A for core, bridge and lite once A was up, before
  *                 any page
+ *   API-SETS-06 – with an `api-sets` cookie choosing a public catalog node (anyx.io) for core, bridge
+ *                 and hivemind REST, the post and the feed render through the configured nodes: the
+ *                 routes name no other node, neither the browser nor (probing only, its egress log)
+ *                 the server connects to a public node it was not configured with, and the browser
+ *                 expires the cookie
  *
  * The suite runs twice. In the default project the server runs with DENSER_API_SETS_PROBING=off, the
  * cold start: a server that has served a page has learned what a probe would tell it, so API-SETS-03's
@@ -57,6 +63,8 @@ test.beforeAll(async ({ apiSetsBaseURL, apiSetsServer, fixtureProxy: _fixturePro
   if (!apiSetsBaseURL) return;
   baseURL = apiSetsBaseURL;
   node = await startLiteLessNode(`http://localhost:${fixturePort}`);
+  const egressLog = apiSetsServer?.env.DENSER_EGRESS_LOG;
+  if (egressLog) rmSync(egressLog, { force: true });
   if (apiSetsServer) server = await startBlogServer(apiSetsServer);
 });
 
@@ -220,7 +228,7 @@ test('API-SETS-01: a lite post renders under its lite author while core and brid
   expect(routes.lite).toEqual([LITE_NODE]);
 });
 
-test('API-SETS-02: B picked for lite persists across a reload, server render included; A is not offered', async ({
+test('API-SETS-02: B picked for lite persists across a reload in the browser alone; A is not offered', async ({
   page
 }) => {
   await useThisServersSettings(page);
@@ -240,7 +248,8 @@ test('API-SETS-02: B picked for lite persists across a reload, server render inc
   await healthcheckerPage.validatePageIsLoaded();
   await healthcheckerPage.switchToTab(API_SET_TAB.lite);
   await expect(healthcheckerPage.selection).toHaveText(`Your choice: ${LITE_NODE}`);
-  expect((await healthcheckerPage.serverRoutes()).selections.lite).toBe(LITE_NODE);
+  expect((await healthcheckerPage.storedChoices()).lite).toBe(LITE_NODE);
+  expect((await page.context().cookies()).map(({ name }) => name)).not.toContain('api-sets');
 });
 
 test('API-SETS-04: a browser lite read A refuses and B serves leaves core and bridge on A', async ({
@@ -272,4 +281,75 @@ test('API-SETS-04: a browser lite read A refuses and B serves leaves core and br
   expect(calls).toContainEqual({ node: LITE_LESS_NODE_URL, method: COMMUNITIES_READ });
   expectCallsOnTheirNodes(calls);
   expect(await page.evaluate((key) => sessionStorage.getItem(key), AUTO_NODE_KEY)).toBeNull();
+});
+
+const CATALOG_ONLY_NODE = 'https://anyx.io';
+/**
+ * The nodes of the server's API sets: A and B (apiSetsServerEnv of playwright.fixture.config.ts), and
+ * api.hive.blog, hivesense's default AI domain.
+ */
+const CONFIGURED_NODES = [LITE_LESS_NODE_URL, LITE_NODE, 'https://api.hive.blog'];
+/** The hosts of `SELECTABLE_API_NODES` (packages/ui/config/api-sets.ts) this server is not configured with. */
+const CATALOG_ONLY_HOSTS = [
+  'api.openhive.network',
+  'api.syncad.com',
+  'anyx.io',
+  'techcoderx.com',
+  'hive.roelandp.nl',
+  'api.deathwing.me',
+  'api.c0ff33a.uk',
+  'hive-api.arcange.eu',
+  'hive-api.3speak.tv',
+  'hiveapi.actifit.io'
+];
+
+/** The `api-sets` cookie a browser wrote before the server stopped routing by it. */
+const legacyApiSetsCookie = () => {
+  const selection = new URLSearchParams({ v: '1' });
+  for (const setId of ['core', 'bridge', 'hivemind-rest']) selection.set(`s.${setId}`, CATALOG_ONLY_NODE);
+  return { name: 'api-sets', value: encodeURIComponent(selection.toString()), url: baseURL };
+};
+
+/** The hosts the server connected to beyond loopback (egress-guard.cjs), when it logs them. */
+const egressHosts = (log: string | undefined): string[] | undefined => {
+  if (!log) return undefined;
+  if (!existsSync(log)) return [];
+  return readFileSync(log, 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.replace(/:\d+$/, ''));
+};
+
+test('API-SETS-06: an api-sets cookie choosing a public node sends no server or browser call to it', async ({
+  page,
+  apiSetsServer
+}) => {
+  await useThisServersSettings(page);
+  const catalogOnlyCalls: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).origin === CATALOG_ONLY_NODE) catalogOnlyCalls.push(request.url());
+  });
+  const healthcheckerPage = new HealthcheckerPage(page);
+  const postPage = new PostPage(page);
+
+  for (const path of [POST_PATH, LITE_FEED_PATH]) {
+    await test.step(path, async () => {
+      await page.context().addCookies([legacyApiSetsCookie()]);
+      await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+      if (path === POST_PATH) await expect(postPage.articleAuthorName).toHaveText(LITE_NAME);
+      else await expect(page.getByTestId('post-author').first()).toHaveText(LITE_NAME);
+
+      const bootstrap = await healthcheckerPage.serverRoutes();
+      expect(Object.keys(bootstrap)).toEqual(['routes']);
+      const routedNodes = Object.values(bootstrap.routes).flat();
+      expect(routedNodes.filter((routed) => !CONFIGURED_NODES.includes(routed))).toEqual([]);
+    });
+  }
+
+  expect(catalogOnlyCalls).toEqual([]);
+  await expect
+    .poll(async () => (await page.context().cookies()).map(({ name }) => name))
+    .not.toContain('api-sets');
+  const hosts = egressHosts(apiSetsServer?.env.DENSER_EGRESS_LOG);
+  if (hosts) expect(hosts.filter((host) => CATALOG_ONLY_HOSTS.includes(host))).toEqual([]);
 });

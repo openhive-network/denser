@@ -18,14 +18,17 @@ export type TApiSetId = (typeof API_SET_IDS)[number];
 
 export const isApiSetId = (value: string): value is TApiSetId => API_SET_IDS.some((setId) => setId === value);
 
-/** Cookie (and localStorage key) holding the user's per-set choices, as the engine serializes them. */
+/**
+ * The cookie that once carried the user's per-set choices to the server, which no longer routes by
+ * them: the browser expires it where it finds it.
+ */
 export const API_SETS_COOKIE = 'api-sets';
 
 /**
- * localStorage key of the user's choices: localStorage is shared by every app of the origin, while
- * the cookie is scoped to the app's base path.
+ * localStorage key of the user's per-set choices, as the engine serializes them, per app: localStorage
+ * is shared by every app of the origin, whose catalogs may differ.
  */
-export const API_SETS_STORAGE_KEY = `${API_SETS_COOKIE}:${process.env.DENSER_APP ?? 'app'}`;
+export const API_SETS_STORAGE_KEY = `api-sets:${process.env.DENSER_APP ?? 'app'}`;
 
 /** Id of the page's JSON script carrying the server's routes to the browser. */
 export const API_SETS_BOOTSTRAP_ID = 'denser-api-sets';

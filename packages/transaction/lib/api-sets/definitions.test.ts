@@ -1,7 +1,12 @@
 import { afterEach, describe, it } from 'mocha';
 import { expect } from 'chai';
-import { ApiSetEngine, TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
-import { apiSetsOfApp, resolveApiSetsConfig, SELECTABLE_API_NODES } from '@ui/config/api-sets';
+import { TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
+import {
+  apiSetsOfApp,
+  resolveApiSetsConfig,
+  resolveServerApiSetsConfig,
+  SELECTABLE_API_NODES
+} from '@ui/config/api-sets';
 import { createApiSetRouting } from './call-routing';
 import { createApiSetEngine } from './definitions';
 import { createEngineView } from './engine-view';
@@ -266,15 +271,28 @@ describe('the hivemind REST probe', () => {
     expect(engine.fallbackOrder('hivemind-rest')).to.deep.equal([NEW_HIVEMIND]);
   });
 
-  it("sends a cookie's choice of an unsupported node's post lists to an eligible node", async () => {
-    const { config, engine } = await probedEngine();
-    const cookie = new URLSearchParams({ v: '1', 's.hivemind-rest': OLD_HIVEMIND }).toString();
-    const view = createEngineView(ApiSetEngine.forRequest(engine, cookie), config);
-    expect(view.selectedNode('hivemind-rest')).to.equal(OLD_HIVEMIND);
+  it("keeps the server's failover of every set on the configured nodes, a catalog-only node reported serving included", async () => {
+    stubHivemindNodes();
+    const config = resolveServerApiSetsConfig(
+      { apiEndpoint: NEW_HIVEMIND, allowedNodes: `${OLD_HIVEMIND} ${FAILING}`, hivemindRestNodes: NEW_HIVEMIND },
+      apiSetsOfApp('blog')
+    );
+    const configured = [NEW_HIVEMIND, OLD_HIVEMIND, FAILING];
+    const engine = createApiSetEngine(config);
+    await engine.refresh();
+    const catalogOnly = SELECTABLE_API_NODES.filter((node) => !configured.includes(node));
+    for (const setId of config.sets) {
+      for (const node of catalogOnly) expect(engine.report(setId, node, { ok: true, latencyMs: 1 })).to.equal(false);
+    }
+
+    expect(config.nodes).to.have.members(configured);
+    expect(probed.map((url) => new URL(url).origin)).to.not.include.members(catalogOnly);
+    const view = createEngineView(engine, config);
+    for (const setId of config.sets) {
+      expect(view.nodesFor(setId).filter((node) => !config.nodes.includes(node)), setId).to.deep.equal([]);
+    }
     provideApiSetView(() => view);
-
     const route = await createApiSetRouting().routeCall('restApi', ['hivemind-api', 'rankedPosts'], [NEW_HIVEMIND]);
-
     expect(route?.nodes).to.deep.equal([NEW_HIVEMIND]);
   });
 });
