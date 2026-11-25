@@ -180,7 +180,12 @@
       "relink_hint": "Enter your password once to link this device to your existing passkey.",
       "unlock_wrong_account": "The passkey you picked belongs to another account; sign in with this account's password.",
       "wrong_account_title": "That passkey belongs to another account",
-      "wrong_account_description": "The passkey you picked is not this account's. Use this account's passkey from another device, or create one here: if biometric unlock is on for this account on another device, a new passkey would replace it there too."
+      "wrong_account_description": "The passkey you picked is not this account's. Use this account's passkey from another device, or create one here: if biometric unlock is on for this account on another device, a new passkey would replace it there too.",
+      "create_cancelled": "No passkey was created. You can try again.",
+      "unlock_failing": "The passkey didn't unlock your last sign-ins. If you deleted it in your password manager, turn biometric unlock off on this device or set it up again.",
+      "unlock_failing_turn_off": "Turn off on this device",
+      "unlock_failing_set_up": "Set up again",
+      "set_up_again_hint": "Sign in with your password to set up biometric unlock again."
     },
     "passkey": {
       "method": "Passkey signer",
@@ -357,6 +362,12 @@
     "cancel_button": "Cancel",
     "turn_off_confirm_button": "Turn off",
     "turned_off": "Biometric unlock is off on this device.",
-    "turn_off_failed": "Couldn't turn off biometric unlock. Try again."
+    "turn_off_failed": "Couldn't turn off biometric unlock. Try again.",
+    "turn_on_menu_label": "Turn on biometric unlock",
+    "turn_on_title": "Turn on biometric unlock for this device",
+    "turn_on_description": "Enter your password to unlock with your fingerprint, face or device PIN from now on.",
+    "continue_button": "Continue",
+    "turned_on": "Biometric unlock is now on for this device.",
+    "turn_on_failed": "Couldn't turn on biometric unlock. Try again."
   }
 }

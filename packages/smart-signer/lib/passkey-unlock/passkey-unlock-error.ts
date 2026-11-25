@@ -36,13 +36,19 @@ export function ceremonyError(step: string, error: unknown): PasskeyUnlockError 
   return new PasskeyUnlockError(`${step}: ${name || 'Error'}: ${detail}`, reason, { cause: error });
 }
 
+/** A smart-signer translation key, and whether it names an error rather than a neutral fact */
+export type PasskeyEnableMessage = { key: string; error: boolean };
+
 /**
- * The smart-signer translation key telling the user that enabling the passkey unlock failed with
- * `error`. A cancelled prompt gets the retry message too: the browser rejects a provider's own
- * setup that did not finish (a screen lock or recovery PIN to set first) as it does a cancel.
+ * What to tell the user about enabling the passkey unlock failing with `error`. A cancelled prompt
+ * is no error: the user dismissed it, or left a provider's own setup unfinished (a screen lock or
+ * recovery PIN to set first), which the browser rejects alike, so a neutral line says it can be
+ * tried again.
  */
-export function passkeyEnableFailureKey(error: unknown): string {
-  if (!(error instanceof PasskeyUnlockError)) return 'login_form.passkey_prompt.failed';
-  if (error.reason === 'unsupported') return 'login_form.passkey_prompt.unsupported';
-  return 'login_form.passkey_prompt.failed';
+export function passkeyEnableMessage(error: unknown): PasskeyEnableMessage {
+  if (!(error instanceof PasskeyUnlockError)) return { key: 'login_form.passkey_prompt.failed', error: true };
+  if (error.reason === 'cancelled')
+    return { key: 'login_form.passkey_prompt.create_cancelled', error: false };
+  if (error.reason === 'unsupported') return { key: 'login_form.passkey_prompt.unsupported', error: true };
+  return { key: 'login_form.passkey_prompt.failed', error: true };
 }

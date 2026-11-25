@@ -180,7 +180,12 @@
       "relink_hint": "Inserisci la password una sola volta per collegare questo dispositivo alla tua passkey esistente.",
       "unlock_wrong_account": "La passkey scelta appartiene a un altro account; accedi con la password di questo account.",
       "wrong_account_title": "Questa passkey appartiene a un altro account",
-      "wrong_account_description": "La passkey scelta non è di questo account. Usa la passkey di questo account da un altro dispositivo oppure creane una qui: se lo sblocco biometrico di questo account è attivo su un altro dispositivo, una nuova la sostituirebbe anche lì."
+      "wrong_account_description": "La passkey scelta non è di questo account. Usa la passkey di questo account da un altro dispositivo oppure creane una qui: se lo sblocco biometrico di questo account è attivo su un altro dispositivo, una nuova la sostituirebbe anche lì.",
+      "create_cancelled": "Nessuna passkey è stata creata. Puoi riprovare.",
+      "unlock_failing": "La passkey non ha sbloccato i tuoi ultimi accessi. Se l’hai eliminata dal gestore di password, disattiva lo sblocco biometrico su questo dispositivo o configuralo di nuovo.",
+      "unlock_failing_turn_off": "Disattiva su questo dispositivo",
+      "unlock_failing_set_up": "Configura di nuovo",
+      "set_up_again_hint": "Accedi con la password per configurare di nuovo lo sblocco biometrico."
     },
     "passkey": {
       "method": "Firmatario con passkey",
@@ -357,6 +362,12 @@
     "cancel_button": "Annulla",
     "turn_off_confirm_button": "Disattiva",
     "turned_off": "Lo sblocco biometrico è disattivato su questo dispositivo.",
-    "turn_off_failed": "Non è stato possibile disattivare lo sblocco biometrico. Riprova."
+    "turn_off_failed": "Non è stato possibile disattivare lo sblocco biometrico. Riprova.",
+    "turn_on_menu_label": "Attiva lo sblocco biometrico",
+    "turn_on_title": "Attivare lo sblocco biometrico su questo dispositivo",
+    "turn_on_description": "Inserisci la password per sbloccare d’ora in poi con l’impronta, il volto o il PIN del dispositivo.",
+    "continue_button": "Continua",
+    "turned_on": "Lo sblocco biometrico è attivo su questo dispositivo.",
+    "turn_on_failed": "Non è stato possibile attivare lo sblocco biometrico. Riprova."
   }
 }

@@ -180,7 +180,12 @@
       "relink_hint": "输入一次密码，即可将此设备关联到现有的通行密钥。",
       "unlock_wrong_account": "所选的通行密钥属于另一个账户；请使用此账户的密码登录。",
       "wrong_account_title": "该通行密钥属于另一个账户",
-      "wrong_account_description": "所选的通行密钥不属于此账户。请使用其他设备上此账户的通行密钥，或在此处新建一个：如果此账户已在其他设备上启用生物识别解锁，新建的通行密钥也会在那台设备上替换它。"
+      "wrong_account_description": "所选的通行密钥不属于此账户。请使用其他设备上此账户的通行密钥，或在此处新建一个：如果此账户已在其他设备上启用生物识别解锁，新建的通行密钥也会在那台设备上替换它。",
+      "create_cancelled": "未创建通行密钥。你可以重试。",
+      "unlock_failing": "最近几次登录时，通行密钥未能解锁。如果你已在密码管理器中删除它，请在此设备上关闭生物识别解锁，或重新设置。",
+      "unlock_failing_turn_off": "在此设备上关闭",
+      "unlock_failing_set_up": "重新设置",
+      "set_up_again_hint": "使用密码登录即可重新设置生物识别解锁。"
     },
     "passkey": {
       "method": "通行密钥签名服务",
@@ -357,6 +362,12 @@
     "cancel_button": "取消",
     "turn_off_confirm_button": "关闭",
     "turned_off": "已在此设备上关闭生物识别解锁。",
-    "turn_off_failed": "无法关闭生物识别解锁。请重试。"
+    "turn_off_failed": "无法关闭生物识别解锁。请重试。",
+    "turn_on_menu_label": "开启生物识别解锁",
+    "turn_on_title": "在此设备上开启生物识别解锁",
+    "turn_on_description": "输入密码后，今后即可用指纹、面容或设备 PIN 解锁。",
+    "continue_button": "继续",
+    "turned_on": "已在此设备上开启生物识别解锁。",
+    "turn_on_failed": "无法开启生物识别解锁。请重试。"
   }
 }

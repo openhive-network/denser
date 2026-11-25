@@ -82,6 +82,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       () => initialUsername ?? (passkeyStep ? lastLoggedInUser : getLastSafeStorageUser())
     );
     const [safeStorageError, setSafeStorageError] = useState<string | null>(null);
+    // The passkey is asked when the sign-in opens, not each time the user comes back to its first step
+    const [leftSafeStorage, setLeftSafeStorage] = useState(false);
     const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
 
     // provide methods to outside from here
@@ -172,14 +174,19 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       }
     }
 
+    function goToStep(nextStep: Steps): void {
+      if (step === Steps.SAFE_STORAGE_LOGIN) setLeftSafeStorage(true);
+      setStep(nextStep);
+    }
+
     function returnToSafeStorageLogin(error: string): void {
       setSafeStorageError(error);
-      setStep(Steps.SAFE_STORAGE_LOGIN);
+      goToStep(Steps.SAFE_STORAGE_LOGIN);
     }
 
     function changeStep(nextStep: Steps): void {
       setSafeStorageError(null);
-      setStep(nextStep);
+      goToStep(nextStep);
     }
 
     return (
@@ -196,6 +203,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             onUsernameChange={(username) => setUsername(username)}
             initialError={safeStorageError}
             placeholder={placeholder}
+            askPasskeyOnOpen={!leftSafeStorage}
           />
         )}
 

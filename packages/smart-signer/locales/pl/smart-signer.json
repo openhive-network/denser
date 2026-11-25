@@ -180,7 +180,12 @@
       "relink_hint": "Wpisz hasło jeden raz, aby połączyć to urządzenie z istniejącym kluczem dostępu.",
       "unlock_wrong_account": "Wybrany klucz dostępu należy do innego konta; zaloguj się hasłem tego konta.",
       "wrong_account_title": "Ten klucz dostępu należy do innego konta",
-      "wrong_account_description": "Wybrany klucz dostępu nie należy do tego konta. Użyj klucza dostępu tego konta z innego urządzenia albo utwórz nowy tutaj: jeśli odblokowywanie biometryczne tego konta jest włączone na innym urządzeniu, nowy klucz dostępu zastąpiłby go także tam."
+      "wrong_account_description": "Wybrany klucz dostępu nie należy do tego konta. Użyj klucza dostępu tego konta z innego urządzenia albo utwórz nowy tutaj: jeśli odblokowywanie biometryczne tego konta jest włączone na innym urządzeniu, nowy klucz dostępu zastąpiłby go także tam.",
+      "create_cancelled": "Nie utworzono klucza dostępu. Możesz spróbować ponownie.",
+      "unlock_failing": "Klucz dostępu nie odblokował ostatnich logowań. Jeśli usunięto go w menedżerze haseł, wyłącz odblokowywanie biometryczne na tym urządzeniu albo skonfiguruj je ponownie.",
+      "unlock_failing_turn_off": "Wyłącz na tym urządzeniu",
+      "unlock_failing_set_up": "Skonfiguruj ponownie",
+      "set_up_again_hint": "Zaloguj się hasłem, aby ponownie skonfigurować odblokowywanie biometryczne."
     },
     "passkey": {
       "method": "Podpisywanie kluczem dostępu",
@@ -357,6 +362,12 @@
     "cancel_button": "Anuluj",
     "turn_off_confirm_button": "Wyłącz",
     "turned_off": "Odblokowywanie biometryczne na tym urządzeniu jest wyłączone.",
-    "turn_off_failed": "Nie udało się wyłączyć odblokowywania biometrycznego. Spróbuj ponownie."
+    "turn_off_failed": "Nie udało się wyłączyć odblokowywania biometrycznego. Spróbuj ponownie.",
+    "turn_on_menu_label": "Włącz odblokowywanie biometryczne",
+    "turn_on_title": "Włączyć odblokowywanie biometryczne na tym urządzeniu",
+    "turn_on_description": "Wpisz hasło, aby od teraz odblokowywać odciskiem palca, twarzą lub kodem PIN urządzenia.",
+    "continue_button": "Dalej",
+    "turned_on": "Odblokowywanie biometryczne na tym urządzeniu jest włączone.",
+    "turn_on_failed": "Nie udało się włączyć odblokowywania biometrycznego. Spróbuj ponownie."
   }
 }
