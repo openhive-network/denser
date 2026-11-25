@@ -420,5 +420,12 @@ sandbox:
 # version tags, not `:integration`. Re-adding a publish: section with an
 # `integration` channel brings back per-promote images for DENSER_MODE=images.
 
+# Decision records (docs/decisions/, MADR): a workflow publishes the records it
+# proposes as docs/decisions/0000-<slug>.md, and promote numbers them. Without
+# this section they are withheld from the commit. No `path:`: an explicit one
+# would drop the number from the file name.
+decisions:
+  enabled: true
+
 # Capability grants for target-side code. Empty until this project needs one.
 capabilities: []
