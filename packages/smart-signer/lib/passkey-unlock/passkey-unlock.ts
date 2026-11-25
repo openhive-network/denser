@@ -1,6 +1,8 @@
 import {
+  answersRecordSalt,
   createPasskeyUnlock,
   discoverPasskey,
+  isOnDeviceSalt,
   isPasskeyOf,
   isRecordPasskey,
   passkeyUserId,
@@ -16,6 +18,7 @@ import {
 import { PasskeyUnlockError } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
 import { signalAcceptedPasskey } from '@smart-signer/lib/passkey-unlock/passkey-signals';
 import {
+  readDevicePrfSalt,
   readPasskeyUnlock,
   removePasskeyUnlock,
   storePasskeyUnlock
@@ -33,15 +36,22 @@ export type PasskeyUnlockClient<KeyType extends string, Status> = {
 
 /**
  * The passkey record store `unlockWithPasskey` reads, clears of a record that no longer unlocks,
- * and writes the record of a passkey that took the registered one's place to
+ * and writes the record of a passkey that took the registered one's place to, with the device salt
+ * every record it writes is encrypted under
  */
 export type PasskeyUnlockStore = {
   read: typeof readPasskeyUnlock;
   remove: typeof removePasskeyUnlock;
   write: typeof storePasskeyUnlock;
+  deviceSalt: typeof readDevicePrfSalt;
 };
 
-const BROWSER_STORE: PasskeyUnlockStore = { read: readPasskeyUnlock, remove: removePasskeyUnlock, write: storePasskeyUnlock };
+const BROWSER_STORE: PasskeyUnlockStore = {
+  read: readPasskeyUnlock,
+  remove: removePasskeyUnlock,
+  write: storePasskeyUnlock,
+  deviceSalt: readDevicePrfSalt
+};
 
 /**
  * Lets a passkey `username` already has, synced from another device, unlock `username`'s safe
@@ -55,7 +65,7 @@ export async function reusePasskeyUnlockOf(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<void> {
-  await store.write(await reusePasskeyUnlock(credentials, username, password, location.hostname));
+  await store.write(await reusePasskeyUnlock(credentials, username, password, location.hostname, await store.deviceSalt()));
 }
 
 /**
@@ -70,7 +80,7 @@ export async function registerPasskeyUnlock(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<void> {
-  const record = await createPasskeyUnlock(credentials, username, password, location.hostname);
+  const record = await createPasskeyUnlock(credentials, username, password, location.hostname, await store.deviceSalt());
   await store.write(record);
   // Only here does the app know the account's passkeys: the provider has just replaced its own of the handle with this one
   await signalAcceptedPasskey(record.rpId, await passkeyUserId(username), record.credentialId);
@@ -128,6 +138,9 @@ async function ownerRecord(
   return undefined;
 }
 
+/** A record's password, and the passkey that gave it, under whose device salt the record is to be kept */
+type FoundPassword = { record: PasskeyUnlockRecord; password: string; picked: PickedPasskey };
+
 type Unlocking = {
   credentials: PasskeyCredentials;
   store: PasskeyUnlockStore;
@@ -139,7 +152,9 @@ type Unlocking = {
 /**
  * The password a passkey the user picks gives, asked of the account's passkeys without naming
  * `record`'s credential, and the record it is the password of: `record`'s, or that of one of
- * `accounts` linked on this device whose passkey the user picked instead. Rejects with
+ * `accounts` linked on this device whose passkey the user picked instead. One request answers for
+ * a record on the device salt and for `record`'s own salt; another account's record on a salt of
+ * its own takes a second one naming its credential. Rejects with
  * PasskeyUnlockError: cancelled, keeping every record (a cancel says nothing of whether the passkey
  * is still there); wrong-account for a passkey of an account not linked here; PasskeyReplacedError
  * where the account's passkey is not its record's.
@@ -147,15 +162,32 @@ type Unlocking = {
 async function passwordOfPickedPasskey(
   record: PasskeyUnlockRecord,
   { credentials, store, accounts, userVerification, signal }: Unlocking
-): Promise<{ record: PasskeyUnlockRecord; password: string }> {
+): Promise<FoundPassword> {
   const { username, rpId, prfSalt } = record;
-  const picked = await discoverPasskey(credentials, { rpId, userVerification, knownSalt: prfSalt, signal });
+  const deviceSalt = await store.deviceSalt();
+  const picked = await discoverPasskey(credentials, { rpId, userVerification, deviceSalt, knownSalt: prfSalt, signal });
   const owner = await ownerRecord(store, record, accounts, picked);
   if (!owner) throw new PasskeyUnlockError(`Passkey unlock: the passkey picked is not ${username}'s`, 'wrong-account');
   if (!isRecordPasskey(owner, picked)) throw replaced(store, owner, picked.passkey);
-  if (owner === record) return { record, password: await pickedPasskeyPassword(record, picked) };
-  // The request asked for the PRF output of `record`'s salt: ask the passkey that answered for its own
-  return { record: owner, password: await recoverPasskeyPassword(credentials, owner, userVerification, signal) };
+  const password = answersRecordSalt(owner, picked)
+    ? await pickedPasskeyPassword(owner, picked)
+    : await recoverPasskeyPassword(credentials, owner, userVerification, signal);
+  return { record: owner, password, picked };
+}
+
+/**
+ * Moves `found.record`, still on a salt of its own, to the device salt its passkey just answered
+ * for, so picking it needs one request from then on. The record is replaced only by a copy whose
+ * password decrypts, in one write; a failure keeps it as it was. Never rejects.
+ */
+async function moveToDeviceSalt(store: PasskeyUnlockStore, { record, password, picked }: FoundPassword): Promise<void> {
+  if (isOnDeviceSalt(record, picked)) return;
+  const { username, rpId, transports } = record;
+  try {
+    await store.write(await wrapPassword(username, password, rpId, { ...picked.passkey, transports }));
+  } catch (error) {
+    logger.error(error, 'Passkey unlock of %s kept on its own salt', username);
+  }
 }
 
 function replaced(store: PasskeyUnlockStore, record: PasskeyUnlockRecord, passkey: FoundPasskey): PasskeyReplacedError {
@@ -218,6 +250,7 @@ export async function unlockWithPasskeyGivingPassword<KeyType extends string, St
     unlocked = found.record.username;
     try {
       const status = await client.authenticate(unlocked, found.password, keyType);
+      await moveToDeviceSalt(store, found);
       return { username: unlocked, status, password: found.password };
     } catch (error) {
       throw (await asStalePassword(client, unlocked, error)) ?? error;
