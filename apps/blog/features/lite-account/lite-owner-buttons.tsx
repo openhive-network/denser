@@ -30,7 +30,7 @@ export default function LiteOwnerButtons({
   canEdit,
   canDelete,
   ...discussion
-}: LiteOwnerActionsProps & LiteManageCapabilities) {
+}: LiteOwnerActionsProps & Pick<LiteManageCapabilities, 'canEdit' | 'canDelete'>) {
   const { t } = useTranslation('common_blog');
   const deletion = useLiteDeleteMutation();
 

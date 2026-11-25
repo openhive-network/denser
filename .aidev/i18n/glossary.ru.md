@@ -59,6 +59,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | notification / notifications | уведомление / уведомления | unreviewed | Toast announcement label "Уведомление", region "Уведомления ({hotkey})" (#1739). |
 | Hive core (API set) | Ядро Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
 | lite accounts | лайт-аккаунты | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| posting authority (of a lite account) | полномочия публикации | unreviewed | The gateway's `auth_failed` on an edit or delete (#1777). |
 | Balance API | API балансов | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | лента «Для вас» | unreviewed | As in the For You feed strings; API-set title (#1747). |
 | API node / API set panel | узел (API); семейство API | unreviewed | /healthchecker (#1725): «API-серверы по семействам API», node states «доступен», «не поддерживается», «недоступен», «неизвестно», «работает с перебоями»; «Автоматический выбор», «По умолчанию», «Используется». |

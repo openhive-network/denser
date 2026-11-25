@@ -1253,6 +1253,7 @@
       "deleted_tombstone": "Tiene respuestas o votos, así que queda en Hive como una lápida que indica que se eliminó.",
       "delete_failed_title": "La eliminación falló",
       "deleted_by_author": "Eliminado por el autor.",
+      "foreign_gateway_note": "Publicado a través de otra pasarela",
       "errors": {
         "not_owner": "La cuenta lite de este navegador no lo escribió, o ya no tiene la clave con que se firmó.",
         "not_found": "La pasarela no conoce esta publicación.",
@@ -1263,6 +1264,7 @@
         "invalid_request": "La pasarela rechazó el cambio por no ser válido.",
         "broadcast_failed": "La pasarela no pudo publicar el cambio en Hive. Inténtalo de nuevo.",
         "relay_unavailable": "No se puede contactar con la pasarela de cuentas lite.",
+        "auth_failed": "La clave con la que firmó este navegador no está, o ya no está, en la autoridad de publicación de la cuenta lite.",
         "unknown": "Algo salió mal."
       }
     },

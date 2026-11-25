@@ -40,6 +40,7 @@ Arabic string yet; add them here when the first one is written.
 | notification / notifications | إشعار / الإشعارات | unreviewed | Toast announcement label "إشعار", region "الإشعارات ({hotkey})" (#1739). |
 | Hive core (API set) | نواة Hive | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
 | lite accounts | الحسابات الخفيفة | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| posting authority (of a lite account) | صلاحية النشر | unreviewed | The gateway's `auth_failed` on an edit or delete (#1777). |
 | Balance API | واجهة الأرصدة البرمجية | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | موجز «لك» | unreviewed | As in the For You feed strings; API-set title (#1747). |
 | API node / API set panel | عقدة؛ عائلة واجهات API | unreviewed | /healthchecker (#1725): "خوادم API حسب عائلة API"، node states "مؤهلة"، "غير مدعومة"، "متوقفة"، "غير معروفة"، "متدهورة" (feminine, agreeing with عقدة)؛ "الاختيار التلقائي"، "افتراضية"، "قيد الاستخدام". List separator "، ". |

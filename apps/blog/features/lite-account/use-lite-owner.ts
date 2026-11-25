@@ -19,11 +19,16 @@ export function useIsLiteTombstone(entry: Pick<Entry, 'json_metadata'> | null | 
   return useLiteRelaySelect((info) => !!entry && isLiteTombstone(entry, relayAppIds(info)));
 }
 
-/** The Edit and Delete this browser's lite identity gets for `entry`: none unless it owns it and the gateway takes them. */
+/**
+ * The Edit and Delete this browser's lite identity gets for `entry`: none unless it owns it, the
+ * gateway takes them and posted it (else `foreignGateway`).
+ */
 export function useLiteManageCapabilities(entry: Entry): LiteManageCapabilities {
   const identity = useStoredLiteIdentity();
   return useLiteRelaySelect((info) => {
-    const features = info.enabled && isLiteOwner(entry, identity?.name, info.apps) ? info.features : undefined;
-    return liteManageCapabilities(entry, features, isLiteTombstone(entry, relayAppIds(info)));
+    const owned = info.enabled && isLiteOwner(entry, identity?.name, info.apps);
+    const features = owned ? info.features : undefined;
+    const gateAccounts = owned ? info.gate_accounts : undefined;
+    return liteManageCapabilities(entry, features, isLiteTombstone(entry, relayAppIds(info)), gateAccounts);
   });
 }

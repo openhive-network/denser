@@ -1245,6 +1245,7 @@
       "deleted_tombstone": "It has replies or votes, so it stays on Hive as a tombstone that says it was deleted.",
       "delete_failed_title": "Delete failed",
       "deleted_by_author": "Deleted by the author.",
+      "foreign_gateway_note": "Posted through another gateway",
       "errors": {
         "not_owner": "This browser's lite account did not write it, or no longer holds the key that did.",
         "not_found": "The gateway does not know this post.",
@@ -1255,6 +1256,7 @@
         "invalid_request": "The gateway refused the change as invalid.",
         "broadcast_failed": "The gateway could not publish the change on Hive. Try again.",
         "relay_unavailable": "The lite-account gateway cannot be reached.",
+        "auth_failed": "The key this browser signed with is not, or is no longer, in the lite account's posting authority.",
         "unknown": "Something went wrong."
       }
     },

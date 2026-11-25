@@ -1253,6 +1253,7 @@
       "deleted_tombstone": "Il a des réponses ou des votes, il reste donc sur Hive sous forme de pierre tombale indiquant sa suppression.",
       "delete_failed_title": "Échec de la suppression",
       "deleted_by_author": "Supprimé par l'auteur.",
+      "foreign_gateway_note": "Publié via une autre passerelle",
       "errors": {
         "not_owner": "Le compte lite de ce navigateur ne l'a pas écrit, ou ne détient plus la clé qui l'a signé.",
         "not_found": "La passerelle ne connaît pas cette publication.",
@@ -1263,6 +1264,7 @@
         "invalid_request": "La passerelle a refusé la modification comme invalide.",
         "broadcast_failed": "La passerelle n'a pas pu publier la modification sur Hive. Réessayez.",
         "relay_unavailable": "La passerelle des comptes lite est injoignable.",
+        "auth_failed": "La clé avec laquelle ce navigateur a signé ne fait pas, ou plus, partie de l'autorité de publication du compte lite.",
         "unknown": "Une erreur s'est produite."
       }
     },

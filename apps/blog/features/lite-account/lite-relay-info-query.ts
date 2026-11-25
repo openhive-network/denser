@@ -30,6 +30,10 @@ export type LiteRelayInfo =
       apps: LiteAppIds;
       limits?: LiteRelayLimits;
       features?: LiteRelayFeatures;
+      /** Every pool account the gateway posts as; absent on an older gateway. */
+      gate_accounts?: string[];
+      /** Where the gateway is reached from the web. */
+      public_url?: string;
     };
 
 function isAppIds(value: unknown): value is LiteAppIds {
@@ -43,11 +47,26 @@ function isRelayInfo(value: unknown): value is LiteRelayInfo {
   return 'gate_account' in value && 'chain_id' in value && 'apps' in value && isAppIds(value.apps);
 }
 
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === 'string');
+
+/** The relay info in a `/info` answer: no relay when it is not one, and without a malformed `gate_accounts` or `public_url`. */
+function parseLiteRelayInfo(payload: unknown): LiteRelayInfo {
+  if (!isRelayInfo(payload)) return { enabled: false };
+  if (!payload.enabled) return payload;
+  const { gate_accounts: gateAccounts, public_url: publicUrl, ...rest } = payload;
+  return {
+    ...rest,
+    ...(isStringArray(gateAccounts) ? { gate_accounts: gateAccounts } : {}),
+    ...(typeof publicUrl === 'string' ? { public_url: publicUrl } : {})
+  };
+}
+
 async function fetchLiteRelayInfo(): Promise<LiteRelayInfo> {
   const response = await fetch(liteRelayEndpoint(), { method: 'GET' });
   if (!response.ok) return { enabled: false };
   const payload: unknown = await response.json().catch(() => null);
-  return isRelayInfo(payload) ? payload : { enabled: false };
+  return parseLiteRelayInfo(payload);
 }
 
 export const liteRelayInfoQuery = { queryKey: ['liteRelayInfo'], queryFn: fetchLiteRelayInfo, staleTime: 5 * 60_000, retry: false };
