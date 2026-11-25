@@ -6,6 +6,7 @@ import { JsonRpcApiError } from '../read-client';
 import { ReadTransportError } from '../read-transport';
 import { createApiSetRouting, type IBrowserEndpoints } from './call-routing';
 import { createStaticView, provideApiSetView, type IApiSetsBootstrap } from './router';
+import type { TApiSetId } from '@ui/config/api-set-ids';
 
 /** The browser's calls routed by API set, as `chain.ts` wires them, against the failover wrapper. */
 
@@ -30,7 +31,12 @@ interface IFakeChain {
 type TNamespace = 'database_api' | 'bridge' | 'lite' | 'search-api';
 type TAnswers = Record<string, Partial<Record<TNamespace, Answer>>>;
 
-const setup = (answers: TAnswers, bootstrap: IApiSetsBootstrap, apiEndpoint = CONFIGURED) => {
+const setup = (
+  answers: TAnswers,
+  bootstrap: IApiSetsBootstrap,
+  apiEndpoint = CONFIGURED,
+  choices: Partial<Record<TApiSetId, string>> = {}
+) => {
   const endpoints: IBrowserEndpoints = { apiEndpoint, restApiEndpoint: apiEndpoint };
   const switches: string[] = [];
   const announced: string[] = [];
@@ -45,7 +51,7 @@ const setup = (answers: TAnswers, bootstrap: IApiSetsBootstrap, apiEndpoint = CO
     switchApiNode,
     announceSwitch: (node, { setId, selected }) => announced.push(`${setId} ${selected} -> ${node}`)
   });
-  provideApiSetView(() => createStaticView(bootstrap));
+  provideApiSetView(() => createStaticView(bootstrap, choices));
 
   const makeChain = (node: string): IFakeChain => {
     const answer = (namespace: TNamespace, method: string) => async () => {
@@ -92,8 +98,7 @@ const setup = (answers: TAnswers, bootstrap: IApiSetsBootstrap, apiEndpoint = CO
 };
 
 const ROUTES: IApiSetsBootstrap = {
-  routes: { core: [CONFIGURED, LITE_NODE], bridge: [CONFIGURED, LITE_NODE], lite: [CONFIGURED, LITE_NODE] },
-  selections: {}
+  routes: { core: [CONFIGURED, LITE_NODE], bridge: [CONFIGURED, LITE_NODE], lite: [CONFIGURED, LITE_NODE] }
 };
 
 describe('routing the browser calls by API set', () => {
@@ -134,7 +139,7 @@ describe('routing the browser calls by API set', () => {
   });
 
   it('puts a node picked before API sets existed first for core and bridge, never for lite', async () => {
-    const { routing } = setup({}, { routes: { lite: [LITE_NODE] }, selections: {} }, LEGACY_PICK);
+    const { routing } = setup({}, { routes: { lite: [LITE_NODE] } }, LEGACY_PICK);
     expect(await routing.nodesOf('core', [CONFIGURED])).to.deep.equal([LEGACY_PICK, CONFIGURED]);
     expect(await routing.nodesOf('bridge', [CONFIGURED])).to.deep.equal([LEGACY_PICK, CONFIGURED]);
     expect(await routing.nodesOf('lite', [CONFIGURED])).to.deep.equal([LITE_NODE]);
@@ -143,7 +148,7 @@ describe('routing the browser calls by API set', () => {
   it("fails a lite call over within the lite set's nodes only, never to the configured ones", async () => {
     const { chain, routing } = setup(
       { [LITE_NODE]: { lite: 'transport' } },
-      { routes: { core: [CONFIGURED, LITE_NODE], lite: [LITE_NODE] }, selections: {} }
+      { routes: { core: [CONFIGURED, LITE_NODE], lite: [LITE_NODE] } }
     );
     expect(await routing.nodesOf('lite', [CONFIGURED])).to.deep.equal([LITE_NODE]);
     const error = await chain.api.lite.get_post({}).catch((e: unknown) => e);
@@ -152,26 +157,28 @@ describe('routing the browser calls by API set', () => {
   });
 
   it('sends lite calls to the configured nodes while the routes know no lite node', async () => {
-    const { routing } = setup({}, { routes: { core: [CONFIGURED] }, selections: {} });
+    const { routing } = setup({}, { routes: { core: [CONFIGURED] } });
     expect(await routing.nodesOf('lite', [CONFIGURED, LITE_NODE])).to.deep.equal([CONFIGURED, LITE_NODE]);
   });
 
   it("sends hivemind REST calls where bridge's go while the routes know no hivemind REST node", async () => {
     const { routing } = setup(
       {},
-      { routes: { core: [CONFIGURED], bridge: [CHOSEN, LITE_NODE] }, selections: { bridge: CHOSEN } }
+      { routes: { core: [CONFIGURED], bridge: [LITE_NODE] } },
+      CONFIGURED,
+      { bridge: CHOSEN }
     );
     expect(await routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([CHOSEN, LITE_NODE, CONFIGURED]);
   });
 
   it('puts a REST node picked before API sets existed first for hivemind REST calls', async () => {
-    const withoutOwnNodes = setup({}, { routes: { bridge: [LITE_NODE] }, selections: {} }, LEGACY_PICK);
+    const withoutOwnNodes = setup({}, { routes: { bridge: [LITE_NODE] } }, LEGACY_PICK);
     expect(await withoutOwnNodes.routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([
       LEGACY_PICK,
       LITE_NODE,
       CONFIGURED
     ]);
-    const withOwnNodes = setup({}, { routes: { 'hivemind-rest': [CHOSEN] }, selections: {} }, LEGACY_PICK);
+    const withOwnNodes = setup({}, { routes: { 'hivemind-rest': [CHOSEN] } }, LEGACY_PICK);
     expect(await withOwnNodes.routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([
       LEGACY_PICK,
       CHOSEN,
@@ -180,15 +187,25 @@ describe('routing the browser calls by API set', () => {
   });
 
   it('sends hivemind REST calls to its own nodes, then the configured ones, once the routes know some', async () => {
-    const { routing } = setup({}, { routes: { bridge: [CHOSEN], 'hivemind-rest': [LITE_NODE] }, selections: {} });
+    const { routing } = setup({}, { routes: { bridge: [CHOSEN], 'hivemind-rest': [LITE_NODE] } });
     expect(await routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([LITE_NODE, CONFIGURED]);
+  });
+
+  it("puts the browser's stored choice first for the sets the page's routes list, and for no other", async () => {
+    const { routing } = setup({}, { routes: { core: [CONFIGURED, LITE_NODE] } }, CONFIGURED, {
+      core: CHOSEN,
+      bridge: CHOSEN
+    });
+    expect(await routing.nodesOf('core', [CONFIGURED])).to.deep.equal([CHOSEN, CONFIGURED, LITE_NODE]);
+    expect(await routing.nodesOf('bridge', [CONFIGURED])).to.deep.equal([CONFIGURED]);
   });
 
   it("puts the user's choice for a set before this session's automatic switch", async () => {
     const { chain, routing, switches, announced } = setup(
       { [CHOSEN]: { database_api: 'transport' } },
-      { routes: { core: [CHOSEN, CONFIGURED] }, selections: { core: CHOSEN } },
-      LITE_NODE
+      { routes: { core: [CONFIGURED] } },
+      LITE_NODE,
+      { core: CHOSEN }
     );
     expect(await routing.nodesOf('core', [LITE_NODE])).to.deep.equal([CHOSEN, CONFIGURED, LITE_NODE]);
     expect(await routing.nodesOf('bridge', [LITE_NODE])).to.deep.equal([LITE_NODE]);

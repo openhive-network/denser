@@ -5,12 +5,11 @@
  * the browser derive them from one place without loading the engine.
  */
 
-import { API_SET_IDS, API_SETS_COOKIE, isApiSetId, type TApiSetId } from './api-set-ids.ts';
+import { API_SET_IDS, isApiSetId, type TApiSetId } from './api-set-ids.ts';
 
 export {
   API_SET_IDS,
   API_SETS_BOOTSTRAP_ID,
-  API_SETS_COOKIE,
   isApiSetId,
   type TApiSetId
 } from './api-set-ids.ts';
@@ -32,8 +31,9 @@ export const API_SET_TITLES: Readonly<Record<TApiSetId, string>> = {
 
 /**
  * Public API nodes users may pick for any set they serve, on every deployment. They are in the
- * catalog (and the CSP's `connect-src`); a set's calls fail over to them, behind the operator's
- * nodes, once the engine found them serving the set.
+ * browser's catalog (and the CSP's `connect-src`); the browser's calls of a set fail over to them,
+ * behind the operator's nodes, once its engine found them serving the set. The server never uses
+ * them (`resolveServerApiSetsConfig`).
  */
 export const SELECTABLE_API_NODES: readonly string[] = [
   'https://api.hive.blog',
@@ -70,8 +70,6 @@ export const apiSetsOfApp = (app: string | undefined): readonly TApiSetId[] =>
 export const HIVEMIND_SET_GROUP = 'hivemind';
 export const HIVEMIND_GROUP_SETS: readonly TApiSetId[] = ['bridge', 'lite', 'hivemind-rest'];
 
-export const API_SETS_COOKIE_MAX_AGE_S = 365 * 24 * 60 * 60;
-
 /** Node URLs best first; an inner array is one rank of equally preferred nodes (the engine's `PreferenceOrder`). */
 export type TPreferenceOrder = Array<string | string[]>;
 
@@ -107,7 +105,7 @@ export const apiSetsEnvFromProcess = (env: Readonly<Record<string, string | unde
 });
 
 export interface IApiSetsConfig {
-  /** Every node any set may use, the selectable ones included: the engine's catalog and the CSP's `connect-src`. */
+  /** Every node any set may use: the engine's catalog (and, in the browser's config, the CSP's `connect-src`). */
   nodes: string[];
   /** The sets this deployment routes. */
   sets: TApiSetId[];
@@ -191,12 +189,13 @@ const distinct = (nodes: readonly (string | undefined)[]): string[] => [
 ];
 
 /**
- * The deployment's sets (of `scope`), catalog and per-set preferences from its settings. Without an explicit
- * order a set prefers: core, bridge and lite the API endpoint, then the allowed nodes; the REST
- * APIs a node serves (balance-api, HAfAH) the REST endpoint, then the API endpoint and the allowed
- * nodes; hivemind REST its nodes; hivesense the AI domain; the For You feed its URL.
+ * The deployment's sets (of `scope`) and per-set preferences from its settings, over a catalog of
+ * the operator's nodes only: the config of the server, which calls no other node. Without an
+ * explicit order a set prefers: core, bridge and lite the API endpoint, then the allowed nodes; the
+ * REST APIs a node serves (balance-api, HAfAH) the REST endpoint, then the API endpoint and the
+ * allowed nodes; hivemind REST its nodes; hivesense the AI domain; the For You feed its URL.
  */
-export function resolveApiSetsConfig(
+export function resolveServerApiSetsConfig(
   env: IApiSetsEnv,
   scope: readonly TApiSetId[] = API_SET_IDS
 ): IApiSetsConfig {
@@ -221,8 +220,20 @@ export function resolveApiSetsConfig(
   };
   for (const setId of API_SET_IDS) preferences[setId] = explicit[setId] ?? preferences[setId];
   const sets = API_SET_IDS.filter((setId) => scope.includes(setId) && nodesOf(preferences[setId]).length > 0);
-  const nodes = distinct([...sets.flatMap((setId) => nodesOf(preferences[setId])), ...SELECTABLE_API_NODES]);
+  const nodes = distinct(sets.flatMap((setId) => nodesOf(preferences[setId])));
   return { nodes, sets, preferences };
+}
+
+/**
+ * The browser's config: the server's (`resolveServerApiSetsConfig`), its catalog extended by the
+ * nodes users may pick (`SELECTABLE_API_NODES`). The CSP's `connect-src` lists this catalog.
+ */
+export function resolveApiSetsConfig(
+  env: IApiSetsEnv,
+  scope: readonly TApiSetId[] = API_SET_IDS
+): IApiSetsConfig {
+  const config = resolveServerApiSetsConfig(env, scope);
+  return { ...config, nodes: distinct([...config.nodes, ...SELECTABLE_API_NODES]) };
 }
 
 /** The nodes of `setId` the operator lists, best first. */
@@ -236,7 +247,7 @@ const SELECTION_PREFIX = 's.';
 /**
  * A selection in the engine's serialized form (`v=1&s.<set>=<node>`, see the package README),
  * naming each node by URL, which `ApiSetEngine.hydrate` reads for catalog nodes as well. Choices
- * of nodes outside `catalog` are dropped: the server and the CSP know only the catalog.
+ * of nodes outside `catalog` are dropped: the browser's engine and the CSP know only the catalog.
  */
 export function serializeApiSetChoices(
   choices: Partial<Record<TApiSetId, string>>,
@@ -267,23 +278,16 @@ export function selectionWithNodeUrls(state: string, catalog: readonly string[])
   return params.toString();
 }
 
-/** Reads one cookie's value out of a `document.cookie`-style header. */
-export function readCookieValue(cookieHeader: string, name: string): string | undefined {
-  for (const part of cookieHeader.split(';')) {
-    const separator = part.indexOf('=');
-    if (separator < 0 || part.slice(0, separator).trim() !== name) continue;
-    try {
-      return decodeURIComponent(part.slice(separator + 1).trim());
-    } catch {
-      return undefined;
-    }
-  }
-  return undefined;
-}
-
 /**
- * The `document.cookie` assignment storing a serialized selection for every page of the app at
- * `basePath`: apps sharing an origin each keep their own, as their catalogs may differ.
+ * The node chosen per set in a selection of the engine's serialized form whose nodes are named by
+ * URL (`selectionWithNodeUrls`); a set left on `auto`, or naming no http(s) node, has none.
  */
-export const apiSetsCookieAssignment = (state: string, basePath = ''): string =>
-  `${API_SETS_COOKIE}=${encodeURIComponent(state)}; path=${basePath || '/'}; max-age=${API_SETS_COOKIE_MAX_AGE_S}; samesite=lax`;
+export function apiSetChoicesOf(state: string): Partial<Record<TApiSetId, string>> {
+  const params = new URLSearchParams(state);
+  const choices: Partial<Record<TApiSetId, string>> = {};
+  for (const setId of API_SET_IDS) {
+    const node = toNodeUrl(params.get(`${SELECTION_PREFIX}${setId}`) ?? undefined);
+    if (node) choices[setId] = node;
+  }
+  return choices;
+}

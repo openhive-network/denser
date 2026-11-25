@@ -3,25 +3,32 @@ import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 import type { ApiTransport, JsonRpcResponse, RestResponse } from '@hiveio/healthchecker-component/engine';
 import {
+  apiSetChoicesOf,
   parseApiSetPreferences,
   resolveApiSetsConfig,
+  resolveServerApiSetsConfig,
   SELECTABLE_API_NODES,
   selectionWithNodeUrls,
   serializeApiSetChoices,
   WALLET_API_SETS
 } from './api-sets.ts';
+import { API_SET_IDS } from './api-set-ids.ts';
 
 // The transaction modules under test import the way the apps' bundler resolves them: through the
 // `@ui/*` alias and without the extension node's type stripping needs.
 const ALIASES: Record<string, string> = {
   '@ui/config/api-sets': new URL('./api-sets.ts', import.meta.url).href,
   '@ui/config/api-set-ids': new URL('./api-set-ids.ts', import.meta.url).href,
-  '@ui/lib/logging': new URL('../../transaction/lib/__test-stubs__/ui-logging.ts', import.meta.url).href
+  '@ui/lib/logging': new URL('../../transaction/lib/__test-stubs__/ui-logging.ts', import.meta.url).href,
+  '@ui/lib/storage-with-ttl': new URL('../lib/storage-with-ttl.ts', import.meta.url).href,
+  '@ui/lib/api-sets-choices': new URL('../lib/api-sets-choices.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
     const alias = ALIASES[specifier];
     if (alias) return nextResolve(alias, context);
+    // The pino logger does not load under node's type stripping.
+    if (specifier === './logging') return nextResolve(ALIASES['@ui/lib/logging'], context);
     if (
       specifier.startsWith('.') &&
       !/\.[cm]?[jt]sx?$/.test(specifier) &&
@@ -304,67 +311,91 @@ describe('routing by API set', () => {
   });
 });
 
-describe('the user choice across server and browser', () => {
-  it("survives the cookie round trip and routes the server's render of that user", async () => {
-    const { engine: shared, config } = await probedEngine();
-    const browser = createApiSetEngine(config, { storage: memoryStorage() });
-    assert.equal(browser.hydrateSnapshot(shared.snapshot()), true);
-    assert.equal(browser.select('core', SYNCAD), true);
+describe('the server, over the operator\'s nodes only', () => {
+  const SERVER_ENV = {
+    REACT_APP_API_ENDPOINT: HIVE_BLOG,
+    REACT_APP_ALLOWED_HIVE_API_NODES: `${HIVE_BLOG} ${SYNCAD}`,
+    REACT_APP_HIVEMIND_REST_NODES: SYNCAD,
+    DENSER_API_SETS_PROBING: 'off'
+  };
+  const CONFIGURED = new Set([HIVE_BLOG, SYNCAD]);
 
-    const cookie = selectionWithNodeUrls(browser.serialize(), config.nodes);
-    assert.equal(cookie, `v=1&s.core=${encodeURIComponent(SYNCAD)}`);
-    const forUser = createEngineView(ApiSetEngine.forRequest(shared, cookie), config);
-    const forOthers = createEngineView(shared, config);
-    assert.equal(forUser.nodesFor('core')[0], SYNCAD);
-    assert.equal(forUser.selectedNode('core'), SYNCAD);
-    assert.equal(forOthers.nodesFor('core')[0], HIVE_BLOG);
-    assert.equal(shared.selection('core'), 'auto');
+  it('keeps the selectable nodes out of its catalog and every preference', () => {
+    const config = resolveServerApiSetsConfig({ ...MAINNET_ENV, setPreferences: `lite=${SYNCAD}` });
+    assert.deepEqual(config.nodes, [HIVE_BLOG, SYNCAD, OPENHIVE]);
+    assert.equal(config.nodes.includes(ANYX), false);
+    assert.deepEqual(resolveApiSetsConfig(MAINNET_ENV).preferences, resolveServerApiSetsConfig(MAINNET_ENV).preferences);
   });
 
-  it('routes each server request by its own cookie and reports outcomes to the shared engine', async () => {
-    let cookie: string | undefined;
-    const shared = installServerApiSets({
-      app: 'blog',
-      readCookie: async () => cookie,
-      env: {
-        REACT_APP_API_ENDPOINT: HIVE_BLOG,
-        REACT_APP_ALLOWED_HIVE_API_NODES: `${HIVE_BLOG} ${SYNCAD}`,
-        DENSER_API_SETS_PROBING: 'off'
+  it('probes only the nodes the operator configured', async () => {
+    const asked = new Set<string>();
+    const transport = fakeTransport();
+    const config = resolveServerApiSetsConfig(MAINNET_ENV);
+    const engine = createApiSetEngine(config, {
+      storage: memoryStorage(),
+      transport: {
+        jsonRpc: async (node, method, params, timeoutMs) => {
+          asked.add(node);
+          return transport.jsonRpc(node, method, params, timeoutMs);
+        },
+        restGet: async (node, path, timeoutMs) => {
+          asked.add(node);
+          return transport.restGet(node, path, timeoutMs);
+        }
       }
     });
-    try {
-      shared.report('lite', HIVE_BLOG, { ok: false, error: 'apiNotFound' });
-      shared.report('lite', SYNCAD, { ok: true, latencyMs: 50 });
-      shared.report('core', HIVE_BLOG, { ok: true, latencyMs: 50 });
-      shared.report('core', SYNCAD, { ok: true, latencyMs: 50 });
-      assert.deepEqual((await getApiSetView())?.nodesFor('lite'), [SYNCAD]);
-      assert.equal((await getApiSetView())?.nodesFor('core')[0], HIVE_BLOG);
+    await engine.refresh();
+    assert.deepEqual([...asked].sort(), [HIVE_BLOG, OPENHIVE, SYNCAD]);
+  });
 
-      cookie = `v=1&s.core=${encodeURIComponent(SYNCAD)}`;
+  it('routes every request by one shared view, which no choice reaches, over configured nodes only', async () => {
+    const shared = installServerApiSets({ app: 'blog', env: SERVER_ENV });
+    try {
+      // A catalog-only node a browser found serving the sets: the server's engine does not know it.
+      for (const setId of ['core', 'bridge', 'hivemind-rest'] as const) {
+        assert.equal(shared.report(setId, ANYX, { ok: true, latencyMs: 1 }), false);
+        assert.equal(shared.select(setId, ANYX), false);
+      }
+      shared.report('core', HIVE_BLOG, { ok: false, error: 'transport' });
+      shared.report('core', SYNCAD, { ok: true, latencyMs: 50 });
+
       const view = await getApiSetView();
-      assert.equal(view?.nodesFor('core')[0], SYNCAD);
-      view?.report('core', SYNCAD, { ok: false, error: 'transport' });
-      assert.equal(shared.rankings('core').find(({ node }) => node === SYNCAD)?.errorRate, 0.5);
-      assert.equal(shared.selection('core'), 'auto');
+      assert.equal(await getApiSetView(), view);
+      for (const setId of API_SET_IDS) {
+        const nodes = view?.nodesFor(setId) ?? [];
+        assert.equal(view?.selectedNode(setId), undefined, setId);
+        for (const node of nodes) assert.ok(CONFIGURED.has(node), `${setId}: ${node}`);
+      }
+      assert.deepEqual(view?.nodesFor('core'), [SYNCAD]);
+      assert.deepEqual(view?.nodesFor('hivemind-rest'), [SYNCAD]);
     } finally {
       shared.stop();
       provideApiSetView(undefined);
     }
   });
+});
 
-  it('migrates a node picked before API sets existed to the sets it served', async () => {
+describe('the user choice in the browser', () => {
+  it('is stored with its nodes named by URL and read back per set', async () => {
+    const { engine: shared, config } = await probedEngine();
+    const browser = createApiSetEngine(config, { storage: memoryStorage() });
+    assert.equal(browser.hydrateSnapshot(shared.snapshot()), true);
+    assert.equal(browser.select('core', SYNCAD), true);
+
+    const state = selectionWithNodeUrls(browser.serialize(), config.nodes);
+    assert.equal(state, `v=1&s.core=${encodeURIComponent(SYNCAD)}`);
+    assert.deepEqual(apiSetChoicesOf(state), { core: SYNCAD });
+    assert.equal(shared.selection('core'), 'auto');
+  });
+
+  it('migrates a node picked before API sets existed to the sets it served', () => {
     const config = resolveApiSetsConfig(MAINNET_ENV);
     const state = serializeApiSetChoices(
       { core: SYNCAD, bridge: SYNCAD, lite: SYNCAD, hivesense: undefined },
       config.nodes
     );
     assert.ok(state);
-    const { engine: shared } = await probedEngine();
-    const engine = ApiSetEngine.forRequest(shared, state);
-    assert.equal(engine.selection('core'), SYNCAD);
-    assert.equal(engine.selection('bridge'), SYNCAD);
-    assert.equal(engine.selection('lite'), SYNCAD);
-    assert.equal(engine.selection('hivesense'), 'auto');
+    assert.deepEqual(apiSetChoicesOf(state), { core: SYNCAD, bridge: SYNCAD, lite: SYNCAD });
   });
 
   it('drops a migrated pick of a node outside the catalog', () => {

@@ -23,6 +23,7 @@
       "@hive/ui/lib/sentry-scrub": ["../ui/lib/sentry-scrub.ts"],
       "@ui/lib/common-variables": ["../ui/lib/common-variables.ts"],
       "@ui/lib/storage-with-ttl": ["../ui/lib/storage-with-ttl.ts"],
+      "@ui/lib/api-sets-choices": ["../ui/lib/api-sets-choices.ts"],
       "@ui/config/public-vars": ["./lib/__test-stubs__/ui-public-vars.ts"],
       "@ui/config/api-set-ids": ["../ui/config/api-set-ids.ts"],
       "@ui/config/api-sets": ["../ui/config/api-sets.ts"],

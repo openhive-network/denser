@@ -134,7 +134,7 @@ The sort layout's community list (`bridge.list_communities`, `getCommunityList` 
 A page requested without a personalizing cookie renders the same for every visitor, so the origin marks it for shared caches: `Cache-Control: public, s-maxage=30, stale-while-revalidate=60, stale-if-error=300`. Next.js keeps a `Cache-Control` the middleware set on a dynamic page; every other response keeps Next's `private, no-cache, no-store, max-age=0, must-revalidate`. The rule fails closed:
 
 - A request with `Authorization` is never public; the middleware sends it `private, no-cache, no-store, max-age=0, must-revalidate`, which an API route may replace with its own `Cache-Control`.
-- The middleware (`isPublicCacheableRequest`) marks only a GET or HEAD of a page, without an `Authorization` header, the `RSC` header, a `Next-Router-*` header or the `_rsc` query, and with no cookie outside an allow list of cookies no render reads (`<app>_login_challenge_server` and the legacy `<app>_login_challenge`, `session_uid`, `user_preferred_api_endpoint`, Google Analytics' `_ga`/`_ga_*`/`_gid`/`_gat*` and Cloudflare's `__cf_bm`, `_cfuvid`, `cf_clearance`, `__cflb`, `__cfruid`). Any other cookie, `*_session` (iron-session, OIDC), `observer`, `observer-no-own-lists`, `account_info`, `NEXT_LOCALE` and `api-sets` among them, makes the response private; without them the server renders for the default observer and the default language. The page test is made on the route the request resolves to: the path is percent-decoded, repeated slashes collapsed and every leading `/public` removed (the apps' `/public/:path*` rewrite), and a route under `/api`, `/oidc` or `/.well-known` (rewritten to `/api/oidc`) or `/_next`, in any case, is not a page.
+- The middleware (`isPublicCacheableRequest`) marks only a GET or HEAD of a page, without an `Authorization` header, the `RSC` header, a `Next-Router-*` header or the `_rsc` query, and with no cookie outside an allow list of cookies no render reads (`<app>_login_challenge_server` and the legacy `<app>_login_challenge`, `session_uid`, `user_preferred_api_endpoint`, the retired `api-sets`, Google Analytics' `_ga`/`_ga_*`/`_gid`/`_gat*` and Cloudflare's `__cf_bm`, `_cfuvid`, `cf_clearance`, `__cflb`, `__cfruid`). Any other cookie, `*_session` (iron-session, OIDC), `observer`, `observer-no-own-lists`, `account_info` and `NEXT_LOCALE` among them, makes the response private; without them the server renders for the default observer and the default language. The page test is made on the route the request resolves to: the path is percent-decoded, repeated slashes collapsed and every leading `/public` removed (the apps' `/public/:path*` rewrite), and a route under `/api`, `/oidc` or `/.well-known` (rewritten to `/api/oidc`) or `/_next`, in any case, is not a page.
 - The status is known only once the page renders: `installPublicCacheGuard` (installed by `instrumentation.ts`) sends `no-store` instead for any status other than 200, for any response that sets a cookie, and for a request with `_rsc` in its URL (Next removes `_rsc` from the URL the middleware sees).
 - No page sets a cookie. The login challenge comes from `GET /api/auth/challenge` when signing starts (an HttpOnly `<app>_login_challenge_server` cookie and the JSON body, `no-store`), and `session_uid`, the log-correlation id, is set by `/api/auth/login`. Page-visit log lines show `uuid=n/a` for a browser that never logged in.
 - A cached copy shares its render's CSP nonce for its life (at most `s-maxage` + `stale-while-revalidate`).
@@ -182,14 +182,17 @@ A shared cache in front of the blog must not serve a stored page to a request ca
   `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
 - **API sets** route each API family to a node that serves it: core (`database_api`,
   `condenser_api`, broadcast), `bridge`, `lite`, hivemind REST, `balance-api`, HAfAH, hivesense and
-  the For You feed (`ui/config/api-sets.ts`: catalog, per-set preferences from the `REACT_APP_*`
-  settings and `REACT_APP_API_SET_PREFERENCES`). `@hiveio/healthchecker-component`'s engine decides
-  per set; the failover asks the set's nodes (`routeFor`, `transaction/lib/api-sets/router.ts`) and
-  reports each node's outcome back to it. The server runs one shared engine per process
-  (`api-sets/server.ts`, installed by the instrumentation hook; `DENSER_API_SETS_PROBING=off` stops
-  its probes) and a fresh one per request with the user's `api-sets` cookie; the page carries the
-  server's routes (`ApiSetsBootstrap`) to the browser, which runs an engine of its own only on
-  `/healthchecker` (the engine bundle carries wax). `lite.*` reads go to the first node of the lite
+  the For You feed (`ui/config/api-sets.ts`: per-set preferences from the `REACT_APP_*` settings and
+  `REACT_APP_API_SET_PREFERENCES`). `@hiveio/healthchecker-component`'s engine decides per set; the
+  failover asks the set's nodes (`routeFor`, `transaction/lib/api-sets/router.ts`) and reports each
+  node's outcome back to it. The server runs one shared engine per process over the operator's nodes
+  alone (`resolveServerApiSetsConfig`; `api-sets/server.ts`, installed by the instrumentation hook;
+  `DENSER_API_SETS_PROBING=off` stops its probes), and routes every request through it: nothing in a
+  request chooses or adds a node. The browser's catalog adds the public nodes users may pick
+  (`SELECTABLE_API_NODES`, also the CSP's `connect-src`); the user's choices stay in localStorage
+  (`api-sets:<app>`). The page carries the server's routes (`ApiSetsBootstrap`) to the browser, which
+  puts the stored choice of a set first and runs an engine of its own only on `/healthchecker` (the
+  engine bundle carries wax). `lite.*` reads go to the first node of the lite
   set that is lite-aware (`findLiteNode`).
 
 **Initial client bundle** — the chunks a page's server HTML references must not contain wax,

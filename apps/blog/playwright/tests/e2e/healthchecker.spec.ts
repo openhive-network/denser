@@ -64,7 +64,7 @@ test.describe('Healthchecker page - API set tabs', () => {
 });
 
 test.describe('Healthchecker page - Node choice', () => {
-    test("A node picked for a set stays the user's choice after a reload, server render included", async ({
+    test("A node picked for a set stays the user's choice after a reload, kept in the browser", async ({
         page
     }) => {
         const healthcheckerPage = new HealthcheckerPage(page);
@@ -83,7 +83,7 @@ test.describe('Healthchecker page - Node choice', () => {
         await page.reload();
         await healthcheckerPage.validatePageIsLoaded();
         await expect(healthcheckerPage.selection).toHaveText(`Your choice: ${node}`);
-        expect((await healthcheckerPage.serverRoutes()).selections.core).toBe(node);
+        expect((await healthcheckerPage.storedChoices()).core).toBe(node);
     });
 });
 

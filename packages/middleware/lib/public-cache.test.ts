@@ -39,6 +39,7 @@ describe('isPublicCacheableRequest', () => {
       'wallet_login_challenge',
       'session_uid',
       'user_preferred_api_endpoint',
+      'api-sets',
       '_ga',
       '_ga_ABC123',
       '_gid',
@@ -71,8 +72,7 @@ describe('isPublicCacheableRequest', () => {
       '_session.legacy',
       'observer',
       'observer-no-own-lists',
-      'account_info',
-      'api-sets'
+      'account_info'
     ]) {
       assert.equal(isPublicCacheableRequest(anonymousPage(withCookies('session_uid', name))), false, name);
     }

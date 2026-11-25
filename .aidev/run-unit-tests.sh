@@ -108,6 +108,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/html-escape-json.test.ts packages/ui/lib/reputation.test.ts \
     packages/ui/lib/i18n-interpolation.test.ts packages/ui/lib/i18n-fallback-report.test.ts \
     packages/ui/lib/chunk-load-error.test.ts packages/ui/lib/api-set-switch-toast.test.ts \
+    packages/ui/lib/api-sets-storage.test.ts \
     packages/ui/lib/api-sets-labels.test.ts \
     packages/ui/lib/sentry-deployment.test.ts packages/ui/lib/sentry-deferred-load.test.ts \
     packages/ui/lib/avatar-version.test.ts packages/ui/lib/avatar-utils.test.ts \
