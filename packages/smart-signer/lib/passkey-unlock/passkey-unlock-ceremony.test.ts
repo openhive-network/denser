@@ -25,7 +25,7 @@ const {
   reusePasskeyUnlock
 } = await import('./passkey-unlock-ceremony.ts');
 type PasskeyCredentials = Parameters<typeof createPasskeyUnlock>[0];
-const { PasskeyUnlockError, passkeyEnableFailureKey } = await import('./passkey-unlock-error.ts');
+const { PasskeyUnlockError, passkeyEnableMessage } = await import('./passkey-unlock-error.ts');
 
 const USERNAME = 'guest4test2';
 const PASSWORD = 'safe storage password';
@@ -165,7 +165,7 @@ describe('createPasskeyUnlock', () => {
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'unsupported');
     assert.equal(requests.got.length, 0);
-    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.unsupported');
+    assert.deepEqual(passkeyEnableMessage(error), { key: 'login_form.passkey_prompt.unsupported', error: true });
   });
 
   it('rejects as unsupported, without a second prompt, a browser that reports nothing of the PRF', async () => {
@@ -193,7 +193,7 @@ describe('createPasskeyUnlock', () => {
     assert.notDeepEqual(other, first);
   });
 
-  it('rejects as cancelled a browser prompt the user cancelled, or a provider setup that did not finish, with the retry message', async () => {
+  it('rejects as cancelled a browser prompt the user cancelled, or a provider setup that did not finish, with a neutral retry line', async () => {
     const createError = new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
     const { credentials } = fakeAuthenticator({ createError });
 
@@ -202,7 +202,7 @@ describe('createPasskeyUnlock', () => {
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'cancelled');
     assert.equal(error.cause, createError);
-    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.failed');
+    assert.deepEqual(passkeyEnableMessage(error), { key: 'login_form.passkey_prompt.create_cancelled', error: false });
   });
 
   it('names any other failure with the translated failure message', async () => {
@@ -212,8 +212,8 @@ describe('createPasskeyUnlock', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'failed');
-    assert.equal(passkeyEnableFailureKey(error), 'login_form.passkey_prompt.failed');
-    assert.equal(passkeyEnableFailureKey(new Error('not a ceremony')), 'login_form.passkey_prompt.failed');
+    assert.deepEqual(passkeyEnableMessage(error), { key: 'login_form.passkey_prompt.failed', error: true });
+    assert.deepEqual(passkeyEnableMessage(new Error('not a ceremony')), { key: 'login_form.passkey_prompt.failed', error: true });
   });
 });
 

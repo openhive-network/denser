@@ -634,8 +634,10 @@ passkey deleted from the password manager. The passkey records themselves are in
 Add the authenticator before the ceremony; it lives as long as the page's CDP session.
 `spyOnPasskeyRequests` wraps `navigator.credentials.get` to record how many credentials each request
 names and to answer NotAllowedError on demand (a user's Cancel, which the virtual authenticator cannot
-play); `pickAnotherAccountsPasskey` answers with a credential of another user handle. Neither survives
-a navigation, so set them after the last `goto`.
+play); `pickAnotherAccountsPasskey` answers with a credential of another user handle;
+`failNextPasskeyCreation` fails one `create()` with UnknownError, a failure that is not a cancel.
+None survives a navigation, so set them after the last `goto`. Don't `page.reload()` in these specs:
+the fixture signs its default user in again on load, so the page is no longer ACCOUNT's session.
 
 ---
 

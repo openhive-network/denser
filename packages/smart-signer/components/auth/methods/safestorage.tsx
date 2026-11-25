@@ -53,6 +53,7 @@ import { newPasswordSchema, passwordSchema } from '@smart-signer/lib/validators/
 import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
 import { useWrongPasswordError } from './use-wrong-password-error';
 import { useLinkedPasskeyUnlock } from './use-linked-passkey-unlock';
+import PasskeyUnlockFailingNotice from './passkey-unlock-failing-notice';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import StrictModeStatus from './strict-mode-status';
@@ -120,6 +121,11 @@ export interface SafeStorageProps {
   initialError?: string | null;
   /** Shown until the stored accounts are read; a spinner when omitted */
   placeholder?: ReactNode;
+  /**
+   * Whether opening the form asks the passkey of a linked account at once: when the sign-in opens,
+   * not when the user comes back to it from another step
+   */
+  askPasskeyOnOpen?: boolean;
 }
 
 type SafeStorageForm = z.infer<ReturnType<typeof getFormSchema>>;
@@ -135,7 +141,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       username,
       onUsernameChange,
       initialError = null,
-      placeholder
+      placeholder,
+      askPasskeyOnOpen = true
     },
     ref
   ) => {
@@ -155,6 +162,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
     const passkeyUnlock = useLinkedPasskeyUnlock();
+    // The account the form itself switched to, after a passkey it asked: not the user's change to ask for
+    const ownUsernameChange = useRef<string | null>(null);
+    const [failingPasskeyUsername, setFailingPasskeyUsername] = useState<string | null>(null);
+    const [setUpAgainUsername, setSetUpAgainUsername] = useState<string | null>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
       wif: false
@@ -217,8 +228,21 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       // Checked again for this account: only a new wallet's password has a maximum
       form.trigger('password');
       // The prompt open is for the account the user left: ask the passkey of this one instead
-      if (passkeyUnlock.abortOtherThan(watchedUsername)) switchPasskeyUnlock(watchedUsername);
+      const aborted = passkeyUnlock.abortOtherThan(watchedUsername);
+      const own = ownUsernameChange.current === watchedUsername;
+      ownUsernameChange.current = null;
+      if (own || passkeyUnlock.isAsking(watchedUsername)) {
+        if (aborted) setLoading(false);
+        return;
+      }
+      switchPasskeyUnlock(watchedUsername, aborted);
     }, [watchedUsername]);
+
+    /** Sets the form's account to `username`, which the form, not the user, chose */
+    function showAccount(username: string) {
+      if (form.getValues().username !== username) ownUsernameChange.current = username;
+      form.setValue('username', username);
+    }
 
     /** Whether `username`'s safe storage is locked and has a passkey unlock on this device */
     async function hasLinkedPasskey(client: OnlineClient, username: string, users: AuthUser[]): Promise<boolean> {
@@ -242,23 +266,27 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       const accounts = users.map((user) => user.username);
       const outcome = await passkeyUnlock.unlock(client, username, form.getValues().keyType, accounts);
       if (!outcome) return null;
-      form.setValue('username', outcome.username);
+      showAccount(outcome.username);
       if (outcome.unlocked) {
         await finalize({ ...form.getValues(), username: outcome.username, password: outcome.password });
         return true;
       }
       if (outcome.wrongAccount) setError(t('login_form.passkey_prompt.unlock_wrong_account', { ns: SMART_SIGNER_NAMESPACE }));
+      if (outcome.failingRepeatedly) setFailingPasskeyUsername(outcome.username);
       setLoading(false);
       return false;
     }
 
-    /** Asks the passkey of `username`, which the user changed to while another account's was asked */
-    async function switchPasskeyUnlock(username: string) {
+    /**
+     * Asks the passkey of `username`, which the user changed to, where it is linked on this device;
+     * `aborted`: the prompt of the account the user left was open, and the form waits for it
+     */
+    async function switchPasskeyUnlock(username: string, aborted: boolean) {
       try {
         const client = await getAuthClient();
         if (await hasLinkedPasskey(client, username, authUsers)) {
           await signInWithLinkedPasskey(client, username, authUsers);
-        } else {
+        } else if (aborted) {
           setLoading(false);
         }
       } catch (error) {
@@ -320,7 +348,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
           await authenticateStoredKey(client, username, password, keyType);
           await adoptReplacedPasskey(passkeyUnlock.failure(), username, password);
-          return shouldOfferPasskey(client, username);
+          // "Set up again" offers the unlock over the record of a passkey that no longer answers
+          return setUpAgainUsername === username || shouldOfferPasskey(client, username);
         });
 
         if (shouldPromptPasskey) {
@@ -429,10 +458,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setAuthUsers(auths);
 
           // Auto-trigger biometric unlock if a passkey is registered
-          if (auths.length > 0 && username) {
+          if (askPasskeyOnOpen && auths.length > 0 && username) {
             const targetUser = auths.find((a) => a.username === username) ?? auths[0];
             if (await hasLinkedPasskey(authClient.current, targetUser.username, auths)) {
-              form.setValue('username', targetUser.username);
+              showAccount(targetUser.username);
               // Aborted for another account: the unlock that account started holds the form
               if ((await signInWithLinkedPasskey(authClient.current, targetUser.username, auths)) !== false) return;
             }
@@ -501,6 +530,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           <div className="text-sm text-destructive" data-testid="safe-storage-error">
             {shownError}
           </div>
+        )}
+        {failingPasskeyUsername === watchedUsername && (
+          <PasskeyUnlockFailingNotice
+            key={watchedUsername}
+            username={watchedUsername}
+            onSetUpAgain={() => setSetUpAgainUsername(watchedUsername)}
+          />
         )}
       </div>
     );
@@ -734,6 +770,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 <span
                   onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
                   className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
+                  data-testid="safe-storage-key-update-link"
                 >
                   {t('login_form.signin_safe_storage.key_update')}
                 </span>

@@ -21,13 +21,16 @@ import {
  * for the account's passkey first and creates one only where none is picked; it then unlocks the
  * next sign-in after a sign-out without the password and without creating another passkey. A
  * failed creation shows the retry message, dismisses nothing and can be retried at once. A device
- * without a record (a second device) keeps the passkey it finds. The sign-in asks in one request
+ * without a record (a second device) keeps the passkey it finds. A cancelled creation is no error, a
+ * failed one is. The sign-in asks in one request
  * naming no credential; a record pointing at a credential the provider replaced moves to the
  * account's passkey after one password, which the form says, with no offer. A cancelled prompt, or a
  * passkey the browser no longer reaches, leaves the password form and keeps the record; a record the
  * passkey no longer decrypts is removed, and the offer returns after the password. Another account's
  * passkey picked at enabling offers this account's first. The account menu turns the unlock off on
- * this device. The ceremonies themselves are covered by
+ * this device, which the next password sign-in offers again, and on, reusing the account's passkey.
+ * After two sign-ins in a row the passkey did not unlock, the password form offers to turn the unlock
+ * off or set it up again. Coming back to the form from "Add new key" asks no passkey again. The ceremonies themselves are covered by
  * packages/smart-signer/lib/passkey-unlock/passkey-unlock-ceremony.test.ts.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose add-account dialog stores
@@ -242,6 +245,19 @@ async function pickAnotherAccountsPasskey(page: Page): Promise<void> {
   });
 }
 
+/** Fails the next passkey creation as an authenticator error does, not as a cancel (NotAllowedError) */
+async function failNextPasskeyCreation(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const create = navigator.credentials.create.bind(navigator.credentials);
+    let failed = false;
+    navigator.credentials.create = async (options?: CredentialCreationOptions) => {
+      if (failed) return create(options);
+      failed = true;
+      throw new DOMException('The authenticator failed.', 'UnknownError');
+    };
+  });
+}
+
 /** CDP's credential ID (base64) as the app's signals name it (base64url) */
 const asBase64url = (credentialId: string) => credentialId.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
@@ -277,7 +293,7 @@ test.describe('Safe-storage passkey unlock', () => {
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-02 — a failed passkey creation shows the retry message, dismisses nothing, and is retried at once', async ({
+  test('BLOG-SAFE-STORAGE-PASSKEY-02 — a cancelled passkey creation shows no error, dismisses nothing, and is retried at once', async ({
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
@@ -288,9 +304,10 @@ test.describe('Safe-storage passkey unlock', () => {
     await prompt.getByTestId('passkey-prompt-enable').click();
     await expect(prompt).toHaveAttribute('data-step', 'create', { timeout: SIGN_IN_TIMEOUT_MS });
     await prompt.getByTestId('passkey-prompt-create').click();
-    await expect(prompt.getByTestId('passkey-prompt-error')).toHaveText("Couldn't enable biometric unlock. Try again.", {
+    await expect(prompt.getByTestId('passkey-prompt-notice')).toHaveText('No passkey was created. You can try again.', {
       timeout: SIGN_IN_TIMEOUT_MS
     });
+    await expect(prompt.getByTestId('passkey-prompt-error')).toHaveCount(0);
     await expect(page.getByText(/not allowed|webauthn|Passkey creation/i)).toHaveCount(0);
     expect(await passkeyCount(cdp, authenticatorId)).toBe(0);
     expect(await dismissalOf(page, ACCOUNT)).toBeNull();
@@ -439,7 +456,7 @@ test.describe('Safe-storage passkey unlock', () => {
     await signInWithPasskeyAlone(page, next);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-09 — the account menu turns the unlock off on this device, and the next sign-in asks for the password', async ({
+  test('BLOG-SAFE-STORAGE-PASSKEY-09 — the account menu turns the unlock off on this device, and the next password sign-in offers it again', async ({
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
@@ -458,6 +475,12 @@ test.describe('Safe-storage passkey unlock', () => {
     // The passkey stays with its provider: the app cannot remove it there
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
 
+    expect(await dismissalOf(page, ACCOUNT)).toBeNull();
+    await clickUntilOpen(homePage.profileAvatarButton, profileMenu.profileMenuContent);
+    await expect(page.getByTestId('passkey-unlock-turn-on-menu-item')).toHaveText('Turn on biometric unlock');
+    await expect(page.getByTestId('passkey-unlock-turn-off-menu-item')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
     await signOut(page);
     const requests = await spyOnPasskeyRequests(page);
     const next = await openSignIn(page);
@@ -465,8 +488,13 @@ test.describe('Safe-storage passkey unlock', () => {
     expect(await requests.named()).toEqual([]);
     await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
     await next.signInButton.click();
+    // The offer is back, and enabling keeps the passkey the password manager still holds
+    const offer = next.loginDialog.getByTestId('passkey-prompt');
+    await expect(offer).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await offer.getByTestId('passkey-prompt-enable').click();
     await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
-    expect(await requests.named()).toEqual([]);
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 
   test('BLOG-SAFE-STORAGE-PASSKEY-10 — another account\'s passkey picked at enabling says so and offers this account\'s first', async ({
@@ -482,5 +510,147 @@ test.describe('Safe-storage passkey unlock', () => {
     await expect(buttons.nth(0)).toHaveAttribute('data-testid', 'passkey-prompt-reuse');
     await expect(buttons.nth(1)).toHaveAttribute('data-testid', 'passkey-prompt-create');
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-11 — a passkey creation failing otherwise than by a cancel shows the error and is retried at once', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    await failNextPasskeyCreation(page);
+
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await prompt.getByTestId('passkey-prompt-enable').click();
+    await expect(prompt).toHaveAttribute('data-step', 'create', { timeout: SIGN_IN_TIMEOUT_MS });
+    await prompt.getByTestId('passkey-prompt-create').click();
+    await expect(prompt.getByTestId('passkey-prompt-error')).toHaveText("Couldn't enable biometric unlock. Try again.", {
+      timeout: SIGN_IN_TIMEOUT_MS
+    });
+    await expect(prompt.getByTestId('passkey-prompt-notice')).toHaveCount(0);
+
+    await prompt.getByTestId('passkey-prompt-create').click();
+    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-12 — turned off, the account menu turns the unlock on after the password, reusing the account\'s passkey', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    const signals = await spyOnPasskeySignals(page);
+
+    const homePage = new HomePage(page);
+    const profileMenu = new ProfileUserMenu(page);
+    await clickUntilOpen(homePage.profileAvatarButton, profileMenu.profileMenuContent);
+    await page.getByTestId('passkey-unlock-turn-off-menu-item').click();
+    await page.getByTestId('turn-off-passkey-unlock-confirm').click();
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+
+    await clickUntilOpen(homePage.profileAvatarButton, profileMenu.profileMenuContent);
+    await page.getByTestId('passkey-unlock-turn-on-menu-item').click();
+    await expect(loginForm.enterYourPasswordForm).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await loginForm.passwordToUnlockKeyInput.fill('not the password');
+    await loginForm.passwordToUnlockKeySubmitButton.click();
+    await expect(page.getByTestId('password-form-error-message')).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.passwordToUnlockKeySubmitButton.click();
+
+    const dialog = page.getByTestId('turn-on-passkey-unlock-dialog');
+    await expect(dialog).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(dialog.getByTestId('passkey-prompt-not-now')).toHaveCount(0);
+    await dialog.getByTestId('passkey-prompt-enable').click();
+    await expect(dialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+    // Only this device's own create() is signalled
+    expect(await signals()).toEqual([]);
+
+    await signInWithPasskeyAlone(page, loginForm);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-13 — after two sign-ins the passkey did not unlock, the password form offers to turn it off or set it up again', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    // Deleted in the password manager: the browser answers as it does a cancel
+    await cdp.send('WebAuthn.clearCredentials', { authenticatorId });
+    const signals = await spyOnPasskeySignals(page);
+
+    await signOut(page);
+    const first = await openSignIn(page);
+    await expect(first.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(first.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
+    await first.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await first.signInButton.click();
+    await expect(first.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+
+    // Each sign-in is a new form: the count is kept with the account, not in the form
+    await signOut(page);
+    const second = await openSignIn(page);
+    const notice = second.loginDialog.getByTestId('passkey-unlock-failing-notice');
+    await expect(notice).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+
+    await notice.getByTestId('passkey-unlock-failing-set-up').click();
+    await expect(notice).toHaveAttribute('data-state', 'set-up-again');
+    await second.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await second.signInButton.click();
+    const offer = second.loginDialog.getByTestId('passkey-prompt');
+    await enableByCreating(second, offer);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
+    expect((await signals()).map(({ name }) => name)).toEqual(['all-accepted']);
+
+    await signInWithPasskeyAlone(page, second);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-14 — the notice\'s turn off removes the record and signals nothing', async ({ page }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    await cdp.send('WebAuthn.clearCredentials', { authenticatorId });
+    await signOut(page);
+    const signals = await spyOnPasskeySignals(page);
+    const requests = await spyOnPasskeyRequests(page);
+    await requests.cancel(true);
+
+    for (const attempt of [1, 2]) {
+      const next = await openSignIn(page);
+      await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+      if (attempt === 1) {
+        await expect(next.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
+        await next.closeDialog.click();
+        await expect(next.loginDialog).toHaveCount(0);
+      }
+    }
+    // Each opening of the sign-in asks the passkey once
+    expect(await requests.named()).toEqual([0, 0]);
+    const notice = loginForm.loginDialog.getByTestId('passkey-unlock-failing-notice');
+    await expect(notice).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await notice.getByTestId('passkey-unlock-failing-turn-off').click();
+    await expect(notice).toHaveAttribute('data-state', 'turned-off');
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+    expect(await signals()).toEqual([]);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-15 — coming back to the form from "Add new key" asks no passkey again', async ({ page }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+
+    await signOut(page);
+    const requests = await spyOnPasskeyRequests(page);
+    await requests.cancel(true);
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await requests.named()).toEqual([0]);
+
+    await next.loginDialog.getByTestId('safe-storage-key-update-link').click();
+    await next.loginDialog.getByTestId('login-form-back').click();
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    expect(await requests.named()).toEqual([0]);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 });

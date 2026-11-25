@@ -3,8 +3,13 @@ import { Button } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { declinePasskeyPrompt, snoozePasskeyPrompt } from '@smart-signer/lib/auth/passkey-prompt-dismissal';
-import { PasskeyUnlockError, passkeyEnableFailureKey } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
+import {
+  clearPasskeyPromptDismissal,
+  declinePasskeyPrompt,
+  snoozePasskeyPrompt
+} from '@smart-signer/lib/auth/passkey-prompt-dismissal';
+import { clearPasskeyUnlockFailures } from '@smart-signer/lib/passkey-unlock/passkey-unlock-failures';
+import { PasskeyUnlockError, passkeyEnableMessage } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -16,8 +21,13 @@ type Props = {
   onReuse: () => Promise<void>;
   /** Creates a passkey (`registerPasskeyUnlock` with the password just entered) */
   onCreate: () => Promise<void>;
-  /** Called once the prompt is answered: enabled, "Not now" or "Never ask again" */
+  /** Called once the prompt is answered: enabled, "Not now" or "Never ask again" (or "Cancel") */
   onDone: () => void | Promise<void>;
+  /**
+   * Shows "Cancel" in place of "Not now" and "Never ask again", for an unlock the user asked to turn
+   * on: closing the prompt then keeps no offer away
+   */
+  onCancel?: () => void;
 };
 
 /**
@@ -55,11 +65,15 @@ const PRIMARY_BUTTON = 'bg-blue-600 text-white hover:bg-blue-500';
  * for `username`; a failed or cancelled browser prompt shows the reason and keeps the offer open,
  * dismissing nothing.
  */
-export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: Props) {
+export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onCancel }: Props) {
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
   const [step, setStep] = useState<Step>('offer');
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
+  const showFailure = (failure: unknown) => {
+    const { key, error } = passkeyEnableMessage(failure);
+    setMessage({ text: t(key), error });
+  };
   const headingRef = useRef<HTMLParagraphElement>(null);
 
   // Shown where the password field was: once a phone's keyboard closes, the dialog may stay
@@ -83,6 +97,9 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
       setBusy(false);
       return;
     }
+    // A record from now on: a failure count or a dismissal is of the passkey it replaced
+    clearPasskeyUnlockFailures(username);
+    clearPasskeyPromptDismissal(username);
     await onDone();
   };
 
@@ -91,10 +108,10 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
       // The browser answers a relying party without passkeys as it does a cancel: offer to create one
       if (failedWith(error, 'cancelled')) setStep('create');
       else if (failedWith(error, 'wrong-account')) setStep('wrong-account');
-      else setMessage(t(passkeyEnableFailureKey(error)));
+      else showFailure(error);
     });
 
-  const create = () => run(onCreate, (error) => setMessage(t(passkeyEnableFailureKey(error))));
+  const create = () => run(onCreate, showFailure);
 
   const dismiss = async (remember: (username: string) => void) => {
     remember(username);
@@ -138,9 +155,14 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
         {t(TITLE_KEYS[step])}
       </p>
       <p className="mb-3 text-xs text-muted-foreground">{t(DESCRIPTION_KEYS[step])}</p>
-      {message && (
+      {message?.error && (
         <p className="mb-3 text-xs text-destructive" role="alert" data-testid="passkey-prompt-error">
-          {message}
+          {message.text}
+        </p>
+      )}
+      {message && !message.error && (
+        <p className="mb-3 text-xs" role="status" data-testid="passkey-prompt-notice">
+          {message.text}
         </p>
       )}
       <div className="flex select-none flex-col gap-2 sm:flex-row sm:flex-wrap">
@@ -168,26 +190,41 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone }: P
             {t('login_form.passkey_prompt.enable')}
           </Button>
         )}
-        <Button
-          size="sm"
-          variant="ghost"
-          className={BUTTON_LAYOUT}
-          disabled={busy}
-          onClick={notNow}
-          data-testid="passkey-prompt-not-now"
-        >
-          {t('login_form.passkey_prompt.not_now')}
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          className={cn(BUTTON_LAYOUT, 'text-muted-foreground')}
-          disabled={busy}
-          onClick={never}
-          data-testid="passkey-prompt-never"
-        >
-          {t('login_form.passkey_prompt.never_ask_again')}
-        </Button>
+        {onCancel ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            className={BUTTON_LAYOUT}
+            disabled={busy}
+            onClick={onCancel}
+            data-testid="passkey-prompt-cancel"
+          >
+            {t('passkey_unlock.cancel_button')}
+          </Button>
+        ) : (
+          <>
+            <Button
+              size="sm"
+              variant="ghost"
+              className={BUTTON_LAYOUT}
+              disabled={busy}
+              onClick={notNow}
+              data-testid="passkey-prompt-not-now"
+            >
+              {t('login_form.passkey_prompt.not_now')}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className={cn(BUTTON_LAYOUT, 'text-muted-foreground')}
+              disabled={busy}
+              onClick={never}
+              data-testid="passkey-prompt-never"
+            >
+              {t('login_form.passkey_prompt.never_ask_again')}
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
