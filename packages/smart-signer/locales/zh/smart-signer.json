@@ -316,7 +316,7 @@
     "choose_label": "闲置多久后锁定",
     "locks_after": "闲置 {{duration}} 后锁定",
     "locks_after_sentence": "闲置 {{duration}} 后锁定。",
-    "activity_unchecked": "每次签名都会重新计时。在密钥锁定之前，需要活动密钥的操作将直接签名，不会要求输入密码。",
+    "activity_unchecked": "每次签名都会重新计时。在密钥锁定之前，需要活动密钥或 Owner 密钥的操作将直接签名，不会要求输入密码。",
     "activity_checked": "每次签名都会重新计时。需要活动密钥或 Owner 密钥的操作每次都会要求输入密码或使用通行密钥。",
     "minutes": "{{value}} 分钟",
     "hours": "{{value}} 小时",
@@ -349,10 +349,10 @@
   "active_check": {
     "menu_label": "每次使用活动密钥或 Owner 密钥的操作前都确认",
     "turn_on_title": "在每次需要活动密钥或 Owner 密钥的操作之前确认",
-    "turn_off_title": "不再在需要活动密钥的操作之前确认",
+    "turn_off_title": "不再在需要活动密钥或 Owner 密钥的操作之前确认",
     "change_description": "输入安全存储密码或使用通行密钥来更改此设置。",
     "turned_on": "需要活动密钥或 Owner 密钥的操作现在每次都会要求输入密码或使用通行密钥。",
-    "turned_off": "需要活动密钥的操作现在将直接签名，直到密钥锁定。",
+    "turned_off": "需要活动密钥或 Owner 密钥的操作现在将直接签名，直到密钥锁定。",
     "change_failed": "无法更改设置。请重试。"
   },
   "passkey_unlock": {

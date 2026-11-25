@@ -8,7 +8,6 @@ import { isUserCancelled } from '@hive/ui/lib/user-cancelled';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
-import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { parseStoredWif, wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import { getTabWif, rememberTabWif } from '@smart-signer/lib/signer/tab-credentials';
 import { notifyPlaintextKeyUsed, requestSafeStorageSession } from '@smart-signer/lib/signer/key-protection-signals';
@@ -87,7 +86,7 @@ export class SignerWif extends SignerHbauth {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
       showRememberKey: true,
-      validatePassword: (wif) => validateKeyAuthority(username, KeyType.active, wif),
+      keyAuthority: { username, keyType: KeyType.active },
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
         title: 'login_form.enter_key_title_active',
@@ -191,7 +190,7 @@ export class SignerWif extends SignerHbauth {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
       showRememberKey: true,
-      validatePassword: (wif) => validateKeyAuthority(username, keyType, wif),
+      keyAuthority: { username, keyType },
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.private_key_placeholder',
         title: `login_form.enter_key_title_${keyType}`,

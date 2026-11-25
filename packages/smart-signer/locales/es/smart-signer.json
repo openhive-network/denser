@@ -316,7 +316,7 @@
     "choose_label": "Bloquear tras inactividad de",
     "locks_after": "Se bloquea tras {{duration}} de inactividad",
     "locks_after_sentence": "Se bloquea tras {{duration}} de inactividad.",
-    "activity_unchecked": "Cada firma reinicia el temporizador. Hasta que tus claves se bloqueen, las operaciones que requieren tu clave activa se firman sin pedirte la contraseña.",
+    "activity_unchecked": "Cada firma reinicia el temporizador. Hasta que tus claves se bloqueen, las operaciones que requieren tu clave activa o de propietario se firman sin pedirte la contraseña.",
     "activity_checked": "Cada firma reinicia el temporizador. Las operaciones que requieren tu clave activa o de propietario te piden la contraseña o la passkey cada vez.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
@@ -349,10 +349,10 @@
   "active_check": {
     "menu_label": "Preguntar antes de cada operación con la clave activa o de propietario",
     "turn_on_title": "Preguntar antes de cada operación que requiera tu clave activa o de propietario",
-    "turn_off_title": "Dejar de preguntar antes de las operaciones que requieren tu clave activa",
+    "turn_off_title": "Dejar de preguntar antes de las operaciones que requieren tu clave activa o de propietario",
     "change_description": "Introduce la contraseña del almacenamiento seguro o usa tu passkey para cambiar este ajuste.",
     "turned_on": "Las operaciones que requieren tu clave activa o de propietario ahora te piden la contraseña o la passkey cada vez.",
-    "turned_off": "Las operaciones que requieren tu clave activa ahora se firman sin preguntar hasta que tus claves se bloqueen.",
+    "turned_off": "Las operaciones que requieren tu clave activa o de propietario ahora se firman sin preguntar hasta que tus claves se bloqueen.",
     "change_failed": "No se pudo cambiar el ajuste. Inténtalo de nuevo."
   },
   "passkey_unlock": {

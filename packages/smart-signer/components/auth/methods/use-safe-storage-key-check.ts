@@ -29,13 +29,14 @@ function isSameCheck(a: KeyCheckFields, b: KeyCheckFields): boolean {
 }
 
 /**
- * The key-authority check of the safe-storage forms that store a key (`validateSafeStorageKey`): run
- * when the key or account field loses focus (`checkEnteredKey`), again when the key type or Direct
- * Authority Mode changes, and on submit. A refusal is shown under the key field, which keeps the key,
+ * The key-authority check of the safe-storage forms that store a key, and of the WIF key prompt
+ * (`validateSafeStorageKey`): run when the key or account field loses focus (`checkEnteredKey`),
+ * again when the key type or Direct Authority Mode changes, and on submit. A refusal is shown under the key field, which keeps the key,
  * only while the form still holds what was checked; changing the account drops it.
  */
 export function useSafeStorageKeyCheck({ i18nNamespace, fields, showKeyError, revalidateKey }: SafeStorageKeyCheckOptions) {
-  const { t } = useSharedTranslation(i18nNamespace);
+  // Also run in the WIF key prompt of transaction signing, which must not suspend for the namespace
+  const { t } = useSharedTranslation(i18nNamespace, { useSuspense: false });
   const current = useRef(fields);
   current.current = fields;
 

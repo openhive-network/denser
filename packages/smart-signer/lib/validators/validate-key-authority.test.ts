@@ -21,9 +21,7 @@ registerHooks({
 });
 
 const { chain } = await import(CHAIN_MODULE);
-const { describeRefusedKey, validateKeyAuthority, validateSafeStorageKey } = await import(
-  './validate-key-authority.ts'
-);
+const { describeRefusedKey, validateSafeStorageKey } = await import('./validate-key-authority.ts');
 
 const ACCOUNT = 'guest4test2';
 const AUTHORISED = 'guest4test1';
@@ -206,18 +204,5 @@ describe('describeRefusedKey', () => {
     assert.deepEqual(await describeRefusedKey(ACCOUNT, 'active', WIF, true, postingHint), {
       key: postingHint
     });
-  });
-});
-
-describe('validateKeyAuthority', () => {
-  it("refuses the account's own key of another role with the role hint", async () => {
-    useChain(POSTING_KEY);
-    assert.equal(await validateKeyAuthority(ACCOUNT, 'active', WIF), ACTIVE_HINT);
-  });
-
-  it("leaves another account's key to on-chain verification, without looking up its holders", async () => {
-    useChain(OTHER_KEY, [UNRELATED]);
-    assert.equal(await validateKeyAuthority(ACCOUNT, 'active', WIF), null);
-    assert.equal(holderLookups, 0);
   });
 });

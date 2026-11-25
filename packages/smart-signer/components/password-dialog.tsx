@@ -85,6 +85,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     mode,
     showRememberKey,
     validatePassword,
+    keyAuthority,
     i18nKeysForCaptions,
     i18nValues,
     operation,
@@ -108,6 +109,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
           mode={mode}
           showRememberKey={showRememberKey}
           validatePassword={validatePassword}
+          keyAuthority={keyAuthority}
           i18nKeysForCaptions={i18nKeysForCaptions}
           i18nValues={i18nValues}
           operation={operation}

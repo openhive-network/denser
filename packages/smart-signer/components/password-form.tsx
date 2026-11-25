@@ -11,6 +11,8 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import SessionTimeNote from '@smart-signer/components/session-time-note';
 import { Icons } from '@ui/components/icons';
 import type { OperationSummary } from '@smart-signer/lib/signer/operation-summary';
+import { KeyType } from '@smart-signer/types/common';
+import { useSafeStorageKeyCheck } from '@smart-signer/components/auth/methods/use-safe-storage-key-check';
 
 const logger = getLogger('app');
 
@@ -98,6 +100,12 @@ export interface PasswordFormOptions {
    * or null to submit.
    */
   validatePassword?: (password: string) => Promise<string | null>;
+  /**
+   * The account and key type the entered WIF key must sign as; WIF mode only. The key is checked
+   * as safe storage's forms check theirs (`useSafeStorageKeyCheck`), with Direct Authority Mode off:
+   * when its field loses focus, and on submit, which a refused key keeps open with the key kept.
+   */
+  keyAuthority?: { username: string; keyType: KeyType };
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
   /** Interpolation values of the caption translations, e.g. `{ keyType: 'active' }` */
   i18nValues?: Record<string, string>;
@@ -128,6 +136,7 @@ export function PasswordForm({
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   onCancel = () => {},
   validatePassword,
+  keyAuthority,
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nValues,
   operation,
@@ -173,7 +182,8 @@ export function PasswordForm({
     resetField,
     setError,
     watch,
-    setValue
+    setValue,
+    trigger
   } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
     resolver: withTranslatedErrors(zodResolver(resolver), (key) => t(key)),
     defaultValues: passwordFormDefaultValues
@@ -200,7 +210,22 @@ export function PasswordForm({
   // Two boxes for one choice: ticking one unticks the other
   const rememberKey = watch('rememberKey');
 
+  const keyCheckFields = {
+    username: keyAuthority?.username ?? '',
+    keyType: keyAuthority?.keyType ?? KeyType.posting,
+    wif: watch('password'),
+    strict: false
+  };
+  const keyCheck = useSafeStorageKeyCheck({
+    i18nNamespace: SMART_SIGNER_NAMESPACE,
+    fields: keyCheckFields,
+    showKeyError: (message) => setError('password', { message }),
+    revalidateKey: () => trigger('password')
+  });
+  const passwordField = register('password');
+
   const submitIfValid = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
+    if (keyAuthority && !(await keyCheck.checkKey({ ...keyCheckFields, wif: data.password }))) return;
     const errorKey = await validatePassword?.(data.password);
     if (errorKey) {
       resetField('password');
@@ -232,7 +257,11 @@ export function PasswordForm({
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-hidden focus:ring-red-500 dark:text-slate-300"
               placeholder={caption(captionKey.inputPasswordPlaceholder)}
               autoComplete={autoComplete}
-              {...register('password')}
+              {...passwordField}
+              onBlur={(event) => {
+                passwordField.onBlur(event);
+                if (keyAuthority) keyCheck.checkEnteredKey();
+              }}
               data-testid="posting-private-key-input"
             />
             {errors.password?.message && (

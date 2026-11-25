@@ -316,7 +316,7 @@
     "choose_label": "Blocca dopo un'inattività di",
     "locks_after": "Si blocca dopo {{duration}} di inattività",
     "locks_after_sentence": "Si blocca dopo {{duration}} di inattività.",
-    "activity_unchecked": "Ogni firma riavvia il timer. Finché le chiavi non si bloccano, le operazioni che richiedono la tua chiave attiva vengono firmate senza chiedere la password.",
+    "activity_unchecked": "Ogni firma riavvia il timer. Finché le chiavi non si bloccano, le operazioni che richiedono la tua chiave attiva o la chiave Owner vengono firmate senza chiedere la password.",
     "activity_checked": "Ogni firma riavvia il timer. Le operazioni che richiedono la tua chiave attiva o la chiave Owner chiedono ogni volta la password o la passkey.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
@@ -349,10 +349,10 @@
   "active_check": {
     "menu_label": "Chiedi prima di ogni operazione con la chiave attiva o la chiave Owner",
     "turn_on_title": "Chiedi prima di ogni operazione che richiede la chiave attiva o la chiave Owner",
-    "turn_off_title": "Non chiedere più prima delle operazioni che richiedono la chiave attiva",
+    "turn_off_title": "Non chiedere più prima delle operazioni che richiedono la chiave attiva o la chiave Owner",
     "change_description": "Inserisci la password dell'archivio sicuro o usa la passkey per cambiare questa impostazione.",
     "turned_on": "Le operazioni che richiedono la chiave attiva o la chiave Owner ora chiedono ogni volta la password o la passkey.",
-    "turned_off": "Le operazioni che richiedono la chiave attiva ora vengono firmate senza chiedere finché le chiavi non si bloccano.",
+    "turned_off": "Le operazioni che richiedono la chiave attiva o la chiave Owner ora vengono firmate senza chiedere finché le chiavi non si bloccano.",
     "change_failed": "Impossibile cambiare l'impostazione. Riprova."
   },
   "passkey_unlock": {

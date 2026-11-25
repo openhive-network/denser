@@ -594,6 +594,10 @@ whenever it is none of the account's own: `answerNoKeyHolders` (`support/safeSto
 answers that nobody holds it, which the check refuses as safe storage would.
 `safeStorageKeyboardChecks.spec.ts` types into the fields key by key and leaves them with Tab, as
 testers do, rather than `fill()` + `blur()`.
+The WIF (Legacy) key dialog checks its key the same way (`wifKeyDialogKeyboard.spec.ts`), so a WIF
+sign-in with `FIXTURE_POSTING_WIF`, which is none of the recorded account's keys, first gives it a
+role with `giveKeyRole(page, () => 'posting')` (`accountSwitchLogout.spec.ts`); otherwise the
+holder lookup is a replay miss.
 
 ---
 
