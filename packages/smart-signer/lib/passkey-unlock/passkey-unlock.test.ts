@@ -34,6 +34,9 @@ type PasskeyUnlockRecord = Awaited<ReturnType<typeof createPasskeyUnlock>>;
 const USERNAME = 'guest4test2';
 const PASSWORD = 'safe storage password';
 const RP_ID = 'wallet.example';
+const DEVICE_SALT = new Uint8Array(32).fill(1);
+/** The salt of its own a record written before the device salt holds */
+const OWN_SALT = new Uint8Array(32).fill(3);
 
 type Passkey = { id: Uint8Array<ArrayBuffer>; userHandle: ArrayBuffer; secret: string };
 
@@ -91,11 +94,12 @@ function authenticator(secret: string, getError?: Error) {
   };
 }
 
-/** The passkey record store, in memory */
+/** The passkey record store, in memory, on DEVICE_SALT */
 function memoryStore(...stored: PasskeyUnlockRecord[]) {
   const records = new Map(stored.map((record) => [record.username, record]));
   return {
     records,
+    deviceSalt: async () => DEVICE_SALT,
     read: async (username: string) => records.get(username) ?? null,
     remove: async (username: string) => {
       records.delete(username);
@@ -124,7 +128,7 @@ function hbAuthClient(accepted: string, stored = true) {
 }
 
 async function registered(provider = authenticator('passkey')) {
-  return memoryStore(await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID));
+  return memoryStore(await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT));
 }
 
 const cancel = () => new DOMException('The operation either timed out or was not allowed.', 'NotAllowedError');
@@ -245,7 +249,7 @@ describe('unlockWithPasskey', () => {
     const provider = authenticator('passkey');
     const store = await registered(provider);
     const otherAccount = authenticator('other');
-    await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID);
+    await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID, DEVICE_SALT);
     provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: new Uint8Array([5]) });
 
     const error = await unlockWithPasskeyGivingPassword(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', {
@@ -261,9 +265,9 @@ describe('unlockWithPasskey', () => {
 
   it("unlocks the account whose linked passkey the user picked in place of the one asked for", async () => {
     const provider = authenticator('passkey');
-    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID);
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
     const otherAccount = authenticator('other');
-    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID);
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID, DEVICE_SALT);
     const otherId = new Uint8Array([5]);
     provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId });
     const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
@@ -278,16 +282,67 @@ describe('unlockWithPasskey', () => {
     assert.equal(unlocked.username, 'another.user');
     assert.equal(unlocked.password, 'other password');
     assert.deepEqual(unlocked.status, { ok: true });
-    assert.equal(provider.got.length, 2);
-    assert.ok(sameId(provider.got[1].publicKey?.allowCredentials?.[0].id ?? new Uint8Array(), otherId));
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(provider.got[0].publicKey?.allowCredentials, []);
+    assert.deepEqual(provider.got[0].publicKey?.extensions?.prf?.eval, { first: DEVICE_SALT });
     assert.equal(store.records.size, 2);
+  });
+
+  it("switches to an account whose record is on a salt of its own with a second request, then moves it to the device salt", async () => {
+    const provider = authenticator('passkey');
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID, OWN_SALT);
+    const otherId = new Uint8Array([5]);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
+    const client = hbAuthClient('other password');
+    const options = { credentials: provider, store, accounts: [USERNAME, 'another.user'] };
+
+    const unlocked = await unlockWithPasskeyGivingPassword(client, USERNAME, 'posting', 'required', options);
+
+    assert.equal(unlocked.username, 'another.user');
+    assert.equal(provider.got.length, 2);
+    assert.deepEqual(provider.got[0].publicKey?.allowCredentials, []);
+    assert.ok(sameId(provider.got[1].publicKey?.allowCredentials?.[0].id ?? new Uint8Array(), otherId));
+    assert.deepEqual(store.records.get('another.user')?.prfSalt, DEVICE_SALT);
+    assert.deepEqual(store.records.get('another.user')?.credentialId, otherId);
+    assert.equal(store.records.get(USERNAME), ownRecord);
+
+    provider.got.length = 0;
+    const again = await unlockWithPasskeyGivingPassword(client, USERNAME, 'posting', 'required', options);
+    assert.equal(again.username, 'another.user');
+    assert.equal(again.password, 'other password');
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(provider.got[0].publicKey?.allowCredentials, []);
+  });
+
+  it("switches with one request to a device-salt account from a record on a salt of its own, which stays until its own unlock", async () => {
+    const provider = authenticator('passkey');
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID, DEVICE_SALT);
+    const otherId = new Uint8Array([5]);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
+
+    const unlocked = await unlockWithPasskeyGivingPassword(hbAuthClient('other password'), USERNAME, 'posting', 'required', {
+      credentials: provider,
+      store,
+      accounts: [USERNAME, 'another.user']
+    });
+
+    assert.equal(unlocked.username, 'another.user');
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(provider.got[0].publicKey?.extensions?.prf?.eval, { first: DEVICE_SALT, second: OWN_SALT });
+    assert.equal(store.records.get(USERNAME), ownRecord);
   });
 
   it("rejects as wrong-account another account's passkey where the unlock is for one account only", async () => {
     const provider = authenticator('passkey');
-    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID);
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
     const otherAccount = authenticator('other');
-    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID);
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', PASSWORD, RP_ID, DEVICE_SALT);
     provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: new Uint8Array([5]) });
     const store = memoryStore(ownRecord, { ...otherRecord, credentialId: new Uint8Array([5]) });
 
@@ -337,13 +392,85 @@ describe('unlockWithPasskey', () => {
     await adoptReplacedPasskey(error, USERNAME, PASSWORD);
     const moved = store.records.get(USERNAME);
     assert.deepEqual(moved?.credentialId, provider.passkeys[0].id);
-    assert.notDeepEqual(moved?.prfSalt, old?.prfSalt);
+    assert.deepEqual(moved?.prfSalt, DEVICE_SALT);
 
     provider.got.length = 0;
     assert.deepEqual(await unlockWithPasskey(client, USERNAME, 'posting', 'required', provider, store), { ok: true });
     assert.equal(provider.got.length, 1);
     assert.deepEqual(client.passwords, [PASSWORD]);
     assert.equal(provider.created(), 1);
+  });
+
+  it("moves a record on a salt of its own to the device salt during its unlock, with no further request", async () => {
+    const provider = authenticator('passkey');
+    const old = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT);
+    const store = memoryStore({ ...old, transports: ['internal'] });
+    const client = hbAuthClient(PASSWORD);
+
+    assert.deepEqual(await unlockWithPasskey(client, USERNAME, 'posting', 'required', provider, store), { ok: true });
+
+    assert.equal(provider.got.length, 1);
+    assert.deepEqual(provider.got[0].publicKey?.allowCredentials, []);
+    assert.deepEqual(provider.got[0].publicKey?.extensions?.prf?.eval, { first: DEVICE_SALT, second: OWN_SALT });
+    const moved = store.records.get(USERNAME);
+    assert.deepEqual(moved?.prfSalt, DEVICE_SALT);
+    assert.deepEqual(moved?.credentialId, old.credentialId);
+    assert.deepEqual(moved?.transports, ['internal']);
+
+    provider.got.length = 0;
+    assert.deepEqual(await unlockWithPasskey(client, USERNAME, 'posting', 'required', provider, store), { ok: true });
+    assert.deepEqual(provider.got[0].publicKey?.extensions?.prf?.eval, { first: DEVICE_SALT });
+    assert.deepEqual(client.passwords, [PASSWORD, PASSWORD]);
+  });
+
+  it('keeps a record on a salt of its own, still unlocking, where storing its move fails', async () => {
+    const provider = authenticator('passkey');
+    const old = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT);
+    const store = memoryStore(old);
+    store.write = async () => Promise.reject(new DOMException('Quota exceeded', 'QuotaExceededError'));
+
+    assert.deepEqual(await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store), {
+      ok: true
+    });
+
+    assert.equal(store.records.get(USERNAME), old);
+  });
+
+  it('keeps a record on a salt of its own where its re-encrypted copy does not decrypt', async () => {
+    const provider = authenticator('passkey');
+    const old = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT);
+    const store = memoryStore(old);
+    const { subtle } = crypto;
+    const decrypt = subtle.decrypt;
+    let decrypted = 0;
+    // The unlock's own decryption succeeds; the check of the copy, the next one, fails
+    subtle.decrypt = async (...args: Parameters<SubtleCrypto['decrypt']>) => {
+      decrypted += 1;
+      if (decrypted > 1) throw new DOMException('The operation failed', 'OperationError');
+      return decrypt.apply(subtle, args);
+    };
+    try {
+      const status = await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store);
+      assert.deepEqual(status, { ok: true });
+    } finally {
+      subtle.decrypt = decrypt;
+    }
+
+    assert.equal(decrypted, 2);
+    assert.equal(store.records.get(USERNAME), old);
+  });
+
+  it('does not move a record whose password safe storage refuses: it is removed', async () => {
+    const provider = authenticator('passkey');
+    const store = memoryStore(await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT));
+
+    const error = await unlockWithPasskey(hbAuthClient('changed'), USERNAME, 'posting', 'required', provider, store).catch(
+      (e: unknown) => e
+    );
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'stale');
+    assert.equal(store.records.size, 0);
   });
 
   it('keeps the record, rejecting with the refusal, when safe storage holds no key of the user', async () => {
@@ -415,7 +542,7 @@ describe('passkey signals', () => {
 
   it('a creation tells the providers its credential is the account\'s one passkey, once', async () => {
     const provider = authenticator('passkey');
-    const store = memoryStore(await createPasskeyUnlock(provider, 'nobody', PASSWORD, RP_ID));
+    const store = memoryStore(await createPasskeyUnlock(provider, 'nobody', PASSWORD, RP_ID, DEVICE_SALT));
 
     await registerPasskeyUnlock(USERNAME, PASSWORD, provider, store);
 
@@ -450,6 +577,16 @@ describe('passkey signals', () => {
     assert.equal(error.reason, 'cancelled');
     assert.equal(store.records.size, 1);
     assert.equal(provider.passkeys.length, 1);
+    assert.deepEqual(sent, []);
+  });
+
+  it('moving a record to the device salt during its unlock signals nothing', async () => {
+    const provider = authenticator('passkey');
+    const store = memoryStore(await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, OWN_SALT));
+
+    await unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store);
+
+    assert.deepEqual(store.records.get(USERNAME)?.prfSalt, DEVICE_SALT);
     assert.deepEqual(sent, []);
   });
 

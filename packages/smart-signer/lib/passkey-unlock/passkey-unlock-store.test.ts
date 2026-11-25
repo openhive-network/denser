@@ -2,7 +2,9 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { setImmediate as nextTurn } from 'node:timers/promises';
 
-const { readPasskeyUnlock, removePasskeyUnlock, storePasskeyUnlock } = await import('./passkey-unlock-store.ts');
+const { readDevicePrfSalt, readPasskeyUnlock, removePasskeyUnlock, storePasskeyUnlock } = await import(
+  './passkey-unlock-store.ts'
+);
 type PasskeyUnlockRecord = Parameters<typeof storePasskeyUnlock>[0];
 
 type Handler = (() => void) | null;
@@ -42,10 +44,11 @@ function fakeIndexedDB() {
           request.succeed(records.get(key));
           return request;
         },
-        put: (value: { username: string }) => {
-          writes.push(() => records.set(value.username, value));
+        put: (value: { username?: string }, key?: string) => {
+          const stored = key ?? value.username ?? '';
+          writes.push(() => records.set(stored, value));
           const request = new FakeRequest();
-          request.succeed(value.username);
+          request.succeed(stored);
           return request;
         },
         delete: (key: string) => {
@@ -147,5 +150,34 @@ describe('passkey unlock store', () => {
     await removing;
 
     assert.equal(await readPasskeyUnlock(RECORD.username), null);
+  });
+
+  it('creates the device salt once and gives the same one after', async () => {
+    const fake = fakeIndexedDB();
+    Object.assign(globalThis, { indexedDB: fake.indexedDB });
+
+    const creating = readDevicePrfSalt();
+    const creation = await openTransaction(fake.open);
+    // The salt is put once the read finds none, on a later turn
+    for (let turn = 0; turn < 5; turn++) await nextTurn();
+    creation.complete();
+    const created = await creating;
+    const reading = readDevicePrfSalt();
+    (await openTransaction(fake.open)).complete();
+
+    assert.equal(created.length, 32);
+    assert.deepEqual(await reading, created);
+    assert.deepEqual(fake.records.get('prfSalt'), created);
+  });
+
+  it('rejects, storing no salt, where its transaction aborts', async () => {
+    const fake = fakeIndexedDB();
+    Object.assign(globalThis, { indexedDB: fake.indexedDB });
+
+    const creating = readDevicePrfSalt();
+    (await openTransaction(fake.open)).abort();
+
+    await assert.rejects(creating, { name: 'QuotaExceededError' });
+    assert.equal(fake.records.size, 0);
   });
 });

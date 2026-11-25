@@ -30,8 +30,10 @@ import {
  * passkey picked at enabling offers this account's first. The account menu turns the unlock off on
  * this device, which the next password sign-in offers again, and on, reusing the account's passkey.
  * After two sign-ins in a row the passkey did not unlock, the password form offers to turn the unlock
- * off or set it up again. Coming back to the form from "Add new key" asks no passkey again. The ceremonies themselves are covered by
- * packages/smart-signer/lib/passkey-unlock/passkey-unlock-ceremony.test.ts.
+ * off or set it up again. Coming back to the form from "Add new key" asks no passkey again. A record
+ * on a salt of its own, as the build before the device salt wrote it, unlocks with the same one
+ * request and moves to the device salt. The ceremonies, and switching between two linked accounts, are covered by
+ * packages/smart-signer/lib/passkey-unlock/passkey-unlock-ceremony.test.ts and passkey-unlock.test.ts.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose add-account dialog stores
  * ACCOUNT in safe storage, as safeStorageBiometricOffer.spec.ts.
@@ -162,6 +164,73 @@ async function enableByCreating(loginForm: LoginForm, prompt: ReturnType<Page['g
   await expect(prompt).toHaveAttribute('data-step', 'create', { timeout: SIGN_IN_TIMEOUT_MS });
   await prompt.getByTestId('passkey-prompt-create').click();
   await expect(loginForm.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+}
+
+/** The PRF salt `username`'s record is encrypted under, and the device salt it is to be on */
+function passkeySalts(page: Page, username: string): Promise<{ record: number[]; device: number[] }> {
+  return page.evaluate(async (username) => {
+    const read = (name: string, store: string, key: string) =>
+      new Promise<Uint8Array>((resolve, reject) => {
+        const open = indexedDB.open(name, 1);
+        open.onerror = () => reject(open.error);
+        open.onsuccess = () => {
+          const request = open.result.transaction(store, 'readonly').objectStore(store).get(key);
+          request.onsuccess = () => {
+            open.result.close();
+            resolve(store === 'credentials' ? request.result.prfSalt : request.result);
+          };
+          request.onerror = () => reject(request.error);
+        };
+      });
+    return {
+      record: Array.from(await read('/passkeys_v3', 'credentials', username)),
+      device: Array.from(await read('/passkeys_v3_device', 'device', 'prfSalt'))
+    };
+  }, username);
+}
+
+/**
+ * Encrypts `username`'s record again under a salt of its own, as the build before the device salt
+ * wrote it, asking the record's passkey for the salt's PRF output
+ */
+async function moveToOwnSalt(page: Page, username: string, password: string): Promise<void> {
+  await page.evaluate(
+    async ([username, password]) => {
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const open = indexedDB.open('/passkeys_v3', 1);
+        open.onsuccess = () => resolve(open.result);
+        open.onerror = () => reject(open.error);
+      });
+      const stored = await new Promise<Record<string, Uint8Array<ArrayBuffer>>>((resolve, reject) => {
+        const request = db.transaction('credentials', 'readonly').objectStore('credentials').get(username);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const prfSalt = crypto.getRandomValues(new Uint8Array(32));
+      const credential = (await navigator.credentials.get({
+        publicKey: {
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          rpId: location.hostname,
+          allowCredentials: [{ id: stored.credentialId, type: 'public-key' }],
+          userVerification: 'required',
+          extensions: { prf: { eval: { first: prfSalt } } }
+        }
+      })) as PublicKeyCredential;
+      const output = credential.getClientExtensionResults().prf?.results?.first;
+      if (!output) throw new Error('the passkey gave no PRF output');
+      const key = await crypto.subtle.importKey('raw', output, 'AES-GCM', false, ['encrypt']);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(password));
+      await new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction('credentials', 'readwrite');
+        transaction.objectStore('credentials').put({ ...stored, prfSalt, iv, encryptedPassword: new Uint8Array(encrypted) });
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+      });
+      db.close();
+    },
+    [username, password] as const
+  );
 }
 
 /** Signs out and in again, which the passkey alone unlocks */
@@ -633,6 +702,32 @@ test.describe('Safe-storage passkey unlock', () => {
     await expect(notice).toHaveAttribute('data-state', 'turned-off');
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
     expect(await signals()).toEqual([]);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-16 — a record on a salt of its own unlocks with one request and moves to the device salt', async ({
+    page
+  }) => {
+    const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    const created = await passkeySalts(page, ACCOUNT);
+    expect(created.record).toEqual(created.device);
+    await moveToOwnSalt(page, ACCOUNT, SAFE_STORAGE_PASSWORD);
+    const own = await passkeySalts(page, ACCOUNT);
+    expect(own.record).not.toEqual(own.device);
+
+    const signals = await spyOnPasskeySignals(page);
+    const requests = await spyOnPasskeyRequests(page);
+    await signInWithPasskeyAlone(page, loginForm);
+    expect(await requests.named()).toEqual([0]);
+    const moved = await passkeySalts(page, ACCOUNT);
+    expect(moved.record).toEqual(own.device);
+    expect(moved.device).toEqual(own.device);
+
+    await signInWithPasskeyAlone(page, loginForm);
+    expect(await requests.named()).toEqual([0, 0]);
+    expect(await signals()).toEqual([]);
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 
   test('BLOG-SAFE-STORAGE-PASSKEY-15 — coming back to the form from "Add new key" asks no passkey again', async ({ page }) => {
