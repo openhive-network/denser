@@ -22,8 +22,9 @@ import {
  * typed into a key at a time and left with Tab, not filled and blurred by script. A key without the
  * authority the sign-in needs is refused as its field, or the account field typed after it, loses
  * focus: the account's own key of another role, and a key nobody holds, which safe storage's own
- * verification would refuse on submit. Changing the account drops the refusal. A wrong-password
- * error goes once the password field is emptied, and an emptied field shows no other error.
+ * verification would refuse on submit. Changing the account drops the refusal and empties the
+ * password field. A wrong-password error goes once the password field is emptied, and an emptied
+ * field shows no other error.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), as safeStoragePasswordRules.spec.ts.
  *
@@ -150,5 +151,20 @@ test.describe('Safe-storage forms at the keyboard', () => {
 
     await page.keyboard.type('abc', { delay: TYPING_DELAY_MS });
     await expect(updateKeyForm).toContainText(PASSWORD_LENGTH);
+  });
+
+  test('BLOG-SAFE-STORAGE-KEYBOARD-06 — changing the account empties the password field', async ({ page }) => {
+    await page.goto(PAGE_WITH_HEADER);
+
+    const loginForm = await openAddAccountDialog(page);
+    await expect(loginForm.wifInput).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await typeInto(page, loginForm.usernameInput, ACCOUNT);
+    await page.keyboard.press('Tab');
+    await page.keyboard.type(SAFE_STORAGE_PASSWORD, { delay: TYPING_DELAY_MS });
+    await expect(loginForm.passwordInput).toHaveValue(SAFE_STORAGE_PASSWORD);
+
+    await typeInto(page, loginForm.usernameInput, OTHER_ACCOUNT);
+    await expect(loginForm.passwordInput).toHaveValue('');
+    await expect(loginForm.passwordErrorMessage).toHaveCount(0);
   });
 });

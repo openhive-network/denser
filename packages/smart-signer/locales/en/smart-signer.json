@@ -316,7 +316,7 @@
     "choose_label": "Lock when idle for",
     "locks_after": "Locks after {{duration}} idle",
     "locks_after_sentence": "Locks after {{duration}} idle.",
-    "activity_unchecked": "Each signature restarts the timer. Until your keys lock, operations that need your active key sign without asking for your password.",
+    "activity_unchecked": "Each signature restarts the timer. Until your keys lock, operations that need your active or owner key sign without asking for your password.",
     "activity_checked": "Each signature restarts the timer. Operations that need your active or owner key ask for your password or passkey every time.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
@@ -349,10 +349,10 @@
   "active_check": {
     "menu_label": "Ask before every active- or owner-key operation",
     "turn_on_title": "Ask before every operation that needs your active or owner key",
-    "turn_off_title": "Stop asking before operations that need your active key",
+    "turn_off_title": "Stop asking before operations that need your active or owner key",
     "change_description": "Enter your safe storage password or use your passkey to change this setting.",
     "turned_on": "Operations that need your active or owner key now ask for your password or passkey every time.",
-    "turned_off": "Operations that need your active key now sign without asking until your keys lock.",
+    "turned_off": "Operations that need your active or owner key now sign without asking until your keys lock.",
     "change_failed": "The setting could not be changed. Try again."
   },
   "passkey_unlock": {

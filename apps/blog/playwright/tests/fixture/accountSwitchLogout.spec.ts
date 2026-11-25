@@ -6,6 +6,7 @@ import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { DEFAULT_USER, seedRememberedAccounts } from '../support/fixture-auth/seeder';
 import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-interceptor';
 import { FIXTURE_COOKIE_NAME, FIXTURE_POSTING_WIF } from '../support/fixture-auth/constants';
+import { giveKeyRole } from '../support/safeStorageContext';
 import type { User } from '@smart-signer/types/common';
 
 /**
@@ -70,8 +71,10 @@ async function addClientOnlyAccount(page: Page): Promise<void> {
 
 test.describe('Account switching and the server session', () => {
   test.beforeEach(async ({ page, context }) => {
-    // The sign-in signs with a key that is not the account's: verify_authority is stubbed
+    // The sign-in signs with a key that is not the account's: verify_authority is stubbed, and the
+    // key answered as its posting key for the WIF dialog's check
     await installBroadcastInterceptor(page);
+    await giveKeyRole(page, () => 'posting');
     await seedRememberedAccounts(context, [SERVER_HELD]);
     await page.goto(PAGE_WITH_HEADER);
     expect((await readServerUser(context)).username).toBe(SERVER_HELD.username);

@@ -316,7 +316,7 @@
     "choose_label": "Zablokuj po bezczynności przez",
     "locks_after": "Blokuje się po {{duration}} bezczynności",
     "locks_after_sentence": "Blokuje się po {{duration}} bezczynności.",
-    "activity_unchecked": "Każdy podpis uruchamia licznik od nowa. Dopóki klucze nie zostaną zablokowane, operacje wymagające klucza Active są podpisywane bez pytania o hasło.",
+    "activity_unchecked": "Każdy podpis uruchamia licznik od nowa. Dopóki klucze nie zostaną zablokowane, operacje wymagające klucza Active lub Owner są podpisywane bez pytania o hasło.",
     "activity_checked": "Każdy podpis uruchamia licznik od nowa. Operacje wymagające klucza Active lub Owner za każdym razem proszą o hasło lub klucz dostępu.",
     "minutes": "{{value}} min",
     "hours": "{{value}} godz.",
@@ -349,10 +349,10 @@
   "active_check": {
     "menu_label": "Pytaj przed każdą operacją z kluczem Active lub Owner",
     "turn_on_title": "Pytaj przed każdą operacją wymagającą klucza Active lub Owner",
-    "turn_off_title": "Nie pytaj przed operacjami wymagającymi klucza Active",
+    "turn_off_title": "Nie pytaj przed operacjami wymagającymi klucza Active lub Owner",
     "change_description": "Wpisz hasło do bezpiecznego magazynu lub użyj klucza dostępu, aby zmienić to ustawienie.",
     "turned_on": "Operacje wymagające klucza Active lub Owner będą teraz za każdym razem prosić o hasło lub klucz dostępu.",
-    "turned_off": "Operacje wymagające klucza Active będą teraz podpisywane bez pytania, dopóki klucze nie zostaną zablokowane.",
+    "turned_off": "Operacje wymagające klucza Active lub Owner będą teraz podpisywane bez pytania, dopóki klucze nie zostaną zablokowane.",
     "change_failed": "Nie udało się zmienić ustawienia. Spróbuj ponownie."
   },
   "passkey_unlock": {

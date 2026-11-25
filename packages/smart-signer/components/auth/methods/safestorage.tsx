@@ -225,8 +225,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       errorUsername.current = watchedUsername;
       setError(null);
       wrongPassword.clear();
-      // Checked again for this account: only a new wallet's password has a maximum
-      form.trigger('password');
+      // The password was typed for the account the user left
+      form.resetField('password');
       // The prompt open is for the account the user left: ask the passkey of this one instead
       const aborted = passkeyUnlock.abortOtherThan(watchedUsername);
       const own = ownUsernameChange.current === watchedUsername;
