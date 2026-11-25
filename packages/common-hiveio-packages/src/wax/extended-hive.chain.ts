@@ -897,10 +897,11 @@ export interface ILiteApiInfo {
 
 /**
  * `lite.get_profile`: the profile of a lite account (`name` is its `did:lite:<name>`) or of a Hive
- * account. `lite` is set for an account with a role in the lite system, e.g. a gate account.
+ * account. `lite` is set for an account with a role in the lite system, e.g. a gate account, whose
+ * `gateway_url` is the public URL its gateway registered (null or absent when none is known).
  */
 export interface ILiteProfile extends IProfile {
-  lite?: { gateway?: boolean; pools?: unknown[] };
+  lite?: { gateway?: boolean; gateway_url?: string | null; pools?: unknown[] };
 }
 
 /** A row of `lite.get_followers` / `lite.get_following`: a lite identity is named by its DID. */

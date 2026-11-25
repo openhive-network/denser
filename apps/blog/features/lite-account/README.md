@@ -180,6 +180,13 @@ replies, no net-positive votes, before payout). Both need the post's L1 location
 permlink); a guest's optimistic reply has one once the gateway answered its `/reply` (its `url` gets
 the `#@<gate>/<permlink>` the node will serve).
 
+Lite accounts are shared by every gateway, but only the gateway holding the L1 author's posting key
+can change a post (another answers `wrong_gateway`). When `/info.gate_accounts` is present and does
+not list the entry's L1 author, the owner gets neither button but "Posted through another gateway"
+(`lite-foreign-gateway-note.tsx`), linked to the `lite.gateway_url` of that gate's `lite.get_profile`
+when the node serves the method and the URL is a web address. A gateway without `gate_accounts` (older
+than lite_gateway#30) is taken to have posted it, as before.
+
 Edit opens `lite-edit-form.tsx` with the current content: title, body and tags for a root post (its
 category stays first; hived does not move a post), the body for a comment (posted without a title,
 like every guest reply). Saving (`use-lite-manage-mutations.ts`) signs `buildLiteEditRequest` (same

@@ -107,24 +107,45 @@ describe('tombstone detection', () => {
 });
 
 describe('manage capabilities', () => {
+  const GATES = ['test-gateway-1', 'test-gateway-2'];
+  const BOTH = { canEdit: true, canDelete: true, foreignGateway: false };
+  const NOTHING = { canEdit: false, canDelete: false, foreignGateway: false };
+  const FOREIGN = { canEdit: false, canDelete: false, foreignGateway: true };
+
   it('follow the gateway features', () => {
-    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, false), { canEdit: true, canDelete: true });
-    assert.deepEqual(liteManageCapabilities(nativeReply(), { edits: true }, false), { canEdit: true, canDelete: false });
-    assert.deepEqual(liteManageCapabilities(nativeReply(), undefined, false), { canEdit: false, canDelete: false });
+    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, false, undefined), BOTH);
+    assert.deepEqual(liteManageCapabilities(nativeReply(), { edits: true }, false, undefined), { ...BOTH, canDelete: false });
+    assert.deepEqual(liteManageCapabilities(nativeReply(), undefined, false, undefined), NOTHING);
   });
 
   it('offer no Delete that L1 would refuse when the gateway cannot tombstone', () => {
     const features = { edits: true, deletes: true, tombstone_deletes: false };
-    assert.equal(liteManageCapabilities(nativeReply({ children: 2 }), features, false).canDelete, false);
-    assert.equal(liteManageCapabilities(nativeReply({ net_rshares: 10 }), features, false).canDelete, false);
-    assert.equal(liteManageCapabilities(nativeReply({ is_paidout: true }), features, false).canDelete, false);
-    assert.equal(liteManageCapabilities(nativeReply({ children: 2 }), ALL_FEATURES, false).canDelete, true);
+    assert.equal(liteManageCapabilities(nativeReply({ children: 2 }), features, false, undefined).canDelete, false);
+    assert.equal(liteManageCapabilities(nativeReply({ net_rshares: 10 }), features, false, undefined).canDelete, false);
+    assert.equal(liteManageCapabilities(nativeReply({ is_paidout: true }), features, false, undefined).canDelete, false);
+    assert.equal(liteManageCapabilities(nativeReply({ children: 2 }), ALL_FEATURES, false, undefined).canDelete, true);
   });
 
   it('offer nothing for a tombstone or a post without a known L1 location', () => {
-    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, true), { canEdit: false, canDelete: false });
+    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, true, undefined), NOTHING);
     const unlocated = nativeReply({ url: '/lite-test/@did:lite:warm-zebra-201/x' } as Partial<Entry>);
-    assert.deepEqual(liteManageCapabilities(unlocated, ALL_FEATURES, false), { canEdit: false, canDelete: false });
+    assert.deepEqual(liteManageCapabilities(unlocated, ALL_FEATURES, false, ['other-gate']), NOTHING);
+  });
+
+  it('offer Edit and Delete when the L1 author is one of the gateway gate accounts', () => {
+    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, false, GATES), BOTH);
+    assert.deepEqual(liteManageCapabilities(compatReply(), ALL_FEATURES, false, GATES), BOTH);
+  });
+
+  it('mark a post another gateway made, on a lite-aware node and in compat output', () => {
+    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, false, ['test-gateway-1']), FOREIGN);
+    assert.deepEqual(liteManageCapabilities(compatReply(), ALL_FEATURES, false, ['test-gateway-1']), FOREIGN);
+    assert.deepEqual(liteManageCapabilities(nativeRoot(), ALL_FEATURES, false, []), FOREIGN);
+  });
+
+  it('mark nothing for a tombstone or an owner the gateway gives no features', () => {
+    assert.deepEqual(liteManageCapabilities(nativeReply(), ALL_FEATURES, true, ['other-gate']), NOTHING);
+    assert.deepEqual(liteManageCapabilities(nativeReply(), undefined, false, ['other-gate']), NOTHING);
   });
 });
 
@@ -134,6 +155,7 @@ describe('manage error keys', () => {
     assert.equal(liteManageErrorKey('wrong_gateway'), 'not_owner');
     assert.equal(liteManageErrorKey('edits_disabled'), 'edits_disabled');
     assert.equal(liteManageErrorKey('bad_signature'), 'invalid_request');
+    assert.equal(liteManageErrorKey('auth_failed'), 'auth_failed');
     assert.equal(liteManageErrorKey('something_new'), 'unknown');
     assert.equal(liteManageErrorKey(undefined), 'unknown');
   });

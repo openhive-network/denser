@@ -1237,6 +1237,7 @@
       "deleted_tombstone": "답글이나 투표가 있어 삭제되었다는 표시(툼스톤)로 Hive에 남습니다.",
       "delete_failed_title": "삭제 실패",
       "deleted_by_author": "작성자가 삭제했습니다.",
+      "foreign_gateway_note": "다른 게이트웨이를 통해 게시됨",
       "errors": {
         "not_owner": "이 브라우저의 라이트 계정이 작성한 것이 아니거나, 서명한 키를 더 이상 갖고 있지 않습니다.",
         "not_found": "게이트웨이가 이 게시물을 알지 못합니다.",
@@ -1247,6 +1248,7 @@
         "invalid_request": "게이트웨이가 변경을 유효하지 않다며 거부했습니다.",
         "broadcast_failed": "게이트웨이가 Hive에 변경을 게시하지 못했습니다. 다시 시도하세요.",
         "relay_unavailable": "라이트 계정 게이트웨이에 연결할 수 없습니다.",
+        "auth_failed": "이 브라우저가 서명한 키가 라이트 계정의 포스팅 권한에 없거나 더 이상 없습니다.",
         "unknown": "문제가 발생했습니다."
       }
     },

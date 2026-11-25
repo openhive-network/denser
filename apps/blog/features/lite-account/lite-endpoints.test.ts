@@ -41,3 +41,28 @@ describe('lite endpoints', () => {
     assert.deepEqual(requested, ['/blog/api/lite-reply']);
   });
 });
+
+describe('lite relay info', () => {
+  const RELAY = { enabled: true, gate_account: 'test-gateway-1', chain_id: 'beef', apps: { account: 'lite_account', posts: 'lite_posts' } };
+  const answer = (body: unknown) => {
+    globalThis.fetch = async () => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } });
+  };
+
+  it('keeps the gateway gate accounts and public URL', async () => {
+    const body = { ...RELAY, gate_accounts: ['test-gateway-1', 'test-gateway-2'], public_url: 'https://gw.example' };
+    answer(body);
+    assert.deepEqual(await liteRelayInfoQuery.queryFn(), body);
+  });
+
+  it('reads an older gateway without them as before', async () => {
+    answer(RELAY);
+    assert.deepEqual(await liteRelayInfoQuery.queryFn(), RELAY);
+  });
+
+  it('drops malformed gate accounts and public URL, keeping the relay', async () => {
+    answer({ ...RELAY, gate_accounts: ['test-gateway-1', 7], public_url: 42 });
+    assert.deepEqual(await liteRelayInfoQuery.queryFn(), RELAY);
+    answer({ ...RELAY, gate_accounts: 'test-gateway-1' });
+    assert.deepEqual(await liteRelayInfoQuery.queryFn(), RELAY);
+  });
+});

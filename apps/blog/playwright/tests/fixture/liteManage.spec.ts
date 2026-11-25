@@ -1,6 +1,20 @@
-import type { Locator, Page, Request } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { openReplyEditor } from '../support/commentingContext';
 import { test, expect } from '../support/fixture-proxy-test';
+import {
+  NOTE_TEXT,
+  OTHER_GATES,
+  OTHER_GATEWAY_URL,
+  OWN_GATES,
+  POST_LITE_NAME,
+  POST_URL,
+  REPLY_GATE,
+  ROOT,
+  mockGateway,
+  openPost,
+  openPostAsItsAuthor,
+  serveGateProfile
+} from '../support/liteManageContext';
 import { PostPage } from '../support/pages/postPage';
 
 /**
@@ -13,6 +27,12 @@ import { PostPage } from '../support/pages/postPage';
  *   LITE-MANAGE-03 – mocked gateway: the post's own lite author edits its title and body on the post
  *                    page, and a tombstone delete leaves the post as "deleted by the author"
  *   LITE-MANAGE-04 – real gateway: reply as a guest, edit it, delete it (l1_delete: it has no replies)
+ *   LITE-MANAGE-05 – mocked gateway listing the post's gate account in `gate_accounts`: Edit and Delete as before
+ *   LITE-MANAGE-06 – mocked gateway listing other gate accounts, on a node without `lite.get_profile`:
+ *                    no Edit or Delete, an unlinked "posted through another gateway" note, no profile read
+ *                    (`liteManageGatewayProfile.spec.ts`: the note on a node serving it)
+ *   LITE-MANAGE-08 – a viewer without the identity sees neither the buttons nor the note
+ *   LITE-MANAGE-09 – an edit the gateway refuses with `auth_failed` names the posting authority
  *
  * The page is the `litePost` recording (a lite-aware node). 01 and 02 answer the gateway's
  * endpoints in the browser, so they run in the fixture suite. 03 needs a gateway: it runs only on
@@ -25,58 +45,6 @@ import { PostPage } from '../support/pages/postPage';
  */
 
 test.use({ fixtureTestName: 'litePost' });
-
-const POST_URL = '/lite-test/@test-gateway-1/re-lite-test-478380rd5v/';
-const POST_LITE_NAME = 'lite-smoke-1016';
-const ROOT = { author: 'test-gateway-1', permlink: 're-lite-test-478380rd5v' };
-const REPLY_GATE = 'test-gateway-2';
-const TRX_ID = '0'.repeat(40);
-
-const INFO = {
-  enabled: true,
-  gate_account: ROOT.author,
-  chain_id: 'beeab0de00000000000000000000000000000000000000000000000000000000',
-  apps: { account: 'lite_account_test', posts: 'lite_posts_test' },
-  features: { edits: true, deletes: true, tombstone_deletes: true }
-};
-const HEALTH = {
-  status: 'ok',
-  hived: { ok: true, head_block_age_s: 1, stale: false },
-  pools: { default: { reply: { ready: true, available_in_s: 0 }, root: { ready: true, available_in_s: 0 } } }
-};
-
-type Json = Record<string, unknown>;
-
-const attestedPermlink = (request: Request): string => {
-  const body = request.postDataJSON() as { attest_tx: { operations: { args: { permlink: string } }[] } };
-  return body.attest_tx.operations[0].args.permlink;
-};
-
-/** Answers the gateway in the browser: /info, /health, name availability, /reply, and /edit and /delete as `deleteMode`. */
-async function mockGateway(page: Page, deleteMode: 'l1_delete' | 'tombstone') {
-  const calls: { reply: Json[]; edit: Json[]; delete: Json[] } = { reply: [], edit: [], delete: [] };
-  await page.route('**/api/lite-reply/health', (route) => route.fulfill({ json: HEALTH }));
-  await page.route('**/api/lite-gateway/names/*/availability', (route) => {
-    const name = decodeURIComponent(route.request().url().split('/names/')[1].split('/')[0]);
-    return route.fulfill({ json: { name, available: true, lite_grammar_ok: true, l1_grammar_ok: true, lite_taken: false, l1_taken: false } });
-  });
-  await page.route('**/api/lite-reply', (route) => {
-    if (route.request().method() === 'GET') return route.fulfill({ json: INFO });
-    calls.reply.push(route.request().postDataJSON() as Json);
-    return route.fulfill({ json: { ok: true, trx_id: TRX_ID, l1_author: REPLY_GATE, permlink: attestedPermlink(route.request()) } });
-  });
-  await page.route('**/api/lite-gateway/edit', (route) => {
-    const body = route.request().postDataJSON() as Json;
-    calls.edit.push(body);
-    return route.fulfill({ json: { ok: true, trx_id: TRX_ID, l1_author: body.l1_author, permlink: body.permlink } });
-  });
-  await page.route('**/api/lite-gateway/delete', (route) => {
-    const body = route.request().postDataJSON() as Json;
-    calls.delete.push(body);
-    return route.fulfill({ json: { ok: true, trx_id: TRX_ID, l1_author: body.l1_author, permlink: body.permlink, mode: deleteMode } });
-  });
-  return calls;
-}
 
 /** Replies to the post as a fresh guest identity; returns the reply's card. */
 async function replyAsGuest(page: Page, body: string) {
@@ -184,6 +152,52 @@ test.describe('Lite author edits and deletes their root post (mocked gateway)', 
     await expect(actions.getByTestId('lite-edit')).toHaveCount(0);
     await expect(actions.getByTestId('lite-delete')).toHaveCount(0);
     expect(calls.delete[0]).toMatchObject({ attester: POST_LITE_NAME, l1_author: ROOT.author, permlink: ROOT.permlink });
+  });
+});
+
+test.describe('Lite author on a gateway listing its gate accounts (mocked gateway)', () => {
+  test('LITE-MANAGE-05: a post made through this gateway keeps Edit and Delete', async ({ page }) => {
+    await mockGateway(page, 'tombstone', OWN_GATES);
+    await openPostAsItsAuthor(page);
+    const actions = page.getByTestId('comment-respons-header');
+    await expect(actions.getByTestId('lite-edit')).toBeVisible();
+    await expect(actions.getByTestId('lite-delete')).toBeVisible();
+    await expect(page.getByTestId('lite-foreign-gateway-note')).toHaveCount(0);
+  });
+
+  test('LITE-MANAGE-06: a post another gateway made shows the note, unlinked on a node without lite.get_profile', async ({ page }) => {
+    await mockGateway(page, 'tombstone', OTHER_GATES);
+    const asked = await serveGateProfile(page, ROOT.author, OTHER_GATEWAY_URL);
+    await openPostAsItsAuthor(page);
+    const actions = page.getByTestId('comment-respons-header');
+    const note = actions.getByTestId('lite-foreign-gateway-note');
+    await expect(note).toHaveText(NOTE_TEXT);
+    await expect(note.getByTestId('lite-foreign-gateway-link')).toHaveCount(0);
+    await expect(page.getByTestId('lite-edit')).toHaveCount(0);
+    await expect(page.getByTestId('lite-delete')).toHaveCount(0);
+    expect(asked).toEqual([]);
+  });
+
+  test('LITE-MANAGE-08: a viewer without the identity sees neither the buttons nor the note', async ({ page }) => {
+    await mockGateway(page, 'tombstone', OTHER_GATES);
+    await openPost(page);
+    await expect(page.getByTestId('comment-respons-header')).toBeVisible();
+    await expect(page.getByTestId('lite-foreign-gateway-note')).toHaveCount(0);
+    await expect(page.getByTestId('lite-edit')).toHaveCount(0);
+    await expect(page.getByTestId('lite-delete')).toHaveCount(0);
+  });
+
+  test('LITE-MANAGE-09: an edit refused with auth_failed names the posting authority', async ({ page }) => {
+    await mockGateway(page, 'tombstone', OWN_GATES);
+    await page.route('**/api/lite-gateway/edit', (route) =>
+      route.fulfill({ status: 401, json: { ok: false, code: 'auth_failed', message: 'signature not in posting authority' } })
+    );
+    await openPostAsItsAuthor(page);
+    const form = page.getByTestId('lite-edit-form');
+    await openReplyEditor(page.getByTestId('comment-respons-header').getByTestId('lite-edit'), form);
+    await form.locator('.cm-content').fill('An edit the gateway refuses.');
+    await page.getByTestId('lite-edit-save').click();
+    await expect(page.getByText("The key this browser signed with is not, or is no longer, in the lite account's posting authority.")).toBeVisible();
   });
 });
 

@@ -1253,6 +1253,7 @@
       "deleted_tombstone": "Ha risposte o voti, quindi resta su Hive come lapide che indica che è stato eliminato.",
       "delete_failed_title": "Eliminazione non riuscita",
       "deleted_by_author": "Eliminato dall'autore.",
+      "foreign_gateway_note": "Pubblicato tramite un altro gateway",
       "errors": {
         "not_owner": "L'account lite di questo browser non lo ha scritto, o non ha più la chiave che lo ha firmato.",
         "not_found": "Il gateway non conosce questo post.",
@@ -1263,6 +1264,7 @@
         "invalid_request": "Il gateway ha rifiutato la modifica come non valida.",
         "broadcast_failed": "Il gateway non è riuscito a pubblicare la modifica su Hive. Riprova.",
         "relay_unavailable": "Il gateway degli account lite non è raggiungibile.",
+        "auth_failed": "La chiave con cui ha firmato questo browser non è, o non è più, nell'autorità di pubblicazione dell'account lite.",
         "unknown": "Qualcosa è andato storto."
       }
     },

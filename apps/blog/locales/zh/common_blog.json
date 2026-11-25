@@ -1237,6 +1237,7 @@
       "deleted_tombstone": "它有回复或投票，因此作为注明已删除的墓碑保留在 Hive 上。",
       "delete_failed_title": "删除失败",
       "deleted_by_author": "已被作者删除。",
+      "foreign_gateway_note": "通过另一个网关发布",
       "errors": {
         "not_owner": "这不是本浏览器的轻账户写的，或者它已不再持有签名所用的密钥。",
         "not_found": "网关不认识这篇帖子。",
@@ -1247,6 +1248,7 @@
         "invalid_request": "网关以无效为由拒绝了此更改。",
         "broadcast_failed": "网关无法在 Hive 上发布此更改。请重试。",
         "relay_unavailable": "无法连接轻账户网关。",
+        "auth_failed": "本浏览器签名所用的密钥不在（或已不在）该轻量账户的发帖权限中。",
         "unknown": "出了点问题。"
       }
     },

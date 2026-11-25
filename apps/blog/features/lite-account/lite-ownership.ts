@@ -75,23 +75,34 @@ export function isLiteTombstone(entry: Pick<Entry, 'json_metadata'>, apps: LiteA
   return isRecord(marker) && marker.deleted === true && typeof marker.attester === 'string';
 }
 
-export type LiteManageCapabilities = { canEdit: boolean; canDelete: boolean };
+/** `foreignGateway`: the entry was posted through another gateway, which alone can change it. */
+export type LiteManageCapabilities = { canEdit: boolean; canDelete: boolean; foreignGateway: boolean };
 
-const NONE: LiteManageCapabilities = { canEdit: false, canDelete: false };
+const NONE: LiteManageCapabilities = { canEdit: false, canDelete: false, foreignGateway: false };
+const FOREIGN: LiteManageCapabilities = { canEdit: false, canDelete: false, foreignGateway: true };
 
 /**
- * What the lite owner may do with their entry on a gateway with `features`. Without tombstone
- * deletes, a post with replies, net-positive votes or past payout (which hived refuses to delete)
- * offers no Delete.
+ * What the lite owner may do with their entry on a gateway with `features` and `gateAccounts`.
+ * Only the gateway holding the key of the entry's L1 author can change it: one listing gate
+ * accounts without it offers nothing (an older gateway, listing none, is trusted to be it).
+ * Without tombstone deletes, a post with replies, net-positive votes or past payout (which hived
+ * refuses to delete) offers no Delete.
  */
 export function liteManageCapabilities(
   entry: Located & Pick<Entry, 'children' | 'net_rshares' | 'is_paidout'>,
   features: LiteRelayFeatures | undefined,
-  tombstoned: boolean
+  tombstoned: boolean,
+  gateAccounts: readonly string[] | undefined
 ): LiteManageCapabilities {
-  if (!features || tombstoned || !liteL1Author(entry)) return NONE;
+  const l1Author = liteL1Author(entry);
+  if (!features || tombstoned || !l1Author) return NONE;
+  if (gateAccounts && !gateAccounts.includes(l1Author)) return FOREIGN;
   const removable = entry.children === 0 && !(entry.net_rshares > 0) && !entry.is_paidout;
-  return { canEdit: !!features.edits, canDelete: !!features.deletes && (!!features.tombstone_deletes || removable) };
+  return {
+    canEdit: !!features.edits,
+    canDelete: !!features.deletes && (!!features.tombstone_deletes || removable),
+    foreignGateway: false
+  };
 }
 
 const ERROR_KEYS: Record<string, string> = {
@@ -106,7 +117,8 @@ const ERROR_KEYS: Record<string, string> = {
   content_mismatch: 'invalid_request',
   bad_signature: 'invalid_request',
   broadcast_failed: 'broadcast_failed',
-  relay_unavailable: 'relay_unavailable'
+  relay_unavailable: 'relay_unavailable',
+  auth_failed: 'auth_failed'
 };
 
 /** The `lite_account.manage.errors.*` key explaining a failed edit or delete. */

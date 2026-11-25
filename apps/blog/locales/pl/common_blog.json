@@ -1261,6 +1261,7 @@
       "deleted_tombstone": "Ma odpowiedzi lub głosy, więc zostaje na Hive jako nagrobek z informacją o usunięciu.",
       "delete_failed_title": "Usuwanie nie powiodło się",
       "deleted_by_author": "Usunięte przez autora.",
+      "foreign_gateway_note": "Opublikowano przez inną bramkę",
       "errors": {
         "not_owner": "Konto lite tej przeglądarki tego nie napisało albo nie ma już klucza, którym to podpisano.",
         "not_found": "Bramka nie zna tego wpisu.",
@@ -1271,6 +1272,7 @@
         "invalid_request": "Bramka odrzuciła zmianę jako nieprawidłową.",
         "broadcast_failed": "Bramka nie mogła opublikować zmiany na Hive. Spróbuj ponownie.",
         "relay_unavailable": "Nie można połączyć się z bramką kont lite.",
+        "auth_failed": "Klucz, którym podpisała ta przeglądarka, nie jest (lub już nie jest) częścią upoważnienia Posting konta lite.",
         "unknown": "Coś poszło nie tak."
       }
     },

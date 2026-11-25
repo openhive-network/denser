@@ -59,6 +59,7 @@ wallet, Ecency and PeakD; a native speaker may still refine them.
 | notification / notifications | 通知 | unreviewed | Toast announcement label "通知" (#1739). |
 | Hive core (API set) | Hive 核心 | unreviewed | API-set title (#1747); the API names in brackets (database, condenser, broadcast) stay English. |
 | lite accounts | 轻量账户 | unreviewed | As in the lite-account strings; API-set title (#1747). |
+| posting authority (of a lite account) | 发帖权限 | unreviewed | The gateway's `auth_failed` on an edit or delete (#1777). |
 | Balance API | 余额 API | unreviewed | API-set title (#1747). Bridge, Hivemind REST, HAfAH and HiveSense are API names, not translated. |
 | For You feed | 推荐内容 | unreviewed | As in the For You feed strings; API-set title (#1747). |
 | API node / API set panel | 节点；API 类别 | unreviewed | /healthchecker (#1725)：“按 API 类别划分的 API 服务器”，node states “可用”“不支持”“宕机”“未知”“性能下降”；“自动选择”“默认”“使用中”。List separator “、”. |
