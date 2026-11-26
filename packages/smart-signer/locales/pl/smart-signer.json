@@ -176,7 +176,7 @@
       "create_title": "Utworzyć klucz dostępu na tym urządzeniu?",
       "create_description": "Nie wybrano klucza dostępu. Jeśli odblokowywanie biometryczne tego konta jest już włączone na innym urządzeniu, użyj tamtego klucza dostępu: nowy zastąpiłby go także tam.",
       "create": "Utwórz klucz dostępu",
-      "use_existing": "Użyj klucza dostępu z innego urządzenia",
+      "use_existing": "Użyj istniejącego klucza dostępu",
       "relink_hint": "Wpisz hasło jeden raz, aby połączyć to urządzenie z istniejącym kluczem dostępu.",
       "unlock_wrong_account": "Wybrany klucz dostępu należy do innego konta; zaloguj się hasłem tego konta.",
       "wrong_account_title": "Ten klucz dostępu należy do innego konta",

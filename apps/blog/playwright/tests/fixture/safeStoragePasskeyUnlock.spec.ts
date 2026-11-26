@@ -658,11 +658,10 @@ test.describe('Safe-storage passkey unlock', () => {
     await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
     await loginForm.passwordToUnlockKeySubmitButton.click();
 
+    // Choosing "Turn on" in the menu was the decision: the passkey is asked for with no second question
     const dialog = page.getByTestId('turn-on-passkey-unlock-dialog');
-    await expect(dialog).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
-    await expect(dialog.getByTestId('passkey-prompt-not-now')).toHaveCount(0);
-    await dialog.getByTestId('passkey-prompt-enable').click();
     await expect(dialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(page.getByTestId('passkey-prompt-enable')).toHaveCount(0);
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
     // Only this device's own create() is signalled
@@ -734,10 +733,21 @@ test.describe('Safe-storage passkey unlock', () => {
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
     const notice = loginForm.loginDialog.getByTestId('passkey-unlock-failing-notice');
     await expect(notice).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    // With the account field it is about, under it, not over the form
+    await expect(loginForm.loginFormDescription.locator('..').getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
+    const field = await loginForm.usernameInput.boundingBox();
+    const placed = await notice.boundingBox();
+    expect(field && placed && placed.y >= field.y + field.height).toBe(true);
     await notice.getByTestId('passkey-unlock-failing-turn-off').click();
     await expect(notice).toHaveAttribute('data-state', 'turned-off');
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
     expect(await signals()).toEqual([]);
+
+    // The offer after the password replaces the form, and its "turned off" with it
+    await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.signInButton.click();
+    await expect(loginForm.loginDialog.getByTestId('passkey-prompt')).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(notice).toHaveCount(0);
   });
 
   test('BLOG-SAFE-STORAGE-PASSKEY-16 — a record on a salt of its own unlocks with one request and moves to the device salt', async ({

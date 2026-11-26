@@ -619,6 +619,18 @@ describe('passkey signals', () => {
     assert.deepEqual(sent, []);
   });
 
+  it("a reuse over this device's record of the same passkey keeps its transports", async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    const record = store.records.get(USERNAME);
+    assert.ok(record);
+    store.records.set(USERNAME, { ...record, transports: ['internal'] });
+
+    await reusePasskeyUnlockOf(USERNAME, PASSWORD, provider, store);
+
+    assert.deepEqual(store.records.get(USERNAME)?.transports, ['internal']);
+  });
+
   it('cancelling the prompt keeps the record and signals nothing, the passkey staying', async () => {
     const provider = authenticator('passkey');
     const store = await registered(provider);

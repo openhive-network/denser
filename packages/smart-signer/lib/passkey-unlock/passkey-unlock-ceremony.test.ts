@@ -298,6 +298,44 @@ describe('reusePasskeyUnlock', () => {
     assert.equal(provider.requests.created.length, 1);
   });
 
+  it("keeps the transports of this device's earlier record of the same credential: an assertion reports none", async () => {
+    const provider = fakeAuthenticator();
+    const earlier = await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID, OWN_SALT);
+
+    const reused = await reusePasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID, DEVICE_SALT, earlier);
+
+    assert.deepEqual(reused.transports, ['internal', 'hybrid']);
+  });
+
+  it('stores the transports an assertion reports, where the browser gives them', async () => {
+    const provider = fakeAuthenticator();
+    await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+    const reporting: PasskeyCredentials = {
+      create: provider.credentials.create,
+      get: async (options) => {
+        const credential = await provider.credentials.get(options);
+        assert.ok(credential && 'response' in credential);
+        Object.assign(credential.response as object, { getTransports: () => ['hybrid', 'quantum'] });
+        return credential;
+      }
+    };
+
+    const reused = await reusePasskeyUnlock(reporting, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+
+    assert.deepEqual(reused.transports, ['hybrid']);
+  });
+
+  it('invents no transports where neither the assertion nor an earlier record of the credential has them', async () => {
+    const provider = fakeAuthenticator();
+    await createPasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+    const otherCredential = await createPasskeyUnlock(fakeAuthenticator().credentials, 'another.user', PASSWORD, RP_ID, DEVICE_SALT);
+    otherCredential.credentialId = new Uint8Array([4, 4]);
+
+    const reused = await reusePasskeyUnlock(provider.credentials, USERNAME, PASSWORD, RP_ID, DEVICE_SALT, otherCredential);
+
+    assert.equal('transports' in reused, false);
+  });
+
   it('rejects as cancelled where the account has no passkey, so creating one is offered next', async () => {
     const provider = fakeAuthenticator();
 

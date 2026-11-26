@@ -176,7 +176,7 @@
       "create_title": "Creare una passkey su questo dispositivo?",
       "create_description": "Non è stata scelta nessuna passkey. Se lo sblocco biometrico di questo account è già attivo su un altro dispositivo, usa quella passkey: una nuova la sostituirebbe anche lì.",
       "create": "Crea passkey",
-      "use_existing": "Usa una passkey di un altro dispositivo",
+      "use_existing": "Usa una passkey esistente",
       "relink_hint": "Inserisci la password una sola volta per collegare questo dispositivo alla tua passkey esistente.",
       "unlock_wrong_account": "La passkey scelta appartiene a un altro account; accedi con la password di questo account.",
       "wrong_account_title": "Questa passkey appartiene a un altro account",

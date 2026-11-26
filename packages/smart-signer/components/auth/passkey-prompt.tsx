@@ -28,15 +28,22 @@ type Props = {
    * on: closing the prompt then keeps no offer away
    */
   onCancel?: () => void;
+  /**
+   * Starts at the passkey pick, with no "Enable" question, for an unlock the user has already chosen
+   * to turn on
+   */
+  skipOffer?: boolean;
 };
 
 /**
- * `offer`: enable at all; `create`: no passkey of the account was picked, so create one;
- * `wrong-account`: the passkey picked is another account's, so pick this one's again or create one
+ * `offer`: enable at all; `pick`: enabling was already chosen, so the account's passkey is asked
+ * for at once; `create`: no passkey of the account was picked, so create one; `wrong-account`: the
+ * passkey picked is another account's, so pick this one's again or create one
  */
-type Step = 'offer' | 'create' | 'wrong-account';
+type Step = 'offer' | 'pick' | 'create' | 'wrong-account';
 
-const TITLE_KEYS: Record<Step, string> = {
+// `pick` asks nothing: the dialog it is shown in names what is being turned on
+const TITLE_KEYS: Record<Exclude<Step, 'pick'>, string> = {
   offer: 'login_form.passkey_prompt.title',
   create: 'login_form.passkey_prompt.create_title',
   'wrong-account': 'login_form.passkey_prompt.wrong_account_title'
@@ -44,6 +51,7 @@ const TITLE_KEYS: Record<Step, string> = {
 
 const DESCRIPTION_KEYS: Record<Step, string> = {
   offer: 'login_form.passkey_prompt.description',
+  pick: 'login_form.passkey_prompt.description',
   create: 'login_form.passkey_prompt.create_description',
   'wrong-account': 'login_form.passkey_prompt.wrong_account_description'
 };
@@ -65,9 +73,9 @@ const PRIMARY_BUTTON = 'bg-blue-600 text-white hover:bg-blue-500';
  * for `username`; a failed or cancelled browser prompt shows the reason and keeps the offer open,
  * dismissing nothing.
  */
-export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onCancel }: Props) {
+export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onCancel, skipOffer = false }: Props) {
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
-  const [step, setStep] = useState<Step>('offer');
+  const [step, setStep] = useState<Step>(skipOffer ? 'pick' : 'offer');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
   const showFailure = (failure: unknown) => {
@@ -113,6 +121,15 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onC
 
   const create = () => run(onCreate, showFailure);
 
+  // Once only: a remount in development's strict mode would ask the browser twice
+  const picked = useRef(false);
+  useEffect(() => {
+    if (!skipOffer || picked.current) return;
+    picked.current = true;
+    reuse();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, []);
+
   const dismiss = async (remember: (username: string) => void) => {
     remember(username);
     await onDone();
@@ -151,9 +168,11 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onC
       data-testid="passkey-prompt"
       data-step={step}
     >
-      <p ref={headingRef} className="mb-2 scroll-mt-4 text-sm font-medium" data-testid="passkey-prompt-title">
-        {t(TITLE_KEYS[step])}
-      </p>
+      {step !== 'pick' && (
+        <p ref={headingRef} className="mb-2 scroll-mt-4 text-sm font-medium" data-testid="passkey-prompt-title">
+          {t(TITLE_KEYS[step])}
+        </p>
+      )}
       <p className="mb-3 text-xs text-muted-foreground">{t(DESCRIPTION_KEYS[step])}</p>
       {message?.error && (
         <p className="mb-3 text-xs text-destructive" role="alert" data-testid="passkey-prompt-error">
@@ -172,6 +191,8 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onC
             {reuseButton(false)}
           </>
         )}
+        {/* Asked at once; picked again from here where the browser's prompt failed otherwise than by a cancel */}
+        {step === 'pick' && reuseButton(true)}
         {/* Another account's passkey was picked: this one's, on another device, comes first */}
         {step === 'wrong-account' && (
           <>

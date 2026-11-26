@@ -16,8 +16,9 @@ type Props = {
 
 /**
  * Turns the passkey unlock of `username` on on this device, as the offer after a password sign-in
- * does: the account's passkey first, synced from another device or left from before, created only
- * where none is picked. Resolves true once on, false for "Cancel" or a closed dialog.
+ * does, without asking again whether to: the account's passkey is asked for at once, synced from
+ * another device or left from before, and created only where none is picked. Resolves true once
+ * on, false for "Cancel" or a closed dialog.
  */
 const TurnOnPasskeyUnlockDialog: FC<Props & InstanceProps<boolean>> = ({
   isOpen = false,
@@ -46,6 +47,7 @@ const TurnOnPasskeyUnlockDialog: FC<Props & InstanceProps<boolean>> = ({
           onCreate={() => registerPasskeyUnlock(username, password)}
           onDone={() => onResolve(true)}
           onCancel={cancel}
+          skipOffer
         />
       </DialogContent>
     </Dialog>

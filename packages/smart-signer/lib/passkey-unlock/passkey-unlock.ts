@@ -65,7 +65,10 @@ export async function reusePasskeyUnlockOf(
   credentials: PasskeyCredentials = navigator.credentials,
   store: PasskeyUnlockStore = BROWSER_STORE
 ): Promise<void> {
-  await store.write(await reusePasskeyUnlock(credentials, username, password, location.hostname, await store.deviceSalt()));
+  const previous = await store.read(username);
+  await store.write(
+    await reusePasskeyUnlock(credentials, username, password, location.hostname, await store.deviceSalt(), previous)
+  );
 }
 
 /**
@@ -197,7 +200,9 @@ async function moveToDeviceSalt(store: PasskeyUnlockStore, { record, password, p
   if (isOnDeviceSalt(record, picked)) return;
   const { username, rpId, transports } = record;
   try {
-    await store.write(await wrapPassword(username, password, rpId, { ...picked.passkey, transports }));
+    await store.write(
+      await wrapPassword(username, password, rpId, { ...picked.passkey, transports: transports ?? picked.passkey.transports })
+    );
   } catch (error) {
     logger.error(error, 'Passkey unlock of %s kept on its own salt', username);
   }

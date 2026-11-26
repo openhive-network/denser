@@ -176,7 +176,7 @@
       "create_title": "Créer une passkey sur cet appareil ?",
       "create_description": "Aucune passkey n’a été choisie. Si le déverrouillage biométrique de ce compte est déjà activé sur un autre appareil, utilisez cette passkey : une nouvelle la remplacerait aussi là-bas.",
       "create": "Créer une passkey",
-      "use_existing": "Utiliser une passkey d’un autre appareil",
+      "use_existing": "Utiliser une passkey existante",
       "relink_hint": "Saisissez votre mot de passe une seule fois pour associer cet appareil à votre passkey existante.",
       "unlock_wrong_account": "La passkey choisie appartient à un autre compte ; connectez-vous avec le mot de passe de ce compte.",
       "wrong_account_title": "Cette passkey appartient à un autre compte",
