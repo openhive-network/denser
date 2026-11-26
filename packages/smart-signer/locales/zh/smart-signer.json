@@ -182,9 +182,7 @@
       "wrong_account_title": "该通行密钥属于另一个账户",
       "wrong_account_description": "所选的通行密钥不属于此账户。请使用其他设备上此账户的通行密钥，或在此处新建一个：如果此账户已在其他设备上启用生物识别解锁，新建的通行密钥也会在那台设备上替换它。",
       "create_cancelled": "未创建通行密钥。你可以重试。",
-      "unlock_failing": "最近几次登录时，通行密钥未能解锁。如果你已在密码管理器中删除它，请在此设备上关闭生物识别解锁，或重新设置。",
-      "unlock_failing_turn_off": "在此设备上关闭",
-      "unlock_failing_set_up": "重新设置",
+      "unlock_trouble": "通行密钥有问题？<turnOff>在此设备上关闭生物识别解锁</turnOff> / <setUp>重新设置</setUp>",
       "set_up_again_hint": "使用密码登录即可重新设置生物识别解锁。"
     },
     "passkey": {

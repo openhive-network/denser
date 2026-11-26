@@ -30,9 +30,10 @@ import {
  * passkey no longer decrypts is removed, and the offer returns after the password. Another account's
  * passkey picked at enabling offers this account's first. The account menu turns the unlock off on
  * this device, which the next password sign-in offers again, and on, reusing the account's passkey.
- * After two sign-ins in a row whose picked passkey then failed, the password form offers to turn the
- * unlock off or set it up again; cancels, which the browser answers as it does a passkey it no
- * longer reaches, count against no account. Closing the form after changing its account asks no
+ * Any passkey request that ended without unlocking, a cancel included (the browser answers a passkey
+ * it no longer reaches alike), leaves a quiet link on the password form to turn the unlock off on
+ * this device or set it up again; nothing is counted, and a count an earlier build stored is
+ * removed when a page loads. Closing the form after changing its account asks no
  * passkey. Typing an account name asks no passkey of a linked account among its prefixes, only of
  * the name the field settles on. Coming back to the form from "Add new key" asks no passkey again. A record
  * on a salt of its own, as the build before the device salt wrote it, unlocks with the same one
@@ -342,7 +343,7 @@ async function failPickedPasskeyRequests(page: Page): Promise<void> {
   });
 }
 
-/** The passkey failure counts the app keeps, by their localStorage key */
+/** The passkey failure counts an earlier build kept, by their localStorage key */
 const passkeyFailureCounts = (page: Page) =>
   page.evaluate(() =>
     Object.keys(window.localStorage).filter((key) => key.startsWith('passkey-unlock-failures-'))
@@ -369,6 +370,20 @@ const asBase64url = (credentialId: string) => credentialId.replace(/\+/g, '-').r
 
 const dismissalOf = (page: Page, username: string) =>
   page.evaluate((key) => window.localStorage.getItem(key), `passkey-dismissed-${username}`);
+
+const troubleLinkOf = (loginForm: LoginForm) => loginForm.loginDialog.getByTestId('passkey-trouble-link');
+
+/** The link a request ended without unlocking leaves: quiet, saying nothing failed */
+async function expectTroubleLink(loginForm: LoginForm): Promise<void> {
+  const link = troubleLinkOf(loginForm);
+  await expect(link).toHaveText(
+    'Trouble with the passkey? Turn off biometric unlock on this device / set it up again',
+    { timeout: SIGN_IN_TIMEOUT_MS }
+  );
+  await expect(link).toHaveAttribute('data-state', 'offered');
+  await expect(link).not.toHaveClass(/destructive/);
+  await expect(link).not.toHaveAttribute('role', 'alert');
+}
 
 test.describe('Safe-storage passkey unlock', () => {
   test.beforeEach(async ({ page }) => {
@@ -441,6 +456,7 @@ test.describe('Safe-storage passkey unlock', () => {
     const next = await openSignIn(page);
     await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
     await expect(next.loginDialog.getByTestId('safe-storage-error')).toHaveCount(0);
+    await expectTroubleLink(next);
     expect(await requests.named()).toEqual([0]);
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
   });
@@ -548,6 +564,7 @@ test.describe('Safe-storage passkey unlock', () => {
     const next = await openSignIn(page);
     await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
     await expect(next.loginDialog.getByTestId('safe-storage-error')).toHaveCount(0);
+    await expectTroubleLink(next);
     expect(await requests.named()).toEqual([0]);
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
     expect(await signals()).toEqual([]);
@@ -674,84 +691,80 @@ test.describe('Safe-storage passkey unlock', () => {
     await signInWithPasskeyAlone(page, loginForm);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-13 — after two sign-ins the picked passkey failed, the password form offers to turn it off or set it up again', async ({
+  test('BLOG-SAFE-STORAGE-PASSKEY-13 — after a cancel, the quiet link sets the unlock up again, asking the passkey at once after the password', async ({
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
     const { loginForm, prompt } = await signInWithPassword(page);
     await enableByCreating(loginForm, prompt);
-    await moveToOwnSalt(page, ACCOUNT, SAFE_STORAGE_PASSWORD);
-    await failPickedPasskeyRequests(page);
+
+    await signOut(page);
     const signals = await spyOnPasskeySignals(page);
+    const requests = await spyOnPasskeyRequests(page);
+    await requests.cancel(true);
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(next.loginDialog.getByTestId('safe-storage-error')).toHaveCount(0);
+    await expectTroubleLink(next);
+    expect(await requests.named()).toEqual([0]);
 
-    await signOut(page);
-    const first = await openSignIn(page);
-    await expect(first.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
-    await expect(first.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
-    await first.passwordInput.fill(SAFE_STORAGE_PASSWORD);
-    await first.signInButton.click();
-    await expect(first.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
-
-    // Each sign-in is a new form: the count is kept with the account, not in the form
-    await signOut(page);
-    const second = await openSignIn(page);
-    const notice = second.loginDialog.getByTestId('passkey-unlock-failing-notice');
-    await expect(notice).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    const link = troubleLinkOf(next);
+    await link.getByTestId('passkey-trouble-set-up').click();
+    await expect(link).toHaveAttribute('data-state', 'set-up-again');
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
-
-    // Deleted in the password manager meanwhile: setting up again creates the account's passkey
-    await cdp.send('WebAuthn.clearCredentials', { authenticatorId });
-    await notice.getByTestId('passkey-unlock-failing-set-up').click();
-    await expect(notice).toHaveAttribute('data-state', 'set-up-again');
-    await second.passwordInput.fill(SAFE_STORAGE_PASSWORD);
-    await second.signInButton.click();
-    const offer = second.loginDialog.getByTestId('passkey-prompt');
-    await enableByCreating(second, offer);
+    await requests.cancel(false);
+    await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await next.signInButton.click();
+    // "Set up again" was the decision: no "Enable" question, the account's passkey is reused
+    await expect(next.loginDialog).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(page.getByTestId('passkey-prompt-enable')).toHaveCount(0);
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
-    expect((await signals()).map(({ name }) => name)).toEqual(['all-accepted']);
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    expect(await signals()).toEqual([]);
+    expect(await passkeyFailureCounts(page)).toEqual([]);
 
-    await signInWithPasskeyAlone(page, second);
+    // A passkey sign-in that unlocks closes the form, leaving no link
+    await signInWithPasskeyAlone(page, next);
+    await expect(troubleLinkOf(next)).toHaveCount(0);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-14 — the notice\'s turn off removes the record and signals nothing', async ({ page }) => {
+  test('BLOG-SAFE-STORAGE-PASSKEY-14 — the quiet link\'s turn off removes the record and signals nothing', async ({ page }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
     const { loginForm, prompt } = await signInWithPassword(page);
     await enableByCreating(loginForm, prompt);
     await moveToOwnSalt(page, ACCOUNT, SAFE_STORAGE_PASSWORD);
     await signOut(page);
+    // The passkey picked then fails: the link is the same as after a request that ended without a pick
     await failPickedPasskeyRequests(page);
     const signals = await spyOnPasskeySignals(page);
     const requests = await spyOnPasskeyRequests(page);
 
-    for (const attempt of [1, 2]) {
-      const next = await openSignIn(page);
-      await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
-      if (attempt === 1) {
-        await expect(next.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
-        await next.closeDialog.click();
-        await expect(next.loginDialog).toHaveCount(0);
-      }
-    }
-    // Each opening of the sign-in asks the passkey once, then the record's own credential
-    expect(await requests.named()).toEqual([0, 1, 0, 1]);
-    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
-    const notice = loginForm.loginDialog.getByTestId('passkey-unlock-failing-notice');
-    await expect(notice).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    await expectTroubleLink(next);
+    // The passkey is asked once, then the record's own credential
+    expect(await requests.named()).toEqual([0, 1]);
+    const link = troubleLinkOf(next);
     // With the account field it is about, under it, not over the form
-    await expect(loginForm.loginFormDescription.locator('..').getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
-    const field = await loginForm.usernameInput.boundingBox();
-    const placed = await notice.boundingBox();
+    await expect(next.loginFormDescription.locator('..').getByTestId('passkey-trouble-link')).toHaveCount(0);
+    const field = await next.usernameInput.boundingBox();
+    const placed = await link.boundingBox();
     expect(field && placed && placed.y >= field.y + field.height).toBe(true);
-    await notice.getByTestId('passkey-unlock-failing-turn-off').click();
-    await expect(notice).toHaveAttribute('data-state', 'turned-off');
+    expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
+    await link.getByTestId('passkey-trouble-turn-off').click();
+    await expect(link).toHaveAttribute('data-state', 'turned-off');
+    await expect(link).toHaveText('Biometric unlock is off on this device.');
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(false);
+    // The passkey stays with its provider, and nothing is signalled to it
+    expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
     expect(await signals()).toEqual([]);
+    expect(await passkeyFailureCounts(page)).toEqual([]);
 
     // The offer after the password replaces the form, and its "turned off" with it
-    await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
-    await loginForm.signInButton.click();
-    await expect(loginForm.loginDialog.getByTestId('passkey-prompt')).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
-    await expect(notice).toHaveCount(0);
+    await next.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await next.signInButton.click();
+    await expect(next.loginDialog.getByTestId('passkey-prompt')).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(link).toHaveCount(0);
   });
 
   test('BLOG-SAFE-STORAGE-PASSKEY-16 — a record on a salt of its own unlocks with one request and moves to the device salt', async ({
@@ -799,7 +812,7 @@ test.describe('Safe-storage passkey unlock', () => {
     expect(await passkeyCount(cdp, authenticatorId)).toBe(1);
   });
 
-  test('BLOG-SAFE-STORAGE-PASSKEY-17 — cancels of a working passkey, or a passkey the browser no longer reaches, count against no account', async ({
+  test('BLOG-SAFE-STORAGE-PASSKEY-17 — every cancel, or a passkey the browser no longer reaches, shows the link and stores no count', async ({
     page
   }) => {
     const { cdp, authenticatorId } = await addPlatformAuthenticator(page);
@@ -810,29 +823,37 @@ test.describe('Safe-storage passkey unlock', () => {
     const requests = await spyOnPasskeyRequests(page);
     await requests.cancel(true);
 
-    for (const _attempt of [1, 2, 3]) {
+    for (const _attempt of [1, 2]) {
       const next = await openSignIn(page);
       await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
-      await expect(next.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
+      await expectTroubleLink(next);
       await next.closeDialog.click();
       await expect(next.loginDialog).toHaveCount(0);
     }
-    expect(await requests.named()).toEqual([0, 0, 0]);
-    expect(await passkeyFailureCounts(page)).toEqual([]);
+    expect(await requests.named()).toEqual([0, 0]);
 
     // Deleted in the password manager: the browser answers as it does a cancel, which says nothing of the passkey
     await requests.cancel(false);
     await cdp.send('WebAuthn.clearCredentials', { authenticatorId });
-    for (const _attempt of [1, 2]) {
-      const next = await openSignIn(page);
-      await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
-      await expect(next.loginDialog.getByTestId('passkey-unlock-failing-notice')).toHaveCount(0);
-      await next.closeDialog.click();
-      await expect(next.loginDialog).toHaveCount(0);
-    }
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    await expectTroubleLink(next);
     expect(await passkeyFailureCounts(page)).toEqual([]);
     expect(await hasPasskeyRecord(page, ACCOUNT)).toBe(true);
     expect(await signals()).toEqual([]);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-20 — a failure count an earlier build stored is removed when a page loads', async ({ page }) => {
+    await page.evaluate((account) => {
+      window.localStorage.setItem(
+        `passkey-unlock-failures-${account}`,
+        JSON.stringify({ value: 2, expiresAt: Date.now() + 60_000, createdAt: Date.now() })
+      );
+    }, ACCOUNT);
+    expect(await passkeyFailureCounts(page)).toEqual([`passkey-unlock-failures-${ACCOUNT}`]);
+
+    await page.reload();
+    await expect.poll(() => passkeyFailureCounts(page), { timeout: SIGN_IN_TIMEOUT_MS }).toEqual([]);
   });
 
   test('BLOG-SAFE-STORAGE-PASSKEY-18 — closing the form after the user changed its account asks no passkey', async ({ page }) => {

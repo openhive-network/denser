@@ -11,6 +11,7 @@ import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { ApiSetsBootstrap } from '@ui/components/api-sets-bootstrap';
+import { StorageCleanup } from '@ui/components/storage-cleanup';
 import { LocaleProvider } from '@ui/components/locale-context';
 import { cookieName, resolveLocale } from '../i18n/settings';
 
@@ -90,6 +91,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <LocaleProvider locale={locale}>
           <Providers nonce={nonce}>
             <CondenserMigration />
+            <StorageCleanup />
             <>{children}</>
           </Providers>
           <ClientEffects />

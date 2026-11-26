@@ -182,9 +182,7 @@
       "wrong_account_title": "Questa passkey appartiene a un altro account",
       "wrong_account_description": "La passkey scelta non è di questo account. Usa la passkey di questo account da un altro dispositivo oppure creane una qui: se lo sblocco biometrico di questo account è attivo su un altro dispositivo, una nuova la sostituirebbe anche lì.",
       "create_cancelled": "Nessuna passkey è stata creata. Puoi riprovare.",
-      "unlock_failing": "La passkey non ha sbloccato i tuoi ultimi accessi. Se l’hai eliminata dal gestore di password, disattiva lo sblocco biometrico su questo dispositivo o configuralo di nuovo.",
-      "unlock_failing_turn_off": "Disattiva su questo dispositivo",
-      "unlock_failing_set_up": "Configura di nuovo",
+      "unlock_trouble": "Problemi con la passkey? <turnOff>Disattiva lo sblocco biometrico su questo dispositivo</turnOff> / <setUp>configuralo di nuovo</setUp>",
       "set_up_again_hint": "Accedi con la password per configurare di nuovo lo sblocco biometrico."
     },
     "passkey": {

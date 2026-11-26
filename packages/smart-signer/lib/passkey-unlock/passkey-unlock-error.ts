@@ -58,3 +58,17 @@ export function passkeyEnableMessage(error: unknown): PasskeyEnableMessage {
   if (error.reason === 'unsupported') return { key: 'login_form.passkey_prompt.unsupported', error: true };
   return { key: 'login_form.passkey_prompt.failed', error: true };
 }
+
+/**
+ * The account the password form offers to turn the passkey unlock off on this device, or set it up
+ * again, after the passkey request of a sign-in for `asked` failed with `error`: `asked` where the
+ * request ended without a passkey picked (a cancel, which the browser answers alike for a passkey
+ * it no longer reaches), or the account whose passkey was picked and then failed. Undefined where
+ * the failure is no passkey trouble or is handled otherwise: no record, a record removed or moved
+ * to another passkey, another account's passkey, no PRF.
+ */
+export function passkeyTroubleAccount(error: unknown, asked: string): string | undefined {
+  if (!(error instanceof PasskeyUnlockError)) return undefined;
+  if (error.reason !== 'cancelled' && error.reason !== 'failed') return undefined;
+  return error.account ?? asked;
+}

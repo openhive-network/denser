@@ -182,9 +182,7 @@
       "wrong_account_title": "Esa passkey pertenece a otra cuenta",
       "wrong_account_description": "La passkey elegida no es de esta cuenta. Usa la passkey de esta cuenta desde otro dispositivo o crea una aquí: si el desbloqueo biométrico de esta cuenta está activado en otro dispositivo, una nueva la reemplazaría también allí.",
       "create_cancelled": "No se creó ninguna passkey. Puedes intentarlo de nuevo.",
-      "unlock_failing": "La passkey no desbloqueó tus últimos inicios de sesión. Si la eliminaste en tu gestor de contraseñas, desactiva el desbloqueo biométrico en este dispositivo o vuelve a configurarlo.",
-      "unlock_failing_turn_off": "Desactivar en este dispositivo",
-      "unlock_failing_set_up": "Volver a configurar",
+      "unlock_trouble": "¿Problemas con la passkey? <turnOff>Desactiva el desbloqueo biométrico en este dispositivo</turnOff> / <setUp>vuelve a configurarlo</setUp>",
       "set_up_again_hint": "Inicia sesión con tu contraseña para volver a configurar el desbloqueo biométrico."
     },
     "passkey": {

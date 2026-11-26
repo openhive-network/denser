@@ -52,6 +52,14 @@ export const StoragePrefix = {
   SHADOW_REPLY: 'shadow-reply-'
 } as const;
 
+/**
+ * Prefixes of keys nothing reads or writes any more: cleanup removes them whatever their expiry.
+ */
+const RETIRED_PREFIXES = [
+  // The passkey unlock failure counts, replaced by the link the sign-in form shows after any request ended without unlocking
+  'passkey-unlock-failures-'
+] as const;
+
 interface StorageItem<T> {
   value: T;
   expiresAt: number | null;
@@ -230,7 +238,7 @@ export function refreshStorageTTL(key: string, ttl: number): boolean {
 }
 
 /**
- * Cleans up all expired items from localStorage and migrates legacy data.
+ * Cleans up all expired items, and those of retired keys, from localStorage and migrates legacy data.
  * Should be called periodically (e.g., on app startup, visibility change).
  *
  * @returns Number of items cleaned up
@@ -244,6 +252,10 @@ export function cleanupExpiredItems(): number {
   for (let i = 0; i < window.localStorage.length; i++) {
     const key = window.localStorage.key(i);
     if (!key) continue;
+    if (RETIRED_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+      keysToRemove.push(key);
+      continue;
+    }
 
     const stored = window.localStorage.getItem(key);
     if (!stored) continue;
