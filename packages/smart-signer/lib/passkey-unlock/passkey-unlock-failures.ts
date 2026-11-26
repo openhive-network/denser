@@ -2,8 +2,9 @@ import { getStorageItem, removeStorageItem, setStorageItem, StorageTTL } from '@
 
 /**
  * Sign-ins in a row whose passkey request failed for an account linked on this device, from which
- * the sign-in form offers to turn the unlock off or set it up again. A cancel never removes the
- * record by itself: the browser answers a passkey it no longer reaches as it does a cancel.
+ * the sign-in form offers to turn the unlock off or set it up again. Only a failure after the
+ * account's passkey was picked or named counts: the browser answers a passkey it no longer reaches
+ * as it does a cancel, which neither counts nor removes the record.
  */
 export const FAILED_UNLOCKS_BEFORE_NOTICE = 2;
 

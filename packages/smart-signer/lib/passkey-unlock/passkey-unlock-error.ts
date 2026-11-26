@@ -18,11 +18,17 @@ export type PasskeyUnlockFailure =
 
 export class PasskeyUnlockError extends Error {
   readonly reason: PasskeyUnlockFailure;
+  /**
+   * The account whose passkey the user picked, or the request named, where the failure came after
+   * one was; undefined for a request that ended without a pick, which is no account's failure
+   */
+  readonly account?: string;
 
-  constructor(message: string, reason: PasskeyUnlockFailure, options?: ErrorOptions) {
+  constructor(message: string, reason: PasskeyUnlockFailure, options?: ErrorOptions & { account?: string }) {
     super(message, options);
     this.name = 'PasskeyUnlockError';
     this.reason = reason;
+    this.account = options?.account;
   }
 }
 

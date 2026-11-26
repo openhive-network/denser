@@ -439,6 +439,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }
 
     async function cancelAuth(username: string): Promise<void> {
+      passkeyUnlock.close();
+      // Back to the account the form opened with, which is the form's change, not the user's
+      showAccount(form.formState.defaultValues?.username ?? '');
       form.reset();
       const client = await getAuthClient();
       await client.logout(username);

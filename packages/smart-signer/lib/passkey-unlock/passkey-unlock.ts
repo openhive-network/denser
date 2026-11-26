@@ -169,10 +169,23 @@ async function passwordOfPickedPasskey(
   const owner = await ownerRecord(store, record, accounts, picked);
   if (!owner) throw new PasskeyUnlockError(`Passkey unlock: the passkey picked is not ${username}'s`, 'wrong-account');
   if (!isRecordPasskey(owner, picked)) throw replaced(store, owner, picked.passkey);
-  const password = answersRecordSalt(owner, picked)
-    ? await pickedPasskeyPassword(owner, picked)
-    : await recoverPasskeyPassword(credentials, owner, userVerification, signal);
+  const password = await chargedTo(
+    owner.username,
+    answersRecordSalt(owner, picked)
+      ? pickedPasskeyPassword(owner, picked)
+      : recoverPasskeyPassword(credentials, owner, userVerification, signal)
+  );
   return { record: owner, password, picked };
+}
+
+/** What `attempt` gives; its PasskeyUnlockError as one of `username`, whose passkey was picked or named */
+async function chargedTo<T>(username: string, attempt: Promise<T>): Promise<T> {
+  try {
+    return await attempt;
+  } catch (error) {
+    if (!(error instanceof PasskeyUnlockError) || error.account !== undefined) throw error;
+    throw new PasskeyUnlockError(error.message, error.reason, { cause: error.cause, account: username });
+  }
 }
 
 /**
@@ -256,7 +269,7 @@ export async function unlockWithPasskeyGivingPassword<KeyType extends string, St
       throw (await asStalePassword(client, unlocked, error)) ?? error;
     }
   } catch (error) {
-    if (error instanceof PasskeyUnlockError && error.reason === 'stale') await store.remove(unlocked);
+    if (error instanceof PasskeyUnlockError && error.reason === 'stale') await store.remove(error.account ?? unlocked);
     throw error;
   }
 }

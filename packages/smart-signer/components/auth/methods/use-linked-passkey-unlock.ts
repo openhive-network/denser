@@ -20,8 +20,8 @@ const logger = getLogger('app');
  * linked account whose passkey the user picked) and its password; the password form for `username`,
  * with `relink` where another passkey of the account answered and one password moves the record to
  * it, `wrongAccount` where the passkey picked is of an account not linked on this device, and
- * `failingRepeatedly` where no passkey answered for the account at this sign-in and the ones before
- * it; or nothing, the prompt aborted for another account.
+ * `failingRepeatedly` where the account's passkey, picked or named, failed at this sign-in and the
+ * one before it; or nothing, the prompt aborted for another account or the form closing.
  */
 export type LinkedPasskeyOutcome =
   | { unlocked: true; username: string; password: string }
@@ -34,10 +34,12 @@ const failedWith = (error: unknown, reason: PasskeyUnlockError['reason']) =>
   error instanceof PasskeyUnlockError && error.reason === reason;
 
 /**
- * Whether `error` is a request no passkey answered: cancelled (as the browser answers a passkey it
- * no longer reaches) or ended without a credential. It is counted, never taken for a removed passkey.
+ * The account a failed unlock counts against: the one whose passkey the user picked, or a request
+ * named, where it then failed. A cancel is never counted: the browser answers a dismissed picker as
+ * it does a passkey it no longer reaches, and a request that ended without a pick is no account's.
  */
-const isUnanswered = (error: unknown) => failedWith(error, 'cancelled') || failedWith(error, 'failed');
+const failingAccount = (error: unknown) =>
+  error instanceof PasskeyUnlockError && error.reason === 'failed' ? error.account : undefined;
 
 /**
  * The passkey request open on this page, whichever sign-in form asked it: the browser runs one at a
@@ -47,12 +49,13 @@ let openRequest: AbortController | null = null;
 
 /**
  * The passkey unlock a safe-storage sign-in starts with, one prompt at a time: starting another,
- * for an account the user changed to, aborts the one open. A cancel leaves the account's record in
- * place. `failure` is why the last one failed, which a password sign-in of the account relinks.
+ * for an account the user changed to, aborts the one open; closing the form aborts it and asks no
+ * other. A cancel leaves the account's record in place. `failure` is why the last one failed, which a password sign-in of the account relinks.
  */
 export function useLinkedPasskeyUnlock() {
   const pending = useRef<{ username: string; controller: AbortController } | null>(null);
   const failure = useRef<unknown>(null);
+  const closed = useRef(false);
   const [relinkUsername, setRelinkUsername] = useState<string | null>(null);
 
   useEffect(() => () => pending.current?.controller.abort(), []);
@@ -65,12 +68,20 @@ export function useLinkedPasskeyUnlock() {
     return true;
   }
 
+  /** Aborts the prompt open, and asks none from then on: the form is closing */
+  function close() {
+    closed.current = true;
+    pending.current?.controller.abort();
+    pending.current = null;
+  }
+
   async function unlock(
     client: OnlineClient,
     username: string,
     keyType: KeyType,
     accounts: readonly string[]
   ): Promise<LinkedPasskeyOutcome> {
+    if (closed.current) return null;
     pending.current?.controller.abort();
     openRequest?.abort();
     const controller = new AbortController();
@@ -94,10 +105,11 @@ export function useLinkedPasskeyUnlock() {
       logger.info('Passkey unlock of %s failed, asking for the password: %s', username, describe(error));
       const relink = error instanceof PasskeyReplacedError;
       if (relink) setRelinkUsername(error.username);
-      const failures = isUnanswered(error) ? countPasskeyUnlockFailure(username) : 0;
+      const failing = failingAccount(error);
+      const failures = failing ? countPasskeyUnlockFailure(failing) : 0;
       return {
         unlocked: false,
-        username: relink ? error.username : username,
+        username: relink ? error.username : (failing ?? username),
         relink,
         wrongAccount: failedWith(error, 'wrong-account'),
         failingRepeatedly: failures >= FAILED_UNLOCKS_BEFORE_NOTICE
@@ -111,6 +123,7 @@ export function useLinkedPasskeyUnlock() {
   return {
     unlock,
     abortOtherThan,
+    close,
     /** Whether the prompt open is `username`'s */
     isAsking: (username: string) => pending.current?.username === username,
     /** Why the last unlock failed: one that found another passkey keeps the password under it */
