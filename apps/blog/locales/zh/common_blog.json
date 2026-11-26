@@ -1504,5 +1504,10 @@
     "choose": "请点击下方相应的按钮：",
     "consent_yes": "是，我同意",
     "consent_no": "否，我不同意"
+  },
+  "deleted_post": {
+    "title": "此帖子或评论已删除",
+    "description": "已被作者 @{{author}} 删除。",
+    "author_profile": "前往作者的个人资料"
   }
 }

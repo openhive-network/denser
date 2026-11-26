@@ -1512,5 +1512,10 @@
     "choose": "Please click the appropriate button below:",
     "consent_yes": "Yes, I consent",
     "consent_no": "No, I do not consent"
+  },
+  "deleted_post": {
+    "title": "This post or comment was deleted",
+    "description": "Its author, @{{author}}, deleted it.",
+    "author_profile": "Go to the author's profile"
   }
 }

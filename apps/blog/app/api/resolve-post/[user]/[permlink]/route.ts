@@ -5,6 +5,8 @@ import { isPermlinkValid, isPostAuthorValid, isValidUserParam, postAuthorFromPar
 import { getLogger } from '@ui/lib/logging';
 import { getBasePath } from '@ui/lib/path-utils';
 import { inAppRedirectUrl } from '@/blog/lib/in-app-redirect-url';
+import { deletedPostPath } from '@/blog/lib/deleted-post';
+import { isPostDeletedError } from '@transaction/lib/deleted-post';
 
 const logger = getLogger('app');
 
@@ -64,6 +66,10 @@ export async function GET(request: Request, props: { params: Promise<{ user: str
     try {
       post = await getPost(username, String(params?.permlink), observer);
     } catch (fetchErr) {
+      // Its page says the author deleted it, with a 404; it is no more permanent than a 404.
+      if (isPostDeletedError(fetchErr)) {
+        return redirectInApp(request, deletedPostPath(username, String(params.permlink)), NOT_FOUND_REDIRECT_STATUS);
+      }
       logger.error(fetchErr, 'Failed to fetch post');
 
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet

@@ -1528,5 +1528,10 @@
     "choose": "Kliknij odpowiedni przycisk poniżej:",
     "consent_yes": "Tak, wyrażam zgodę",
     "consent_no": "Nie, nie wyrażam zgody"
+  },
+  "deleted_post": {
+    "title": "Ten post lub komentarz został usunięty",
+    "description": "Usunięty przez autora, @{{author}}.",
+    "author_profile": "Przejdź do profilu autora"
   }
 }

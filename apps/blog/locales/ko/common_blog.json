@@ -1504,5 +1504,10 @@
     "choose": "아래에서 해당하는 버튼을 클릭하세요:",
     "consent_yes": "예, 동의합니다",
     "consent_no": "아니요, 동의하지 않습니다"
+  },
+  "deleted_post": {
+    "title": "이 게시물 또는 댓글은 삭제되었습니다",
+    "description": "작성자 @{{author}}님이 삭제했습니다.",
+    "author_profile": "작성자 프로필로 가기"
   }
 }

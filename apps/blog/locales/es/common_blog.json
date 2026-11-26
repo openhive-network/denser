@@ -1520,5 +1520,10 @@
     "choose": "Haz clic en el botón correspondiente:",
     "consent_yes": "Sí, doy mi consentimiento",
     "consent_no": "No, no doy mi consentimiento"
+  },
+  "deleted_post": {
+    "title": "Se eliminó esta publicación o comentario",
+    "description": "Eliminado por su autor, @{{author}}.",
+    "author_profile": "Ir al perfil del autor"
   }
 }

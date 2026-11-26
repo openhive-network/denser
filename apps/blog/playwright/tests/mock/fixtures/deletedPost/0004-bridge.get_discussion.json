@@ -1,0 +1,17 @@
+{
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "lampwork",
+    "permlink": "no-such-post-1786",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32602,
+      "message": "Invalid parameters",
+      "data": "Post lampwork/no-such-post-1786 does not exist"
+    }
+  }
+}

@@ -1520,5 +1520,10 @@
     "choose": "Cliquez sur le bouton approprié ci-dessous :",
     "consent_yes": "Oui, j'accepte",
     "consent_no": "Non, je refuse"
+  },
+  "deleted_post": {
+    "title": "Cet article ou ce commentaire a été supprimé",
+    "description": "Supprimé par son auteur, @{{author}}.",
+    "author_profile": "Voir le profil de l'auteur"
   }
 }
