@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { notFound } from 'next/navigation';
-import { isValidUserParam, postAuthorFromParam } from '@/blog/utils/validate-links';
+import { isPermlinkValid, isPostAuthorValid, isValidUserParam, postAuthorFromParam } from '@/blog/utils/validate-links';
 import { getEffectiveObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isPostDeleted } from '@/blog/lib/deleted-post';
 import DeletedPost from '@/blog/features/post-rendering/deleted-post';
@@ -25,13 +25,19 @@ export default async function Layout(
   }
 
   // A deleted post answers 404 like a missing one (the page's notFound()), and its not-found
-  // boundary says what happened to it. The post read is the page's, deduplicated by getPostCached.
+  // boundary says what happened to it. The post read is the page's, deduplicated by getPostCached,
+  // so it is made only for the URLs the page reads a post for.
   const author = postAuthorFromParam(params.p2);
-  const deleted =
-    !!author && (await isPostDeleted(author, params.permlink, await getEffectiveObserverFromCookies()));
+  const deletedAuthor =
+    author &&
+    isPermlinkValid(params.permlink) &&
+    (await isPostAuthorValid(author)) &&
+    (await isPostDeleted(author, params.permlink, await getEffectiveObserverFromCookies()))
+      ? author
+      : null;
 
   return (
-    <DeletedPostNoticeProvider notice={deleted && author ? <DeletedPost author={author} /> : null}>
+    <DeletedPostNoticeProvider notice={deletedAuthor ? <DeletedPost author={deletedAuthor} /> : null}>
       {children}
     </DeletedPostNoticeProvider>
   );
