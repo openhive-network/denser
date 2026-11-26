@@ -48,20 +48,53 @@ const failingAccount = (error: unknown) =>
 let openRequest: AbortController | null = null;
 
 /**
+ * How long the account field stays unchanged before the passkey of the account it reads is asked:
+ * typing a name passes through each of its prefixes, any of which may be a linked account
+ */
+const ACCOUNT_SETTLE_MS = 500;
+
+/**
  * The passkey unlock a safe-storage sign-in starts with, one prompt at a time: starting another,
  * for an account the user changed to, aborts the one open; closing the form aborts it and asks no
  * other. A cancel leaves the account's record in place. `failure` is why the last one failed, which a password sign-in of the account relinks.
+ * An ask for an account typed in waits for the field to settle; any other change, prompt or closing drops it.
  */
 export function useLinkedPasskeyUnlock() {
   const pending = useRef<{ username: string; controller: AbortController } | null>(null);
   const failure = useRef<unknown>(null);
   const closed = useRef(false);
+  const settling = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [relinkUsername, setRelinkUsername] = useState<string | null>(null);
 
-  useEffect(() => () => pending.current?.controller.abort(), []);
+  useEffect(
+    () => () => {
+      dropSettling();
+      pending.current?.controller.abort();
+    },
+    []
+  );
 
-  /** Aborts the prompt open for an account other than `username`; whether one was open */
+  function dropSettling() {
+    if (settling.current) clearTimeout(settling.current);
+    settling.current = null;
+  }
+
+  /** Calls `ask` once the account field has stayed unchanged for ACCOUNT_SETTLE_MS */
+  function askOnceSettled(ask: () => void) {
+    dropSettling();
+    if (closed.current) return;
+    settling.current = setTimeout(() => {
+      settling.current = null;
+      ask();
+    }, ACCOUNT_SETTLE_MS);
+  }
+
+  /**
+   * Aborts the prompt open for an account other than `username`, and drops an ask waiting for the
+   * field to settle; whether a prompt was open
+   */
   function abortOtherThan(username: string): boolean {
+    dropSettling();
     if (!pending.current || pending.current.username === username) return false;
     pending.current.controller.abort();
     pending.current = null;
@@ -71,6 +104,7 @@ export function useLinkedPasskeyUnlock() {
   /** Aborts the prompt open, and asks none from then on: the form is closing */
   function close() {
     closed.current = true;
+    dropSettling();
     pending.current?.controller.abort();
     pending.current = null;
   }
@@ -82,6 +116,7 @@ export function useLinkedPasskeyUnlock() {
     accounts: readonly string[]
   ): Promise<LinkedPasskeyOutcome> {
     if (closed.current) return null;
+    dropSettling();
     pending.current?.controller.abort();
     openRequest?.abort();
     const controller = new AbortController();
@@ -123,6 +158,7 @@ export function useLinkedPasskeyUnlock() {
   return {
     unlock,
     abortOtherThan,
+    askOnceSettled,
     close,
     /** Whether the prompt open is `username`'s */
     isAsking: (username: string) => pending.current?.username === username,

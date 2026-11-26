@@ -33,7 +33,8 @@ import {
  * After two sign-ins in a row whose picked passkey then failed, the password form offers to turn the
  * unlock off or set it up again; cancels, which the browser answers as it does a passkey it no
  * longer reaches, count against no account. Closing the form after changing its account asks no
- * passkey. Coming back to the form from "Add new key" asks no passkey again. A record
+ * passkey. Typing an account name asks no passkey of a linked account among its prefixes, only of
+ * the name the field settles on. Coming back to the form from "Add new key" asks no passkey again. A record
  * on a salt of its own, as the build before the device salt wrote it, unlocks with the same one
  * request and moves to the device salt. The ceremonies, and switching between two linked accounts, are covered by
  * packages/smart-signer/lib/passkey-unlock/passkey-unlock-ceremony.test.ts and passkey-unlock.test.ts.
@@ -272,6 +273,8 @@ type PasskeyRequests = {
    * strict mode mounts the sign-in twice, and the first mount's prompt is aborted)
    */
   named: () => Promise<number[]>;
+  /** The number of passkey requests the app made, those it aborted included */
+  made: () => Promise<number>;
   /** Answers the requests from now on as the browser does the user's cancel (NotAllowedError), or as the authenticator does */
   cancel: (cancelling: boolean) => Promise<void>;
 };
@@ -297,6 +300,7 @@ async function spyOnPasskeyRequests(page: Page): Promise<PasskeyRequests> {
           .filter(({ signal }) => !signal?.aborted)
           .map(({ named }) => named)
       ),
+    made: () => page.evaluate(() => (Reflect.get(window, 'passkeyRequests') as unknown[]).length),
     cancel: async (cancelling) => {
       await page.evaluate((value) => {
         Object.assign(window, { passkeyCancelling: value });
@@ -855,6 +859,37 @@ test.describe('Safe-storage passkey unlock', () => {
     await expect(again.usernameInput).toHaveValue(OTHER_ACCOUNT);
     await again.usernameInput.fill(ACCOUNT);
     await expect.poll(() => requests.named(), { timeout: SIGN_IN_TIMEOUT_MS }).toEqual([0, 0, 0]);
+    expect(await passkeyFailureCounts(page)).toEqual([]);
+  });
+
+  test('BLOG-SAFE-STORAGE-PASSKEY-19 — typing an account name asks no passkey of a linked account it passes through', async ({
+    page
+  }) => {
+    await addPlatformAuthenticator(page);
+    const { loginForm, prompt } = await signInWithPassword(page);
+    await enableByCreating(loginForm, prompt);
+    await signOut(page);
+    const requests = await spyOnPasskeyRequests(page);
+    await requests.cancel(true);
+
+    const next = await openSignIn(page);
+    await expect(next.loginFormDescription).toHaveText('Unlock user with password', { timeout: SIGN_IN_TIMEOUT_MS });
+    const opened = await requests.made();
+
+    // The field reads ACCOUNT, linked, on its way to a name that is not
+    await next.usernameInput.clear();
+    await next.usernameInput.pressSequentially(`${ACCOUNT}1`);
+    await expect(next.usernameInput).toHaveValue(`${ACCOUNT}1`);
+    await page.waitForTimeout(CLOSED_FORM_SETTLE_MS);
+    expect(await requests.made()).toBe(opened);
+
+    // Typed in full and left, the linked account is asked once
+    await next.usernameInput.clear();
+    await next.usernameInput.pressSequentially(ACCOUNT);
+    await next.usernameInput.press('Tab');
+    await expect.poll(() => requests.made(), { timeout: SIGN_IN_TIMEOUT_MS }).toBe(opened + 1);
+    await page.waitForTimeout(CLOSED_FORM_SETTLE_MS);
+    expect(await requests.made()).toBe(opened + 1);
     expect(await passkeyFailureCounts(page)).toEqual([]);
   });
 });

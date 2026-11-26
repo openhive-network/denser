@@ -164,6 +164,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const passkeyUnlock = useLinkedPasskeyUnlock();
     // The account the form itself switched to, after a passkey it asked: not the user's change to ask for
     const ownUsernameChange = useRef<string | null>(null);
+    // The account the user picked from the menu, whose passkey is asked at once
+    const pickedUsername = useRef<string | null>(null);
     const [failingPasskeyUsername, setFailingPasskeyUsername] = useState<string | null>(null);
     const [setUpAgainUsername, setSetUpAgainUsername] = useState<string | null>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
@@ -230,12 +232,17 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       // The prompt open is for the account the user left: ask the passkey of this one instead
       const aborted = passkeyUnlock.abortOtherThan(watchedUsername);
       const own = ownUsernameChange.current === watchedUsername;
+      const picked = pickedUsername.current === watchedUsername;
       ownUsernameChange.current = null;
-      if (own || passkeyUnlock.isAsking(watchedUsername)) {
-        if (aborted) setLoading(false);
+      pickedUsername.current = null;
+      if (picked && !passkeyUnlock.isAsking(watchedUsername)) {
+        switchPasskeyUnlock(watchedUsername, aborted);
         return;
       }
-      switchPasskeyUnlock(watchedUsername, aborted);
+      if (aborted) setLoading(false);
+      if (own || passkeyUnlock.isAsking(watchedUsername)) return;
+      // Typed letter by letter, the field passes through every prefix of the name: ask for the one it settles on
+      passkeyUnlock.askOnceSettled(() => switchPasskeyUnlock(watchedUsername, false));
     }, [watchedUsername]);
 
     /** Sets the form's account to `username`, which the form, not the user, chose */
@@ -595,6 +602,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                                   className="cursor-pointer p-2"
                                   key={username}
                                   onSelect={() => {
+                                    pickedUsername.current = username;
                                     form.setValue('username', username);
                                     form.trigger(['username', 'wif']);
                                   }}
