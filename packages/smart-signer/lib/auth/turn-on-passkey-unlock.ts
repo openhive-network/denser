@@ -65,7 +65,7 @@ async function askCheckedPassword(username: string): Promise<string | undefined>
 
 /**
  * Turns the passkey unlock of `username`'s safe storage on on this device from the account menu:
- * the password, checked, then the offer's own steps. Resolves true once on, false when the user
+ * the password, checked, then the passkey pick, asking no more whether to. Resolves true once on, false when the user
  * closed either prompt.
  *
  * @throws the password check's error, other than a wrong password

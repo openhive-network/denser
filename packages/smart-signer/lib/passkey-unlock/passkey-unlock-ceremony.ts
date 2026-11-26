@@ -38,7 +38,10 @@ function isPublicKeyCredential(credential: Credential | null): credential is Pub
   return credential !== null && 'getClientExtensionResults' in credential;
 }
 
-/** The transports the authenticator of a new credential named, which point the browser straight at it */
+/**
+ * The transports the authenticator of a credential named, which point the browser straight at it:
+ * a creation's response has them; an assertion's has none in today's browsers
+ */
 function credentialTransports({ response }: PublicKeyCredential): AuthenticatorTransport[] {
   const transports = 'getTransports' in response && typeof response.getTransports === 'function' ? response.getTransports() : [];
   return Array.isArray(transports) ? transports.filter(isAuthenticatorTransport) : [];
@@ -177,7 +180,16 @@ export async function wrapPassword(
   const iv = randomBytes(12);
   const encoded = new TextEncoder().encode(password);
   const encryptedPassword = new Uint8Array(await crypto.subtle.encrypt({ name: ENCRYPTION, iv }, key, encoded));
-  const record = { username, credentialId, prfSalt, encryptedPassword, iv, rpId, createdAt: Date.now(), transports };
+  const record = {
+    username,
+    credentialId,
+    prfSalt,
+    encryptedPassword,
+    iv,
+    rpId,
+    createdAt: Date.now(),
+    ...(transports?.length ? { transports } : {})
+  };
   if ((await decryptWith(record, key).catch(() => null)) !== password) {
     throw new PasskeyUnlockError('Passkey unlock: the encrypted password does not decrypt', 'failed');
   }
@@ -241,9 +253,15 @@ export async function discoverPasskey(
   const results = credential.getClientExtensionResults().prf?.results;
   if (!results?.first) throw new PasskeyUnlockError(`${step}: the passkey gave no PRF output`, 'unsupported');
   const key = await prfKey(results.first, ['encrypt', 'decrypt']);
+  const transports = credentialTransports(credential);
   return {
     userHandle: userHandle && new Uint8Array(userHandle),
-    passkey: { credentialId: new Uint8Array(credential.rawId), prfSalt: deviceSalt, key },
+    passkey: {
+      credentialId: new Uint8Array(credential.rawId),
+      ...(transports.length ? { transports } : {}),
+      prfSalt: deviceSalt,
+      key
+    },
     ...(second && results.second ? { knownSalt: second, knownOutput: results.second } : {})
   };
 }
@@ -259,7 +277,9 @@ export const isRecordPasskey = (record: PasskeyUnlockRecord, picked: PickedPassk
 
 /**
  * Encrypts `password` under a passkey the account already has, synced from another device or
- * left by an earlier record, in a record of this device on `deviceSalt`, creating none. Rejects with
+ * left by an earlier record, in a record of this device on `deviceSalt`, creating none. Its
+ * transports are those the assertion reports, else those of `previous`, the record this device
+ * held for the account, where that is of the same credential; else the record has none. Rejects with
  * PasskeyUnlockError as `discoverPasskey` does, and as wrong-account for another account's passkey.
  */
 export async function reusePasskeyUnlock(
@@ -267,13 +287,16 @@ export async function reusePasskeyUnlock(
   username: string,
   password: string,
   rpId: string,
-  deviceSalt: Uint8Array<ArrayBuffer>
+  deviceSalt: Uint8Array<ArrayBuffer>,
+  previous?: PasskeyUnlockRecord | null
 ): Promise<PasskeyUnlockRecord> {
   const picked = await discoverPasskey(credentials, { rpId, userVerification: 'required', deviceSalt });
   if (!(await isPasskeyOf(picked, username))) {
     throw new PasskeyUnlockError(`Passkey discovery: the passkey picked is not ${username}'s`, 'wrong-account');
   }
-  return wrapPassword(username, password, rpId, picked.passkey);
+  const transports =
+    picked.passkey.transports ?? (previous && isRecordPasskey(previous, picked) ? previous.transports : undefined);
+  return wrapPassword(username, password, rpId, { ...picked.passkey, transports });
 }
 
 /** Whether `record` is encrypted under the device salt `picked` answered for */

@@ -534,13 +534,6 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
             {shownError}
           </div>
         )}
-        {failingPasskeyUsername === watchedUsername && (
-          <PasskeyUnlockFailingNotice
-            key={watchedUsername}
-            username={watchedUsername}
-            onSetUpAgain={() => setSetUpAgainUsername(watchedUsername)}
-          />
-        )}
       </div>
     );
 
@@ -621,6 +614,14 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormMessage className="font-normal" data-testid="username-error-message">
                       {errors.username?.message!}
                     </FormMessage>
+                  )}
+                  {/* With the account it is about, not over the form; gone with the form once the offer shows */}
+                  {failingPasskeyUsername === watchedUsername && (
+                    <PasskeyUnlockFailingNotice
+                      key={watchedUsername}
+                      username={watchedUsername}
+                      onSetUpAgain={() => setSetUpAgainUsername(watchedUsername)}
+                    />
                   )}
                 </FormItem>
               )}

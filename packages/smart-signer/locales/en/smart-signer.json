@@ -176,7 +176,7 @@
       "create_title": "Create a passkey on this device?",
       "create_description": "No passkey was picked. If biometric unlock is on for this account on another device, use that passkey: a new one would replace it there too.",
       "create": "Create passkey",
-      "use_existing": "Use a passkey from another device",
+      "use_existing": "Use an existing passkey",
       "relink_hint": "Enter your password once to link this device to your existing passkey.",
       "unlock_wrong_account": "The passkey you picked belongs to another account; sign in with this account's password.",
       "wrong_account_title": "That passkey belongs to another account",
