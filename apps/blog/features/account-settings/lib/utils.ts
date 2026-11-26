@@ -6,7 +6,6 @@ import { processImageForUpload } from '@/blog/features/post-editor/lib/image-pro
 import { postImageWithProgress } from './post-with-progress';
 import {
   SOCIAL_KEYS,
-  type SocialHandles,
   type SocialKey,
   normalizeSocialHandle,
   parseSocialHandles
@@ -99,12 +98,14 @@ export function socialSettingsFromMetadata(postingJsonMetadata: string | undefin
   return { ...EMPTY_SOCIAL, ...parseSocialHandles(postingJsonMetadata) };
 }
 
-/** Normalized, sparse handles to save: empty fields are omitted. */
-export function socialHandlesToSave(social: Settings['social']): SocialHandles {
-  const handles: SocialHandles = {};
+/**
+ * Normalized handles to save, one per platform the form edits: an empty string clears the
+ * platform's key, and keys of other platforms are left to the merge to keep.
+ */
+export function socialHandlesToSave(social: Settings['social']): Record<SocialKey, string> {
+  const handles = { ...EMPTY_SOCIAL };
   for (const key of SOCIAL_KEYS) {
-    const handle = normalizeSocialHandle(key, social[key]);
-    if (handle) handles[key] = handle;
+    handles[key] = normalizeSocialHandle(key, social[key]) ?? '';
   }
   return handles;
 }
