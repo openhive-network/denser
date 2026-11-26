@@ -1,0 +1,6 @@
+{
+  "testName": "deletedPost",
+  "base": "homepage",
+  "additive": true,
+  "note": "Hand-written, not recorded: hivemind's answers to the post and discussion reads of lampwork/tp1622, which its author deleted (code -31999, as api.hive.blog answered on 2026-11-26), and of lampwork/no-such-post-1786, which never existed (-32602). The base serves the trending feed and communities the not-found page's links prefetch."
+}

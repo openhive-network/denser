@@ -1520,5 +1520,10 @@
     "choose": "Fai clic sul pulsante appropriato qui sotto:",
     "consent_yes": "Sì, acconsento",
     "consent_no": "No, non acconsento"
+  },
+  "deleted_post": {
+    "title": "Questo post o commento è stato eliminato",
+    "description": "Eliminato dal suo autore, @{{author}}.",
+    "author_profile": "Vai al profilo dell'autore"
   }
 }

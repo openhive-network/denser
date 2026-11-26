@@ -1,0 +1,17 @@
+{
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "lampwork",
+    "permlink": "tp1622",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -31999,
+      "message": "Invalid parameters",
+      "data": "Post lampwork/tp1622 was deleted 1 time(s)"
+    }
+  }
+}

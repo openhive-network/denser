@@ -1504,5 +1504,10 @@
     "choose": "下のいずれかのボタンをクリックしてください:",
     "consent_yes": "はい、同意します",
     "consent_no": "いいえ、同意しません"
+  },
+  "deleted_post": {
+    "title": "この投稿またはコメントは削除されました",
+    "description": "作成者の @{{author}} により削除されました。",
+    "author_profile": "作成者のプロフィールへ"
   }
 }
