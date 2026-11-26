@@ -182,9 +182,7 @@
       "wrong_account_title": "Ten klucz dostępu należy do innego konta",
       "wrong_account_description": "Wybrany klucz dostępu nie należy do tego konta. Użyj klucza dostępu tego konta z innego urządzenia albo utwórz nowy tutaj: jeśli odblokowywanie biometryczne tego konta jest włączone na innym urządzeniu, nowy klucz dostępu zastąpiłby go także tam.",
       "create_cancelled": "Nie utworzono klucza dostępu. Możesz spróbować ponownie.",
-      "unlock_failing": "Klucz dostępu nie odblokował ostatnich logowań. Jeśli usunięto go w menedżerze haseł, wyłącz odblokowywanie biometryczne na tym urządzeniu albo skonfiguruj je ponownie.",
-      "unlock_failing_turn_off": "Wyłącz na tym urządzeniu",
-      "unlock_failing_set_up": "Skonfiguruj ponownie",
+      "unlock_trouble": "Problem z kluczem dostępu? <turnOff>Wyłącz odblokowywanie biometryczne na tym urządzeniu</turnOff> / <setUp>skonfiguruj ponownie</setUp>",
       "set_up_again_hint": "Zaloguj się hasłem, aby ponownie skonfigurować odblokowywanie biometryczne."
     },
     "passkey": {

@@ -20,7 +20,7 @@ registerHooks({
 });
 
 const { createPasskeyUnlock } = await import('./passkey-unlock-ceremony.ts');
-const { PasskeyUnlockError } = await import('./passkey-unlock-error.ts');
+const { PasskeyUnlockError, passkeyTroubleAccount } = await import('./passkey-unlock-error.ts');
 const {
   adoptReplacedPasskey,
   PasskeyReplacedError,
@@ -561,6 +561,83 @@ describe('unlockWithPasskey', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'not-registered');
+  });
+});
+
+describe('passkeyTroubleAccount: the account the password form offers to turn off or set up again', () => {
+  const failureOf = (unlocking: Promise<unknown>) =>
+    unlocking.then(
+      () => assert.fail('the unlock was to fail'),
+      (error: unknown) => error
+    );
+
+  it('is the account asked for after a cancel, keeping its record', async () => {
+    const store = await registered();
+
+    const error = await failureOf(
+      unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', authenticator('passkey', cancel()), store)
+    );
+
+    assert.equal(passkeyTroubleAccount(error, USERNAME), USERNAME);
+    assert.equal(store.records.size, 1);
+  });
+
+  it('is the account asked for where its passkey was deleted, which the browser answers as a cancel', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    provider.passkeys.length = 0;
+
+    const error = await failureOf(unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store));
+
+    assert.equal(passkeyTroubleAccount(error, USERNAME), USERNAME);
+    assert.equal(store.records.size, 1);
+  });
+
+  it('is the account asked for where the prompt failed before any pick', async () => {
+    const store = await registered();
+    const failing = authenticator('passkey', new DOMException('Bad origin', 'SecurityError'));
+
+    const error = await failureOf(unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', failing, store));
+
+    assert.equal(passkeyTroubleAccount(error, USERNAME), USERNAME);
+  });
+
+  it('is the account whose passkey was picked where it then failed', async () => {
+    const error = new PasskeyUnlockError('Passkey recovery: SecurityError', 'failed', { account: 'another.user' });
+
+    assert.equal(passkeyTroubleAccount(error, USERNAME), 'another.user');
+  });
+
+  it('is none where the record was removed, as it is once it no longer decrypts', async () => {
+    const provider = authenticator('passkey');
+    const store = await registered(provider);
+    provider.passkeys[0].secret = 'another';
+
+    const error = await failureOf(unlockWithPasskey(hbAuthClient(PASSWORD), USERNAME, 'posting', 'required', provider, store));
+
+    assert.equal(passkeyTroubleAccount(error, USERNAME), undefined);
+    assert.equal(store.records.size, 0);
+  });
+
+  it('is none for an account without a record on this device', async () => {
+    const store = await registered();
+
+    const error = await failureOf(
+      unlockWithPasskey(hbAuthClient(PASSWORD), 'nobody', 'posting', 'required', authenticator('passkey'), store)
+    );
+
+    assert.equal(passkeyTroubleAccount(error, 'nobody'), undefined);
+  });
+
+  it('is none for another account\'s passkey, a replaced one, no PRF, or a refusal that is no passkey\'s', () => {
+    for (const error of [
+      new PasskeyUnlockError('wrong', 'wrong-account'),
+      new PasskeyReplacedError(USERNAME, async () => {}),
+      new PasskeyUnlockError('no PRF', 'unsupported', { account: USERNAME }),
+      invalidCredentials()
+    ]) {
+      assert.equal(passkeyTroubleAccount(error, USERNAME), undefined, error.message);
+    }
   });
 });
 

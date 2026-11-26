@@ -4,12 +4,7 @@ import {
   PasskeyReplacedError,
   unlockWithPasskeyGivingPassword
 } from '@smart-signer/lib/passkey-unlock/passkey-unlock';
-import { PasskeyUnlockError } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
-import {
-  clearPasskeyUnlockFailures,
-  countPasskeyUnlockFailure,
-  FAILED_UNLOCKS_BEFORE_NOTICE
-} from '@smart-signer/lib/passkey-unlock/passkey-unlock-failures';
+import { PasskeyUnlockError, passkeyTroubleAccount } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
 import { KeyType } from '@smart-signer/types/common';
 import { getLogger } from '@ui/lib/logging';
 
@@ -20,26 +15,19 @@ const logger = getLogger('app');
  * linked account whose passkey the user picked) and its password; the password form for `username`,
  * with `relink` where another passkey of the account answered and one password moves the record to
  * it, `wrongAccount` where the passkey picked is of an account not linked on this device, and
- * `failingRepeatedly` where the account's passkey, picked or named, failed at this sign-in and the
- * one before it; or nothing, the prompt aborted for another account or the form closing.
+ * `trouble` where the request ended without a passkey picked, a cancel included, or the account's
+ * passkey failed after its pick: the form then offers to turn the unlock off or set it up again; or
+ * nothing, the prompt aborted for another account or the form closing.
  */
 export type LinkedPasskeyOutcome =
   | { unlocked: true; username: string; password: string }
-  | { unlocked: false; username: string; relink: boolean; wrongAccount: boolean; failingRepeatedly: boolean }
+  | { unlocked: false; username: string; relink: boolean; wrongAccount: boolean; trouble: boolean }
   | null;
 
 const describe = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
 const failedWith = (error: unknown, reason: PasskeyUnlockError['reason']) =>
   error instanceof PasskeyUnlockError && error.reason === reason;
-
-/**
- * The account a failed unlock counts against: the one whose passkey the user picked, or a request
- * named, where it then failed. A cancel is never counted: the browser answers a dismissed picker as
- * it does a passkey it no longer reaches, and a request that ended without a pick is no account's.
- */
-const failingAccount = (error: unknown) =>
-  error instanceof PasskeyUnlockError && error.reason === 'failed' ? error.account : undefined;
 
 /**
  * The passkey request open on this page, whichever sign-in form asked it: the browser runs one at a
@@ -132,7 +120,6 @@ export function useLinkedPasskeyUnlock() {
         accounts,
         signal: controller.signal
       });
-      clearPasskeyUnlockFailures(unlocked.username);
       return { unlocked: true, username: unlocked.username, password: unlocked.password };
     } catch (error) {
       if (controller.signal.aborted) return null;
@@ -140,14 +127,13 @@ export function useLinkedPasskeyUnlock() {
       logger.info('Passkey unlock of %s failed, asking for the password: %s', username, describe(error));
       const relink = error instanceof PasskeyReplacedError;
       if (relink) setRelinkUsername(error.username);
-      const failing = failingAccount(error);
-      const failures = failing ? countPasskeyUnlockFailure(failing) : 0;
+      const troubled = passkeyTroubleAccount(error, username);
       return {
         unlocked: false,
-        username: relink ? error.username : (failing ?? username),
+        username: relink ? error.username : (troubled ?? username),
         relink,
         wrongAccount: failedWith(error, 'wrong-account'),
-        failingRepeatedly: failures >= FAILED_UNLOCKS_BEFORE_NOTICE
+        trouble: troubled !== undefined
       };
     } finally {
       if (pending.current === mine) pending.current = null;

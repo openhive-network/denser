@@ -8,7 +8,6 @@ import {
   declinePasskeyPrompt,
   snoozePasskeyPrompt
 } from '@smart-signer/lib/auth/passkey-prompt-dismissal';
-import { clearPasskeyUnlockFailures } from '@smart-signer/lib/passkey-unlock/passkey-unlock-failures';
 import { PasskeyUnlockError, passkeyEnableMessage } from '@smart-signer/lib/passkey-unlock/passkey-unlock-error';
 import { getLogger } from '@ui/lib/logging';
 
@@ -105,8 +104,7 @@ export default function PasskeyPrompt({ username, onReuse, onCreate, onDone, onC
       setBusy(false);
       return;
     }
-    // A record from now on: a failure count or a dismissal is of the passkey it replaced
-    clearPasskeyUnlockFailures(username);
+    // A record from now on: a dismissal is of the passkey it replaced
     clearPasskeyPromptDismissal(username);
     await onDone();
   };

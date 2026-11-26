@@ -53,7 +53,7 @@ import { newPasswordSchema, passwordSchema } from '@smart-signer/lib/validators/
 import { useSafeStorageKeyCheck } from './use-safe-storage-key-check';
 import { useWrongPasswordError } from './use-wrong-password-error';
 import { useLinkedPasskeyUnlock } from './use-linked-passkey-unlock';
-import PasskeyUnlockFailingNotice from './passkey-unlock-failing-notice';
+import PasskeyTroubleLink from './passkey-trouble-link';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
 import StrictModeStatus from './strict-mode-status';
@@ -166,7 +166,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const ownUsernameChange = useRef<string | null>(null);
     // The account the user picked from the menu, whose passkey is asked at once
     const pickedUsername = useRef<string | null>(null);
-    const [failingPasskeyUsername, setFailingPasskeyUsername] = useState<string | null>(null);
+    // The account whose passkey request ended without unlocking: the form offers to turn it off or set it up again
+    const [troubledPasskeyUsername, setTroubledPasskeyUsername] = useState<string | null>(null);
     const [setUpAgainUsername, setSetUpAgainUsername] = useState<string | null>(null);
     const [show, setShow] = useState<{ password: boolean; wif: boolean }>({
       password: false,
@@ -270,6 +271,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
      */
     async function signInWithLinkedPasskey(client: OnlineClient, username: string, users: AuthUser[]): Promise<boolean | null> {
       setLoading(true);
+      setTroubledPasskeyUsername(null);
       const accounts = users.map((user) => user.username);
       const outcome = await passkeyUnlock.unlock(client, username, form.getValues().keyType, accounts);
       if (!outcome) return null;
@@ -279,7 +281,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         return true;
       }
       if (outcome.wrongAccount) setError(t('login_form.passkey_prompt.unlock_wrong_account', { ns: SMART_SIGNER_NAMESPACE }));
-      if (outcome.failingRepeatedly) setFailingPasskeyUsername(outcome.username);
+      if (outcome.trouble) setTroubledPasskeyUsername(outcome.username);
       setLoading(false);
       return false;
     }
@@ -355,7 +357,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
           await authenticateStoredKey(client, username, password, keyType);
           await adoptReplacedPasskey(passkeyUnlock.failure(), username, password);
-          // "Set up again" offers the unlock over the record of a passkey that no longer answers
+          // "Set up again" asks for the passkey over the record of one that did not answer
           return setUpAgainUsername === username || shouldOfferPasskey(client, username);
         });
 
@@ -544,22 +546,28 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       </div>
     );
 
+    async function closePasskeyPrompt() {
+      setShowPasskeyPrompt(false);
+      setLastAuthPassword('');
+      if (pendingFinalizeRef.current) {
+        await finalize(pendingFinalizeRef.current);
+        pendingFinalizeRef.current = null;
+      }
+    }
+
     // In place of the form, not under its buttons, where a phone's viewport ends before it
     if (showPasskeyPrompt) {
+      // "Set up again" was the decision: the passkey is asked for at once, as the account menu's "Turn on" does
+      const settingUpAgain = setUpAgainUsername === form.getValues().username;
       return (
         <Step title={stepTitle} description={stepDescription} loading={loading}>
           <PasskeyPrompt
             username={form.getValues().username}
             onReuse={() => reusePasskeyUnlockOf(form.getValues().username, lastAuthPassword)}
             onCreate={() => registerPasskeyUnlock(form.getValues().username, lastAuthPassword)}
-            onDone={async () => {
-              setShowPasskeyPrompt(false);
-              setLastAuthPassword('');
-              if (pendingFinalizeRef.current) {
-                await finalize(pendingFinalizeRef.current);
-                pendingFinalizeRef.current = null;
-              }
-            }}
+            onDone={closePasskeyPrompt}
+            onCancel={settingUpAgain ? closePasskeyPrompt : undefined}
+            skipOffer={settingUpAgain}
           />
         </Step>
       );
@@ -624,8 +632,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     </FormMessage>
                   )}
                   {/* With the account it is about, not over the form; gone with the form once the offer shows */}
-                  {failingPasskeyUsername === watchedUsername && (
-                    <PasskeyUnlockFailingNotice
+                  {troubledPasskeyUsername === watchedUsername && (
+                    <PasskeyTroubleLink
                       key={watchedUsername}
                       username={watchedUsername}
                       onSetUpAgain={() => setSetUpAgainUsername(watchedUsername)}

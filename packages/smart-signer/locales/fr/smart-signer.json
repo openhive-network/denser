@@ -182,9 +182,7 @@
       "wrong_account_title": "Cette passkey appartient à un autre compte",
       "wrong_account_description": "La passkey choisie n’est pas celle de ce compte. Utilisez la passkey de ce compte depuis un autre appareil, ou créez-en une ici : si le déverrouillage biométrique de ce compte est activé sur un autre appareil, une nouvelle la remplacerait aussi là-bas.",
       "create_cancelled": "Aucune passkey n’a été créée. Vous pouvez réessayer.",
-      "unlock_failing": "La passkey n’a pas déverrouillé vos dernières connexions. Si vous l’avez supprimée de votre gestionnaire de mots de passe, désactivez le déverrouillage biométrique sur cet appareil ou configurez-le à nouveau.",
-      "unlock_failing_turn_off": "Désactiver sur cet appareil",
-      "unlock_failing_set_up": "Configurer à nouveau",
+      "unlock_trouble": "Un problème avec la passkey ? <turnOff>Désactivez le déverrouillage biométrique sur cet appareil</turnOff> / <setUp>configurez-le à nouveau</setUp>",
       "set_up_again_hint": "Connectez-vous avec votre mot de passe pour configurer à nouveau le déverrouillage biométrique."
     },
     "passkey": {

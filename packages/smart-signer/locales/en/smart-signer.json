@@ -182,9 +182,7 @@
       "wrong_account_title": "That passkey belongs to another account",
       "wrong_account_description": "The passkey you picked is not this account's. Use this account's passkey from another device, or create one here: if biometric unlock is on for this account on another device, a new passkey would replace it there too.",
       "create_cancelled": "No passkey was created. You can try again.",
-      "unlock_failing": "The passkey didn't unlock your last sign-ins. If you deleted it in your password manager, turn biometric unlock off on this device or set it up again.",
-      "unlock_failing_turn_off": "Turn off on this device",
-      "unlock_failing_set_up": "Set up again",
+      "unlock_trouble": "Trouble with the passkey? <turnOff>Turn off biometric unlock on this device</turnOff> / <setUp>set it up again</setUp>",
       "set_up_again_hint": "Sign in with your password to set up biometric unlock again."
     },
     "passkey": {

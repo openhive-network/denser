@@ -6,7 +6,6 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { getLogger } from '@ui/lib/logging';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { readPasskeyUnlock, removePasskeyUnlock } from '@smart-signer/lib/passkey-unlock/passkey-unlock-store';
-import { clearPasskeyUnlockFailures } from '@smart-signer/lib/passkey-unlock/passkey-unlock-failures';
 import { LoginType, type User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
@@ -55,7 +54,6 @@ const PasskeyUnlockMenuItem: FC<{ user: User }> = ({ user }) => {
     if (!(await TurnOffPasskeyUnlockDialogPromise({ isOpen: true }))) return;
     try {
       await removePasskeyUnlock(user.username);
-      clearPasskeyUnlockFailures(user.username);
       setLinked(false);
       toast({ description: t('passkey_unlock.turned_off'), variant: 'success' });
     } catch (error) {
