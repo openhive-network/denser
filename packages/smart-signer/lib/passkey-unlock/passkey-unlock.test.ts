@@ -200,6 +200,7 @@ describe('unlockWithPasskey', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'cancelled');
+    assert.equal(error.account, undefined);
     assert.equal(provider.got.length, 1);
     assert.deepEqual(client.passwords, []);
     assert.equal(store.records.size, 1);
@@ -370,7 +371,61 @@ describe('unlockWithPasskey', () => {
 
     assert.ok(error instanceof PasskeyUnlockError);
     assert.equal(error.reason, 'failed');
+    assert.equal(error.account, undefined, 'no passkey was picked, so no account failed');
     assert.equal(store.records.size, 1);
+  });
+
+  it("charges a failed second request to the account whose passkey was picked, keeping every record", async () => {
+    const provider = authenticator('passkey');
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID, OWN_SALT);
+    const otherId = new Uint8Array([5]);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
+    let requests = 0;
+    const credentials = {
+      create: provider.create,
+      get: async (options?: CredentialRequestOptions) => {
+        requests += 1;
+        if (requests > 1) throw new DOMException('Bad origin', 'SecurityError');
+        return provider.get(options);
+      }
+    };
+
+    const error = await unlockWithPasskeyGivingPassword(hbAuthClient('other password'), USERNAME, 'posting', 'required', {
+      credentials,
+      store,
+      accounts: [USERNAME, 'another.user']
+    }).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'failed');
+    assert.equal(error.account, 'another.user');
+    assert.equal(requests, 2);
+    assert.equal(store.records.size, 2);
+  });
+
+  it("removes the record of the account whose picked passkey no longer decrypts it, not the one asked for", async () => {
+    const provider = authenticator('passkey');
+    const ownRecord = await createPasskeyUnlock(provider, USERNAME, PASSWORD, RP_ID, DEVICE_SALT);
+    const otherAccount = authenticator('other');
+    const otherRecord = await createPasskeyUnlock(otherAccount, 'another.user', 'other password', RP_ID, DEVICE_SALT);
+    const otherId = new Uint8Array([5]);
+    provider.passkeys.unshift({ ...otherAccount.passkeys[0], id: otherId, secret: 'changed' });
+    const store = memoryStore(ownRecord, { ...otherRecord, credentialId: otherId });
+
+    const error = await unlockWithPasskeyGivingPassword(hbAuthClient('other password'), USERNAME, 'posting', 'required', {
+      credentials: provider,
+      store,
+      accounts: [USERNAME, 'another.user']
+    }).catch((e: unknown) => e);
+
+    assert.ok(error instanceof PasskeyUnlockError);
+    assert.equal(error.reason, 'stale');
+    assert.equal(error.account, 'another.user');
+    assert.equal(store.records.get(USERNAME), ownRecord);
+    assert.equal(store.records.has('another.user'), false);
   });
 
   it('moves the record, after one password, to the passkey that replaced its own, creating none', async () => {
